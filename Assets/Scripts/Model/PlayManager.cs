@@ -31,42 +31,7 @@ public class PlayManager : Singleton<PlayManager> {
             case MouseStateEnum.HELD:
                 switch (this.selectionState) {
                     case SelectionStateEnum.UNSELECTED:
-                        if (this.clickedEntity != null) {
-                            // check if clickedEntity has INodal
-                            INodal clickedEntityINodal = this.clickedEntity.GetCachedIComponent<INodal>() as INodal;
-                            if (clickedEntityINodal != null) {
-                                // TODO: make this not retarded
-                                bool isAttemptingToSelect = false;
-                                // default value of this doesnt matter
-                                bool isDraggedUp = true;
-                                // TODO: needed to display debug info
-                                Color highlightColor;
-                                if (InputManager.Instance.dragOffset.y > Constants.DRAGTHRESHOLD) {
-                                    // print("dragging up");
-                                    isAttemptingToSelect = true;
-                                    isDraggedUp = true;
-                                    highlightColor = Color.red;
-                                } else if (InputManager.Instance.dragOffset.y < Constants.DRAGTHRESHOLD * -1) {
-                                    // print("dragging down");
-                                    isAttemptingToSelect = true;
-                                    isDraggedUp = false;
-                                    highlightColor = Color.blue;
-                                }
-                                if (isAttemptingToSelect) {
-                                    // print("starting selection");
-                                    // TODO: debug stuff
-                                    foreach(EntityBase entityBase in BoardManager.Instance.GetConnectedTree(this.clickedEntity, isDraggedUp)) {
-                                        entityBase.entityView.TempHighlight(Color.blue);
-                                    }
-                                    if (BoardManager.Instance.IsEntitySelectable(this.clickedEntity, isDraggedUp)) {
-                                        // TODO: set selectedSet here
-                                        this.selectionState = SelectionStateEnum.SELECTED;
-                                    }
-                                }
-                            } else {
-                                print("entity doesn't have an INodal");
-                            }
-                        }
+                        OnEntityHeld();
                         break;
                     case SelectionStateEnum.SELECTED:
                         break;
@@ -115,5 +80,45 @@ public class PlayManager : Singleton<PlayManager> {
     
     void ResumeTime() {
         this.timeState = TimeStateEnum.NORMAL;
+    }
+
+    void OnEntityHeld() {
+         if (this.clickedEntity != null && !this.clickedEntity.isFixed) {
+            // check if clickedEntity has INodal
+            if (this.clickedEntity.GetCachedIComponent<INodal>() != null) {
+                // TODO: make this not retarded
+                bool isAttemptingToSelect = false;
+                // default value of this doesnt matter
+                bool isDraggedUp = true;
+                // TODO: needed to display debug info
+                Color highlightColor = Color.white;
+                if (InputManager.Instance.dragOffset.y > Constants.DRAGTHRESHOLD) {
+                    print("dragging up");
+                    isAttemptingToSelect = true;
+                    isDraggedUp = true;
+                    highlightColor = Color.red;
+                } else if (InputManager.Instance.dragOffset.y < Constants.DRAGTHRESHOLD * -1) {
+                    print("dragging down");
+                    isAttemptingToSelect = true;
+                    isDraggedUp = false;
+                    highlightColor = Color.blue;
+                }
+                if (isAttemptingToSelect) {
+                    // print("starting selection");
+                    if (BoardManager.Instance.IsEntitySelectable(this.clickedEntity, isDraggedUp)) {
+                        // TODO: set selectedSet here
+                        foreach(EntityBase entityBase in BoardManager.Instance.GetConnectedTree(this.clickedEntity, isDraggedUp)) {
+                            entityBase.entityView.TempHighlight(highlightColor);
+                        }
+                        this.selectionState = SelectionStateEnum.SELECTED;
+                    } else {
+                        this.selectionState = SelectionStateEnum.INVALID;
+                    }
+                    
+                }
+            } else {
+                print("entity doesn't have an INodal");
+            }
+        }
     }
 }
