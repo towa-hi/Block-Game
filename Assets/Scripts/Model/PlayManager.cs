@@ -64,7 +64,7 @@ public class PlayManager : Singleton<PlayManager> {
         switch (this.timeState) {
             case TimeStateEnum.NORMAL:
                 foreach (EntityBase entity in BoardManager.Instance.entityList) {
-                    foreach (IComponent component in entity.components) {
+                    foreach (IComponent component in entity.iComponentSet) {
                         component.DoFrame();
                     }
                 }
@@ -107,6 +107,7 @@ public class PlayManager : Singleton<PlayManager> {
                     // print("starting selection");
                     if (BoardManager.Instance.IsEntitySelectable(this.clickedEntity, isDraggedUp)) {
                         // TODO: set selectedSet here
+                        this.selectedSet = BoardManager.Instance.GetSelectSet(this.clickedEntity, isDraggedUp);
                         foreach(EntityBase entityBase in BoardManager.Instance.GetConnectedTree(this.clickedEntity, isDraggedUp)) {
                             entityBase.entityView.TempHighlight(highlightColor);
                         }

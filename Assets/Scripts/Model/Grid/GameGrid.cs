@@ -34,6 +34,15 @@ public class GameGrid {
     }
 
     public EntityBase GetEntityAtPos(Vector2Int aPos) {
-        return gridDict[aPos].entityBase;
+        if (IsPosInGrid(aPos)) {
+            return gridDict[aPos].entityBase;
+        } else {
+            return null;
+        }
+        
+    }
+
+    public bool IsPosInGrid(Vector2Int aPos) {
+        return Util.IsInside(aPos, Vector2Int.zero, this.size);
     }
 }

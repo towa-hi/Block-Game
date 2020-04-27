@@ -12,7 +12,7 @@ public class EntityBase : SerializedMonoBehaviour {
     public Vector2Int size;
     public EntityTypeEnum type;
     public bool isFixed;
-    public List<IComponent> components;
+    public HashSet<IComponent> iComponentSet;
     // TODO: this should be removed later
     public EntityData initialEntityData;
     // set by editor
@@ -24,13 +24,14 @@ public class EntityBase : SerializedMonoBehaviour {
         this.size = aEntityData.entitySchema.size;
         this.type = aEntityData.entitySchema.type;
         this.isFixed = aEntityData.isFixed;
+        this.iComponentSet = new HashSet<IComponent>();
         this.name = this.type.ToString();
         // remove this later
         this.initialEntityData = aEntityData;
         entityView.Init(aEntityData);
 
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
-            components.Add(iComponent);
+            iComponentSet.Add(iComponent);
             iComponent.Init();
         }
     }
@@ -47,7 +48,7 @@ public class EntityBase : SerializedMonoBehaviour {
     }
 
     public IComponent GetCachedIComponent<T>() {
-        foreach (IComponent iComponent in this.components) {
+        foreach (IComponent iComponent in this.iComponentSet) {
             if (iComponent.GetType() == typeof(T)) {
                 return iComponent;
             }

@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 // data that defines a level is an instance of this in the Data/Levels folder
-[CreateAssetMenu(fileName = "Data/Levels", menuName = "ScriptableObjects/LevelSchema", order = 1)]
+[CreateAssetMenu(fileName = "Resources/ScriptableObjects/Levels", menuName = "ScriptableObjects/LevelSchema", order = 1)]
 public class LevelSchema : SerializedScriptableObject {
     // set by editor or ingame editor
     public string title;

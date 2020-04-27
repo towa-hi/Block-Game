@@ -37,7 +37,7 @@ public class BoardManager : Singleton<BoardManager> {
     }
 
     public EntityBase GetClickedEntity() {
-        return levelGrid.gridDict[Util.V3ToV2I(InputManager.Instance.mousePos)].entityBase;
+        return levelGrid.GetEntityAtPos(Util.V3ToV2I(InputManager.Instance.mousePos));
     }
 
     // check if this entity can be selected and isnt blocked by fixed entities somewhere
@@ -53,6 +53,13 @@ public class BoardManager : Singleton<BoardManager> {
         return true;
     }
 
+    public HashSet<EntityBase> GetSelectSet(EntityBase aRoot, bool aIsUp) {
+        HashSet<EntityBase> selectSet = new HashSet<EntityBase>();
+        HashSet<EntityBase> mainTree = GetConnectedTree(aRoot, aIsUp);
+        return selectSet;
+    }
+
+    
     // get a set of entities that are connected to the root entity by up/down nodes
     public HashSet<EntityBase> GetConnected(EntityBase aRoot, bool aIsUp) {
         // check if root entity has INodal
