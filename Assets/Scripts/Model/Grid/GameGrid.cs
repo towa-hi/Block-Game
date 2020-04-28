@@ -45,4 +45,21 @@ public class GameGrid {
     public bool IsPosInGrid(Vector2Int aPos) {
         return Util.IsInside(aPos, Vector2Int.zero, this.size);
     }
+
+    public bool IsRectInGrid(Vector2Int aPos, Vector2Int aSize) {
+        return Util.IsRectInside(aPos, aSize, Vector2Int.zero, this.size);
+    }
+    public bool HasEntitiesBetweenPos(Vector2Int aPos, Vector2Int aSize) {
+        for (int x = aPos.x; x < aPos.x + aSize.x; x++) {
+            for (int y = aPos.y; y < aPos.y + aSize.y; y++) {
+                Vector2Int currentPos = new Vector2Int(x, y);
+                if (IsPosInGrid(currentPos)) {
+                    if (GetEntityAtPos(currentPos)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

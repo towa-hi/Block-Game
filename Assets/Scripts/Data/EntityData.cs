@@ -4,9 +4,17 @@ using UnityEngine;
 // represents the initial state of the entity
 public class EntityData {
     // set from levelSchema editor or ingame editor
+    public EntitySchema entitySchema;
     public Vector2Int pos;
     public Vector2Int facing;
-    public EntitySchema entitySchema;
     public Color color;
     public bool isFixed;
+
+    public EntityData( EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false) {
+        this.entitySchema = aEntitySchema;
+        this.pos = aPos;
+        this.facing = aFacing;
+        this.color = aColor;
+        this.isFixed =aIsFixed;
+    }
 }

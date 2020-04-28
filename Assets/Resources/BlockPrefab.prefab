@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &3920784608396297164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6104724258390018009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb8bb88da6c7961428e3c3d04021d1ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: upNodes
+      Entry: 6
+      Data: 
+    - Name: downNodes
+      Entry: 6
+      Data: 
+  entityBase: {fileID: 3064842466822843081}
+  studMaster: {fileID: 600843947742510571, guid: 297fb8b2a0f255c4091a49aa1b453a04,
+    type: 3}
 --- !u!65 &3162356589982590419
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -60,28 +90,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &3920784608396297164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6104724258390018009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8bb88da6c7961428e3c3d04021d1ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d0107000000750070004e006f006400650073002d010900000064006f0077006e004e006f00640065007300
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  entityBase: {fileID: 3064842466822843081}
 --- !u!1001 &8746673057074742613
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -157,18 +165,19 @@ PrefabInstance:
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedBytes.Array.size
-      value: 66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializationNodes.Array.size
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
+        type: 3}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: components.Array.data[0]
@@ -177,7 +186,7 @@ PrefabInstance:
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedFormat
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
@@ -348,11 +357,12 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
+        type: 3}
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedFormat
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7552f875f79a0e408b9e65bee1fa219, type: 3}

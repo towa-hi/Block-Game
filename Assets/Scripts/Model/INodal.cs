@@ -8,15 +8,36 @@ public class INodal : IComponent {
     // set by init
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
+    // set by editor
+    public GameObject studMaster;
 
-    public override void Init() {
+    void Awake() {
         this.upNodes = new HashSet<Vector2Int>();
         this.downNodes = new HashSet<Vector2Int>();
+    }
+    public override void Init() {
         GenerateNodes();
     }
 
     public override void DoFrame() {
         
+    }
+
+    public override void OnEntityViewInit(EntityView aEntityView) {
+        foreach (Vector2Int upNode in this.upNodes) {
+            Vector2Int currentPos = this.entityBase.pos + upNode;
+            Vector3 currentPosV3 = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
+            float studX = currentPosV3.x;
+            float studY = currentPosV3.y + 0.75f;
+            float studZ = 0.5f;
+
+            GameObject studBack = Instantiate(this.studMaster, new Vector3(studX, studY, studZ), Quaternion.identity);
+            studBack.transform.SetParent(aEntityView.transform, true);
+            studBack.GetComponent<Renderer>().material.color = aEntityView.defaultColor;
+            GameObject studFront = Instantiate(this.studMaster, new Vector3(studX, studY, studZ * -1), Quaternion.identity);
+            studFront.transform.SetParent(aEntityView.transform, true);
+            studFront.GetComponent<Renderer>().material.color = aEntityView.defaultColor;
+        }
     }
 
     public void GenerateNodes() {
@@ -78,21 +99,21 @@ public class INodal : IComponent {
     }
     
     void OnDrawGizmos() {
-        // draw upNodes
-        Vector3 zOffset = new Vector3(0, 0, -1.01f);
-        Gizmos.color = Color.red;
-        foreach (Vector2Int upNode in this.upNodes) {
-            Vector2Int currentPos = this.entityBase.pos + upNode;
-            Vector3 arrowOrigin = Util.V2IOffsetV3(new Vector2Int(1, 1) ,currentPos) + zOffset;
-            DrawArrow.Instance.ForGizmo(arrowOrigin, new Vector3(0, 0.5f, 0));
+        if (this.upNodes != null && this.downNodes != null) {
+            Vector3 zOffset = new Vector3(0, 0, -1.01f);
+            Gizmos.color = Color.red;
+            foreach (Vector2Int upNode in this.upNodes) {
+                Vector2Int currentPos = this.entityBase.pos + upNode;
+                Vector3 arrowOrigin = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1)) + zOffset;
+                DrawArrow.Instance.ForGizmo(arrowOrigin, new Vector3(0, 0.5f, 0));
+            }
+            Gizmos.color = Color.blue;
+            foreach (Vector2Int downNode in this.downNodes) {
+                Vector2Int currentPos = this.entityBase.pos + downNode;
+                Vector3 arrowOrigin = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1)) + zOffset;
+                DrawArrow.Instance.ForGizmo(arrowOrigin, new Vector3(0, -0.5f, 0));
+            }
         }
-        Gizmos.color = Color.blue;
-        foreach (Vector2Int downNode in this.downNodes) {
-            Vector2Int currentPos = this.entityBase.pos + downNode;
-            Vector3 arrowOrigin = Util.V2IOffsetV3(new Vector2Int(1, 1) ,currentPos) + zOffset;
-            DrawArrow.Instance.ForGizmo(arrowOrigin, new Vector3(0, -0.5f, 0));
-        }
-        // draw downNodes
-        
     }
+
 }

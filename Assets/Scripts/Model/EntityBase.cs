@@ -28,12 +28,12 @@ public class EntityBase : SerializedMonoBehaviour {
         this.name = this.type.ToString();
         // remove this later
         this.initialEntityData = aEntityData;
-        entityView.Init(aEntityData);
-
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
             iComponentSet.Add(iComponent);
             iComponent.Init();
         }
+        
+        entityView.Init(aEntityData);
     }
 
     public List<Vector2Int> GetOccupiedPos() {

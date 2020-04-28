@@ -36,5 +36,4 @@ public class GameCell {
         this.panelColor = aColor;
         cellViewBase.SetColor();
     }
-    
 }

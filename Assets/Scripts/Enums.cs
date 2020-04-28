@@ -1,4 +1,10 @@
 ﻿// mysterious enum dumping ground
+
+public enum EditModeEnum {
+    PLACEENTITY,
+    EDITENTITY,
+    DELETEENTITY
+}
 public enum EntityTypeEnum {
     BLOCK,
     MOB,
@@ -27,6 +33,14 @@ public enum MouseStateEnum {
     CLICKED,
     HELD,
     RELEASED,
+}
+
+public enum PlacementStateEnum {
+    DEFAULT,
+    CLICKED,
+    HELD,
+    UNCLICKED,
+    CANCELLED,
 }
 
 public enum SelectionStateEnum {

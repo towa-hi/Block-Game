@@ -8,11 +8,11 @@ using Sirenix.OdinInspector;
 public class EntityView : SerializedMonoBehaviour {
     // set by init
     public Renderer myRenderer;
-    // set by editor
-    public EntityBase entityBase;
+    public Renderer[] childRenderers;
     public Color defaultColor;
-
     private Coroutine colorFadeCoroutine;
+    // set by prefab
+    public EntityBase entityBase;
     
     public void Init(EntityData aEntityData) {
         this.myRenderer = GetComponent<Renderer>();
@@ -26,6 +26,13 @@ public class EntityView : SerializedMonoBehaviour {
                 this.transform.localScale = new Vector3(2, 2, 2);
                 break;
         }
+        // init every iComponent in case it's got entityView stuff
+        foreach (IComponent iComponent in this.entityBase.iComponentSet) {
+            iComponent.OnEntityViewInit(this);
+        }
+        // cache any renderer components in children after they've been made in OnEntityViewInit
+        this.childRenderers = GetComponentsInChildren<Renderer>();
+
         this.defaultColor = aEntityData.color;
         SetColor(this.defaultColor);
     }
@@ -33,7 +40,11 @@ public class EntityView : SerializedMonoBehaviour {
     // sets color of entity material without changing defaultColor
     public void SetColor(Color aColor) {
         this.myRenderer.material.color = aColor;
+        foreach (Renderer childRenderer in this.childRenderers) {
+            childRenderer.material.color = aColor;
+        }
     }
+
 
     // temporarily highlights the entity and then have it fade away
     // does not change defaultColor
@@ -55,7 +66,7 @@ public class EntityView : SerializedMonoBehaviour {
         float t = 0f;
         while (t < 1) {
             t += Time.deltaTime / aDuration;
-            this.myRenderer.material.color = Color.Lerp(currentColor, this.defaultColor, t);
+            SetColor(Color.Lerp(currentColor, this.defaultColor, t));
             yield return null;
         }
     }

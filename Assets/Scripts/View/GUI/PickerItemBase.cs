@@ -12,10 +12,15 @@ public class PickerItemBase : SerializedMonoBehaviour {
     public void Init(EntitySchema aEntitySchema) {
         this.entitySchema = aEntitySchema;
         this.text.text = GenPickerItemText(this.entitySchema);
+
     }
 
     string GenPickerItemText(EntitySchema aEntitySchema) {
         return aEntitySchema.name;
+    }
+
+    public void OnClick() {
+        EditManager.Instance.OnPickerItemSelect(this.entitySchema);
     }
 
 }

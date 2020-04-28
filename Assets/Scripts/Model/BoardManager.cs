@@ -24,20 +24,24 @@ public class BoardManager : Singleton<BoardManager> {
         this.levelGrid = new GameGrid(aLevelData.levelSchema.size);
         this.gridView.Init(this.levelGrid);
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
-            this.entityList.Add(ConstructEntity(entityData));
+            this.entityList.Add(CreateEntity(entityData));
         }
     }
 
-    EntityBase ConstructEntity(EntityData aEntityData) {
-        GameObject newEntityPrefab = Instantiate(aEntityData.entitySchema.entityObject, Util.V2IOffsetV3(aEntityData.entitySchema.size, aEntityData.pos), Quaternion.identity, this.transform);
+    public EntityBase CreateEntity(EntityData aEntityData) {
+        GameObject newEntityPrefab = Instantiate(aEntityData.entitySchema.entityObject, Util.V2IOffsetV3(aEntityData.pos, aEntityData.entitySchema.size), Quaternion.identity, this.transform);
         EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
         newEntityBase.Init(aEntityData);
         this.levelGrid.RegisterEntity(newEntityBase);
         return newEntityBase;
     }
 
-    public EntityBase GetClickedEntity() {
-        return levelGrid.GetEntityAtPos(Util.V3ToV2I(InputManager.Instance.mousePos));
+    EntityData CreateEntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false) {
+        return new EntityData(aEntitySchema, aPos, aFacing, aColor, aIsFixed);
+    }
+
+    public EntityBase GetHoveredEntity() {
+        return levelGrid.GetEntityAtPos(InputManager.Instance.mousePosV2);
     }
 
     // check if this entity can be selected and isnt blocked by fixed entities somewhere
@@ -54,8 +58,11 @@ public class BoardManager : Singleton<BoardManager> {
     }
 
     public HashSet<EntityBase> GetSelectSet(EntityBase aRoot, bool aIsUp) {
+        print("Getting select set");
         HashSet<EntityBase> selectSet = new HashSet<EntityBase>();
         HashSet<EntityBase> mainTree = GetConnectedTree(aRoot, aIsUp);
+        selectSet.UnionWith(mainTree);
+        print("returned hashset" + selectSet.Count);
         return selectSet;
     }
 
@@ -117,5 +124,6 @@ public class BoardManager : Singleton<BoardManager> {
             throw new System.Exception("root entity doesn't have an INodal");
         }
     }
+    
     
 }

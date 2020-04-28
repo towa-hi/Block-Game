@@ -20,4 +20,12 @@ public class CellViewBase: SerializedMonoBehaviour {
     public void SetColor() {
         this.panelRenderer.material.color = this.gameCell.panelColor;
     }
+
+    void OnDrawGizmos() {
+        Gizmos.color = Color.white;
+        if (this.gameCell.entityBase) {
+            Gizmos.color = Color.green;
+        }
+        Gizmos.DrawSphere(transform.position + new Vector3(0, 0, -1f), 0.1f);
+    }
 }

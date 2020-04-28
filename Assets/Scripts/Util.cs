@@ -11,7 +11,7 @@ public class Util {
     }
 
     // convert a Vector2Int position to corresponding Vector3 position with offset for block size
-    public static Vector3 V2IOffsetV3(Vector2Int aSize, Vector2Int aPos) {
+    public static Vector3 V2IOffsetV3(Vector2Int aPos, Vector2Int aSize) {
         float newX = (float)aPos.x + (float)aSize.x/2;
         float newY = ((float)aPos.y + (float)aSize.y/2) * (float)Constants.BLOCKHEIGHT;
         return new Vector3(newX, newY, 0);
@@ -28,6 +28,11 @@ public class Util {
         return boundingBox.Contains(aPos);
     }
 
+    public static bool IsRectInside(Vector2Int aRectPos, Vector2Int aRectSize, Vector2Int aBoundPos, Vector2Int aBoundSize) {
+        Rect rect = new Rect(aRectPos, aRectSize);
+        Rect boundingBox = new Rect(aBoundPos, aBoundSize);
+        return boundingBox.Overlaps(rect);
+    }
     // helper for node stuff to turn bools into vectors
     public static Vector2Int UpOrDown(bool aIsUp) {
         if (aIsUp) {
@@ -36,4 +41,20 @@ public class Util {
             return  Vector2Int.down;
         }
     }
+
+    public static void SetLayerRecursively(GameObject aGameObject, int aLayer) {
+        if (aGameObject == null) {
+            return;
+        } else {
+            aGameObject.layer = aLayer;
+
+            foreach (Transform child in aGameObject.transform) {
+                if (child == null) {
+                    continue;
+                }
+                SetLayerRecursively(child.gameObject, aLayer);
+            }
+        }
+    }
+    
 }

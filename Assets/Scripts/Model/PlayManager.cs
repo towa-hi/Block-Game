@@ -26,7 +26,7 @@ public class PlayManager : Singleton<PlayManager> {
             case MouseStateEnum.DEFAULT:
                 break;
             case MouseStateEnum.CLICKED:
-                this.clickedEntity = BoardManager.Instance.GetClickedEntity();
+                this.clickedEntity = BoardManager.Instance.GetHoveredEntity();
                 break;
             case MouseStateEnum.HELD:
                 switch (this.selectionState) {
@@ -38,7 +38,6 @@ public class PlayManager : Singleton<PlayManager> {
                 }
                 break;
             case MouseStateEnum.RELEASED:
-                this.clickedEntity = null;
                 switch (this.selectionState) {
                     case SelectionStateEnum.UNSELECTED:
                         break;
@@ -46,18 +45,16 @@ public class PlayManager : Singleton<PlayManager> {
                         foreach (EntityBase entityBase in this.selectedSet) {
                             // register new position for each 
                         }
-                        this.selectedSet.Clear();
-                        this.selectionState = SelectionStateEnum.UNSELECTED;
-                        
                         break;
                     case SelectionStateEnum.INVALID:
                         foreach (EntityBase entityBase in this.selectedSet) {
                             // smooth move back to original pos
                         }
-                        this.selectedSet.Clear();
-                        this.selectionState = SelectionStateEnum.UNSELECTED;
                         break;
                 }
+                this.clickedEntity = null;
+                this.selectedSet.Clear();
+                this.selectionState = SelectionStateEnum.UNSELECTED;
                 break;
         }
 
@@ -108,7 +105,7 @@ public class PlayManager : Singleton<PlayManager> {
                     if (BoardManager.Instance.IsEntitySelectable(this.clickedEntity, isDraggedUp)) {
                         // TODO: set selectedSet here
                         this.selectedSet = BoardManager.Instance.GetSelectSet(this.clickedEntity, isDraggedUp);
-                        foreach(EntityBase entityBase in BoardManager.Instance.GetConnectedTree(this.clickedEntity, isDraggedUp)) {
+                        foreach(EntityBase entityBase in this.selectedSet) {
                             entityBase.entityView.TempHighlight(highlightColor);
                         }
                         this.selectionState = SelectionStateEnum.SELECTED;

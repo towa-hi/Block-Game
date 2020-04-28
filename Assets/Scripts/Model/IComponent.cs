@@ -10,4 +10,7 @@ public abstract class IComponent : SerializedMonoBehaviour {
     public abstract void Init();
 
     public abstract void DoFrame();
+
+    // only called from entityViewInit used to add extra stuff to EntityView
+    public abstract void OnEntityViewInit(EntityView aEntityView);
 }
