@@ -12,6 +12,7 @@ public class EditManager : Singleton<EditManager> {
     public PreviewCubeBase previewCubeBase;
     public InfoPanelBase infoPanelBase;
     public EntityBase hoveredEntity;
+    public EntityBase editClickedEntity;
     void Awake() {
         this.editMode = EditModeEnum.EDITENTITY;
         this.placementState = PlacementStateEnum.DEFAULT;
@@ -25,9 +26,20 @@ public class EditManager : Singleton<EditManager> {
                 break;
             case EditModeEnum.EDITENTITY:
                 EntityBase newHoveredEntity = BoardManager.Instance.GetHoveredEntity();
-                if (this.hoveredEntity != newHoveredEntity) {
-                    this.hoveredEntity = newHoveredEntity;
-                    infoPanelBase.SetEntity(this.hoveredEntity);
+                // if (this.hoveredEntity != newHoveredEntity) {
+                //     this.hoveredEntity = newHoveredEntity;
+                //     if (this.editClickedEntity == null) {
+                //         infoPanelBase.SetEntity(this.hoveredEntity);
+                //     }
+                // }
+                switch (InputManager.Instance.mouseState) {
+                    case MouseStateEnum.CLICKED:
+                        this.editClickedEntity = BoardManager.Instance.GetHoveredEntity();
+                        if (this.editClickedEntity != null) {
+                            MovePreviewCubeToEntityPos(this.editClickedEntity);
+                            this.infoPanelBase.SetEntity(this.editClickedEntity);
+                        }
+                        break;
                 }
                 break;
             case EditModeEnum.DELETEENTITY:
@@ -77,7 +89,12 @@ public class EditManager : Singleton<EditManager> {
         this.previewSchema = aEntitySchema;
     }
 
-
+    public void MovePreviewCubeToEntityPos(EntityBase aEntityBase) {
+        this.previewCubeBase.SetSize(aEntityBase.size);
+        this.previewCubeBase.SetPos(aEntityBase.pos);
+        this.previewCubeBase.SetColor(Color.white);
+        this.previewCubeBase.SetActive(true);
+    }
     public void MovePreviewCubeToMousePos() {
         this.previewCubeBase.transform.position = Util.V2IOffsetV3(InputManager.Instance.mousePosV2, this.previewSchema.size);
     }

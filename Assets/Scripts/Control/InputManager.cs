@@ -36,14 +36,13 @@ public class InputManager : Singleton<InputManager> {
                 this.mouseState = MouseStateEnum.CLICKED;
                 break;
             case InputActionPhase.Canceled:
-                print("released"); 
                 this.mouseState = MouseStateEnum.RELEASED;
                 break;
         }
     }
 
     void Update() {
-        
+
         if (this.mouseIsHeldDownOneFrame) {
             this.mouseIsHeldDownOneFrame = false;
             this.mouseState = MouseStateEnum.HELD;
