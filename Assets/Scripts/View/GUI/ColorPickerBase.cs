@@ -6,12 +6,13 @@ using Sirenix.OdinInspector;
 
 public class ColorPickerBase : SerializedMonoBehaviour {
     Color[] colorArray;
-    public InfoPanelBase infoPanelBase;
+    // set in editor
+    public EditModePanelBase editModePanelBase;
     void Awake() {
         
     }
 
     public void OnColorButtonClick(Image aImage) {
-        infoPanelBase.entityBase.entityView.SetColor(aImage.color);
+        editModePanelBase.OnColorButtonClick(aImage.color);
     }
 }

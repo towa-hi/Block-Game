@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 // manages ingame input
 public class InputManager : Singleton<InputManager> {
@@ -15,8 +16,8 @@ public class InputManager : Singleton<InputManager> {
     public Vector3 dragOffset;
     public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
-    bool mouseIsHeldDownOneFrame;
-    bool mouseIsReleasedOneFrame;
+    public bool mouseIsHeldDownOneFrame;
+    public bool mouseIsReleasedOneFrame;
 
     void Awake() {
         this.controls = new Controls();
@@ -33,7 +34,9 @@ public class InputManager : Singleton<InputManager> {
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
-                this.mouseState = MouseStateEnum.CLICKED;
+                if (!EventSystem.current.IsPointerOverGameObject()) {
+                    this.mouseState = MouseStateEnum.CLICKED;
+                }
                 break;
             case InputActionPhase.Canceled:
                 this.mouseState = MouseStateEnum.RELEASED;

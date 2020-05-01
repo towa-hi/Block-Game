@@ -20,7 +20,7 @@ public class PickerItemBase : SerializedMonoBehaviour {
     }
 
     public void OnClick() {
-        EditManager.Instance.OnPickerItemSelect(this.entitySchema);
+        EditManager.Instance.OnPickerModeItemClick(this.entitySchema);
     }
 
 }

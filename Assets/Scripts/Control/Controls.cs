@@ -33,6 +33,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""RightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""a997b3a8-dbfb-46f1-8f0f-a8c2203ef948"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -57,6 +65,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Point"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3980081e-e6bd-4efc-8abc-4bc7b0cb5fbe"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -67,6 +86,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Board = asset.FindActionMap("Board", throwIfNotFound: true);
         m_Board_Click = m_Board.FindAction("Click", throwIfNotFound: true);
         m_Board_Point = m_Board.FindAction("Point", throwIfNotFound: true);
+        m_Board_RightClick = m_Board.FindAction("RightClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -118,12 +138,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private IBoardActions m_BoardActionsCallbackInterface;
     private readonly InputAction m_Board_Click;
     private readonly InputAction m_Board_Point;
+    private readonly InputAction m_Board_RightClick;
     public struct BoardActions
     {
         private @Controls m_Wrapper;
         public BoardActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Click => m_Wrapper.m_Board_Click;
         public InputAction @Point => m_Wrapper.m_Board_Point;
+        public InputAction @RightClick => m_Wrapper.m_Board_RightClick;
         public InputActionMap Get() { return m_Wrapper.m_Board; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -139,6 +161,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Point.started -= m_Wrapper.m_BoardActionsCallbackInterface.OnPoint;
                 @Point.performed -= m_Wrapper.m_BoardActionsCallbackInterface.OnPoint;
                 @Point.canceled -= m_Wrapper.m_BoardActionsCallbackInterface.OnPoint;
+                @RightClick.started -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
+                @RightClick.performed -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
+                @RightClick.canceled -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
             }
             m_Wrapper.m_BoardActionsCallbackInterface = instance;
             if (instance != null)
@@ -149,6 +174,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
+                @RightClick.started += instance.OnRightClick;
+                @RightClick.performed += instance.OnRightClick;
+                @RightClick.canceled += instance.OnRightClick;
             }
         }
     }
@@ -157,5 +185,6 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnClick(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
+        void OnRightClick(InputAction.CallbackContext context);
     }
 }

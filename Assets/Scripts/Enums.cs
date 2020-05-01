@@ -1,9 +1,9 @@
 ﻿// mysterious enum dumping ground
 
 public enum EditModeEnum {
-    PLACEENTITY,
-    EDITENTITY,
-    DELETEENTITY
+    PICKER,
+    EDIT,
+    OPTIONS
 }
 public enum EntityTypeEnum {
     BLOCK,

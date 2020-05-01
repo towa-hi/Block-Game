@@ -9,12 +9,13 @@ public class EntityData {
     public Vector2Int facing;
     public Color color;
     public bool isFixed;
-
-    public EntityData( EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false) {
+    public bool isBoundary;
+    public EntityData( EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false, bool aIsBoundary = false) {
         this.entitySchema = aEntitySchema;
         this.pos = aPos;
         this.facing = aFacing;
         this.color = aColor;
-        this.isFixed =aIsFixed;
+        this.isFixed = aIsFixed;
+        this.isBoundary = aIsBoundary;
     }
 }

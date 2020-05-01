@@ -12,6 +12,7 @@ public class EntityBase : SerializedMonoBehaviour {
     public Vector2Int size;
     public EntityTypeEnum type;
     public bool isFixed;
+    public bool isBoundary;
     public HashSet<IComponent> iComponentSet;
     // TODO: this should be removed later
     public EntityData initialEntityData;
@@ -24,8 +25,9 @@ public class EntityBase : SerializedMonoBehaviour {
         this.size = aEntityData.entitySchema.size;
         this.type = aEntityData.entitySchema.type;
         this.isFixed = aEntityData.isFixed;
+        this.isBoundary = aEntityData.isBoundary;
         this.iComponentSet = new HashSet<IComponent>();
-        this.name = this.type.ToString();
+        this.name = this.type.ToString() + " " + this.size;
         // remove this later
         this.initialEntityData = aEntityData;
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {

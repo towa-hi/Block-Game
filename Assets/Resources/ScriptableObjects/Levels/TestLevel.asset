@@ -36,6 +36,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 1|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 0
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -60,28 +63,28 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 0
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: true
+    - Name: isBoundary
       Entry: 5
       Data: true
     - Name: 
@@ -90,6 +93,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 2|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 1
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -114,28 +120,28 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 1
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: true
+    - Name: isBoundary
       Entry: 5
       Data: true
     - Name: 
@@ -144,6 +150,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 3|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 0
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -168,28 +177,28 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 0
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: true
+    - Name: isBoundary
       Entry: 5
       Data: true
     - Name: 
@@ -198,6 +207,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 4|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 1
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -222,28 +234,28 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 1
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0.5372549
+      Data: 0.5019608
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: true
+    - Name: isBoundary
       Entry: 5
       Data: true
     - Name: 
@@ -252,6 +264,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 5|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 2
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -276,9 +291,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 2
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -293,11 +305,14 @@ MonoBehaviour:
       Data: 0.222588092
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -306,6 +321,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 6|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 3
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -330,9 +348,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 3
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -347,11 +362,14 @@ MonoBehaviour:
       Data: 0.136569947
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -360,6 +378,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 7|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 4
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -384,9 +405,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 4
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -401,11 +419,14 @@ MonoBehaviour:
       Data: 0.366678566
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -414,6 +435,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 8|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 4
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -438,9 +462,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 4
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -455,11 +476,14 @@ MonoBehaviour:
       Data: 0.3484336
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -468,6 +492,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 9|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 4
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -492,9 +519,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 4
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -509,11 +533,14 @@ MonoBehaviour:
       Data: 0.754717
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -522,6 +549,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 10|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 3
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -546,9 +576,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 3
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -563,11 +590,14 @@ MonoBehaviour:
       Data: 0.695263743
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -576,6 +606,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 11|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 5
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -600,9 +633,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 5
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -617,11 +647,14 @@ MonoBehaviour:
       Data: 0.3503026
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -630,6 +663,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 12|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 3
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -654,9 +690,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 3
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -671,11 +704,14 @@ MonoBehaviour:
       Data: 0.556959748
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -684,6 +720,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 13|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 3
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -708,9 +747,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 3
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -725,19 +761,25 @@ MonoBehaviour:
       Data: 0.5372549
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
       Entry: 5
       Data: true
+    - Name: isBoundary
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
       Data: 14|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 4
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -762,9 +804,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 4
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -779,11 +818,14 @@ MonoBehaviour:
       Data: 0.490566015
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -792,6 +834,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 15|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 5
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -816,9 +861,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 5
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -833,11 +875,14 @@ MonoBehaviour:
       Data: 0.8207547
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -846,6 +891,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 16|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 3
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -870,9 +918,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 3
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -887,11 +932,14 @@ MonoBehaviour:
       Data: 0.562566757
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 
@@ -900,6 +948,9 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 17|EntityData, Assembly-CSharp
+    - Name: entitySchema
+      Entry: 10
+      Data: 4
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -924,9 +975,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: entitySchema
-      Entry: 10
-      Data: 4
     - Name: color
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
@@ -941,11 +989,14 @@ MonoBehaviour:
       Data: 0.433472782
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: isBoundary
       Entry: 5
       Data: false
     - Name: 

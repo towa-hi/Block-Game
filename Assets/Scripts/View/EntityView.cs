@@ -13,7 +13,8 @@ public class EntityView : SerializedMonoBehaviour {
     private Coroutine colorFadeCoroutine;
     // set by prefab
     public EntityBase entityBase;
-    
+    public bool isGhost;
+
     public void Init(EntityData aEntityData) {
         this.myRenderer = GetComponent<Renderer>();
         // do any special accomidations to the entity depending on type. mainly to adjust BLOCK size
@@ -68,6 +69,20 @@ public class EntityView : SerializedMonoBehaviour {
             t += Time.deltaTime / aDuration;
             SetColor(Color.Lerp(currentColor, this.defaultColor, t));
             yield return null;
+        }
+    }
+
+    public void SetGhost(bool aIsGhost) {
+        this.isGhost = aIsGhost;
+        Color currentColor = this.myRenderer.material.color;
+        if (this.isGhost) {
+            currentColor.a = 0.5f;
+        } else {
+            currentColor.a = 1f;
+        }
+        this.myRenderer.material.color = currentColor;
+        foreach(Renderer renderer in this.childRenderers) {
+            renderer.material.color = currentColor;
         }
     }
 }

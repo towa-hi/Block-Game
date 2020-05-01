@@ -4,99 +4,131 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class EditManager : Singleton<EditManager> {
+
+
+    public EditModeEnum editMode;
+
+    // during PICKER mode
     public EntitySchema previewSchema;
     public bool isPlacementAtMousePosValid;
-    public EditModeEnum editMode;
-    public PlacementStateEnum placementState;
+    public EntityBase pickerModeClickedEntity;
+    // during EDIT mode
+    public EntityBase editModeClickedEntity;
+    // during OPTIONS mode
+
+
     // set by editor
     public PreviewCubeBase previewCubeBase;
-    public InfoPanelBase infoPanelBase;
-    public EntityBase hoveredEntity;
-    public EntityBase editClickedEntity;
+    public EditModePanelBase editModePanelBase;
+    
     void Awake() {
-        this.editMode = EditModeEnum.EDITENTITY;
-        this.placementState = PlacementStateEnum.DEFAULT;
+        this.editMode = EditModeEnum.PICKER;
         this.previewSchema = null;
     }
 
     void Update() {
         switch (this.editMode) {
-            case EditModeEnum.PLACEENTITY:
-                PlaceEntityUpdate();
+            case EditModeEnum.PICKER:
+                PickerModeUpdate();
                 break;
-            case EditModeEnum.EDITENTITY:
-                EntityBase newHoveredEntity = BoardManager.Instance.GetHoveredEntity();
-                // if (this.hoveredEntity != newHoveredEntity) {
-                //     this.hoveredEntity = newHoveredEntity;
-                //     if (this.editClickedEntity == null) {
-                //         infoPanelBase.SetEntity(this.hoveredEntity);
-                //     }
-                // }
-                switch (InputManager.Instance.mouseState) {
-                    case MouseStateEnum.CLICKED:
-                        this.editClickedEntity = BoardManager.Instance.GetHoveredEntity();
-                        if (this.editClickedEntity != null) {
-                            MovePreviewCubeToEntityPos(this.editClickedEntity);
-                            this.infoPanelBase.SetEntity(this.editClickedEntity);
-                        }
-                        break;
-                }
+            case EditModeEnum.EDIT:
+                EditModeUpdate();
                 break;
-            case EditModeEnum.DELETEENTITY:
+            case EditModeEnum.OPTIONS:
                 break;
         }
 
     
     }
 
-
-    void PlaceEntityUpdate() {
-        switch (this.placementState) {
-            case PlacementStateEnum.DEFAULT:
-                break;
-            case PlacementStateEnum.CLICKED:
-            print("CLICKED");
-                this.previewCubeBase.SetSize(this.previewSchema.size);
-                this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
-                this.previewCubeBase.SetActive(true);
-                this.placementState = PlacementStateEnum.HELD;
-                break;
-            case PlacementStateEnum.HELD:
-                this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
-                this.isPlacementAtMousePosValid = IsPlacementAtMousePosValid();
-                if (isPlacementAtMousePosValid) {
-                    this.previewCubeBase.SetColor(Color.green);
-                    if (InputManager.Instance.mouseState == MouseStateEnum.CLICKED) {
-                        PlacePreview();
-                        this.placementState = PlacementStateEnum.UNCLICKED;
-                    }
+    void EditModeUpdate() {
+        switch (InputManager.Instance.mouseState) {
+            case MouseStateEnum.CLICKED:
+                this.editModeClickedEntity = BoardManager.Instance.GetHoveredEntity();
+                if (this.editModeClickedEntity != null) {
+                    this.previewCubeBase.SetColor(Color.white);
+                    this.previewCubeBase.SetSize(this.editModeClickedEntity.size);
+                    this.previewCubeBase.SetPos(this.editModeClickedEntity.pos);
+                    this.previewCubeBase.SetActive(true);
                 } else {
-                    this.previewCubeBase.SetColor(Color.red);
+                    this.previewCubeBase.SetActive(false);
                 }
-                
-                break;
-            case PlacementStateEnum.UNCLICKED:
-                this.previewCubeBase.SetActive(false);
-                this.previewSchema = null;
-                this.placementState = PlacementStateEnum.DEFAULT;
+                this.editModePanelBase.SetEntity(this.editModeClickedEntity);
                 break;
         }
     }
 
+    void PickerModeUpdate() {
+        if (this.previewSchema != null) {
+            PickerPlaceUpdate();
+        } else {
+            PickerMoveUpdate();
+        }
+    }
 
-    public void OnPickerItemSelect(EntitySchema aEntitySchema) {
-        this.placementState = PlacementStateEnum.CLICKED;
+    public void PickerPlaceUpdate() {
+        switch (InputManager.Instance.mouseState) {
+            case MouseStateEnum.CLICKED:
+                if (IsPlacementAtMousePosValid()) {
+                    PlacePreview();
+                    this.previewCubeBase.SetActive(false);
+                    this.previewSchema = null;
+                }
+                break;
+            case MouseStateEnum.HELD:
+                break;
+            case MouseStateEnum.RELEASED:
+                break;
+            case MouseStateEnum.DEFAULT:
+                if (this.previewCubeBase.pos != InputManager.Instance.mousePosV2) {
+                    this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
+                    this.isPlacementAtMousePosValid = IsPlacementAtMousePosValid();
+                    if (this.isPlacementAtMousePosValid) {
+                        this.previewCubeBase.SetColor(Color.green);
+                    } else {
+                        this.previewCubeBase.SetColor(Color.red);
+                    }
+                }
+                break;
+        }
+    }
+
+    public void PickerMoveUpdate() {
+        switch (InputManager.Instance.mouseState) {
+            case MouseStateEnum.CLICKED:
+                this.pickerModeClickedEntity = BoardManager.Instance.GetHoveredEntity();
+                if (this.pickerModeClickedEntity != null) {
+                    this.pickerModeClickedEntity.entityView.SetGhost(true);
+                }
+                break;
+            case MouseStateEnum.HELD:
+                // TODO: make this remember where you clicked the entity
+                this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(InputManager.Instance.mousePosV2, this.pickerModeClickedEntity.size);
+                break;
+            case MouseStateEnum.RELEASED:
+                if (this.pickerModeClickedEntity != null) {
+                    this.pickerModeClickedEntity.entityView.SetGhost(false);
+                    this.pickerModeClickedEntity = null;
+                }
+                break;
+            case MouseStateEnum.DEFAULT:
+                break;
+        }
+    }
+
+    public void OnEditModeFixedToggleClick(bool aIsOn) {
+        this.editModeClickedEntity.isFixed = aIsOn;
+    }
+
+    public void OnEditModeColorPicker(Color aColor) {
+        this.editModeClickedEntity.entityView.SetColor(aColor);
+    }
+
+    public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
         this.previewSchema = aEntitySchema;
-    }
-
-    public void MovePreviewCubeToEntityPos(EntityBase aEntityBase) {
-        this.previewCubeBase.SetSize(aEntityBase.size);
-        this.previewCubeBase.SetPos(aEntityBase.pos);
-        this.previewCubeBase.SetColor(Color.white);
+        this.previewCubeBase.SetSize(this.previewSchema.size);
+        this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
         this.previewCubeBase.SetActive(true);
-    }
-    public void MovePreviewCubeToMousePos() {
-        this.previewCubeBase.transform.position = Util.V2IOffsetV3(InputManager.Instance.mousePosV2, this.previewSchema.size);
     }
 
     bool IsPlacementAtMousePosValid() {
@@ -113,18 +145,10 @@ public class EditManager : Singleton<EditManager> {
         BoardManager.Instance.CreateEntity(entityData);
     }
 
+    
+    public void SetEditMode(EditModeEnum aEditMode) {
+        this.editMode = aEditMode;
+        this.previewCubeBase.SetActive(false);
+    }
 
-    // public void SetPreviewCubeColor(Color aColor) {
-    //     this.previewCube.GetComponent<Renderer>().material
-    // }
-    // public void OnPreviewClick() {
-    //     // if valid location
-    //     print("onpreviewclicked");
-    //     if (this.isPlacementValid) {
-    //         EntityData entityData = new EntityData(this.selectedSchema, Util.V3ToV2I(InputManager.Instance.mousePos), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
-    //         BoardManager.Instance.CreateEntity(entityData);
-    //         this.selectedSchema = null;
-    //         this.previewCube.SetActive(false);
-    //     }
-    // }
 }
