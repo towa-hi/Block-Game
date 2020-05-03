@@ -24,6 +24,7 @@ public class GameCell {
     }
 
     public void RegisterEntity(EntityBase aEntityBase) {
+        Debug.Log(pos + "set to" + aEntityBase);
         this.entityBase = aEntityBase;
     }
 

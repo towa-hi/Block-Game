@@ -26,11 +26,18 @@ public class GameGrid {
     }
 
     // tells all the GameCells that entityBase claims to occupy to set their reference to it
-    // to unregister an entity, just set null as the param
     public void RegisterEntity(EntityBase aEntityBase) {
         foreach (Vector2Int pos in aEntityBase.GetOccupiedPos()) {
             this.gridDict[pos].RegisterEntity(aEntityBase);
         }
+    }
+
+    public void MoveEntity(Vector2Int aPos, EntityBase aEntityBase) {
+        foreach (Vector2Int pos in aEntityBase.GetOccupiedPos()) {
+            this.gridDict[pos].RegisterEntity(null);
+        }
+        aEntityBase.pos = aPos;
+        RegisterEntity(aEntityBase);
     }
 
     public EntityBase GetEntityAtPos(Vector2Int aPos) {
@@ -49,12 +56,12 @@ public class GameGrid {
     public bool IsRectInGrid(Vector2Int aPos, Vector2Int aSize) {
         return Util.IsRectInside(aPos, aSize, Vector2Int.zero, this.size);
     }
-    public bool HasEntitiesBetweenPos(Vector2Int aPos, Vector2Int aSize) {
+    public bool HasEntitiesBetweenPos(Vector2Int aPos, Vector2Int aSize, EntityBase aIgnoreThis = null) {
         for (int x = aPos.x; x < aPos.x + aSize.x; x++) {
             for (int y = aPos.y; y < aPos.y + aSize.y; y++) {
                 Vector2Int currentPos = new Vector2Int(x, y);
                 if (IsPosInGrid(currentPos)) {
-                    if (GetEntityAtPos(currentPos)) {
+                    if (GetEntityAtPos(currentPos) != null && GetEntityAtPos(currentPos) != aIgnoreThis) {
                         return true;
                     }
                 }

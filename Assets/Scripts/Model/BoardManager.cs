@@ -57,6 +57,11 @@ public class BoardManager : Singleton<BoardManager> {
         return true;
     }
 
+    public void MoveEntity(Vector2Int aPos, EntityBase aEntityBase) {
+        print("BoardManager moving entity");
+        this.levelGrid.MoveEntity(aPos, aEntityBase);
+    }
+
     public HashSet<EntityBase> GetSelectSet(EntityBase aRoot, bool aIsUp) {
         print("Getting select set");
         HashSet<EntityBase> selectSet = new HashSet<EntityBase>();

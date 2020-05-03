@@ -12,6 +12,7 @@ public class EditManager : Singleton<EditManager> {
     public EntitySchema previewSchema;
     public bool isPlacementAtMousePosValid;
     public EntityBase pickerModeClickedEntity;
+    public Vector2Int newPos;
     // during EDIT mode
     public EntityBase editModeClickedEntity;
     // during OPTIONS mode
@@ -102,11 +103,21 @@ public class EditManager : Singleton<EditManager> {
                 }
                 break;
             case MouseStateEnum.HELD:
-                // TODO: make this remember where you clicked the entity
-                this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(InputManager.Instance.mousePosV2, this.pickerModeClickedEntity.size);
+                if (this.pickerModeClickedEntity != null) {
+                    newPos = Util.V3ToV2I(InputManager.Instance.dragOffset) + this.pickerModeClickedEntity.pos;
+                    // TODO URGENT FIX BUG CAUSED BY POSITION OF BASE ENTITY BEING WRONG DUE TO ENTITYVIEW MOVING FIRST. DONT CALL ENTITY VIEW DUMBASS
+                    
+                    this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(newPos, this.pickerModeClickedEntity.size);
+                }
                 break;
             case MouseStateEnum.RELEASED:
                 if (this.pickerModeClickedEntity != null) {
+                    print("finalNewPos " + newPos);
+                    if (IsMovementToPosValid(newPos, this.pickerModeClickedEntity)) {
+                        BoardManager.Instance.MoveEntity(newPos, this.pickerModeClickedEntity);
+                    } else {
+                        this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(this.pickerModeClickedEntity.pos, this.pickerModeClickedEntity.size);
+                    }
                     this.pickerModeClickedEntity.entityView.SetGhost(false);
                     this.pickerModeClickedEntity = null;
                 }
@@ -134,6 +145,15 @@ public class EditManager : Singleton<EditManager> {
     bool IsPlacementAtMousePosValid() {
         if (BoardManager.Instance.levelGrid.IsRectInGrid(InputManager.Instance.mousePosV2, this.previewSchema.size)) {
             if (!BoardManager.Instance.levelGrid.HasEntitiesBetweenPos(InputManager.Instance.mousePosV2, this.previewSchema.size)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool IsMovementToPosValid(Vector2Int aPos, EntityBase aEntityBase) {
+        if (BoardManager.Instance.levelGrid.IsRectInGrid(aPos, aEntityBase.size)) {
+            if (!BoardManager.Instance.levelGrid.HasEntitiesBetweenPos(aPos, aEntityBase.size, aEntityBase)) {
                 return true;
             }
         }
