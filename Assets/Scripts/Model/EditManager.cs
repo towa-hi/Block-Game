@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using SimpleFileBrowser;
 
 public class EditManager : Singleton<EditManager> {
 
@@ -195,5 +196,17 @@ public class EditManager : Singleton<EditManager> {
         newSchema.Init(aTitle, Config.USERNAME, aPar, oldLevelData.levelSchema.size, entityDataList);
         this.newLevelSchema = newSchema;
         LevelSaveLoad.SaveLevel(newSchema);
+    }
+
+    public void LoadLevelFileBrowser() {
+        StartCoroutine(ShowLoadDialogCoroutine());
+    }
+
+    IEnumerator ShowLoadDialogCoroutine() {
+        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+        print(FileBrowser.Success + " " + FileBrowser.Result);
+        if (FileBrowser.Success) {
+            string loadedLevelJson = FileBrowserHelpers.ReadTextFromFile(FileBrowser.Result);
+        }
     }
 }

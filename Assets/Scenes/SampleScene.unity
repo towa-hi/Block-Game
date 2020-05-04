@@ -981,7 +981,7 @@ MonoBehaviour:
     - Name: levelGrid
       Entry: 6
       Data: 
-    - Name: levelData
+    - Name: testLevelData
       Entry: 7
       Data: 0|LevelData, Assembly-CSharp
     - Name: levelSchema
@@ -993,9 +993,11 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: levelData
+      Entry: 6
+      Data: 
   gridView: {fileID: 103904518}
   entityList: []
-  entityMaster: {fileID: 0}
 --- !u!4 &396056765
 Transform:
   m_ObjectHideFlags: 0

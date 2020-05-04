@@ -12,7 +12,6 @@ public class BoardManager : Singleton<BoardManager> {
     public GridViewBase gridView;
     public List<EntityBase> entityList;
     // set by editor
-    public EntityBase entityMaster;
     public LevelData testLevelData;
     // TODO: set by editor until menus are done
     public LevelData levelData;
