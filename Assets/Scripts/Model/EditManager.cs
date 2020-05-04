@@ -21,7 +21,8 @@ public class EditManager : Singleton<EditManager> {
     // set by editor
     public PreviewCubeBase previewCubeBase;
     public EditModePanelBase editModePanelBase;
-    
+    // test
+    public LevelSchema newLevelSchema;
     void Awake() {
         this.editMode = EditModeEnum.PICKER;
         this.previewSchema = null;
@@ -187,7 +188,13 @@ public class EditManager : Singleton<EditManager> {
         print("saving level with title:" + aTitle + " par:" + aPar);
         LevelData oldLevelData = BoardManager.Instance.levelData;
         List<EntityBase> entityList = BoardManager.Instance.entityList;
+        List<EntityData> entityDataList = new List<EntityData>();
+        foreach (EntityBase entityBase in entityList) {
+            entityDataList.Add(entityBase.CreateEntityData());
+        }
         LevelSchema newSchema = LevelSchema.CreateInstance<LevelSchema>();
-        // newSchema.Init()
+        newSchema.Init(aTitle, Config.USERNAME, aPar, oldLevelData.levelSchema.size, entityDataList);
+        this.newLevelSchema = newSchema;
+        LevelSaveLoad.SaveLevel(newSchema);
     }
 }

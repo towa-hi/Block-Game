@@ -65,7 +65,7 @@ public class EntityBase : SerializedMonoBehaviour {
         return null;
     }
 
-    public void SelfDestruct() {
-        print("self destructing goodbye");
+    public EntityData CreateEntityData() {
+        return new EntityData(this.initialEntityData.entitySchema, this.pos, this.facing, this.entityView.defaultColor, this.isFixed, this.isBoundary);
     }
 }

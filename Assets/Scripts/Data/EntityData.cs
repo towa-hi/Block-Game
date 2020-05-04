@@ -10,6 +10,7 @@ public class EntityData {
     public Color color;
     public bool isFixed;
     public bool isBoundary;
+    
     public EntityData( EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false, bool aIsBoundary = false) {
         this.entitySchema = aEntitySchema;
         this.pos = aPos;
