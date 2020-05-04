@@ -11,6 +11,10 @@ public class OptionsModePanelBase : SerializedMonoBehaviour {
     public Button saveButton;
     public Button playtestButton;
 
+    public void ResetLevelTitle() {
+        this.levelTitleField.text = BoardManager.Instance.levelData.levelSchema.title;
+    }
+
     public void OnLevelTitleFieldChanged(string aText) {
         this.saveButton.interactable = (aText.Length != 0);
     }

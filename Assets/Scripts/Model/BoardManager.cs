@@ -11,10 +11,10 @@ public class BoardManager : Singleton<BoardManager> {
     public GameGrid levelGrid;
     public GridViewBase gridView;
     public List<EntityBase> entityList;
-    // set by editor
-    public LevelData testLevelData;
     // TODO: set by editor until menus are done
     public LevelData levelData;
+    // TODO: stop relying so much on public references to shit
+    public OptionsModePanelBase optionsModePanelBase;
 
     void Start() {
         InitializeLevel(GameManager.Instance.levelToLoad, true);
@@ -33,6 +33,7 @@ public class BoardManager : Singleton<BoardManager> {
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
             CreateEntity(entityData, true);
         }
+        optionsModePanelBase.ResetLevelTitle();
     }
 
     public EntityBase CreateEntity(EntityData aEntityData, bool aFromInitLevel = false) {
