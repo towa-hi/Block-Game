@@ -183,4 +183,11 @@ public class EditManager : Singleton<EditManager> {
         this.previewCubeBase.SetActive(false);
     }
 
+    public void SaveLevel(string aTitle, int aPar) {
+        print("saving level with title:" + aTitle + " par:" + aPar);
+        LevelData oldLevelData = BoardManager.Instance.levelData;
+        List<EntityBase> entityList = BoardManager.Instance.entityList;
+        LevelSchema newSchema = LevelSchema.CreateInstance<LevelSchema>();
+        // newSchema.Init()
+    }
 }

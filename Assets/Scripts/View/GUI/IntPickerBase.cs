@@ -29,12 +29,12 @@ public class IntPickerBase : SerializedMonoBehaviour {
         }
     }
 
-    void SetCurrentInt(int aInt) {
+    public void SetCurrentInt(int aInt) {
         this.currentInt = aInt;
         this.intPickerValueText.text = this.currentInt.ToString();
     }
 
-    int GetCurrentInt() {
+    public int GetCurrentInt() {
         return this.currentInt;
     }
 }

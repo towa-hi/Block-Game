@@ -13,4 +13,11 @@ public class LevelSchema : SerializedScriptableObject {
     public Vector2Int size;
     public List<EntityData> entityList = new List<EntityData>();
 
+    public void Init(string aTitle, string aCreator, int aPar, Vector2Int aSize, List<EntityData> aEntityList) {
+        this.title = aTitle;
+        this.creator = aCreator;
+        this.par = aPar;
+        this.size = aSize;
+        this.entityList =aEntityList;
+    }
 }
