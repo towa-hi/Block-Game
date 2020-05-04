@@ -13,14 +13,16 @@ public class BoardManager : Singleton<BoardManager> {
     public List<EntityBase> entityList;
     // set by editor
     public EntityBase entityMaster;
+    public LevelData testLevelData;
     // TODO: set by editor until menus are done
     public LevelData levelData;
 
     void Start() {
-        InitializeLevel(this.levelData);
+        InitializeLevel(this.testLevelData, true);
     }
 
-    void InitializeLevel(LevelData aLevelData) {
+    void InitializeLevel(LevelData aLevelData, bool firstTime = false) {
+        this.levelData = aLevelData;
         this.levelGrid = new GameGrid(aLevelData.levelSchema.size);
         this.gridView.Init(this.levelGrid);
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {

@@ -185,7 +185,6 @@ public class EditManager : Singleton<EditManager> {
     }
 
     public void SaveLevel(string aTitle, int aPar) {
-        print("saving level with title:" + aTitle + " par:" + aPar);
         LevelData oldLevelData = BoardManager.Instance.levelData;
         List<EntityBase> entityList = BoardManager.Instance.entityList;
         List<EntityData> entityDataList = new List<EntityData>();

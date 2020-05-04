@@ -1153,6 +1153,7 @@ MonoBehaviour:
   editModeClickedEntity: {fileID: 0}
   previewCubeBase: {fileID: 850933957}
   editModePanelBase: {fileID: 886524386}
+  newLevelSchema: {fileID: 0}
 --- !u!114 &406104279 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2319480123243799925, guid: cf7ee63577519f747a1ff2a391b90bca,
@@ -1496,7 +1497,18 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1153908688}
+        m_MethodName: OnLevelTitleFieldChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -3340,6 +3352,9 @@ MonoBehaviour:
     SerializationNodes: []
   parIntPickerBase: {fileID: 2039809726}
   levelTitleField: {fileID: 523882415}
+  loadButton: {fileID: 2074635393}
+  saveButton: {fileID: 1315497396}
+  playtestButton: {fileID: 813849116}
 --- !u!1 &1173119806
 GameObject:
   m_ObjectHideFlags: 0
@@ -3985,7 +4000,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1315497397}
   m_OnClick:
     m_PersistentCalls:

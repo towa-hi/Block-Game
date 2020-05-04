@@ -5,4 +5,5 @@ using Sirenix.OdinInspector;
 
 public static class Config {
     public static string USERNAME = "Player";
+    public static string PATHTOLEVELJSON = Application.dataPath + "/LevelJSON/";
 }
