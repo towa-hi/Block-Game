@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using SimpleFileBrowser;
+// using SimpleFileBrowser;
 
 public class EditManager : Singleton<EditManager> {
 
@@ -17,18 +17,20 @@ public class EditManager : Singleton<EditManager> {
     // during EDIT mode
     public EntityBase editModeClickedEntity;
     // during OPTIONS mode
-
+    public GameObject filePicker;
 
     // set by editor
     public PreviewCubeBase previewCubeBase;
     public EditModePanelBase editModePanelBase;
+    public GameObject filePickerMaster;
+    public GameObject canvas;
     // test
     public LevelSchema newLevelSchema;
 
     void Awake() {
         this.editMode = EditModeEnum.PICKER;
         this.previewSchema = null;
-        InitFileBrowser();
+        // InitFileBrowser();
     }
 
     void Update() {
@@ -178,6 +180,22 @@ public class EditManager : Singleton<EditManager> {
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
         this.previewCubeBase.SetActive(false);
+        ResetEditMode();
+        ResetPickerMode();
+    }
+
+    void ResetPickerMode() {
+        this.previewSchema = null;
+        this.pickerModeClickedEntity = null;
+    }
+
+    void ResetEditMode() {
+        this.editModeClickedEntity = null;
+        this.editModePanelBase.SetEntity(null);
+    }
+
+    void ResetOptionsMode() {
+
     }
 
     public void OnEditModeDeleteButtonClick() {
@@ -200,25 +218,50 @@ public class EditManager : Singleton<EditManager> {
         LevelSaveLoad.SaveLevel(newSchema);
     }
 
-    public void InitFileBrowser() {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter( "JSON", ".json"));
-        FileBrowser.SetDefaultFilter(".json");
-        FileBrowser.AddQuickLink( "LevelJSON", Config.PATHTOLEVELJSON, null);
-    }
 
-    public void LoadLevelFileBrowser() {
-        GameManager.Instance.FullPauseToggle();
-        StartCoroutine(ShowLoadDialogCoroutine());
 
-    }
-
-    IEnumerator ShowLoadDialogCoroutine() {
-        yield return FileBrowser.WaitForLoadDialog(false, Config.PATHTOLEVELJSON, "Load File", "Load");
-        print(FileBrowser.Success + " " + FileBrowser.Result);
-        if (FileBrowser.Success) {
-            string loadedLevelJson = FileBrowserHelpers.ReadTextFromFile(FileBrowser.Result);
-            print(loadedLevelJson);
+    public void StartFilePicker() {
+        
+        if (this.filePicker == null) {
             GameManager.Instance.FullPauseToggle();
+            this.filePicker = Instantiate(this.filePickerMaster, this.canvas.transform);
         }
+        
     }
+
+    public void EndFilePicker() {
+        if (this.filePicker != null) {
+            GameManager.Instance.FullPauseToggle();
+            Object.Destroy(this.filePicker);
+        }
+        
+    }
+
+    public void LoadLevelFromFilePicker(string aFileName) {
+        print(aFileName);
+        EndFilePicker();
+        this.newLevelSchema = LevelSaveLoad.LoadLevel(aFileName);
+    }
+
+    // public void InitFileBrowser() {
+    //     FileBrowser.SetFilters(true, new FileBrowser.Filter( "JSON", ".json"));
+    //     FileBrowser.SetDefaultFilter(".json");
+    //     FileBrowser.AddQuickLink( "LevelJSON", Config.PATHTOLEVELJSON, null);
+    // }
+
+    // public void LoadLevelFileBrowser() {
+    //     GameManager.Instance.FullPauseToggle();
+    //     // StartCoroutine(ShowLoadDialogCoroutine());
+
+    // }
+
+    // IEnumerator ShowLoadDialogCoroutine() {
+    //     yield return FileBrowser.WaitForLoadDialog(false, Config.PATHTOLEVELJSON, "Load File", "Load");
+    //     print(FileBrowser.Success + " " + FileBrowser.Result);
+    //     if (FileBrowser.Success) {
+    //         string loadedLevelJson = FileBrowserHelpers.ReadTextFromFile(FileBrowser.Result);
+    //         print(loadedLevelJson);
+    //     }
+    //     GameManager.Instance.FullPauseToggle();
+    // }
 }

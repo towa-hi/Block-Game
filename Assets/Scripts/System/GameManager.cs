@@ -8,10 +8,15 @@ public class GameManager : Singleton<GameManager> {
     public GameObject pausePanel;
     public bool isMenu;
     public PlayerInput playerInput;
+    public GameModeEnum gameState;
 
     private void Awake() {
         this.isMenu = false;
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void NewBoard(LevelData aLevelData) {
+        
     }
 
     public void OnEscapeMenu(InputAction.CallbackContext context) {

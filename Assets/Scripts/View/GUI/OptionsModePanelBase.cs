@@ -15,7 +15,7 @@ public class OptionsModePanelBase : SerializedMonoBehaviour {
         this.saveButton.interactable = (aText.Length != 0);
     }
     public void OnLoadButtonClicked() {
-        EditManager.Instance.LoadLevelFileBrowser();
+        EditManager.Instance.StartFilePicker();
     }
 
     public void OnSaveButtonClicked() {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 // represents the initial state of the entity
+
 public class EntityData {
     // set from levelSchema editor or ingame editor
     public EntitySchema entitySchema;

@@ -15,10 +15,12 @@ public class LevelSaveLoad {
     }
 
     public static LevelSchema LoadLevel(string aFileName) {
-        string filePath = Config.PATHTOLEVELJSON + aFileName + ".json";
+        string filePath = Config.PATHTOLEVELJSON + aFileName;
         if (File.Exists(filePath)) {
             string saveString = File.ReadAllText(filePath);
-            return JsonUtility.FromJson<LevelSchema>(saveString);
+            LevelSchema loadedSchema = ScriptableObject.CreateInstance<LevelSchema>();
+            JsonUtility.FromJsonOverwrite(saveString, loadedSchema);
+            return loadedSchema;
         } else {
             throw new System.IO.FileNotFoundException();
         }
