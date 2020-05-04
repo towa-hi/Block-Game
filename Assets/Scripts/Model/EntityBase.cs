@@ -27,17 +27,24 @@ public class EntityBase : SerializedMonoBehaviour {
         this.isBoundary = aEntityData.isBoundary;
         this.iComponentSet = new HashSet<IComponent>();
         this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
-        this.name = this.type.ToString() + " " + this.size;
+        this.name = GenerateName();
         // remove this later
         this.initialEntityData = aEntityData;
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
             iComponentSet.Add(iComponent);
             iComponent.Init();
         }
-        
         this.entityView.Init(aEntityData);
     }
 
+    string GenerateName() {
+        string nameString = this.type.ToString() + " " + this.size;
+        if (this.isBoundary) {
+            nameString += " (boundary)";
+        }
+        nameString += this.GetHashCode();
+        return nameString;
+    }
     public List<Vector2Int> GetOccupiedPos() {
         List<Vector2Int> occupiedPosList = new List<Vector2Int>();
         for (int x = this.pos.x; x < this.pos.x + this.size.x; x++) {
