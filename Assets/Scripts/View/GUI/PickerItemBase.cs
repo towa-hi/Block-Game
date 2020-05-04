@@ -23,4 +23,5 @@ public class PickerItemBase : SerializedMonoBehaviour {
         EditManager.Instance.OnPickerModeItemClick(this.entitySchema);
     }
 
+    // TODO: disable picker for playerentity and other exclusive entities if exists
 }
