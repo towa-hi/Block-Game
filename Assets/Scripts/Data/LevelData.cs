@@ -8,4 +8,8 @@ public class LevelData {
     public LevelSchema levelSchema;
     public int attempts;
 
+    public LevelData(LevelSchema aLevelSchema, int aAttempts) {
+        this.levelSchema = aLevelSchema;
+        this.attempts = aAttempts;
+    }
 }

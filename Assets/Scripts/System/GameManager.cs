@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
 
 public class GameManager : Singleton<GameManager> {
@@ -9,14 +10,15 @@ public class GameManager : Singleton<GameManager> {
     public bool isMenu;
     public PlayerInput playerInput;
     public GameModeEnum gameState;
+    public LevelData levelToLoad;
 
     private void Awake() {
         this.isMenu = false;
-        DontDestroyOnLoad(this.gameObject);
     }
 
     public void NewBoard(LevelData aLevelData) {
-        
+        this.levelToLoad = aLevelData;
+        SceneManager.LoadScene("EditorScene");
     }
 
     public void OnEscapeMenu(InputAction.CallbackContext context) {

@@ -135,7 +135,7 @@ public class EditManager : Singleton<EditManager> {
     }
 
     public void OnEditModeColorPicker(Color aColor) {
-        this.editModeClickedEntity.entityView.SetColor(aColor);
+        this.editModeClickedEntity.entityView.SetColor(aColor, true);
     }
 
     public bool IsEntityMovableInPickerMode(EntityBase aEntityBase) {
@@ -240,7 +240,9 @@ public class EditManager : Singleton<EditManager> {
     public void LoadLevelFromFilePicker(string aFileName) {
         print(aFileName);
         EndFilePicker();
-        this.newLevelSchema = LevelSaveLoad.LoadLevel(aFileName);
+        LevelSchema newLevelSchema = LevelSaveLoad.LoadLevel(aFileName);
+        LevelData newLevelData = new LevelData(newLevelSchema, 0);
+        BoardManager.Instance.InitializeLevel(newLevelData);
     }
 
     // public void InitFileBrowser() {

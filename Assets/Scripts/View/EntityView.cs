@@ -39,10 +39,13 @@ public class EntityView : SerializedMonoBehaviour {
     }
 
     // sets color of entity material without changing defaultColor
-    public void SetColor(Color aColor) {
+    public void SetColor(Color aColor, bool aSetDefaultColor = false) {
         this.myRenderer.material.color = aColor;
         foreach (Renderer childRenderer in this.childRenderers) {
             childRenderer.material.color = aColor;
+        }
+        if (aSetDefaultColor) {
+            this.defaultColor = aColor;
         }
     }
 

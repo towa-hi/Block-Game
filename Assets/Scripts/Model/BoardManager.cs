@@ -17,11 +17,17 @@ public class BoardManager : Singleton<BoardManager> {
     public LevelData levelData;
 
     void Start() {
-        InitializeLevel(this.testLevelData, true);
+        InitializeLevel(GameManager.Instance.levelToLoad, true);
     }
 
-    void InitializeLevel(LevelData aLevelData, bool firstTime = false) {
+    public void InitializeLevel(LevelData aLevelData, bool aFirstTime = false) {
+        if (aFirstTime == false) {
+            foreach (EntityBase entity in this.entityList) {
+                Destroy(entity.gameObject);
+            }
+        }
         this.levelData = aLevelData;
+        this.entityList.Clear();
         this.levelGrid = new GameGrid(aLevelData.levelSchema.size);
         this.gridView.Init(this.levelGrid);
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
