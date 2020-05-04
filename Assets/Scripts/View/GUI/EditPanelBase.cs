@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
 public class EditPanelBase : SerializedMonoBehaviour {
@@ -8,13 +9,19 @@ public class EditPanelBase : SerializedMonoBehaviour {
     public GameObject editPanel;
     public GameObject optionsPanel;
     public GameObject activeBotPanel;
+    public Button pickerButton;
+    public Button editButton;
+    public Button optionsButton;
     public EditManager editManager;
+    Button[] topPanelArray;
+    GameObject[] botPanelArray;
     
     void Awake() {
+        this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton};
+        this.botPanelArray = new GameObject[] {this.pickerPanel, this.editPanel, this.optionsPanel};
         SetBotPanel(EditModeEnum.PICKER);
     }
     
-    // TODO: change the colors of the other tabs when you select
     public void OnEditTabClick(int aPanelInt) {
         SetBotPanel((EditModeEnum)aPanelInt);
     }
@@ -23,15 +30,23 @@ public class EditPanelBase : SerializedMonoBehaviour {
         switch (aEditMode) {
             case EditModeEnum.PICKER:
                 this.activeBotPanel = this.pickerPanel;
+                this.pickerButton.interactable = false;
+                this.editButton.interactable = true;
+                this.optionsButton.interactable = true;
                 break;
             case EditModeEnum.EDIT:
                 this.activeBotPanel = this.editPanel;
+                this.pickerButton.interactable = true;
+                this.editButton.interactable = false;
+                this.optionsButton.interactable = true;
                 break;
             case EditModeEnum.OPTIONS:
                 this.activeBotPanel = this.optionsPanel;
+                this.pickerButton.interactable = true;
+                this.editButton.interactable = true;
+                this.optionsButton.interactable = false;
                 break;
         }
-        GameObject[] botPanelArray = {this.pickerPanel, this.editPanel, this.optionsPanel};
         foreach (GameObject botPanel in botPanelArray) {
             botPanel.SetActive(botPanel == this.activeBotPanel);
         }
