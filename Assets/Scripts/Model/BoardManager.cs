@@ -24,7 +24,7 @@ public class BoardManager : Singleton<BoardManager> {
         this.levelGrid = new GameGrid(aLevelData.levelSchema.size);
         this.gridView.Init(this.levelGrid);
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
-            this.entityList.Add(CreateEntity(entityData));
+            CreateEntity(entityData);
         }
     }
 
@@ -33,7 +33,15 @@ public class BoardManager : Singleton<BoardManager> {
         EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
         newEntityBase.Init(aEntityData);
         this.levelGrid.RegisterEntity(newEntityBase);
+        this.entityList.Add(newEntityBase);
         return newEntityBase;
+    }
+
+    public void DeleteEntity(EntityBase aEntityBase) {
+        print("BoardManager - destroying entity: " + aEntityBase.name);
+        this.levelGrid.RemoveEntity(aEntityBase);
+        this.entityList.Remove(aEntityBase);
+        Destroy(aEntityBase.gameObject);
     }
 
     EntityData CreateEntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false) {
@@ -130,5 +138,5 @@ public class BoardManager : Singleton<BoardManager> {
         }
     }
     
-    
+
 }

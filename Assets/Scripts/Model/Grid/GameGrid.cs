@@ -33,11 +33,15 @@ public class GameGrid {
     }
 
     public void MoveEntity(Vector2Int aPos, EntityBase aEntityBase) {
+        RemoveEntity(aEntityBase);
+        aEntityBase.pos = aPos;
+        RegisterEntity(aEntityBase);
+    }
+
+    public void RemoveEntity(EntityBase aEntityBase) {
         foreach (Vector2Int pos in aEntityBase.GetOccupiedPos()) {
             this.gridDict[pos].RegisterEntity(null);
         }
-        aEntityBase.pos = aPos;
-        RegisterEntity(aEntityBase);
     }
 
     public EntityBase GetEntityAtPos(Vector2Int aPos) {

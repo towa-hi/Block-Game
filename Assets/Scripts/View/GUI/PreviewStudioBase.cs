@@ -14,7 +14,6 @@ public class PreviewStudioBase : SerializedMonoBehaviour {
     
     public void SetEntity(EntityBase aEntityBase) {
         // TODO: make this remember the last layer it was
-        print(aEntityBase);
         if (this.entityBase != null) {
             Util.SetLayerRecursively(this.entityBase.gameObject, 0);
         } 

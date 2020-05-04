@@ -12,7 +12,7 @@ public class EditManager : Singleton<EditManager> {
     public EntitySchema previewSchema;
     public bool isPlacementAtMousePosValid;
     public EntityBase pickerModeClickedEntity;
-    public Vector2Int newPos;
+    public Vector2Int pickerModeNewPos;
     // during EDIT mode
     public EntityBase editModeClickedEntity;
     // during OPTIONS mode
@@ -97,26 +97,23 @@ public class EditManager : Singleton<EditManager> {
     public void PickerMoveUpdate() {
         switch (InputManager.Instance.mouseState) {
             case MouseStateEnum.CLICKED:
-                this.pickerModeClickedEntity = BoardManager.Instance.GetHoveredEntity();
-                if (this.pickerModeClickedEntity != null) {
+                if (IsEntityMovableInPickerMode(BoardManager.Instance.GetHoveredEntity())) {
+                    this.pickerModeClickedEntity = BoardManager.Instance.GetHoveredEntity();
                     this.pickerModeClickedEntity.entityView.SetGhost(true);
                 }
                 break;
             case MouseStateEnum.HELD:
                 if (this.pickerModeClickedEntity != null) {
-                    newPos = Util.V3ToV2I(InputManager.Instance.dragOffset) + this.pickerModeClickedEntity.pos;
-                    // TODO URGENT FIX BUG CAUSED BY POSITION OF BASE ENTITY BEING WRONG DUE TO ENTITYVIEW MOVING FIRST. DONT CALL ENTITY VIEW DUMBASS
-                    
-                    this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(newPos, this.pickerModeClickedEntity.size);
+                    pickerModeNewPos = Util.V3ToV2I(InputManager.Instance.dragOffset) + this.pickerModeClickedEntity.pos;
+                    this.pickerModeClickedEntity.transform.position = Util.V2IOffsetV3(pickerModeNewPos, this.pickerModeClickedEntity.size);
                 }
                 break;
             case MouseStateEnum.RELEASED:
                 if (this.pickerModeClickedEntity != null) {
-                    print("finalNewPos " + newPos);
-                    if (IsMovementToPosValid(newPos, this.pickerModeClickedEntity)) {
-                        BoardManager.Instance.MoveEntity(newPos, this.pickerModeClickedEntity);
+                    if (IsMovementToPosValid(pickerModeNewPos, this.pickerModeClickedEntity)) {
+                        BoardManager.Instance.MoveEntity(pickerModeNewPos, this.pickerModeClickedEntity);
                     } else {
-                        this.pickerModeClickedEntity.entityView.transform.position = Util.V2IOffsetV3(this.pickerModeClickedEntity.pos, this.pickerModeClickedEntity.size);
+                        this.pickerModeClickedEntity.transform.position = Util.V2IOffsetV3(this.pickerModeClickedEntity.pos, this.pickerModeClickedEntity.size);
                     }
                     this.pickerModeClickedEntity.entityView.SetGhost(false);
                     this.pickerModeClickedEntity = null;
@@ -133,6 +130,14 @@ public class EditManager : Singleton<EditManager> {
 
     public void OnEditModeColorPicker(Color aColor) {
         this.editModeClickedEntity.entityView.SetColor(aColor);
+    }
+
+    public bool IsEntityMovableInPickerMode(EntityBase aEntityBase) {
+        if (aEntityBase != null && !aEntityBase.isBoundary) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
@@ -168,6 +173,13 @@ public class EditManager : Singleton<EditManager> {
     
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
+        this.previewCubeBase.SetActive(false);
+    }
+
+    public void OnEditModeDeleteButtonClick() {
+        BoardManager.Instance.DeleteEntity(this.editModeClickedEntity);
+        this.editModeClickedEntity = null;
+        this.editModePanelBase.SetEntity(this.editModeClickedEntity);
         this.previewCubeBase.SetActive(false);
     }
 

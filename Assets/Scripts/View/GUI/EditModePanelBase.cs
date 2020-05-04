@@ -11,19 +11,21 @@ public class EditModePanelBase : SerializedMonoBehaviour {
     public GameObject editModeNullText;
     public Text nameText;
     public Toggle isFixedToggle;
+    public LongClickButton deleteButton;
 
     void Start() {
         SetEntity(null);
     }
 
     public void SetEntity(EntityBase aEntityBase) {
-        print(aEntityBase);
         this.previewStudioBase.SetEntity(aEntityBase);
         this.editModeVerticalLayout.SetActive(aEntityBase != null);
         this.editModeNullText.SetActive(aEntityBase == null);
         if (aEntityBase != null) {
             this.nameText.text = aEntityBase.name;
             this.isFixedToggle.isOn = aEntityBase.isFixed;
+            this.isFixedToggle.interactable = !aEntityBase.isBoundary;
+            this.deleteButton.interactable = !aEntityBase.isBoundary;
         }
     }
 
@@ -33,5 +35,9 @@ public class EditModePanelBase : SerializedMonoBehaviour {
 
     public void OnFixedToggleClick(bool aIsOn) {
         EditManager.Instance.OnEditModeFixedToggleClick(aIsOn);
+    }
+
+    public void OnDeleteButtonClick() {
+        EditManager.Instance.OnEditModeDeleteButtonClick();
     }
 }

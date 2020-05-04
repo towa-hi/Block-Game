@@ -58,4 +58,7 @@ public class EntityBase : SerializedMonoBehaviour {
         return null;
     }
 
+    public void SelfDestruct() {
+        print("self destructing goodbye");
+    }
 }
