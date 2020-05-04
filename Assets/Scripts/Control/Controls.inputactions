@@ -28,6 +28,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Escape Menu",
+                    "type": "Button",
+                    "id": "7d0f2c6a-23c5-462a-9549-23f2333645b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -61,6 +69,44 @@
                     "processors": "",
                     "groups": "",
                     "action": "RightClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3677fee5-6ca0-46ad-974b-0c1596d49fa2",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Menu",
+            "id": "78d797a2-dd7b-4461-b05f-de57f8d79127",
+            "actions": [
+                {
+                    "name": "Escape Menu",
+                    "type": "Button",
+                    "id": "fe787e5c-376d-4cfe-8c85-d322275b8eb2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "234e48fb-53bf-42e1-859c-079bbe05d3ff",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

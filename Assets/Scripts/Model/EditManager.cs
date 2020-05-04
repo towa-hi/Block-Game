@@ -24,9 +24,11 @@ public class EditManager : Singleton<EditManager> {
     public EditModePanelBase editModePanelBase;
     // test
     public LevelSchema newLevelSchema;
+
     void Awake() {
         this.editMode = EditModeEnum.PICKER;
         this.previewSchema = null;
+        InitFileBrowser();
     }
 
     void Update() {
@@ -198,15 +200,23 @@ public class EditManager : Singleton<EditManager> {
         LevelSaveLoad.SaveLevel(newSchema);
     }
 
+    public void InitFileBrowser() {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter( "JSON", ".json"));
+        FileBrowser.SetDefaultFilter(".json");
+        FileBrowser.AddQuickLink( "LevelJSON", Config.PATHTOLEVELJSON, null);
+    }
+
     public void LoadLevelFileBrowser() {
         StartCoroutine(ShowLoadDialogCoroutine());
     }
 
     IEnumerator ShowLoadDialogCoroutine() {
-        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
+        
+        yield return FileBrowser.WaitForLoadDialog(false, Config.PATHTOLEVELJSON, "Load File", "Load");
         print(FileBrowser.Success + " " + FileBrowser.Result);
         if (FileBrowser.Success) {
             string loadedLevelJson = FileBrowserHelpers.ReadTextFromFile(FileBrowser.Result);
+            print(loadedLevelJson);
         }
     }
 }

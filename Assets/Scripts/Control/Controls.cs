@@ -41,6 +41,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Escape Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""7d0f2c6a-23c5-462a-9549-23f2333645b2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -76,6 +84,44 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""RightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3677fee5-6ca0-46ad-974b-0c1596d49fa2"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""78d797a2-dd7b-4461-b05f-de57f8d79127"",
+            ""actions"": [
+                {
+                    ""name"": ""Escape Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""fe787e5c-376d-4cfe-8c85-d322275b8eb2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""234e48fb-53bf-42e1-859c-079bbe05d3ff"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -87,6 +133,10 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Board_Click = m_Board.FindAction("Click", throwIfNotFound: true);
         m_Board_Point = m_Board.FindAction("Point", throwIfNotFound: true);
         m_Board_RightClick = m_Board.FindAction("RightClick", throwIfNotFound: true);
+        m_Board_EscapeMenu = m_Board.FindAction("Escape Menu", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+        m_Menu_EscapeMenu = m_Menu.FindAction("Escape Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,6 +189,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Board_Click;
     private readonly InputAction m_Board_Point;
     private readonly InputAction m_Board_RightClick;
+    private readonly InputAction m_Board_EscapeMenu;
     public struct BoardActions
     {
         private @Controls m_Wrapper;
@@ -146,6 +197,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Click => m_Wrapper.m_Board_Click;
         public InputAction @Point => m_Wrapper.m_Board_Point;
         public InputAction @RightClick => m_Wrapper.m_Board_RightClick;
+        public InputAction @EscapeMenu => m_Wrapper.m_Board_EscapeMenu;
         public InputActionMap Get() { return m_Wrapper.m_Board; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -164,6 +216,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RightClick.started -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
                 @RightClick.performed -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
                 @RightClick.canceled -= m_Wrapper.m_BoardActionsCallbackInterface.OnRightClick;
+                @EscapeMenu.started -= m_Wrapper.m_BoardActionsCallbackInterface.OnEscapeMenu;
+                @EscapeMenu.performed -= m_Wrapper.m_BoardActionsCallbackInterface.OnEscapeMenu;
+                @EscapeMenu.canceled -= m_Wrapper.m_BoardActionsCallbackInterface.OnEscapeMenu;
             }
             m_Wrapper.m_BoardActionsCallbackInterface = instance;
             if (instance != null)
@@ -177,14 +232,55 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RightClick.started += instance.OnRightClick;
                 @RightClick.performed += instance.OnRightClick;
                 @RightClick.canceled += instance.OnRightClick;
+                @EscapeMenu.started += instance.OnEscapeMenu;
+                @EscapeMenu.performed += instance.OnEscapeMenu;
+                @EscapeMenu.canceled += instance.OnEscapeMenu;
             }
         }
     }
     public BoardActions @Board => new BoardActions(this);
+
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private IMenuActions m_MenuActionsCallbackInterface;
+    private readonly InputAction m_Menu_EscapeMenu;
+    public struct MenuActions
+    {
+        private @Controls m_Wrapper;
+        public MenuActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @EscapeMenu => m_Wrapper.m_Menu_EscapeMenu;
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+        public void SetCallbacks(IMenuActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsCallbackInterface != null)
+            {
+                @EscapeMenu.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnEscapeMenu;
+                @EscapeMenu.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnEscapeMenu;
+                @EscapeMenu.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnEscapeMenu;
+            }
+            m_Wrapper.m_MenuActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @EscapeMenu.started += instance.OnEscapeMenu;
+                @EscapeMenu.performed += instance.OnEscapeMenu;
+                @EscapeMenu.canceled += instance.OnEscapeMenu;
+            }
+        }
+    }
+    public MenuActions @Menu => new MenuActions(this);
     public interface IBoardActions
     {
         void OnClick(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
+        void OnEscapeMenu(InputAction.CallbackContext context);
+    }
+    public interface IMenuActions
+    {
+        void OnEscapeMenu(InputAction.CallbackContext context);
     }
 }
