@@ -207,16 +207,18 @@ public class EditManager : Singleton<EditManager> {
     }
 
     public void LoadLevelFileBrowser() {
+        GameManager.Instance.FullPauseToggle();
         StartCoroutine(ShowLoadDialogCoroutine());
+
     }
 
     IEnumerator ShowLoadDialogCoroutine() {
-        
         yield return FileBrowser.WaitForLoadDialog(false, Config.PATHTOLEVELJSON, "Load File", "Load");
         print(FileBrowser.Success + " " + FileBrowser.Result);
         if (FileBrowser.Success) {
             string loadedLevelJson = FileBrowserHelpers.ReadTextFromFile(FileBrowser.Result);
             print(loadedLevelJson);
+            GameManager.Instance.FullPauseToggle();
         }
     }
 }

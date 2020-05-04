@@ -90,6 +90,14 @@
             "id": "78d797a2-dd7b-4461-b05f-de57f8d79127",
             "actions": [
                 {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "c3985450-017b-4882-b285-4c0fbe650405",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Escape Menu",
                     "type": "Button",
                     "id": "fe787e5c-376d-4cfe-8c85-d322275b8eb2",
@@ -99,6 +107,17 @@
                 }
             ],
             "bindings": [
+                {
+                    "name": "",
+                    "id": "0d9d020a-1cdf-442e-b676-fab1d293843f",
+                    "path": "<Mouse>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
                 {
                     "name": "",
                     "id": "234e48fb-53bf-42e1-859c-079bbe05d3ff",
