@@ -11,6 +11,7 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
     public GameObject pickerItemMaster;
     public List<PickerItemBase> contentList;
 
+    // TODO: figure out why clicking on t he scroll bar makes everything spaz out
     void Start() {
         this.entitySchemaArray = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToArray();
         foreach (EntitySchema entitySchema in this.entitySchemaArray) {
