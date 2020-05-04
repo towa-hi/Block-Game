@@ -24,24 +24,27 @@ public class BoardManager : Singleton<BoardManager> {
         this.levelGrid = new GameGrid(aLevelData.levelSchema.size);
         this.gridView.Init(this.levelGrid);
         foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
-            CreateEntity(entityData);
+            CreateEntity(entityData, true);
         }
     }
 
-    public EntityBase CreateEntity(EntityData aEntityData) {
+    public EntityBase CreateEntity(EntityData aEntityData, bool aFromInitLevel = false) {
         GameObject newEntityPrefab = Instantiate(aEntityData.entitySchema.entityObject, Util.V2IOffsetV3(aEntityData.pos, aEntityData.entitySchema.size), Quaternion.identity, this.transform);
         EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
         newEntityBase.Init(aEntityData);
         this.levelGrid.RegisterEntity(newEntityBase);
         this.entityList.Add(newEntityBase);
+        if (!aFromInitLevel) {
+            print("BoardManager - created entity: " + newEntityBase.name);
+        }
         return newEntityBase;
     }
 
     public void DeleteEntity(EntityBase aEntityBase) {
-        print("BoardManager - destroying entity: " + aEntityBase.name);
         this.levelGrid.RemoveEntity(aEntityBase);
         this.entityList.Remove(aEntityBase);
         Destroy(aEntityBase.gameObject);
+        print("BoardManager - destroyed entity: " + aEntityBase.name);
     }
 
     EntityData CreateEntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aColor, bool aIsFixed = false) {

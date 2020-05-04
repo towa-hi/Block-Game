@@ -14,10 +14,9 @@ public class EntityBase : SerializedMonoBehaviour {
     public bool isFixed;
     public bool isBoundary;
     public HashSet<IComponent> iComponentSet;
+    public EntityView entityView;
     // TODO: this should be removed later
     public EntityData initialEntityData;
-    // set by editor
-    public EntityView entityView;
     
     public void Init(EntityData aEntityData) {
         this.pos = aEntityData.pos;
@@ -27,6 +26,7 @@ public class EntityBase : SerializedMonoBehaviour {
         this.isFixed = aEntityData.isFixed;
         this.isBoundary = aEntityData.isBoundary;
         this.iComponentSet = new HashSet<IComponent>();
+        this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
         this.name = this.type.ToString() + " " + this.size;
         // remove this later
         this.initialEntityData = aEntityData;
@@ -35,7 +35,7 @@ public class EntityBase : SerializedMonoBehaviour {
             iComponent.Init();
         }
         
-        entityView.Init(aEntityData);
+        this.entityView.Init(aEntityData);
     }
 
     public List<Vector2Int> GetOccupiedPos() {

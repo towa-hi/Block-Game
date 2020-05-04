@@ -24,7 +24,7 @@ public class EntityView : SerializedMonoBehaviour {
                 break;
             case EntityTypeEnum.MOB:
                 // TODO: this just sets a capsule to a reasonable size for now
-                this.transform.localScale = new Vector3(2, 2, 2);
+                // this.transform.localScale = new Vector3(2, 2, 2);
                 break;
         }
         // init every iComponent in case it's got entityView stuff
