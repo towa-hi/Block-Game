@@ -243,6 +243,7 @@ public class EditManager : Singleton<EditManager> {
         LevelSchema newLevelSchema = LevelSaveLoad.LoadLevel(aFileName);
         LevelData newLevelData = new LevelData(newLevelSchema, 0);
         BoardManager.Instance.InitializeLevel(newLevelData);
+        // GameManager.Instance.NewBoard(newLevelData);
     }
 
     // public void InitFileBrowser() {

@@ -307,8 +307,12 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 637639725986920747, guid: dd67a0d77b8d08e49891516d942eea89,
+      objectReference: {fileID: 0}
+    - target: {fileID: 637639725986920747, guid: dd67a0d77b8d08e49891516d942eea89,
         type: 3}
+      propertyPath: optionsModePanelBase
+      value: 
+      objectReference: {fileID: 3886960505469471776}
     - target: {fileID: 637639725986920748, guid: dd67a0d77b8d08e49891516d942eea89,
         type: 3}
       propertyPath: m_Name
@@ -324,6 +328,17 @@ PrefabInstance:
       propertyPath: editModePanelBase
       value: 
       objectReference: {fileID: 3886960504663144978}
+    - target: {fileID: 637639725986920790, guid: dd67a0d77b8d08e49891516d942eea89,
+        type: 3}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 3886960504285894560}
+    - target: {fileID: 637639725986920790, guid: dd67a0d77b8d08e49891516d942eea89,
+        type: 3}
+      propertyPath: filePickerMaster
+      value: 
+      objectReference: {fileID: 7903423538218326044, guid: fcb23b31a2a2d0541832e4178afb9725,
+        type: 3}
     - target: {fileID: 637639726605785426, guid: dd67a0d77b8d08e49891516d942eea89,
         type: 3}
       propertyPath: serializationData.Prefab
@@ -371,14 +386,53 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
         type: 3}
-      propertyPath: serializationData.Prefab
-      value: 
+      propertyPath: serializationData.PrefabModifications.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
         type: 3}
       propertyPath: pausePanel
       value: 
       objectReference: {fileID: 3886960505780718521}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 78d601bc066eedc438ec9f3b4195c779,
+        type: 2}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 44ff18c73c1659541bc06a37774962f1,
+        type: 2}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[0]
+      value: '"path":"levelToLoad","value":{"$id":0,"$type":"LevelData, Assembly-CSharp","levelSchema":$eref:0,"attempts":0}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[1]
+      value: '"path":"levelToLoad.attempts","value":{"$id":0,"$type":"System.Int32,
+        mscorlib",0}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+        type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[2]
+      value: '"path":"levelToLoad.levelSchema","value":$eref:1'
+      objectReference: {fileID: 0}
     - target: {fileID: 669930124088252189, guid: b8074da230c976a46b880f0239359d15,
         type: 3}
       propertyPath: m_Name
@@ -558,7 +612,7 @@ PrefabInstance:
     - target: {fileID: 4640122404753536704, guid: c346f3c78048a12478476466dd49435c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4640122404753536708, guid: c346f3c78048a12478476466dd49435c,
         type: 3}
