@@ -18,7 +18,7 @@ public class IntPickerBase : SerializedMonoBehaviour {
     public Text intPickerValueText;
 
     void Awake() {
-        SetCurrentInt(defaultInt);
+        SetCurrentInt(BoardData.par);
     }
 
     public void OnIntPickerButtonClicked(bool aIsPlus) {

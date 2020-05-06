@@ -5,7 +5,8 @@ using Sirenix.OdinInspector;
 
 public class GM : Singleton<GM> {
     public GameObject boardManagerGameObject;
-    public static BoardData boardData;
+    public BoardData boardData;
+    public LevelSchema levelSchemaTest;
     public static BoardManager boardManager;
     public static EditManager editManager;
     public LevelData levelToLoad;
@@ -15,9 +16,9 @@ public class GM : Singleton<GM> {
     }
 
     public void NewBoard(LevelData aLevelData) {
-        GM.boardData = new BoardData(aLevelData);
+        this.boardData.Init(aLevelData);
         GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager>();
         GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
-        GM.boardManager.Init(GM.boardData);
+        GM.boardManager.Init();
     }
 }

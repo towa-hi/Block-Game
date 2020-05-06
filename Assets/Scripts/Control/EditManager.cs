@@ -18,9 +18,15 @@ public class EditManager : SerializedMonoBehaviour {
 
     public EditPanelBase editPanelBase;
 
+    private string newTitle;
+
+    private int newPar;
+
     void Awake() {
         SetEditMode(EditModeEnum.PICKER);
         this.editModeClickedEntity = null;
+        this.newTitle = BoardData.title;
+        this.newPar = BoardData.par;
     }
 
     void Update() {
@@ -47,6 +53,7 @@ public class EditManager : SerializedMonoBehaviour {
     void PickerPlaceUpdate() {
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
+            
                 // if (this.boardData) {
                 //     PlacePreview();
                 //     this.previewCubeBase.SetActive(false);
@@ -78,7 +85,7 @@ public class EditManager : SerializedMonoBehaviour {
     void EditModeUpdate() {
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
-                this.editModeClickedEntity = GM.boardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
+                this.editModeClickedEntity = BoardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
                 if (this.editModeClickedEntity != null) {
                     this.previewCubeBase.SetColor(Color.white);
                     this.previewCubeBase.SetSize(this.editModeClickedEntity.size);
@@ -133,12 +140,12 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeTitleChange(string aTitle) {
         print("new title:" + aTitle);
-        GM.boardData.title = aTitle;
+        this.newTitle = aTitle;
     }
 
     public void OnOptionsModeParIntPickerChange(int aPar) {
         print("new par: " + aPar);
-        GM.boardData.par = aPar;
+        this.newPar = aPar;
     }
 
     public void OnOptionsModeLoadButtonClick() {

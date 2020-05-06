@@ -10,9 +10,9 @@ public class GridViewBase : SerializedMonoBehaviour {
     // set by editor
     public CellViewBase cellViewMaster;
     
-    public void Init(BoardData aBoardData) {
+    public void Init() {
 
-        this.gameGrid = aBoardData.GetGameGrid();
+        this.gameGrid = BoardData.GetGameGrid();
         this.gameGrid.gridView = this;
         foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.gridDict) {
             CellViewBase newCellViewBase = Instantiate(cellViewMaster, Util.V2IOffsetV3(kvp.Key, new Vector2Int(1, 1)), Quaternion.identity, this.transform);
