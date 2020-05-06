@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 
 // all entities have this as the base component. holds important gameplay data and entity state
 // but doesn't hold graphics data or graphics state
+[SelectionBase]
 public class EntityBase : SerializedMonoBehaviour {
     // set in init
     // public Vector2Int pos;
@@ -13,7 +14,7 @@ public class EntityBase : SerializedMonoBehaviour {
     // public EntityTypeEnum type;
     // public bool isFixed;
     // public bool isBoundary;
-    public HashSet<IComponent> iComponentSet;
+    private HashSet<IComponent> iComponentSet;
     public EntityView entityView;
     public EntityData entityData;
     
