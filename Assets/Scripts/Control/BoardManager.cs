@@ -12,7 +12,7 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void Init(BoardData aBoardData) {
         LoadBoardData(aBoardData);
-        this.gridViewBase.Init(aBoardData.gameGrid);
+        this.gridViewBase.Init(aBoardData);
     }
 
     public void LoadBoardData(BoardData aBoardData) {
@@ -40,6 +40,5 @@ public class BoardManager : SerializedMonoBehaviour {
         // set view
         aEntityData.entityBase.SetViewPosition(aPos);
     }
-
     
 }

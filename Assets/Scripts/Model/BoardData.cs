@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class BoardData {
+public class BoardData : SerializedScriptableObject {
 
-    public GameGrid gameGrid;
+    private GameGrid gameGrid;
     public HashSet<EntityData> entityDataSet;
     public string title;
     public string creator;
@@ -88,6 +88,8 @@ public class BoardData {
     public bool IsRectInBoard(Vector2Int aOrigin, Vector2Int aSize) {
         return Util.IsRectInside(aOrigin, aSize, Vector2Int.zero, this.size);
     }
-
     
+    public GameGrid GetGameGrid() {
+        return this.gameGrid;
+    }
 }

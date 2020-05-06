@@ -12,7 +12,7 @@ public class EditManager : SerializedMonoBehaviour {
     
     public EntityData editModeClickedEntity;
 
-    public EntitySchema previewSchema;
+    public EntitySchema pickerModePlaceSchema;
 
     public PreviewCubeBase previewCubeBase;
 
@@ -37,7 +37,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     void PickerModeUpdate() {
-        if (this.previewSchema != null) {
+        if (this.pickerModePlaceSchema != null) {
             PickerPlaceUpdate();
         } else {
             PickerMoveUpdate();
@@ -47,7 +47,7 @@ public class EditManager : SerializedMonoBehaviour {
     void PickerPlaceUpdate() {
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
-                // if (IsPlacementAtMousePosValid()) {
+                // if (this.boardData) {
                 //     PlacePreview();
                 //     this.previewCubeBase.SetActive(false);
                 //     this.previewSchema = null;
@@ -94,7 +94,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
-        this.previewSchema = null;
+        this.pickerModePlaceSchema = null;
     }
 
 
@@ -102,6 +102,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
         print(aEntitySchema.name);
+        this.pickerModePlaceSchema = aEntitySchema;
     }
 
     // edit mode

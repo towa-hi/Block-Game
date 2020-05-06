@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
+[SelectionBase]
 public class CellViewBase: SerializedMonoBehaviour {
     public GameCell gameCell;
     // set by editor
