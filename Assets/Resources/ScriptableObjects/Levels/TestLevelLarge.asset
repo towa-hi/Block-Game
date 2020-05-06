@@ -35,6 +35,9 @@ MonoBehaviour:
     - Name: entitySchema
       Entry: 10
       Data: 0
+    - Name: name
+      Entry: 6
+      Data: 
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -59,7 +62,22 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: color
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: defaultColor
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
@@ -92,6 +110,9 @@ MonoBehaviour:
     - Name: entitySchema
       Entry: 10
       Data: 0
+    - Name: name
+      Entry: 6
+      Data: 
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -116,7 +137,22 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: color
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: defaultColor
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
@@ -149,6 +185,9 @@ MonoBehaviour:
     - Name: entitySchema
       Entry: 10
       Data: 1
+    - Name: name
+      Entry: 6
+      Data: 
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -173,7 +212,22 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: color
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 38
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: defaultColor
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
@@ -206,6 +260,9 @@ MonoBehaviour:
     - Name: entitySchema
       Entry: 10
       Data: 1
+    - Name: name
+      Entry: 6
+      Data: 
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -230,7 +287,22 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: color
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 38
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: defaultColor
       Entry: 7
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 

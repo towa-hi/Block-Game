@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
+
+[System.Serializable]
+public class OnValueChanged : UnityEvent<int>{};
 
 public class IntPickerBase : SerializedMonoBehaviour {
     public int defaultInt;
     int currentInt;
+    // set in editor
+    public OnValueChanged onValueChanged = new OnValueChanged();
+
 
     public Text intPickerValueText;
 
@@ -27,6 +31,7 @@ public class IntPickerBase : SerializedMonoBehaviour {
                 SetCurrentInt(this.currentInt - 1);
             }
         }
+        onValueChanged.Invoke(this.currentInt);
     }
 
     public void SetCurrentInt(int aInt) {

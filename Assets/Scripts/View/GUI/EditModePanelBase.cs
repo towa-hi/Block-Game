@@ -17,27 +17,15 @@ public class EditModePanelBase : SerializedMonoBehaviour {
         SetEntity(null);
     }
 
-    public void SetEntity(EntityBase aEntityBase) {
-        this.previewStudioBase.SetEntity(aEntityBase);
-        this.editModeVerticalLayout.SetActive(aEntityBase != null);
-        this.editModeNullText.SetActive(aEntityBase == null);
-        if (aEntityBase != null) {
-            this.nameText.text = aEntityBase.name;
-            this.isFixedToggle.isOn = aEntityBase.isFixed;
-            this.isFixedToggle.interactable = !aEntityBase.isBoundary;
-            this.deleteButton.interactable = !aEntityBase.isBoundary;
+    public void SetEntity(EntityData aEntityData) {
+        this.previewStudioBase.SetEntity(aEntityData);
+        this.editModeVerticalLayout.SetActive(aEntityData != null);
+        this.editModeNullText.SetActive(aEntityData == null);
+        if (aEntityData != null) {
+            this.nameText.text = aEntityData.name;
+            this.isFixedToggle.isOn = aEntityData.isFixed;
+            this.isFixedToggle.interactable = !aEntityData.isBoundary;
+            this.deleteButton.interactable = !aEntityData.isBoundary;
         }
-    }
-
-    public void OnColorButtonClick(Color aColor) {
-        EditManager.Instance.OnEditModeColorPicker(aColor);
-    }
-
-    public void OnFixedToggleClick(bool aIsOn) {
-        EditManager.Instance.OnEditModeFixedToggleClick(aIsOn);
-    }
-
-    public void OnDeleteButtonClick() {
-        EditManager.Instance.OnEditModeDeleteButtonClick();
     }
 }

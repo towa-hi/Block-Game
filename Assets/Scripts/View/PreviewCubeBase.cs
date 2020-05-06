@@ -26,10 +26,10 @@ public class PreviewCubeBase : SerializedMonoBehaviour {
         this.gameObject.SetActive(aIsActive);
     }
 
-    public void SetAsEntity(EntityBase aEntityBase) {
-        if (aEntityBase != null) {
-            SetSize(aEntityBase.size);
-            SetPos(aEntityBase.pos);
+    public void SetAsEntity(EntityData aEntityData) {
+        if (aEntityData != null) {
+            SetSize(aEntityData.size);
+            SetPos(aEntityData.pos);
         } else {
             throw new System.Exception("SetAsEntity is null");
         }

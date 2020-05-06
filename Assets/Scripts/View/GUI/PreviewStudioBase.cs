@@ -4,24 +4,24 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class PreviewStudioBase : SerializedMonoBehaviour {
-    public EntityBase entityBase;
+    public EntityData entityData;
     // set by editor
     public Camera myCamera;
 
     void Awake() {
-        this.entityBase = null;
+        this.entityData = null;
     }
     
-    public void SetEntity(EntityBase aEntityBase) {
+    public void SetEntity(EntityData aEntityData) {
         // TODO: make this remember the last layer it was
-        if (this.entityBase != null) {
-            Util.SetLayerRecursively(this.entityBase.gameObject, 0);
+        if (this.entityData != null) {
+            Util.SetLayerRecursively(this.entityData.entityBase.gameObject, 0);
         } 
 
-        if (aEntityBase != null) {
-            this.transform.position = aEntityBase.transform.position;
-            Util.SetLayerRecursively(aEntityBase.gameObject, 8);
+        if (aEntityData != null) {
+            this.transform.position = aEntityData.entityBase.transform.position;
+            Util.SetLayerRecursively(aEntityData.entityBase.gameObject, 8);
         }
-        this.entityBase = aEntityBase;
+        this.entityData = aEntityData;
     }
 }

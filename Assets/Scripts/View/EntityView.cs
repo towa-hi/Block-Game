@@ -9,13 +9,15 @@ public class EntityView : SerializedMonoBehaviour {
     // set by init
     public Renderer myRenderer;
     public Renderer[] childRenderers;
-    public Color defaultColor;
+    // public Color defaultColor;
     private Coroutine colorFadeCoroutine;
+    public EntityData entityData;
     // set by prefab
     public EntityBase entityBase;
     public bool isGhost;
 
     public void Init(EntityData aEntityData) {
+        this.entityData = aEntityData;
         this.myRenderer = GetComponent<Renderer>();
         // do any special accomidations to the entity depending on type. mainly to adjust BLOCK size
         switch (aEntityData.entitySchema.type) {
@@ -27,25 +29,19 @@ public class EntityView : SerializedMonoBehaviour {
                 // this.transform.localScale = new Vector3(2, 2, 2);
                 break;
         }
-        // init every iComponent in case it's got entityView stuff
-        foreach (IComponent iComponent in this.entityBase.iComponentSet) {
-            iComponent.OnEntityViewInit(this);
-        }
+
         // cache any renderer components in children after they've been made in OnEntityViewInit
         this.childRenderers = GetComponentsInChildren<Renderer>();
 
-        this.defaultColor = aEntityData.color;
-        SetColor(this.defaultColor);
+        // this.defaultColor = aEntityData.defaultColor;
+        SetColor(this.entityData.defaultColor);
     }
 
     // sets color of entity material without changing defaultColor
-    public void SetColor(Color aColor, bool aSetDefaultColor = false) {
+    public void SetColor(Color aColor) {
         this.myRenderer.material.color = aColor;
         foreach (Renderer childRenderer in this.childRenderers) {
             childRenderer.material.color = aColor;
-        }
-        if (aSetDefaultColor) {
-            this.defaultColor = aColor;
         }
     }
 
@@ -62,7 +58,7 @@ public class EntityView : SerializedMonoBehaviour {
         // start a new colorFade
         this.colorFadeCoroutine = StartCoroutine(ColorFade(1f));
         // when that colorFade is done, set color to avoid float bullshit
-        SetColor(this.defaultColor);
+        SetColor(this.entityData.defaultColor);
     }
 
     public IEnumerator ColorFade(float aDuration) {
@@ -70,7 +66,7 @@ public class EntityView : SerializedMonoBehaviour {
         float t = 0f;
         while (t < 1) {
             t += Time.deltaTime / aDuration;
-            SetColor(Color.Lerp(currentColor, this.defaultColor, t));
+            SetColor(Color.Lerp(currentColor, this.entityData.defaultColor, t));
             yield return null;
         }
     }

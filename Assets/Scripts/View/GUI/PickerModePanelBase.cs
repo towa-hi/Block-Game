@@ -1,20 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Linq;
 using Sirenix.OdinInspector;
 
+[System.Serializable]
+public class OnPickerItemClick : UnityEvent<EntitySchema>{};
+
 public class PickerModePanelBase : SerializedMonoBehaviour {
-    public List<PickerItemBase> contentList;
-    public List<PickerItemBase> fullEntityList;
+    List<PickerModeItemBase> contentList;
+    List<PickerModeItemBase> fullEntityList;
     // set by editor
     public GameObject content;
     public GameObject pickerItemMaster;
     public InputField pickerModeSearchField;
+    public OnPickerItemClick pickerItemClick = new OnPickerItemClick();
 
     // TODO: figure out why clicking on the scroll bar makes everything spaz out
     void Start() {
+        this.contentList = new List<PickerModeItemBase>();
+        this.fullEntityList = new List<PickerModeItemBase>();
         // load all the entitySchemas in the ScriptableObjects folder
         List<EntitySchema> schemaList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
         // sort by name
@@ -22,9 +29,9 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
         // instantiate a pickerItem for each schema
         foreach (EntitySchema entitySchema in schemaList) {
             GameObject pickerItem = Instantiate(pickerItemMaster, content.transform);
-            PickerItemBase pickerItemBase = pickerItem.GetComponent<PickerItemBase>();
-            pickerItemBase.Init(entitySchema);
-            this.fullEntityList.Add(pickerItemBase);
+            PickerModeItemBase pickerModeItemBase = pickerItem.GetComponent<PickerModeItemBase>();
+            pickerModeItemBase.Init(entitySchema, this);
+            this.fullEntityList.Add(pickerModeItemBase);
         }
         this.contentList = this.fullEntityList;
     }
@@ -41,12 +48,16 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
         SetContent();
     }
     
+    public void OnPickerModeItemClicked(EntitySchema aEntitySchema) {
+        pickerItemClick.Invoke(aEntitySchema);
+    }
+
     // hides pickerItems not in contentList
     public void SetContent() {
-        foreach(PickerItemBase pickerItem in this.fullEntityList) {
+        foreach(PickerModeItemBase pickerItem in this.fullEntityList) {
             pickerItem.gameObject.SetActive(false);
         }
-        foreach(PickerItemBase pickerItem in this.contentList) {
+        foreach(PickerModeItemBase pickerItem in this.contentList) {
             pickerItem.gameObject.SetActive(true);
         }
     }

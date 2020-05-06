@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
-public class PickerItemBase : SerializedMonoBehaviour {
+public class PickerModeItemBase : SerializedMonoBehaviour {
     public EntitySchema entitySchema;
+    public PickerModePanelBase pickerModePanelBase;
     // set by editor
     public Text text; 
 
-    public void Init(EntitySchema aEntitySchema) {
+    public void Init(EntitySchema aEntitySchema, PickerModePanelBase aPickerModePanelBase) {
         this.entitySchema = aEntitySchema;
         this.text.text = GenPickerItemText(this.entitySchema);
-
+        this.pickerModePanelBase = aPickerModePanelBase;
     }
 
     string GenPickerItemText(EntitySchema aEntitySchema) {
@@ -20,8 +22,6 @@ public class PickerItemBase : SerializedMonoBehaviour {
     }
 
     public void OnClick() {
-        EditManager.Instance.OnPickerModeItemClick(this.entitySchema);
+        this.pickerModePanelBase.OnPickerModeItemClicked(this.entitySchema);
     }
-
-    // TODO: disable picker for playerentity and other exclusive entities if exists
 }

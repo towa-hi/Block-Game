@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 public abstract class IComponent : SerializedMonoBehaviour {
     public EntityBase entityBase;
 
-    public abstract void Init();
+    public abstract void Init(EntityData aEntityData);
 
     public abstract void DoFrame();
 

@@ -9,7 +9,7 @@ public class Singleton<T> : SerializedMonoBehaviour where T : SerializedMonoBeha
     private static object mlock = new object();
     private static T instance;
 
-    public static T Instance {
+    public static T I {
         get {
             if (shuttingDown) {
                 return null;

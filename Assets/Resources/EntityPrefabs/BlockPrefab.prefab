@@ -54,10 +54,12 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
   myRenderer: {fileID: 0}
   childRenderers: []
-  defaultColor: {r: 0, g: 0, b: 0, a: 0}
   entityBase: {fileID: 3064842466822843081}
   isGhost: 0
 --- !u!65 &3162356589982590419
@@ -130,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6104724258390018013}
   - component: {fileID: 3064842466822843081}
-  - component: {fileID: 3920784608396297164}
+  - component: {fileID: -3692049162015255625}
   m_Layer: 0
   m_Name: BlockPrefab
   m_TagString: Entity
@@ -177,17 +179,11 @@ MonoBehaviour:
     - Name: iComponentSet
       Entry: 6
       Data: 
-    - Name: initialEntityData
+    - Name: entityData
       Entry: 6
       Data: 
-  pos: {x: 0, y: 0}
-  facing: {x: 0, y: 0}
-  size: {x: 0, y: 0}
-  type: 0
-  isFixed: 0
-  isBoundary: 0
   entityView: {fileID: 2782319229974235240}
---- !u!114 &3920784608396297164
+--- !u!114 &-3692049162015255625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,12 +204,18 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: boardData
+      Entry: 6
+      Data: 
+    - Name: entityData
+      Entry: 6
+      Data: 
     - Name: upNodes
       Entry: 6
       Data: 
     - Name: downNodes
       Entry: 6
       Data: 
-  entityBase: {fileID: 3064842466822843081}
+  entityBase: {fileID: 0}
   studMaster: {fileID: 600843947742510571, guid: 297fb8b2a0f255c4091a49aa1b453a04,
     type: 3}

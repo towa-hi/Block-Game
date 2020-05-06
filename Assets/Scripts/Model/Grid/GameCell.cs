@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 public class GameCell {
     // set by constructor
     public Vector2Int pos;
-    public EntityBase entityBase;
+    public EntityData entityData;
     public Vector2Int push;
     public bool panelVisible;
     public Color panelColor;
@@ -16,15 +16,14 @@ public class GameCell {
 
     public GameCell(Vector2Int aPos) {
         this.pos = aPos;
-        this.entityBase = null;
         this.push = Vector2Int.down;
         this.panelVisible = false;
         this.panelColor = Color.white;
-        
     }
 
-    public void RegisterEntity(EntityBase aEntityBase) {
-        this.entityBase = aEntityBase;
+
+    public void RegisterEntityData(EntityData aEntityData) {
+        this.entityData = aEntityData;
     }
 
     public void SetPanelVisibility(bool aPanelVisible) {

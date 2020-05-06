@@ -35,11 +35,11 @@ public class FilePickerBase : SerializedMonoBehaviour {
         }
     }
 
-    public void OnLoadButtonClick() {
-        EditManager.Instance.LoadLevelFromFilePicker(currentFileName);
-    }
+    // public void OnLoadButtonClick() {
+    //     EditManager.Instance.LoadLevelFromFilePicker(currentFileName);
+    // }
 
-    public void OnCancelButtonClick() {
-        EditManager.Instance.EndFilePicker();
-    }
+    // public void OnCancelButtonClick() {
+    //     EditManager.Instance.EndFilePicker();
+    // }
 }

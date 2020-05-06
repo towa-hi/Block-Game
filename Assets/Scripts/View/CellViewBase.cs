@@ -23,8 +23,8 @@ public class CellViewBase: SerializedMonoBehaviour {
 
     void OnDrawGizmos() {
         Gizmos.color = Color.white;
-        if (this.gameCell.entityBase) {
-            if (this.gameCell.entityBase.isFixed) {
+        if (this.gameCell.entityData != null) {
+            if (this.gameCell.entityData.isFixed) {
                 Gizmos.color = Color.red;
             } else {
                 Gizmos.color = Color.green;

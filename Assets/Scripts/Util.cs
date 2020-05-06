@@ -57,4 +57,13 @@ public class Util {
         }
     }
     
+    public static List<Vector2Int> V2IInRect(Vector2Int aOrigin, Vector2Int aSize) {
+        List<Vector2Int> V2IList = new List<Vector2Int>();
+        for (int x = aOrigin.x; x < aOrigin.x + aSize.x; x++) {
+            for (int y = aOrigin.y; y < aOrigin.y + aSize.y; y++) {
+                V2IList.Add(new Vector2Int(x, y));
+            }
+        }
+        return V2IList;
+    }
 }
