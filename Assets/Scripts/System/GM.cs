@@ -6,8 +6,8 @@ using Sirenix.OdinInspector;
 public class GM : Singleton<GM> {
     public GameObject boardManagerGameObject;
     public static BoardData boardData;
-    public static BoardManager2 boardManager;
-    public static EditManager2 editManager;
+    public static BoardManager boardManager;
+    public static EditManager editManager;
     public LevelData levelToLoad;
 
     private void Awake() {
@@ -16,8 +16,8 @@ public class GM : Singleton<GM> {
 
     public void NewBoard(LevelData aLevelData) {
         GM.boardData = new BoardData(aLevelData);
-        GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager2>();
-        GM.editManager = this.boardManagerGameObject.GetComponent<EditManager2>();
+        GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager>();
+        GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
         GM.boardManager.Init(GM.boardData);
     }
 }

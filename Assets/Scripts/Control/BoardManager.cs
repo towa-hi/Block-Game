@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class BoardManager2 : SerializedMonoBehaviour {
+public class BoardManager : SerializedMonoBehaviour {
     public List<EntityBase> entityBaseList;
     public EntityData heldEntity;
     public GridViewBase gridViewBase;

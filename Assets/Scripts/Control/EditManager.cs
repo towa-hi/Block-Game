@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-[RequireComponent(typeof(BoardManager2))]
-public class EditManager2 : SerializedMonoBehaviour {
-    public BoardManager2 boardManager;
+[RequireComponent(typeof(BoardManager))]
+public class EditManager : SerializedMonoBehaviour {
+    public BoardManager boardManager;
 
     public BoardData boardData;
 

@@ -15,7 +15,7 @@ public class EditPanelBase : SerializedMonoBehaviour {
 
     public Button optionsModeSaveButton;
     // public EditManager editManager;
-    public EditManager2 editManager;
+    public EditManager editManager;
     Button[] topPanelArray;
     GameObject[] botPanelArray;
     
