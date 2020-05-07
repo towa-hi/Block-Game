@@ -20,9 +20,9 @@ public class EntityView : SerializedMonoBehaviour {
         this.entityData = aEntityData;
         this.myRenderer = GetComponent<Renderer>();
         // do any special accomidations to the entity depending on type. mainly to adjust BLOCK size
-        switch (aEntityData.entitySchema.type) {
+        switch (aEntityData.type) {
             case EntityTypeEnum.BLOCK:
-                this.transform.localScale = Util.V2IToV3(aEntityData.entitySchema.size) + Constants.BLOCKTHICCNESS;
+                this.transform.localScale = Util.V2IToV3(aEntityData.size) + Constants.BLOCKTHICCNESS;
                 break;
             case EntityTypeEnum.MOB:
                 // TODO: this just sets a capsule to a reasonable size for now

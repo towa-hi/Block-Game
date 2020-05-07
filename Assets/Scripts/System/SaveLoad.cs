@@ -6,19 +6,22 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
 public class SaveLoad {
-    public static BoardData myBoardData;
+    public static string saveFilename = "serializationTestBinary1";
+    public static LevelSaveData mySaveData;
+
     public static void SaveBoard(BoardData aBoardData) {
-        byte[] bytes = SerializationUtility.SerializeValue<BoardData>(aBoardData, DataFormat.JSON);
-        File.WriteAllBytes(Config.PATHTOLEVELJSON + "serializationTestJson", bytes);
+        LevelSaveData newSave = new LevelSaveData();
+        byte[] bytes = SerializationUtility.SerializeValue<LevelSaveData>(newSave, DataFormat.Binary);
+        File.WriteAllBytes(Config.PATHTOLEVELJSON + saveFilename, bytes);
 
     }
 
     public static void LoadBoard() {
-        if (!File.Exists(Config.PATHTOLEVELJSON + "serializationTestJson")) {
+        if (!File.Exists(Config.PATHTOLEVELJSON + saveFilename)) {
             return;
         }
-        byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + "serializationTestJson");
-        myBoardData = SerializationUtility.DeserializeValue<BoardData>(bytes, DataFormat.JSON);
+        byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + saveFilename);
+        mySaveData = SerializationUtility.DeserializeValue<LevelSaveData>(bytes, DataFormat.Binary);
 
     }
 }
