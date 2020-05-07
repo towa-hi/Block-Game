@@ -28,11 +28,11 @@ public class GameCell {
 
     public void SetPanelVisibility(bool aPanelVisible) {
         this.panelVisible = aPanelVisible;
-        cellViewBase.SetPanelVisbility();
+        cellViewBase.SetPanelVisbility(aPanelVisible);
     }
 
     public void SetColor(Color aColor) {
         this.panelColor = aColor;
-        cellViewBase.SetColor();
+        cellViewBase.SetColor(aColor);
     }
 }

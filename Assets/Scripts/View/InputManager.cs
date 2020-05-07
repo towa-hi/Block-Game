@@ -7,17 +7,17 @@ using UnityEngine.EventSystems;
 // manages ingame input
 public class InputManager : Singleton<InputManager> {
     private Controls controls;
-    // set on update
-    public Vector3 mousePos;
+    [Header("Mouse Pos")]
+    [System.NonSerialized] public Vector3 mousePos;
     public Vector2Int mousePosV2;
-    public Vector3 oldMousePos;
+    [System.NonSerialized] public Vector3 oldMousePos;
     public Vector2Int oldMousePosV2;
     public Vector3 clickedPos;
     public Vector3 dragOffset;
     public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
-    public bool mouseIsHeldDownOneFrame;
-    public bool mouseIsReleasedOneFrame;
+    bool mouseIsHeldDownOneFrame;
+    bool mouseIsReleasedOneFrame;
 
     void Awake() {
         this.controls = new Controls();
@@ -45,7 +45,6 @@ public class InputManager : Singleton<InputManager> {
     }
 
     void Update() {
-
         if (this.mouseIsHeldDownOneFrame) {
             this.mouseIsHeldDownOneFrame = false;
             this.mouseState = MouseStateEnum.HELD;

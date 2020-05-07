@@ -10,10 +10,10 @@ public class OnColorPickerClick : UnityEvent<Color>{};
 
 public class ColorPickerBase : SerializedMonoBehaviour {
     Color[] colorArray;
-    // set in editor
+    [Header("Set In Editor")]
     public OnColorPickerClick onColorPickerClick = new OnColorPickerClick();
 
     public void OnColorButtonClick(Image aImage) {
-        onColorPickerClick.Invoke(aImage.color);
+        this.onColorPickerClick.Invoke(aImage.color);
     }
 }

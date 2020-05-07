@@ -66,4 +66,11 @@ public class Util {
         }
         return V2IList;
     }
+
+    public static void DebugAreaPulse(Vector2Int aOrigin, Vector2Int aSize) {
+        Debug.Log("DebugAreaPulse");
+        foreach (Vector2Int pos in V2IInRect(aOrigin, aSize)) {
+            BoardData.GetGameGrid().GetCell(pos).cellViewBase.TempHighlight(Color.red);
+        }
+    }
 }

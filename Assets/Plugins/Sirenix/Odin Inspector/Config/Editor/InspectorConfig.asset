@@ -16,4 +16,6 @@ MonoBehaviour:
   defaultEditorBehaviour: 15
   processMouseMoveInInspector: 1
   drawingConfig:
-    configs: []
+    configs:
+    - DrawnTypeName: UnityEngine.MeshFilter, UnityEngine.CoreModule
+      EditorTypeName: 

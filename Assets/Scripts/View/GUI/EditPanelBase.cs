@@ -12,6 +12,7 @@ public class EditPanelBase : SerializedMonoBehaviour {
     public Button pickerButton;
     public Button editButton;
     public Button optionsButton;
+    public InputField titleInput;
 
     public Button optionsModeSaveButton;
     // public EditManager editManager;
@@ -56,6 +57,11 @@ public class EditPanelBase : SerializedMonoBehaviour {
         this.editManager.SetEditMode(aEditMode);
     }
 
+    public void SetOptionsModeTitleField(string aValue) {
+        this.titleInput.SetTextWithoutNotify(aValue);
+        this.optionsModeSaveButton.interactable = (aValue.Length != 0);
+    }
+
     // from EditManager
 
     public void SetEditModeEntity(EntityData aEntityData) {
@@ -78,6 +84,9 @@ public class EditPanelBase : SerializedMonoBehaviour {
         this.editManager.OnEditModeFixedToggle(aIsFixed);
     }
     
+    public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
+        this.editManager.OnEditModeNodeToggle(aNodeToggleStruct);
+    }
     public void OnEditModeExtraButtonClick() {
         this.editManager.OnEditModeExtraButtonClick();
     }

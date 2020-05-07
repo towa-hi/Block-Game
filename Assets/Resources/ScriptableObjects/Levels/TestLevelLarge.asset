@@ -16,8 +16,16 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 11400000, guid: a598057349d1b2d47a7baad45166b884, type: 2}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 11400000, guid: 57938354c5d9ca5409f3d366edd95f5e, type: 2}
+    - {fileID: 0}
+    - {fileID: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -32,12 +40,18 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 1|EntityData, Assembly-CSharp
-    - Name: entitySchema
+    - Name: entityBase
       Entry: 10
       Data: 0
+    - Name: entityView
+      Entry: 10
+      Data: 1
+    - Name: entitySchema
+      Entry: 10
+      Data: 2
     - Name: name
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: BLOCK (1, 20) (boundary)-1423359360
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -101,18 +115,30 @@ MonoBehaviour:
     - Name: isBoundary
       Entry: 5
       Data: true
+    - Name: hasNodesTEST
+      Entry: 5
+      Data: false
+    - Name: nodes
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
       Data: 2|EntityData, Assembly-CSharp
+    - Name: entityBase
+      Entry: 10
+      Data: 3
+    - Name: entityView
+      Entry: 10
+      Data: 4
     - Name: entitySchema
       Entry: 10
-      Data: 0
+      Data: 2
     - Name: name
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: BLOCK (1, 20) (boundary)1834365568
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -172,22 +198,34 @@ MonoBehaviour:
       Data: 
     - Name: isFixed
       Entry: 5
-      Data: true
+      Data: false
     - Name: isBoundary
       Entry: 5
       Data: true
+    - Name: hasNodesTEST
+      Entry: 5
+      Data: false
+    - Name: nodes
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
       Data: 3|EntityData, Assembly-CSharp
+    - Name: entityBase
+      Entry: 10
+      Data: 5
+    - Name: entityView
+      Entry: 10
+      Data: 6
     - Name: entitySchema
       Entry: 10
-      Data: 1
+      Data: 7
     - Name: name
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: BLOCK (38, 1) (boundary)-1423161600
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -232,13 +270,13 @@ MonoBehaviour:
       Data: UnityEngine.Color, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0.5
+      Data: 0.5471698
     - Name: 
       Entry: 4
-      Data: 0.5
+      Data: 0.5471698
     - Name: 
       Entry: 4
-      Data: 0.5
+      Data: 0.5471698
     - Name: 
       Entry: 4
       Data: 1
@@ -247,22 +285,34 @@ MonoBehaviour:
       Data: 
     - Name: isFixed
       Entry: 5
-      Data: true
+      Data: false
     - Name: isBoundary
       Entry: 5
       Data: true
+    - Name: hasNodesTEST
+      Entry: 5
+      Data: false
+    - Name: nodes
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
       Data: 4|EntityData, Assembly-CSharp
+    - Name: entityBase
+      Entry: 10
+      Data: 8
+    - Name: entityView
+      Entry: 10
+      Data: 9
     - Name: entitySchema
       Entry: 10
-      Data: 1
+      Data: 7
     - Name: name
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: BLOCK (38, 1) (boundary)-385721472
     - Name: pos
       Entry: 7
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
@@ -326,6 +376,12 @@ MonoBehaviour:
     - Name: isBoundary
       Entry: 5
       Data: true
+    - Name: hasNodesTEST
+      Entry: 5
+      Data: false
+    - Name: nodes
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -337,5 +393,5 @@ MonoBehaviour:
       Data: 
   title: Test Level Large
   creator: 
-  par: 0
+  par: 6
   size: {x: 40, y: 20}

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Entity
   - EntityView
+  - Stud
   layers:
   - Default
   - TransparentFX

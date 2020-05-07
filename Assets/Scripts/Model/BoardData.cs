@@ -38,7 +38,7 @@ public class BoardData : SerializedScriptableObject {
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             BoardData.gameGrid.GetCell(currentPos).entityData = aEntityData;
         }
-        Debug.Log("BoardData - RegisterEntity: " + aEntityData.entitySchema.name);
+        // Debug.Log("BoardData - RegisterEntity: " + aEntityData.entitySchema.name);
     }
 
     public static void UnRegisterEntityData(EntityData aEntityData) {
@@ -46,7 +46,7 @@ public class BoardData : SerializedScriptableObject {
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             BoardData.gameGrid.GetCell(currentPos).entityData = null;
         }
-        Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.entitySchema.name);
+        // Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.entitySchema.name);
     }
 
     public static EntityData GetEntityDataAtPos(Vector2Int aPos) {
@@ -74,6 +74,7 @@ public class BoardData : SerializedScriptableObject {
     }
 
     public static bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize) {
+        // Util.DebugAreaPulse(aOrigin, aSize);
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
             if (GetEntityDataAtPos(currentPos) != null) {
                 return false;

@@ -30,8 +30,18 @@ public class PreviewCubeBase : SerializedMonoBehaviour {
         if (aEntityData != null) {
             SetSize(aEntityData.size);
             SetPos(aEntityData.pos);
+            SetActive(true);
         } else {
             throw new System.Exception("SetAsEntity is null");
+        }
+    }
+
+    public void SetAsSchema(EntitySchema aEntitySchema) {
+        if (aEntitySchema != null) {
+            SetSize(aEntitySchema.size);
+            SetActive(true);
+        } else {
+            throw new System.Exception("SetAsSchema is null");
         }
     }
 }

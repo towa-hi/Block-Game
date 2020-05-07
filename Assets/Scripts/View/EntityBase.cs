@@ -26,13 +26,11 @@ public class EntityBase : SerializedMonoBehaviour {
         this.name = this.entityData.name;
         this.iComponentSet = new HashSet<IComponent>();
         this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
-
         this.entityView.Init(this.entityData);
         ResetViewPosition();
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
             iComponentSet.Add(iComponent);
             iComponent.Init(this.entityData);
-            iComponent.OnEntityViewInit(this.entityView);
         }
     }
 

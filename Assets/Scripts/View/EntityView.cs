@@ -30,11 +30,15 @@ public class EntityView : SerializedMonoBehaviour {
                 break;
         }
 
-        // cache any renderer components in children after they've been made in OnEntityViewInit
-        this.childRenderers = GetComponentsInChildren<Renderer>();
+        // // cache any renderer components in children after they've been made in OnEntityViewInit
+        // this.childRenderers = GetComponentsInChildren<Renderer>();
 
         // this.defaultColor = aEntityData.defaultColor;
         SetColor(this.entityData.defaultColor);
+    }
+
+    public void SetChildRenderers() {
+        this.childRenderers = GetComponentsInChildren<Renderer>();
     }
 
     // sets color of entity material without changing defaultColor
@@ -51,7 +55,7 @@ public class EntityView : SerializedMonoBehaviour {
     public void TempHighlight(Color aColor) {
         // if in the middle of another colorfade, stop it immediately
         if (this.colorFadeCoroutine != null) {
-            StopCoroutine(colorFadeCoroutine);
+            StopCoroutine(this.colorFadeCoroutine);
         }
         // set object to new color
         SetColor(aColor);

@@ -16,7 +16,6 @@ public class EntityData {
     public Color defaultColor;
     public bool isFixed;
     public bool isBoundary;
-    
     // created first as a normal object before it gets registered to an entityBase
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         this.entityBase = null;
@@ -64,5 +63,17 @@ public class EntityData {
     public void SetDefaultColor(Color aDefaultColor) {
         this.defaultColor = aDefaultColor;
         this.entityView.SetColor(aDefaultColor);
+    }
+
+    public void SetFacing(Vector2Int aFacing) {
+        this.facing = aFacing;
+    }
+
+    public void FlipEntity() {
+        if (this.facing == Vector2Int.right) {
+            this.facing = Vector2Int.left;
+        } else {
+            this.facing = Vector2Int.right;
+        }
     }
 }

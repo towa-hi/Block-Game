@@ -25,6 +25,7 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
         newEntityBase.Init(aEntityData);
         this.entityBaseList.Add(newEntityBase);
+        BoardData.RegisterEntityData(aEntityData);
     }
 
     public void DestroyEntity(EntityData aEntityData) {

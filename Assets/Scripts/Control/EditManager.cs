@@ -1,32 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
+
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-    public BoardManager boardManager;
-
-    public BoardData boardData;
+    BoardManager boardManager;
+    
 
     public EditModeEnum editMode;
+    [Header("Picker Mode")]
+    [SerializeField] EntitySchema pickerModePlaceSchema;
+    [SerializeField] EntityData pickerModeLastPlacedEntityData;
     
+    public bool pickerModePlaceIsValid;
+    [Header("Edit Mode")]
     public EntityData editModeClickedEntity;
 
-    public EntitySchema pickerModePlaceSchema;
-
+    [Header("Options Mode")]
+    [SerializeField] string newTitle;
+    [SerializeField] int newPar;
+    [Header("Set In Editor")]
     public PreviewCubeBase previewCubeBase;
-
     public EditPanelBase editPanelBase;
-
-    private string newTitle;
-
-    private int newPar;
 
     void Awake() {
         SetEditMode(EditModeEnum.PICKER);
+        this.boardManager = GM.boardManager;
         this.editModeClickedEntity = null;
+        this.pickerModeLastPlacedEntityData = null;
         this.newTitle = BoardData.title;
         this.newPar = BoardData.par;
+        this.editPanelBase.SetOptionsModeTitleField(this.newTitle);
     }
 
     void Update() {
@@ -44,27 +51,31 @@ public class EditManager : SerializedMonoBehaviour {
 
     void PickerModeUpdate() {
         if (this.pickerModePlaceSchema != null) {
-            PickerPlaceUpdate();
+            PickerModePlaceUpdate();
         } else {
-            PickerMoveUpdate();
+            PickerModeMoveUpdate();
         }
     }
 
-    void PickerPlaceUpdate() {
+    void PickerModePlaceUpdate() {
+        this.previewCubeBase.SetPos(InputManager.I.mousePosV2);
+        this.pickerModePlaceIsValid = BoardData.IsRectEmpty(this.previewCubeBase.pos, this.previewCubeBase.size);
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
-            
-                // if (this.boardData) {
-                //     PlacePreview();
-                //     this.previewCubeBase.SetActive(false);
-                //     this.previewSchema = null;
-                // }
+                if (this.pickerModePlaceIsValid) {
+                    PickerModePlaceOnClick();
+                }
                 break;
             case MouseStateEnum.HELD:
                 break;
             case MouseStateEnum.RELEASED:
                 break;
             case MouseStateEnum.DEFAULT:
+                if (this.pickerModePlaceIsValid) {
+                    this.previewCubeBase.SetColor(Color.green);
+                } else {
+                    this.previewCubeBase.SetColor(Color.red);
+                }
                 // if (this.previewCubeBase.pos != InputManager.Instance.mousePosV2) {
                 //     this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
                 //     this.isPlacementAtMousePosValid = IsPlacementAtMousePosValid();
@@ -78,7 +89,17 @@ public class EditManager : SerializedMonoBehaviour {
         }
     }
 
-    void PickerMoveUpdate() {
+    void PickerModePlaceOnClick() {
+        EntityData newEntityData = new EntityData(this.pickerModePlaceSchema, this.previewCubeBase.pos, Vector2Int.right, Constants.DEFAULTCOLOR);
+        if (BoardData.IsRectInBoard(this.previewCubeBase.pos, this.previewCubeBase.size)) {
+            this.boardManager.CreateEntityFromData(newEntityData);
+            this.pickerModeLastPlacedEntityData = newEntityData;
+        }
+    }
+
+
+
+    void PickerModeMoveUpdate() {
 
     }
 
@@ -88,8 +109,7 @@ public class EditManager : SerializedMonoBehaviour {
                 this.editModeClickedEntity = BoardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
                 if (this.editModeClickedEntity != null) {
                     this.previewCubeBase.SetColor(Color.white);
-                    this.previewCubeBase.SetSize(this.editModeClickedEntity.size);
-                    this.previewCubeBase.SetPos(this.editModeClickedEntity.pos);
+                    this.previewCubeBase.SetAsEntity(this.editModeClickedEntity);
                     this.previewCubeBase.SetActive(true);
                 } else {
                     this.previewCubeBase.SetActive(false);
@@ -102,24 +122,88 @@ public class EditManager : SerializedMonoBehaviour {
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
         this.pickerModePlaceSchema = null;
+        this.previewCubeBase.SetActive(false);
+        switch (aEditMode) {
+            case EditModeEnum.PICKER:
+                break;
+            case EditModeEnum.EDIT:
+                EditModeSetEntity(this.pickerModeLastPlacedEntityData);
+                this.editModeClickedEntity = this.pickerModeLastPlacedEntityData;
+                this.pickerModeLastPlacedEntityData = null;
+                break;
+            case EditModeEnum.OPTIONS:
+                break;
+        }
     }
 
+    public void OnRightClick(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed) {
+            switch (this.editMode) {
+                case EditModeEnum.PICKER:
+                    if (this.pickerModePlaceSchema != null) {
+                        PickerModePlaceReset();
+                    }
+                    break;
+                case EditModeEnum.EDIT:
+                print("edit mdoe right click");
+                    if (this.editModeClickedEntity != null) {
+                        EditModeReset();
+                    }
+                    break;
+                case EditModeEnum.OPTIONS:
+                    break;
+            }
+        }
+    }
+
+    void PickerModePlaceReset() {
+        this.pickerModePlaceSchema = null;
+        this.pickerModeLastPlacedEntityData = null;
+        this.previewCubeBase.SetActive(false);
+    }
+
+    public void EditModeReset() {
+        this.editModeClickedEntity = null;
+        this.previewCubeBase.SetActive(false);
+        EditModeSetEntity(null);
+    }
+
+    public void EditModeSetEntity(EntityData aEntityData) {
+        this.previewCubeBase.SetActive(aEntityData != null);
+        if (aEntityData != null) {
+            this.previewCubeBase.SetColor(Color.white);
+            this.previewCubeBase.SetAsEntity(aEntityData);
+            
+        }
+        
+        this.editPanelBase.SetEditModeEntity(aEntityData);
+    }
 
     // picker mode
 
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
-        print(aEntitySchema.name);
         this.pickerModePlaceSchema = aEntitySchema;
+        previewCubeBase.SetAsSchema(aEntitySchema);
     }
 
     // edit mode
 
     public void OnEditModeColorPickerClick(Color aColor) {
-        print(aColor);
-
+        this.editModeClickedEntity.SetDefaultColor(aColor);
     }
     public void OnEditModeFixedToggle(bool aIsFixed) {
-        print("fixed:" + aIsFixed);
+        this.editModeClickedEntity.isFixed = aIsFixed;
+    }
+
+    public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
+        INodal nodal = this.editModeClickedEntity.entityBase.GetCachedIComponent<INodal>() as INodal;
+        Vector2Int currentPos = aNodeToggleStruct.node;
+        if (aNodeToggleStruct.toggled) {
+            nodal.AddNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
+        } else {
+            nodal.RemoveNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
+        }
+
     }
     
     public void OnEditModeExtraButtonClick() {
@@ -127,11 +211,12 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void OnEditModeFlipButtonClick() {
-        print("flip button clicked");
+        this.editModeClickedEntity.FlipEntity();
     }
 
     public void OnEditModeDeleteButtonClick() {
-        boardManager.DestroyEntity(this.editModeClickedEntity);
+        EditModeSetEntity(null);
+        this.boardManager.DestroyEntity(this.editModeClickedEntity);
         this.editModeClickedEntity = null;
         print("delete button clicked");
     }
@@ -150,10 +235,12 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeLoadButtonClick() {
         print("load button clicked");
+        SaveLoad.LoadBoard();
     }
 
     public void OnOptionsModeSaveButtonClick() {
         print("save button clicked");
+        SaveLoad.SaveBoard(GM.I.boardData);
     }
 
     public void OnOptionsModePlaytestButtonClick() {

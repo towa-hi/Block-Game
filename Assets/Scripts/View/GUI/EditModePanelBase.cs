@@ -9,11 +9,12 @@ public class EditModePanelBase : SerializedMonoBehaviour {
     public PreviewStudioBase previewStudioBase;
     public GameObject editModeVerticalLayout;
     public GameObject editModeNullText;
+    public INodalPanelBase iNodalPanelBase;
     public Text nameText;
     public Toggle isFixedToggle;
     public LongClickButton deleteButton;
 
-    void Start() {
+    void Awake() {
         SetEntity(null);
     }
 
@@ -23,9 +24,12 @@ public class EditModePanelBase : SerializedMonoBehaviour {
         this.editModeNullText.SetActive(aEntityData == null);
         if (aEntityData != null) {
             this.nameText.text = aEntityData.name;
-            this.isFixedToggle.isOn = aEntityData.isFixed;
+            this.isFixedToggle.SetIsOnWithoutNotify(aEntityData.isFixed);
             this.isFixedToggle.interactable = !aEntityData.isBoundary;
             this.deleteButton.interactable = !aEntityData.isBoundary;
+        } else {
+            this.isFixedToggle.interactable = true;
         }
+        this.iNodalPanelBase.SetEntity(aEntityData);
     }
 }

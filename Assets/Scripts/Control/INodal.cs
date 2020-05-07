@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 
 // entities with this component can be selected and can stick to other entities
 public class INodal : IComponent {
-    public EntityData entityData;
     // set by init
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
@@ -18,14 +17,24 @@ public class INodal : IComponent {
     }
     public override void Init(EntityData aEntityData) {
         this.entityData = aEntityData;
+        this.entityBase = aEntityData.entityBase;
+        this.entityView = aEntityData.entityView;
         GenerateNodes();
+        DrawNodes();
+        this.entityView.SetChildRenderers();
+        this.entityView.SetColor(this.entityData.defaultColor);
     }
 
     public override void DoFrame() {
         
     }
 
-    public override void OnEntityViewInit(EntityView aEntityView) {
+    public void DrawNodes() {
+        foreach (Transform child in this.entityView.transform) {
+            if (child.tag == "Stud") {
+                Destroy(child.gameObject);
+            }
+        }
         foreach (Vector2Int upNode in this.upNodes) {
             Vector2Int currentPos = this.entityData.pos + upNode;
             Vector3 currentPosV3 = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
@@ -34,10 +43,10 @@ public class INodal : IComponent {
             float studZ = 0.5f;
 
             GameObject studBack = Instantiate(this.studMaster, new Vector3(studX, studY, studZ), Quaternion.identity);
-            studBack.transform.SetParent(aEntityView.transform, true);
+            studBack.transform.SetParent(this.entityView.transform, true);
             studBack.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
             GameObject studFront = Instantiate(this.studMaster, new Vector3(studX, studY, studZ * -1), Quaternion.identity);
-            studFront.transform.SetParent(aEntityView.transform, true);
+            studFront.transform.SetParent(this.entityView.transform, true);
             studFront.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
         }
     }
@@ -47,7 +56,7 @@ public class INodal : IComponent {
         // if entity is fixed and on the boundary of the level, nodes pointing outside the level are not added
         bool hasUpNodes = true;
         bool hasDownNodes = true;
-        if (this.entityData.isFixed) {
+        if (this.entityData.isBoundary) {
             if (this.entityData.pos.y + this.entityData.size.y == BoardData.size.y) {
                 hasUpNodes = false;
             }
@@ -68,6 +77,26 @@ public class INodal : IComponent {
         }
     }
     
+    public void AddNode(Vector2Int aPos, bool aUpDown) {
+        print("adding node at " + aPos);
+        if (aUpDown) {
+            this.upNodes.Add(aPos);
+        } else {
+            this.downNodes.Add(aPos);
+        }
+        DrawNodes();
+    }
+
+    public void RemoveNode(Vector2Int aPos, bool aUpDown) {
+        print("removing node at " + aPos);
+        if (aUpDown) {
+            this.upNodes.Remove(aPos);
+        } else {
+            this.downNodes.Remove(aPos);
+        }
+        DrawNodes();
+    }
+
     public void UseNodes(HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
         this.upNodes = aUpNodes;
         this.downNodes = aDownNodes;
