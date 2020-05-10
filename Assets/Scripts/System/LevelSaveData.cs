@@ -46,15 +46,15 @@ public struct BoardSaveData {
     public BoardSaveData(BoardData aBoardData) {
         // this.gameGrid = BoardData.GetGameGrid();
         this.entityDataSet = new HashSet<EntitySaveData>();
-        foreach (EntityData entityData in BoardData.entityDataSet) {
+        foreach (EntityData entityData in aBoardData.entityDataSet) {
             EntitySaveData entitySaveData = new EntitySaveData(entityData, entityData.entityBase);
             this.entityDataSet.Add(entitySaveData);
         }
-        this.title = BoardData.title;
-        this.creator = BoardData.creator;
-        this.par = BoardData.par;
-        this.size = BoardData.size;
-        this.attempts = BoardData.attempts;
+        this.title = aBoardData.title;
+        this.creator = aBoardData.creator;
+        this.par = aBoardData.par;
+        this.size = aBoardData.size;
+        this.attempts = aBoardData.attempts;
     }
 }
 
@@ -66,7 +66,7 @@ public class LevelSaveData {
     public BoardSaveData boardSaveData;
     
     public LevelSaveData() {
-        this.boardSaveData = new BoardSaveData(GM.I.boardData);
+        this.boardSaveData = new BoardSaveData(GM.boardData);
     }
 
     public static void UnpackLevelSaveData() {

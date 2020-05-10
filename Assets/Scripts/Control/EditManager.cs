@@ -27,12 +27,16 @@ public class EditManager : SerializedMonoBehaviour {
     public EditPanelBase editPanelBase;
 
     void Awake() {
+        Init();
+    }
+
+    public void Init() {
         SetEditMode(EditModeEnum.PICKER);
         this.boardManager = GM.boardManager;
         this.editModeClickedEntity = null;
         this.pickerModeLastPlacedEntityData = null;
-        this.newTitle = BoardData.title;
-        this.newPar = BoardData.par;
+        this.newTitle = GM.boardData.title;
+        this.newPar = GM.boardData.par;
         this.editPanelBase.SetOptionsModeTitleField(this.newTitle);
     }
 
@@ -59,7 +63,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     void PickerModePlaceUpdate() {
         this.previewCubeBase.SetPos(InputManager.I.mousePosV2);
-        this.pickerModePlaceIsValid = BoardData.IsRectEmpty(this.previewCubeBase.pos, this.previewCubeBase.size);
+        this.pickerModePlaceIsValid = GM.boardData.IsRectEmpty(this.previewCubeBase.pos, this.previewCubeBase.size);
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
                 if (this.pickerModePlaceIsValid) {
@@ -91,7 +95,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     void PickerModePlaceOnClick() {
         EntityData newEntityData = new EntityData(this.pickerModePlaceSchema, this.previewCubeBase.pos, Vector2Int.right, Constants.DEFAULTCOLOR);
-        if (BoardData.IsRectInBoard(this.previewCubeBase.pos, this.previewCubeBase.size)) {
+        if (GM.boardData.IsRectInBoard(this.previewCubeBase.pos, this.previewCubeBase.size)) {
             this.boardManager.CreateEntityFromData(newEntityData);
             this.pickerModeLastPlacedEntityData = newEntityData;
         }
@@ -106,7 +110,7 @@ public class EditManager : SerializedMonoBehaviour {
     void EditModeUpdate() {
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
-                this.editModeClickedEntity = BoardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
+                this.editModeClickedEntity =GM.boardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
                 if (this.editModeClickedEntity != null) {
                     this.previewCubeBase.SetColor(Color.white);
                     this.previewCubeBase.SetAsEntity(this.editModeClickedEntity);
@@ -240,7 +244,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeSaveButtonClick() {
         print("save button clicked");
-        SaveLoad.SaveBoard(GM.I.boardData);
+        SaveLoad.SaveBoard(GM.boardData);
     }
 
     public void OnOptionsModePlaytestButtonClick() {

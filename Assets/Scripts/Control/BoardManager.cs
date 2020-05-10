@@ -16,7 +16,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void LoadBoardData() {
-        foreach (EntityData entityData in BoardData.entityDataSet) {
+        foreach (EntityData entityData in GM.boardData.entityDataSet) {
             CreateEntityFromData(entityData);
         }
     }
@@ -25,11 +25,11 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
         newEntityBase.Init(aEntityData);
         this.entityBaseList.Add(newEntityBase);
-        BoardData.RegisterEntityData(aEntityData);
+        GM.boardData.RegisterEntityData(aEntityData);
     }
 
     public void DestroyEntity(EntityData aEntityData) {
-        BoardData.UnRegisterEntityData(aEntityData);
+        GM.boardData.UnRegisterEntityData(aEntityData);
         this.entityBaseList.Remove(aEntityData.entityBase);
         Destroy(aEntityData.entityBase.gameObject);
         print("BoardManager2 - DestroyEntity: " + aEntityData.name);
@@ -37,7 +37,7 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
         // set model
-        BoardData.MoveEntity(aPos, aEntityData);
+        GM.boardData.MoveEntity(aPos, aEntityData);
         // set view
         aEntityData.entityBase.SetViewPosition(aPos);
     }

@@ -57,7 +57,7 @@ public class INodal : IComponent {
         bool hasUpNodes = true;
         bool hasDownNodes = true;
         if (this.entityData.isBoundary) {
-            if (this.entityData.pos.y + this.entityData.size.y == BoardData.size.y) {
+            if (this.entityData.pos.y + this.entityData.size.y == GM.boardData.size.y) {
                 hasUpNodes = false;
             }
             if (this.entityData.pos.y == 0) {

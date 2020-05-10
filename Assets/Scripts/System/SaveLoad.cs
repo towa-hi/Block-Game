@@ -10,21 +10,22 @@ public class SaveLoad {
     // public static string saveFilename = "serializationTestBinary1";
     public static LevelSaveData mySaveData;
 
-    public static void SaveBoard() {
+    public static void SaveBoard(BoardData aBoardData) {
         LevelSaveData newSave = new LevelSaveData();
-        string saveFilename = ConvertTitleToSafeFileName(BoardData.title);
+        string saveFilename = ConvertTitleToSafeFileName(aBoardData.title);
         byte[] bytes = SerializationUtility.SerializeValue<LevelSaveData>(newSave, DataFormat.Binary);
         File.WriteAllBytes(Config.PATHTOLEVELJSON + saveFilename, bytes);
 
     }
 
-    public static void LoadBoard(string saveFilename) {
+    public static void LoadBoard() {
+        string saveFilename = "tempfilename";
         if (!File.Exists(Config.PATHTOLEVELJSON + saveFilename)) {
             return;
         }
         byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + saveFilename);
         mySaveData = SerializationUtility.DeserializeValue<LevelSaveData>(bytes, DataFormat.Binary);
-        GM.LoadLevelSaveData(mySaveData);
+        GM.I.LoadLevelSaveData(mySaveData);
     }
 
     public static string ConvertTitleToSafeFileName(string aTitle) {
