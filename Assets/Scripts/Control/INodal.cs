@@ -5,21 +5,29 @@ using Sirenix.OdinInspector;
 
 // entities with this component can be selected and can stick to other entities
 public class INodal : IComponent {
-    // set by init
-    public HashSet<Vector2Int> upNodes;
-    public HashSet<Vector2Int> downNodes;
+    public HashSet<Vector2Int> upNodes {
+        get {
+            return this.entityData.upNodes;
+        }
+        set {
+            this.entityData.upNodes = value;
+        }
+    }
+    public HashSet<Vector2Int> downNodes {
+        get {
+            return this.entityData.downNodes;
+        }
+        set {
+            this.entityData.downNodes = value;
+        }
+    }
     // set by editor
     public GameObject studMaster;
 
-    void Awake() {
-        this.upNodes = new HashSet<Vector2Int>();
-        this.downNodes = new HashSet<Vector2Int>();
-    }
-    public override void Init(EntityData aEntityData) {
-        this.entityData = aEntityData;
-        this.entityBase = aEntityData.entityBase;
-        this.entityView = aEntityData.entityView;
-        GenerateNodes();
+    public override void Init() {
+        if (!this.entityData.componentsAreInitialized) {
+            GenerateNodes();
+        }
         DrawNodes();
         this.entityView.SetChildRenderers();
         this.entityView.SetColor(this.entityData.defaultColor);
@@ -53,7 +61,7 @@ public class INodal : IComponent {
 
     public void GenerateNodes() {
         // generate nodes automatically based on the size of entity
-        // if entity is fixed and on the boundary of the level, nodes pointing outside the level are not added
+        // if entity is a boundary, nodes pointing outside the level are not added
         bool hasUpNodes = true;
         bool hasDownNodes = true;
         if (this.entityData.isBoundary) {

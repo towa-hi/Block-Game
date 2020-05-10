@@ -11,6 +11,12 @@ public enum EntityTypeEnum {
     SPECIALBLOCK,
 }
 
+public enum EntityPrefabEnum {
+    BLOCKPREFAB,
+    PLAYERPREFAB,
+    SHUFFLEBOTPREFAB
+
+}
 public enum GameModeEnum {
     PLAYING,
     EDITING

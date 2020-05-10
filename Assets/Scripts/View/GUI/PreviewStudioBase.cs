@@ -9,6 +9,10 @@ public class PreviewStudioBase : SerializedMonoBehaviour {
     public Camera myCamera;
 
     void Awake() {
+        Init();
+    }
+
+    public void Init() {
         this.entityData = null;
     }
     

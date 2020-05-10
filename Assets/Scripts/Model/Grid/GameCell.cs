@@ -11,8 +11,11 @@ public class GameCell {
     public Vector2Int push;
     public bool panelVisible;
     public Color panelColor;
-    // set by GridViewBase
-    public CellViewBase cellViewBase;
+    public CellViewBase cellViewBase {
+        get {
+            return GM.gridViewBase.GetCellView(pos);
+        }
+    }
 
     public GameCell(Vector2Int aPos) {
         this.pos = aPos;

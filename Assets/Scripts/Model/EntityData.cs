@@ -4,37 +4,74 @@ using UnityEngine;
 // represents the initial state of the entity
 
 public class EntityData {
-    public EntityBase entityBase;
-    public EntityView entityView;
-    // set from levelSchema editor or ingame editor
-    public EntitySchema entitySchema;
+    public EntityBase entityBase {
+        get {
+            foreach (EntityBase entityBase in GM.boardManager.entityBaseList) {
+                if (entityBase.entityData == this) {
+                    return entityBase;
+                }
+            }
+            return null;
+        }
+    }
+    public EntityView entityView {
+        get {
+            foreach (EntityBase entityBase in GM.boardManager.entityBaseList) {
+                if (entityBase.entityData == this) {
+                    return entityBase.entityView;
+                }
+            }
+            return null;
+        }
+    }
+    // componentsAreInitialized starts as false and is set to true after EntityBase is done initializing
+    // used to prevent components from resetting when initialized
+    public bool componentsAreInitialized;
     public string name;
     public Vector2Int pos;
     public Vector2Int facing;
     public Vector2Int size;
     public EntityTypeEnum type;
+    public EntityPrefabEnum prefab;
     public Color defaultColor;
     public bool isFixed;
     public bool isBoundary;
-    // created first as a normal object before it gets registered to an entityBase
+    // INodal data
+    public HashSet<Vector2Int> upNodes;
+    public HashSet<Vector2Int> downNodes;
+
+    // use when creating from a schema
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
-        this.entityBase = null;
-        this.entityView = null;
-        this.name = GenerateName();
-        this.entitySchema = aEntitySchema;
+        this.componentsAreInitialized = false;
         this.pos = aPos;
         this.facing = aFacing;
         this.size = aEntitySchema.size;
         this.type = aEntitySchema.type;
+        this.prefab = aEntitySchema.prefab;
         this.defaultColor = aDefaultColor;
         this.isFixed = aIsFixed;
         this.isBoundary = aIsBoundary;
+        this.name = GenerateName();
+        this.upNodes = new HashSet<Vector2Int>();
+        this.downNodes = new HashSet<Vector2Int>();
     }
 
-    public void RegisterEntityBase(EntityBase aEntityBase) {
-        this.entityBase = aEntityBase;
-        this.entityView = this.entityBase.entityView;
+    // use when creating from scratch
+    public EntityData(EntityPrefabEnum aPrefab, Vector2Int aSize, EntityTypeEnum aType, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+        this.componentsAreInitialized = false;
+        this.pos = aPos;
+        this.facing = aFacing;
+        this.size = aSize;
+        this.type = aType;
+        this.prefab= aPrefab;
+        this.defaultColor = aDefaultColor;
+        this.isFixed = aIsFixed;
+        this.isBoundary = aIsBoundary;
+        this.name = GenerateName();
+        this.upNodes = new HashSet<Vector2Int>();
+        this.downNodes = new HashSet<Vector2Int>();
     }
+
     public List<Vector2Int> GetOccupiedPos() {
         return Util.V2IInRect(this.pos, this.size);
     }

@@ -5,26 +5,31 @@ using Sirenix.OdinInspector;
 
 public class BoardManager : SerializedMonoBehaviour {
     public List<EntityBase> entityBaseList;
-    public EntityData heldEntity;
     public GridViewBase gridViewBase;
-    void Awake() {
-    }
 
     public void Init() {
-        LoadBoardData();
+        LoadBoardData(GM.boardData);
         this.gridViewBase.Init();
     }
 
-    public void LoadBoardData() {
-        foreach (EntityData entityData in GM.boardData.entityDataSet) {
+    public void LoadBoardData(BoardData aBoardData) {
+        foreach (EntityBase entityBase in this.entityBaseList) {
+            Destroy(entityBase.gameObject);
+        }
+        this.entityBaseList = new List<EntityBase>();
+        foreach (EntityData entityData in aBoardData.entityDataSet) {
             CreateEntityFromData(entityData);
         }
     }
+
     public void CreateEntityFromData(EntityData aEntityData) {
-        GameObject newEntityPrefab = Instantiate(aEntityData.entitySchema.entityObject, this.transform);
-        EntityBase newEntityBase = newEntityPrefab.GetComponent<EntityBase>();
-        newEntityBase.Init(aEntityData);
-        this.entityBaseList.Add(newEntityBase);
+        // instantiate EntityData's prefab by using GM to lookup which prefab to get
+        GameObject entityPrefab = Instantiate(GM.EntityPrefabEnumToPrefab(aEntityData.prefab), this.transform);
+        // get the EntityBase for this prefab
+        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
+        this.entityBaseList.Add(entityBase);
+        // 
+        entityBase.Init(aEntityData);
         GM.boardData.RegisterEntityData(aEntityData);
     }
 

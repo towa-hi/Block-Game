@@ -8,24 +8,25 @@ using Sirenix.Serialization;
 
 public class SaveLoad {
     // public static string saveFilename = "serializationTestBinary1";
-    public static LevelSaveData mySaveData;
+    public static BoardData mySaveData;
+    public static string testFilename = "testLevelNew";
 
     public static void SaveBoard(BoardData aBoardData) {
-        LevelSaveData newSave = new LevelSaveData();
+        // LevelSaveData newSave = new LevelSaveData();
         string saveFilename = ConvertTitleToSafeFileName(aBoardData.title);
-        byte[] bytes = SerializationUtility.SerializeValue<LevelSaveData>(newSave, DataFormat.Binary);
-        File.WriteAllBytes(Config.PATHTOLEVELJSON + saveFilename, bytes);
-
+        byte[] bytes = SerializationUtility.SerializeValue<BoardData>(aBoardData, DataFormat.Binary);
+        // File.WriteAllBytes(Config.PATHTOLEVELJSON + saveFilename, bytes);
+        File.WriteAllBytes(Config.PATHTOLEVELJSON + testFilename, bytes);
     }
 
     public static void LoadBoard() {
-        string saveFilename = "tempfilename";
-        if (!File.Exists(Config.PATHTOLEVELJSON + saveFilename)) {
+        if (!File.Exists(Config.PATHTOLEVELJSON + testFilename)) {
             return;
         }
-        byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + saveFilename);
-        mySaveData = SerializationUtility.DeserializeValue<LevelSaveData>(bytes, DataFormat.Binary);
-        GM.I.LoadLevelSaveData(mySaveData);
+        byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + testFilename);
+        mySaveData = SerializationUtility.DeserializeValue<BoardData>(bytes, DataFormat.Binary);
+        
+        GM.I.LoadBoard(mySaveData);
     }
 
     public static string ConvertTitleToSafeFileName(string aTitle) {

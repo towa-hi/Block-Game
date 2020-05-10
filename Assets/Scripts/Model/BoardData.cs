@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-[CreateAssetMenu(fileName = "Resources/ScriptableObjects", menuName = "ScriptableObjects/BoardData", order = 1)]
-public class BoardData : SerializedScriptableObject {
+public class BoardData {
 
-    private GameGrid gameGrid;
+    public GameGrid gameGrid;
     public HashSet<EntityData> entityDataSet;
     public string title;
     public string creator;
@@ -15,25 +14,25 @@ public class BoardData : SerializedScriptableObject {
     public Vector2Int size;
     public int attempts;
 
-    public void Init(LevelData aLevelData) {
-        this.gameGrid = new GameGrid(aLevelData.levelSchema.size);
+    public BoardData() {
         this.entityDataSet = new HashSet<EntityData>();
-        this.title = aLevelData.levelSchema.title;
-        this.creator = aLevelData.levelSchema.creator;
-        this.par = aLevelData.levelSchema.par;
-        this.size = aLevelData.levelSchema.size;
-        this.attempts = aLevelData.attempts;
-
-        foreach (EntityData entityData in aLevelData.levelSchema.entityList) {
-            RegisterEntityData(entityData);
-        }
+        this.title = "largeBlankBoard";
+        this.creator = Config.USERNAME;
+        this.par = 5;
+        this.size = new Vector2Int(40, 20);
+        this.gameGrid = new GameGrid(this.size);
+        this.attempts = 0;
+        EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        RegisterEntityData(leftBoundary);
+        RegisterEntityData(rightBoundary);
+        RegisterEntityData(upBoundary);
+        RegisterEntityData(downBoundary);
     }
 
     public void RegisterEntityData(EntityData aEntityData) {
-        // TODO: remove this later
-        if (aEntityData.name == null) {
-            aEntityData.name = aEntityData.GenerateName();
-        }
         this.entityDataSet.Add(aEntityData);
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = aEntityData;
@@ -93,9 +92,5 @@ public class BoardData : SerializedScriptableObject {
     
     public GameGrid GetGameGrid() {
         return this.gameGrid;
-    }
-
-    public void UnpackLevelSaveData(LevelSaveData aLevelSaveData) {
-        // TODO finish this
     }
 }

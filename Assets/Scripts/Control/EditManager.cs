@@ -24,6 +24,7 @@ public class EditManager : SerializedMonoBehaviour {
     [SerializeField] int newPar;
     [Header("Set In Editor")]
     public PreviewCubeBase previewCubeBase;
+    public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
 
     void Awake() {
@@ -33,11 +34,14 @@ public class EditManager : SerializedMonoBehaviour {
     public void Init() {
         SetEditMode(EditModeEnum.PICKER);
         this.boardManager = GM.boardManager;
+        this.pickerModePlaceSchema = null;
+        this.pickerModeLastPlacedEntityData = null;
         this.editModeClickedEntity = null;
         this.pickerModeLastPlacedEntityData = null;
         this.newTitle = GM.boardData.title;
         this.newPar = GM.boardData.par;
         this.editPanelBase.SetOptionsModeTitleField(this.newTitle);
+        this.previewStudioBase.Init();
     }
 
     void Update() {
@@ -110,7 +114,7 @@ public class EditManager : SerializedMonoBehaviour {
     void EditModeUpdate() {
         switch (InputManager.I.mouseState) {
             case MouseStateEnum.CLICKED:
-                this.editModeClickedEntity =GM.boardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
+                this.editModeClickedEntity = GM.boardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
                 if (this.editModeClickedEntity != null) {
                     this.previewCubeBase.SetColor(Color.white);
                     this.previewCubeBase.SetAsEntity(this.editModeClickedEntity);

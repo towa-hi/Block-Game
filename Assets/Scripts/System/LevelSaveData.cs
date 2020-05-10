@@ -8,6 +8,7 @@ public struct EntitySaveData {
     public Vector2Int pos;
     public Vector2Int size;
     public EntityTypeEnum type;
+    public EntityPrefabEnum prefab;
     public Color defaultColor;
     public bool isFixed;
     public bool isBoundary;
@@ -23,6 +24,7 @@ public struct EntitySaveData {
         this.defaultColor = aEntityData.defaultColor;
         this.isFixed = aEntityData.isFixed;
         this.isBoundary = aEntityData.isBoundary;
+        this.prefab = aEntityData.prefab;
         INodal nodal = aEntityBase.GetComponent<INodal>();
         if (nodal != null) {
             this.upNodes = nodal.upNodes;
@@ -69,7 +71,20 @@ public class LevelSaveData {
         this.boardSaveData = new BoardSaveData(GM.boardData);
     }
 
-    public static void UnpackLevelSaveData() {
+    // public static BoardData UnpackLevelSaveData(BoardSaveData aBoardSaveData) {
+    //     BoardData boardData = ScriptableObject.CreateInstance("BoardData") as BoardData;
+    //     // foreach (EntitySaveData entitySaveData in aBoardSaveData.entityDataSet) {
+    //     //     case
+    //     // }
         
-    }
+    //     boardData.title = aBoardSaveData.title;
+    //     boardData.creator = aBoardSaveData.creator;
+    //     boardData.par = aBoardSaveData.par;
+    //     boardData.size = aBoardSaveData.size;
+    //     boardData.attempts = aBoardSaveData.attempts;
+
+    //     return boardData;
+    // }
+
+
 }

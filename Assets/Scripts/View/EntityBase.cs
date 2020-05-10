@@ -7,13 +7,6 @@ using Sirenix.OdinInspector;
 // but doesn't hold graphics data or graphics state
 [SelectionBase]
 public class EntityBase : SerializedMonoBehaviour {
-    // set in init
-    // public Vector2Int pos;
-    // public Vector2Int facing;
-    // public Vector2Int size;
-    // public EntityTypeEnum type;
-    // public bool isFixed;
-    // public bool isBoundary;
     private HashSet<IComponent> iComponentSet;
     public EntityView entityView;
     public EntityData entityData;
@@ -21,17 +14,16 @@ public class EntityBase : SerializedMonoBehaviour {
     // we want to initialize entityBase, all the iComponents and entityView with entityData
     public void Init(EntityData aEntityData) {
         this.entityData = aEntityData;
-        this.entityData.RegisterEntityBase(this);
-
+        this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
         this.name = this.entityData.name;
         this.iComponentSet = new HashSet<IComponent>();
-        this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
         this.entityView.Init(this.entityData);
         ResetViewPosition();
         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
             iComponentSet.Add(iComponent);
-            iComponent.Init(this.entityData);
+            iComponent.Init();
         }
+        this.entityData.componentsAreInitialized = true;
     }
 
     public IComponent GetCachedIComponent<T>() {

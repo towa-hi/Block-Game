@@ -8,6 +8,5 @@ public class EntitySchema : SerializedScriptableObject {
     // set by editor
     public Vector2Int size;
     public EntityTypeEnum type;
-    public List<Component> components = new List<Component>();
-    public GameObject entityObject;
+    public EntityPrefabEnum prefab;
 }
