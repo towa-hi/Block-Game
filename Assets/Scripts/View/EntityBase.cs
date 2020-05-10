@@ -35,9 +35,11 @@ public class EntityBase : SerializedMonoBehaviour {
         return null;
     }
 
-    // public EntityData CreateEntityData() {
-    //     return new EntityData(this.initialEntityData.entitySchema, this.pos, this.facing, this.entityView.defaultColor, this.isFixed, this.isBoundary);
-    // }
+    public void DoFrame() {
+        foreach (IComponent component in iComponentSet) {
+            component.DoFrame();
+        }
+    }
 
     public void SetViewPosition(Vector2Int aPos) {
         this.transform.position = Util.V2IOffsetV3(aPos, this.entityData.size);

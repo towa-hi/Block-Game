@@ -9,8 +9,11 @@ public class GM : Singleton<GM> {
     public static InputManager inputManager;
     public static BoardManager boardManager;
     public static EditManager editManager;
+    public static PlayManager playManager;
     public static GridViewBase gridViewBase;
-
+    
+    public GameModeEnum gameMode;
+    [Header("Set In Editor")]
     public GameObject editPanel;
     public GameObject pausePanel;
     public GameObject blockPrefabMaster;
@@ -20,6 +23,8 @@ public class GM : Singleton<GM> {
     public bool isFullPaused;
 
     private void Awake() {
+        // set as editing by default
+        this.gameMode = GameModeEnum.EDITING;
         NewBoard();
     }
 
@@ -28,6 +33,7 @@ public class GM : Singleton<GM> {
         GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager>();
         GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
         GM.inputManager = this.boardManagerGameObject.GetComponent<InputManager>();
+        GM.playManager = this.boardManagerGameObject.GetComponent<PlayManager>();
         GM.gridViewBase = this.boardManagerGameObject.GetComponentInChildren<GridViewBase>();
         GM.boardManager.Init();
         GM.editManager.Init();
@@ -39,8 +45,20 @@ public class GM : Singleton<GM> {
         GM.editManager.Init();
     }
 
-    public void LoadLevelSaveData(LevelSaveData aLevelSaveData) {
-
+    public void SetGameMode(GameModeEnum aGameMode) {
+        this.gameMode = aGameMode;
+        switch (this.gameMode) {
+            case GameModeEnum.EDITING:
+                this.editPanel.SetActive(true);
+                GM.editManager.enabled = true;
+                GM.playManager.enabled = false;
+                break;
+            case GameModeEnum.PLAYING:
+                this.editPanel.SetActive(false);
+                GM.playManager.enabled = true;
+                GM.editManager.enabled = false;
+                break;
+        }
     }
 
     public static GameObject EntityPrefabEnumToPrefab(EntityPrefabEnum aEntityPrefabEnum) {

@@ -115,4 +115,8 @@ public class EntityData {
             this.facing = Vector2Int.right;
         }
     }
+
+    public void DoFrame() {
+        this.entityBase.DoFrame();
+    }
 }
