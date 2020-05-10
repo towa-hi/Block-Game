@@ -9,23 +9,22 @@ using Sirenix.Serialization;
 public class SaveLoad {
     // public static string saveFilename = "serializationTestBinary1";
     public static BoardData mySaveData;
-    public static string testFilename = "testLevelNew";
 
     public static void SaveBoard(BoardData aBoardData) {
-        // LevelSaveData newSave = new LevelSaveData();
-        string saveFilename = ConvertTitleToSafeFileName(aBoardData.title);
+        string saveFilename = ConvertTitleToSafeFileName(aBoardData.title) + ".board";
+        Debug.Log("SaveLoad - attempting to save " + saveFilename);
         byte[] bytes = SerializationUtility.SerializeValue<BoardData>(aBoardData, DataFormat.Binary);
-        // File.WriteAllBytes(Config.PATHTOLEVELJSON + saveFilename, bytes);
-        File.WriteAllBytes(Config.PATHTOLEVELJSON + testFilename, bytes);
+        File.WriteAllBytes(Config.PATHTOBOARDS + saveFilename, bytes);
     }
 
-    public static void LoadBoard() {
-        if (!File.Exists(Config.PATHTOLEVELJSON + testFilename)) {
+    public static void LoadBoard(string aFilename) {
+        if (!File.Exists(Config.PATHTOBOARDS + aFilename)) {
+            Debug.Log("SaveLoad - .board file with name " + aFilename + " not found!");
             return;
         }
-        byte[] bytes = File.ReadAllBytes(Config.PATHTOLEVELJSON + testFilename);
+        byte[] bytes = File.ReadAllBytes(Config.PATHTOBOARDS + aFilename);
         mySaveData = SerializationUtility.DeserializeValue<BoardData>(bytes, DataFormat.Binary);
-        
+        Debug.Log("SaveLoad - now loading " + aFilename);
         GM.I.LoadBoard(mySaveData);
     }
 

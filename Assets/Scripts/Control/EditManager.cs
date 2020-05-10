@@ -11,21 +11,23 @@ public class EditManager : SerializedMonoBehaviour {
     
 
     public EditModeEnum editMode;
+    public Vector2Int clickPosOffset;
     [Header("Picker Mode")]
     [SerializeField] EntitySchema pickerModePlaceSchema;
     [SerializeField] EntityData pickerModeLastPlacedEntityData;
-    
+    public EntityData pickerModeMoveEntity;
+    public Vector2Int pickerModeMovePos;
+
     public bool pickerModePlaceIsValid;
     [Header("Edit Mode")]
     public EntityData editModeClickedEntity;
 
-    [Header("Options Mode")]
-    [SerializeField] string newTitle;
-    [SerializeField] int newPar;
     [Header("Set In Editor")]
     public PreviewCubeBase previewCubeBase;
     public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
+    public FilePickerBase filePickerBase;
+    public CursorBase cursorBase;
 
     public void Init() {
         SetEditMode(EditModeEnum.PICKER);
@@ -34,10 +36,9 @@ public class EditManager : SerializedMonoBehaviour {
         this.pickerModeLastPlacedEntityData = null;
         this.editModeClickedEntity = null;
         this.pickerModeLastPlacedEntityData = null;
-        this.newTitle = GM.boardData.title;
-        this.newPar = GM.boardData.par;
-        this.editPanelBase.SetOptionsModeTitleField(this.newTitle);
+        this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
         this.previewStudioBase.Init();
+        
     }
 
     void Update() {
@@ -62,9 +63,9 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     void PickerModePlaceUpdate() {
-        this.previewCubeBase.SetPos(InputManager.I.mousePosV2);
+        this.previewCubeBase.SetPos(GM.inputManager.mousePosV2);
         this.pickerModePlaceIsValid = GM.boardData.IsRectEmpty(this.previewCubeBase.pos, this.previewCubeBase.size);
-        switch (InputManager.I.mouseState) {
+        switch (GM.inputManager.mouseState) {
             case MouseStateEnum.CLICKED:
                 if (this.pickerModePlaceIsValid) {
                     PickerModePlaceOnClick();
@@ -80,15 +81,6 @@ public class EditManager : SerializedMonoBehaviour {
                 } else {
                     this.previewCubeBase.SetColor(Color.red);
                 }
-                // if (this.previewCubeBase.pos != InputManager.Instance.mousePosV2) {
-                //     this.previewCubeBase.SetPos(InputManager.Instance.mousePosV2);
-                //     this.isPlacementAtMousePosValid = IsPlacementAtMousePosValid();
-                //     if (this.isPlacementAtMousePosValid) {
-                //         this.previewCubeBase.SetColor(Color.green);
-                //     } else {
-                //         this.previewCubeBase.SetColor(Color.red);
-                //     }
-                // }
                 break;
         }
     }
@@ -101,16 +93,75 @@ public class EditManager : SerializedMonoBehaviour {
         }
     }
 
-
-
     void PickerModeMoveUpdate() {
+        PickerModeMoveCursorUpdate();
+        switch (GM.inputManager.mouseState) {
+            case MouseStateEnum.CLICKED:
+                EntityData hoveredEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+                if (hoveredEntity != null) {
+                    if (hoveredEntity.IsMovableInPickerMode()) {
+                        this.pickerModeMoveEntity = hoveredEntity;
+                        this.pickerModeMoveEntity.entityView.SetGhost(true);
+                        this.clickPosOffset = GM.inputManager.mousePosV2 - this.pickerModeMoveEntity.pos;
+                        print(this.clickPosOffset);
+                    }
+                }
+                break;
+            case MouseStateEnum.HELD:
+                if (this.pickerModeMoveEntity != null) {
+                    this.pickerModeMovePos = GM.inputManager.mousePosV2 - this.clickPosOffset;
+                    this.pickerModeMoveEntity.entityBase.SetViewPosition(this.pickerModeMovePos);
+                }
+                break;
+            case MouseStateEnum.RELEASED:
+                if (this.pickerModeMoveEntity != null) {
+                    if (IsPickerModeMoveValid()) {
+                        this.pickerModeMoveEntity.SetPos(this.pickerModeMovePos);
+                    }
+                    this.pickerModeMoveEntity.entityBase.ResetViewPosition();
+                    this.pickerModeMoveEntity.entityView.SetGhost(false);
+                    this.pickerModeMoveEntity = null;
+                }
+                break;
+            case MouseStateEnum.DEFAULT:
+                break;
+        }
+    }
 
+    void PickerModeMoveCursorUpdate() {
+        if (GM.boardData.IsPosInBoard(GM.inputManager.mousePosV2)) {
+            this.cursorBase.gameObject.SetActive(true);
+            // if holding a entity to move
+            if (this.pickerModeMoveEntity != null) {
+                // set cursor pos to entity size and pos to place where entity will be dropped
+                this.cursorBase.SetSize(this.pickerModeMoveEntity.size);
+                this.cursorBase.SetPos(this.pickerModeMovePos);
+                // if that pos is invalid, cursor becomes red
+                if (IsPickerModeMoveValid()) {
+                    this.cursorBase.SetColor(Color.white);
+                } else {
+                    this.cursorBase.SetColor(Color.red);
+                }
+            } else {
+                // set cursor back to white when no entities held
+                this.cursorBase.SetColor(Color.white);
+                // check for an entity at mousePos and set cursor as that entity if true else reset
+                EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+                if (maybeAEntity != null && !maybeAEntity.isBoundary) {
+                    this.cursorBase.SetAsEntity(maybeAEntity);
+                } else {
+                    this.cursorBase.ResetCursorOnMousePos();
+                }
+            }
+        } else {
+            this.cursorBase.gameObject.SetActive(false);
+        }
     }
 
     void EditModeUpdate() {
-        switch (InputManager.I.mouseState) {
+        switch (GM.inputManager.mouseState) {
             case MouseStateEnum.CLICKED:
-                this.editModeClickedEntity = GM.boardData.GetEntityDataAtPos(InputManager.I.mousePosV2);
+                this.editModeClickedEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
                 if (this.editModeClickedEntity != null) {
                     this.previewCubeBase.SetColor(Color.white);
                     this.previewCubeBase.SetAsEntity(this.editModeClickedEntity);
@@ -122,6 +173,7 @@ public class EditManager : SerializedMonoBehaviour {
                 break;
         }
     }
+
 
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
@@ -136,6 +188,7 @@ public class EditManager : SerializedMonoBehaviour {
                 this.pickerModeLastPlacedEntityData = null;
                 break;
             case EditModeEnum.OPTIONS:
+                this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
                 break;
         }
     }
@@ -149,7 +202,7 @@ public class EditManager : SerializedMonoBehaviour {
                     }
                     break;
                 case EditModeEnum.EDIT:
-                print("edit mdoe right click");
+                print("edit mode right click");
                     if (this.editModeClickedEntity != null) {
                         EditModeReset();
                     }
@@ -188,6 +241,10 @@ public class EditManager : SerializedMonoBehaviour {
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
         this.pickerModePlaceSchema = aEntitySchema;
         previewCubeBase.SetAsSchema(aEntitySchema);
+    }
+
+    public bool IsPickerModeMoveValid() {
+        return GM.boardData.IsRectEmpty(this.pickerModeMovePos, this.pickerModeMoveEntity.size, this.pickerModeMoveEntity);
     }
 
     // edit mode
@@ -229,17 +286,19 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeTitleChange(string aTitle) {
         print("new title:" + aTitle);
-        this.newTitle = aTitle;
+        GM.boardData.title = aTitle;
     }
 
     public void OnOptionsModeParIntPickerChange(int aPar) {
         print("new par: " + aPar);
-        this.newPar = aPar;
+        GM.boardData.par = aPar;
     }
 
     public void OnOptionsModeLoadButtonClick() {
         print("load button clicked");
-        SaveLoad.LoadBoard();
+        // SaveLoad.LoadBoard();
+        GM.I.ToggleFullPauseGame(true);
+        this.filePickerBase.gameObject.SetActive(true);
     }
 
     public void OnOptionsModeSaveButtonClick() {
@@ -251,4 +310,14 @@ public class EditManager : SerializedMonoBehaviour {
         print("playtest button clicked");
     }
 
+    public void LoadLevelFromFilePicker(string aFilename) {
+        SaveLoad.LoadBoard(aFilename);
+        EndFilePicker();
+    }
+
+    public void EndFilePicker() {
+        this.filePickerBase.gameObject.SetActive(false);
+        GM.I.ToggleFullPauseGame(false);
+
+    }
 }

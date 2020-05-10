@@ -14,7 +14,7 @@ public class EditModePanelBase : SerializedMonoBehaviour {
     public Toggle isFixedToggle;
     public LongClickButton deleteButton;
 
-    void Awake() {
+    public void Init() {
         SetEntity(null);
     }
 

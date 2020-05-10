@@ -24,7 +24,6 @@ public class GameCell {
         this.panelColor = Color.white;
     }
 
-
     public void RegisterEntityData(EntityData aEntityData) {
         this.entityData = aEntityData;
     }

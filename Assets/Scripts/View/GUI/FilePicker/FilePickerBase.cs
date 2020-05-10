@@ -13,9 +13,9 @@ public class FilePickerBase : SerializedMonoBehaviour {
     public GameObject filePickerItemPrefabMaster;
     public Button loadButton;
     
-    public void Awake() {
-        DirectoryInfo dir = new DirectoryInfo(Config.PATHTOLEVELJSON);
-        FileInfo[] info = dir.GetFiles("*.json");
+    void OnEnable() {
+        DirectoryInfo dir = new DirectoryInfo(Config.PATHTOBOARDS);
+        FileInfo[] info = dir.GetFiles("*.board");
         this.itemBaseList = new List<FilePickerItemPanelBase>();
         foreach (FileInfo f in info) {
             GameObject filePickerItem = Instantiate(filePickerItemPrefabMaster, content.transform);
@@ -35,11 +35,11 @@ public class FilePickerBase : SerializedMonoBehaviour {
         }
     }
 
-    // public void OnLoadButtonClick() {
-    //     EditManager.Instance.LoadLevelFromFilePicker(currentFileName);
-    // }
+    public void OnLoadButtonClick() {
+        GM.editManager.LoadLevelFromFilePicker(currentFileName);
+    }
 
-    // public void OnCancelButtonClick() {
-    //     EditManager.Instance.EndFilePicker();
-    // }
+    public void OnCancelButtonClick() {
+        GM.editManager.EndFilePicker();
+    }
 }

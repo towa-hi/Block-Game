@@ -23,6 +23,4 @@ MonoBehaviour:
     SerializationNodes: []
   size: {x: 2, y: 3}
   type: 1
-  components: []
-  entityObject: {fileID: 7264846230685124840, guid: f6c54e25639ff614295f9e786175a770,
-    type: 3}
+  prefab: 1

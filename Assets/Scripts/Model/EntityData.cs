@@ -94,7 +94,9 @@ public class EntityData {
     }
     
     public void SetPos(Vector2Int aPos) {
+        GM.boardData.UnRegisterEntityData(this);
         this.pos = aPos;
+        GM.boardData.RegisterEntityData(this);
     }
 
     public void SetDefaultColor(Color aDefaultColor) {

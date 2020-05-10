@@ -72,11 +72,15 @@ public class BoardData {
         return entityDataInRect;
     }
 
-    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize) {
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
         // Util.DebugAreaPulse(aOrigin, aSize);
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
             if (GetEntityDataAtPos(currentPos) != null) {
-                return false;
+                if (aIgnoreEntity != null) {
+                    if (GetEntityDataAtPos(currentPos) != aIgnoreEntity) {
+                        return false;
+                    }
+                }
             }
         }
         return true;

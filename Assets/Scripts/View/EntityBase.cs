@@ -10,7 +10,7 @@ public class EntityBase : SerializedMonoBehaviour {
     private HashSet<IComponent> iComponentSet;
     public EntityView entityView;
     public EntityData entityData;
-    
+    public bool isInTempPos;
     // we want to initialize entityBase, all the iComponents and entityView with entityData
     public void Init(EntityData aEntityData) {
         this.entityData = aEntityData;
@@ -41,9 +41,11 @@ public class EntityBase : SerializedMonoBehaviour {
 
     public void SetViewPosition(Vector2Int aPos) {
         this.transform.position = Util.V2IOffsetV3(aPos, this.entityData.size);
+        this.isInTempPos = true;
     }
 
     public void ResetViewPosition() {
         this.transform.position = Util.V2IOffsetV3(this.entityData.pos, this.entityData.size);
+        this.isInTempPos = false;
     }
 }
