@@ -28,6 +28,7 @@ public class GM : Singleton<GM> {
         GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager>();
         GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
         GM.inputManager = this.boardManagerGameObject.GetComponent<InputManager>();
+        GM.gridViewBase = this.boardManagerGameObject.GetComponentInChildren<GridViewBase>();
         GM.boardManager.Init();
         GM.editManager.Init();
     }

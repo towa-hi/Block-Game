@@ -174,6 +174,9 @@ public class EditManager : SerializedMonoBehaviour {
         }
     }
 
+    void EditModeCursorUpdate() {
+
+    }
 
     public void SetEditMode(EditModeEnum aEditMode) {
         this.editMode = aEditMode;
@@ -264,7 +267,7 @@ public class EditManager : SerializedMonoBehaviour {
         } else {
             nodal.RemoveNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
         }
-
+        this.editPanelBase.SetEditModeEntity(this.editModeClickedEntity);
     }
     
     public void OnEditModeExtraButtonClick() {

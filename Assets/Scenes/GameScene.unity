@@ -3356,13 +3356,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1839361265}
   - component: {fileID: 1839361266}
-  m_Layer: 0
+  - component: {fileID: 1839361267}
+  m_Layer: 8
   m_Name: Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1839361265
 Transform:
   m_ObjectHideFlags: 0
@@ -3371,7 +3372,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1839361264}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 637639725399458366}
@@ -3420,13 +3421,35 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 0.32, y: 0.32}
+  m_DrawMode: 1
+  m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1839361267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839361264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2cb66595532224a94c7290a9995a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  myRenderer: {fileID: 1839361266}
 --- !u!1 &1886189334
 GameObject:
   m_ObjectHideFlags: 0
@@ -4231,6 +4254,7 @@ MonoBehaviour:
       Entry: 6
       Data: 
   editMode: 0
+  clickPosOffset: {x: 0, y: 0}
   pickerModePlaceSchema: {fileID: 0}
   pickerModeMovePos: {x: 0, y: 0}
   pickerModePlaceIsValid: 0
@@ -4238,6 +4262,7 @@ MonoBehaviour:
   previewStudioBase: {fileID: 1064089924}
   editPanelBase: {fileID: 1345539334078355866}
   filePickerBase: {fileID: 524927808}
+  cursorBase: {fileID: 1839361267}
 --- !u!114 &637639725399458364
 MonoBehaviour:
   m_ObjectHideFlags: 0

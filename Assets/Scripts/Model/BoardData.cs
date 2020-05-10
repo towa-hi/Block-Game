@@ -80,6 +80,8 @@ public class BoardData {
                     if (GetEntityDataAtPos(currentPos) != aIgnoreEntity) {
                         return false;
                     }
+                } else {
+                    return false;
                 }
             }
         }
