@@ -16,6 +16,10 @@ public class FilePickerBase : SerializedMonoBehaviour {
     void OnEnable() {
         DirectoryInfo dir = new DirectoryInfo(Config.PATHTOBOARDS);
         FileInfo[] info = dir.GetFiles("*.board");
+        // destroy any filepickeritem objects that might already exist
+        foreach (Transform child in content.transform) {
+            Destroy(child.gameObject);
+        }
         this.itemBaseList = new List<FilePickerItemPanelBase>();
         foreach (FileInfo f in info) {
             GameObject filePickerItem = Instantiate(filePickerItemPrefabMaster, content.transform);

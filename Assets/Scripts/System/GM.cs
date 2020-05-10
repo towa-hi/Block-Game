@@ -4,7 +4,6 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class GM : Singleton<GM> {
-    public GameObject boardManagerGameObject;
     public static BoardData boardData;
     public static InputManager inputManager;
     public static BoardManager boardManager;
@@ -14,6 +13,7 @@ public class GM : Singleton<GM> {
     
     public GameModeEnum gameMode;
     [Header("Set In Editor")]
+    public GameObject boardManagerGameObject;
     public GameObject editPanel;
     public GameObject pausePanel;
     public GameObject blockPrefabMaster;

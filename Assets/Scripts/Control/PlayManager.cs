@@ -8,7 +8,7 @@ public class PlayManager : SerializedMonoBehaviour {
     public SelectionStateEnum selectionState;
 
     public HashSet<EntityData> selectedEntitySet;
-    public EntityData clickedEntity;
+    public EntityData clickedEntityData;
     
     public void Init() {
         this.selectionState = SelectionStateEnum.UNSELECTED;
@@ -21,10 +21,12 @@ public class PlayManager : SerializedMonoBehaviour {
             case MouseStateEnum.DEFAULT:
                 break;
             case MouseStateEnum.CLICKED:
+                this.clickedEntityData = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
                 break;
             case MouseStateEnum.HELD:
                 break;
             case MouseStateEnum.RELEASED:
+                this.clickedEntityData = null;
                 break;
         }
 
