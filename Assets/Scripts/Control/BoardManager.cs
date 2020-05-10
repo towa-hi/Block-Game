@@ -37,7 +37,7 @@ public class BoardManager : SerializedMonoBehaviour {
         GM.boardData.UnRegisterEntityData(aEntityData);
         this.entityBaseList.Remove(aEntityData.entityBase);
         Destroy(aEntityData.entityBase.gameObject);
-        print("BoardManager2 - DestroyEntity: " + aEntityData.name);
+        print("BoardManager - DestroyEntity: " + aEntityData.name);
     }
 
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {

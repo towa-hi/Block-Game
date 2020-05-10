@@ -27,10 +27,6 @@ public class EditManager : SerializedMonoBehaviour {
     public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
 
-    void Awake() {
-        Init();
-    }
-
     public void Init() {
         SetEditMode(EditModeEnum.PICKER);
         this.boardManager = GM.boardManager;
