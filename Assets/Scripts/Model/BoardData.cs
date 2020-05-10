@@ -94,4 +94,8 @@ public class BoardData : SerializedScriptableObject {
     public static GameGrid GetGameGrid() {
         return BoardData.gameGrid;
     }
+
+    public static void UnpackLevelSaveData(LevelSaveData aLevelSaveData) {
+        // TODO finish this
+    }
 }

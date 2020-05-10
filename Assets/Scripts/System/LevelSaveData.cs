@@ -48,7 +48,7 @@ public struct BoardSaveData {
         this.entityDataSet = new HashSet<EntitySaveData>();
         foreach (EntityData entityData in BoardData.entityDataSet) {
             EntitySaveData entitySaveData = new EntitySaveData(entityData, entityData.entityBase);
-            entityDataSet.Add(entitySaveData);
+            this.entityDataSet.Add(entitySaveData);
         }
         this.title = BoardData.title;
         this.creator = BoardData.creator;
@@ -67,5 +67,9 @@ public class LevelSaveData {
     
     public LevelSaveData() {
         this.boardSaveData = new BoardSaveData(GM.I.boardData);
+    }
+
+    public static void UnpackLevelSaveData() {
+        
     }
 }

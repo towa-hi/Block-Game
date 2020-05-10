@@ -115,12 +115,6 @@ MonoBehaviour:
     - Name: isBoundary
       Entry: 5
       Data: true
-    - Name: hasNodesTEST
-      Entry: 5
-      Data: false
-    - Name: nodes
-      Entry: 6
-      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -198,16 +192,10 @@ MonoBehaviour:
       Data: 
     - Name: isFixed
       Entry: 5
-      Data: false
+      Data: true
     - Name: isBoundary
       Entry: 5
       Data: true
-    - Name: hasNodesTEST
-      Entry: 5
-      Data: false
-    - Name: nodes
-      Entry: 6
-      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -285,16 +273,10 @@ MonoBehaviour:
       Data: 
     - Name: isFixed
       Entry: 5
-      Data: false
+      Data: true
     - Name: isBoundary
       Entry: 5
       Data: true
-    - Name: hasNodesTEST
-      Entry: 5
-      Data: false
-    - Name: nodes
-      Entry: 6
-      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -376,12 +358,6 @@ MonoBehaviour:
     - Name: isBoundary
       Entry: 5
       Data: true
-    - Name: hasNodesTEST
-      Entry: 5
-      Data: false
-    - Name: nodes
-      Entry: 6
-      Data: 
     - Name: 
       Entry: 8
       Data: 

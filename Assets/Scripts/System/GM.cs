@@ -21,4 +21,8 @@ public class GM : Singleton<GM> {
         GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
         GM.boardManager.Init();
     }
+
+    public static void LoadLevelSaveData(LevelSaveData aLevelSaveData) {
+        
+    }
 }
