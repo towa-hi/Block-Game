@@ -149,10 +149,15 @@ public class EditManager : SerializedMonoBehaviour {
 
 
 public class EditTabPickerModeMoveState : GameState {
+    [SerializeField]
     EntityData entityData;
+    [SerializeField]
     Vector2Int movePos;
+    [SerializeField]
     Vector2Int clickPosOffset;
+    [SerializeField]
     bool isMoveValid;
+    
     public EditTabPickerModeMoveState() {
     }
 
@@ -220,7 +225,9 @@ public class EditTabPickerModeMoveState : GameState {
 }
 
 public class EditTabPickerModePlaceState : GameState {
-    public EntitySchema entitySchema;
+    [SerializeField]
+    EntitySchema entitySchema;
+    [SerializeField]
     bool isPlacementValid;
 
     public EditTabPickerModePlaceState(EntitySchema aEntitySchema) {

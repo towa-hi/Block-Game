@@ -196,6 +196,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf7ee63577519f747a1ff2a391b90bca, type: 3}
+--- !u!1 &27182300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1650506175512717270, guid: c2439f07fa8e7fe4ca7a14474e18d97f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1389592575}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &27182303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27182300}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &68976588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,7 +1912,10 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
   topPanel: {fileID: 1506629296}
   botPanel: {fileID: 785793155}
   iNodalToggleMaster: {fileID: 3804149655896168688, guid: 11567ca4a47c78048a99a0a86cfac0c1,
@@ -3270,11 +3295,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 637639725399458362}
+      objectReference: {fileID: 637639725399458364}
     - target: {fileID: 669930124088252190, guid: b8074da230c976a46b880f0239359d15,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnRightClick
+      value: OnRightClickDown
       objectReference: {fileID: 0}
     - target: {fileID: 669930124088252190, guid: b8074da230c976a46b880f0239359d15,
         type: 3}
@@ -3589,7 +3614,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1839361265
 Transform:
   m_ObjectHideFlags: 0
@@ -4545,21 +4570,15 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: pickerModeLastPlacedEntityData
+    - Name: stateMachine
+      Entry: 7
+      Data: 0|StateMachine, Assembly-CSharp
+    - Name: state
       Entry: 6
       Data: 
-    - Name: pickerModeMoveEntity
-      Entry: 6
+    - Name: 
+      Entry: 8
       Data: 
-    - Name: editModeClickedEntity
-      Entry: 6
-      Data: 
-  editMode: 0
-  clickPosOffset: {x: 0, y: 0}
-  pickerModePlaceSchema: {fileID: 0}
-  pickerModeMovePos: {x: 0, y: 0}
-  pickerModePlaceIsValid: 0
-  previewCubeBase: {fileID: 637639724780986950}
   previewStudioBase: {fileID: 1064089924}
   editPanelBase: {fileID: 1345539334078355866}
   filePickerBase: {fileID: 524927808}
@@ -4620,6 +4639,7 @@ MonoBehaviour:
   dragOffset: {x: 0, y: 0, z: 0}
   oldDragOffset: {x: 0, y: 0, z: 0}
   mouseState: 0
+  rightMouseState: 0
 --- !u!4 &637639725399458366
 Transform:
   m_ObjectHideFlags: 0
@@ -6443,7 +6463,7 @@ MonoBehaviour:
   optionsButton: {fileID: 1345539335293482714}
   titleInput: {fileID: 1345539335016362961}
   optionsModeSaveButton: {fileID: 1345539334222518730}
-  editManager: {fileID: 637639725399458362}
+  editManager: {fileID: 0}
 --- !u!114 &1345539334078355868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7936,7 +7956,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1345539335209936844}
   m_HandleRect: {fileID: 1345539335209936847}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 11
   m_OnValueChanged:
