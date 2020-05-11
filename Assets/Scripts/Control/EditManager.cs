@@ -29,7 +29,10 @@ public class EditManager : SerializedMonoBehaviour {
     public FilePickerBase filePickerBase;
     public CursorBase cursorBase;
 
+    StateMachine editStateMachine = new StateMachine();
+
     public void Init() {
+        this.editStateMachine.ChangeState(new EditTabPickerModeState(this));
         SetEditMode(EditModeEnum.PICKER);
         this.boardManager = GM.boardManager;
         this.pickerModePlaceSchema = null;
@@ -42,6 +45,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     void Update() {
+        this.editStateMachine.Update();
         switch (this.editMode) {
             case EditModeEnum.PICKER:
                 PickerModeUpdate();
@@ -184,13 +188,16 @@ public class EditManager : SerializedMonoBehaviour {
         this.previewCubeBase.SetActive(false);
         switch (aEditMode) {
             case EditModeEnum.PICKER:
+                this.editStateMachine.ChangeState(new EditTabPickerModeState(this));
                 break;
             case EditModeEnum.EDIT:
+                this.editStateMachine.ChangeState(new EditTabEditModeState(this));
                 EditModeSetEntity(this.pickerModeLastPlacedEntityData);
                 this.editModeClickedEntity = this.pickerModeLastPlacedEntityData;
                 this.pickerModeLastPlacedEntityData = null;
                 break;
             case EditModeEnum.OPTIONS:
+                this.editStateMachine.ChangeState(new EditTabOptionsModeState(this));
                 this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
                 break;
         }
@@ -323,4 +330,70 @@ public class EditManager : SerializedMonoBehaviour {
         GM.I.ToggleFullPauseGame(false);
 
     }
+
+
+
+
+
+    private class EditTabPickerModeState : GameState {
+        EditManager editManager;
+
+        public EditTabPickerModeState(EditManager aEditManager) {
+            this.editManager = aEditManager;
+        }
+
+        public void Enter() {
+            Debug.Log("EditTabPickerModeState - entering");
+        }
+
+        public void Execute() {
+            // Debug.Log("EditTabPickerModeState - executing");
+        }
+
+        public void Exit() {
+            Debug.Log("EditTabPickerModeState - exiting");
+        }
+    }
+
+    private class EditTabEditModeState : GameState {
+        EditManager editManager;
+
+        public EditTabEditModeState(EditManager aEditManager) {
+            this.editManager = aEditManager;
+        }
+
+        public void Enter() {
+            Debug.Log("EditTabEditModeState - entering");
+        }
+
+        public void Execute() {
+            // Debug.Log("EditTabEditModeState - executing");
+        }
+
+        public void Exit() {
+            Debug.Log("EditTabEditModeState - exiting");
+        }
+    }
+
+    private class EditTabOptionsModeState : GameState {
+        EditManager editManager;
+
+        public EditTabOptionsModeState(EditManager aEditManager) {
+            this.editManager = aEditManager;
+        }
+
+        public void Enter() {
+            Debug.Log("EditTabOptionsModeState - entering");
+        }
+
+        public void Execute() {
+            // Debug.Log("EditTabOptionsModeState - executing");
+        }
+
+        public void Exit() {
+            Debug.Log("EditTabOptionsModeState - exiting");
+        }
+    }
+
+
 }
