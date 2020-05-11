@@ -5,6 +5,6 @@ using Sirenix.OdinInspector;
 
 public interface GameState {
     void Enter();
-    void Execute();
+    void Update();
     void Exit();
 }

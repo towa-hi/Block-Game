@@ -10,7 +10,8 @@ public class GM : Singleton<GM> {
     public static EditManager editManager;
     public static PlayManager playManager;
     public static GridViewBase gridViewBase;
-    
+    public static CursorBase cursorBase;
+
     public GameModeEnum gameMode;
     [Header("Set In Editor")]
     public GameObject boardManagerGameObject;
@@ -35,6 +36,7 @@ public class GM : Singleton<GM> {
         GM.inputManager = this.boardManagerGameObject.GetComponent<InputManager>();
         GM.playManager = this.boardManagerGameObject.GetComponent<PlayManager>();
         GM.gridViewBase = this.boardManagerGameObject.GetComponentInChildren<GridViewBase>();
+        GM.cursorBase = this.boardManagerGameObject.GetComponentInChildren<CursorBase>();
         GM.boardManager.Init();
         GM.editManager.Init();
     }

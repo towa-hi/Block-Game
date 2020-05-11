@@ -15,7 +15,6 @@ public class EditPanelBase : SerializedMonoBehaviour {
     public InputField titleInput;
 
     public Button optionsModeSaveButton;
-    // public EditManager editManager;
     public EditManager editManager;
     Button[] topPanelArray;
     GameObject[] botPanelArray;
@@ -54,7 +53,7 @@ public class EditPanelBase : SerializedMonoBehaviour {
         foreach (GameObject botPanel in botPanelArray) {
             botPanel.SetActive(botPanel == this.activeBotPanel);
         }
-        this.editManager.SetEditMode(aEditMode);
+        GM.editManager.SetEditMode(aEditMode);
     }
 
     public void SetOptionsModeTitleField(string aValue) {
@@ -71,54 +70,54 @@ public class EditPanelBase : SerializedMonoBehaviour {
     // picker mode
 
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
-        this.editManager.OnPickerModeItemClick(aEntitySchema);
+        GM.editManager.OnPickerModeItemClick(aEntitySchema);
     }
 
     // edit mode
 
     public void OnEditModeColorPickerClick(Color aColor) {
-        this.editManager.OnEditModeColorPickerClick(aColor);
+        GM.editManager.OnEditModeColorPickerClick(aColor);
 
     }
     public void OnEditModeFixedToggle(bool aIsFixed) {
-        this.editManager.OnEditModeFixedToggle(aIsFixed);
+        GM.editManager.OnEditModeFixedToggle(aIsFixed);
     }
     
     public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
-        this.editManager.OnEditModeNodeToggle(aNodeToggleStruct);
+        GM.editManager.OnEditModeNodeToggle(aNodeToggleStruct);
     }
     public void OnEditModeExtraButtonClick() {
-        this.editManager.OnEditModeExtraButtonClick();
+        GM.editManager.OnEditModeExtraButtonClick();
     }
 
     public void OnEditModeFlipButtonClick() {
-        this.editManager.OnEditModeFlipButtonClick();
+        GM.editManager.OnEditModeFlipButtonClick();
     }
 
     public void OnEditModeDeleteButtonClick() {
-        this.editManager.OnEditModeDeleteButtonClick();
+        GM.editManager.OnEditModeDeleteButtonClick();
     }
 
     // options mode
 
     public void OnOptionsModeTitleChange(string aValue) {
         this.optionsModeSaveButton.interactable = (aValue.Length != 0);
-        this.editManager.OnOptionsModeTitleChange(aValue);
+        GM.editManager.OnOptionsModeTitleChange(aValue);
     }
 
     public void OnOptionsModeParIntPickerChange(int aValue) {
-        this.editManager.OnOptionsModeParIntPickerChange(aValue);
+        GM.editManager.OnOptionsModeParIntPickerChange(aValue);
     }
 
     public void OnOptionsModeLoadButtonClick() {
-        this.editManager.OnOptionsModeLoadButtonClick();
+        GM.editManager.OnOptionsModeLoadButtonClick();
     }
 
     public void OnOptionsModeSaveButtonClick() {
-        this.editManager.OnOptionsModeSaveButtonClick();
+        GM.editManager.OnOptionsModeSaveButtonClick();
     }
 
     public void OnOptionsModePlaytestButtonClick() {
-        this.editManager.OnOptionsModePlaytestButtonClick();
+        GM.editManager.OnOptionsModePlaytestButtonClick();
     }
 }

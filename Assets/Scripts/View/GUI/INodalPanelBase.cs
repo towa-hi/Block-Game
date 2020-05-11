@@ -25,38 +25,44 @@ public class INodalPanelBase : SerializedMonoBehaviour {
     public GameObject topPanel;
     public GameObject botPanel;
     public GameObject iNodalToggleMaster;
-    private Image entityBoundsImage;
     public OnNodeToggle onNodeToggle = new OnNodeToggle();
+    public EntityData entityData;
 
     public void SetEntity(EntityData aEntityData) {
-        foreach (Transform toggle in topPanel.transform) {
-            Destroy(toggle.gameObject);
-        }
-        foreach (Transform toggle in botPanel.transform) {
-            Destroy(toggle.gameObject);
-        }
-        if (aEntityData != null) {
-            if (!aEntityData.isBoundary) {
-                INodal nodal = aEntityData.entityBase.GetCachedIComponent<INodal>() as INodal;
-                if (nodal != null) {
-                    this.gameObject.SetActive(true);
-                    for (int x = 0; x < aEntityData.size.x; x++) {
-                        
-                        Vector2Int currentTopPos = new Vector2Int(x, aEntityData.size.y - 1);
-                        
-                        GameObject nodeUpToggle = Instantiate(iNodalToggleMaster, topPanel.transform);
-                        nodeUpToggle.GetComponent<Toggle>().onValueChanged.AddListener((value) => processToggle(currentTopPos, true, value));
-                        nodeUpToggle.GetComponent<Toggle>().SetIsOnWithoutNotify(nodal.upNodes.Contains(currentTopPos));
-                        Vector2Int currentBotPos = new Vector2Int(x, 0);
-                        GameObject nodeDownToggle = Instantiate(iNodalToggleMaster, botPanel.transform);
-                        nodeDownToggle.GetComponent<Toggle>().onValueChanged.AddListener((value) => processToggle(currentBotPos, false, value));
-                        nodeDownToggle.GetComponent<Toggle>().SetIsOnWithoutNotify(nodal.downNodes.Contains(currentBotPos));
+        if (aEntityData != entityData) {
+            foreach (Transform toggle in topPanel.transform) {
+                Destroy(toggle.gameObject);
+            }
+            foreach (Transform toggle in botPanel.transform) {
+                Destroy(toggle.gameObject);
+            }
+            if (aEntityData != null) {
+                if (!aEntityData.isBoundary) {
+                    INodal nodal = aEntityData.entityBase.GetCachedIComponent<INodal>() as INodal;
+                    if (nodal != null) {
+                        this.gameObject.SetActive(true);
+                        for (int x = 0; x < aEntityData.size.x; x++) {
+                            
+                            Vector2Int currentTopPos = new Vector2Int(x, aEntityData.size.y - 1);
+                            
+                            GameObject nodeUpToggle = Instantiate(iNodalToggleMaster, topPanel.transform);
+                            nodeUpToggle.GetComponent<Toggle>().onValueChanged.AddListener((value) => processToggle(currentTopPos, true, value));
+                            nodeUpToggle.GetComponent<Toggle>().SetIsOnWithoutNotify(nodal.upNodes.Contains(currentTopPos));
+                            Vector2Int currentBotPos = new Vector2Int(x, 0);
+                            GameObject nodeDownToggle = Instantiate(iNodalToggleMaster, botPanel.transform);
+                            nodeDownToggle.GetComponent<Toggle>().onValueChanged.AddListener((value) => processToggle(currentBotPos, false, value));
+                            nodeDownToggle.GetComponent<Toggle>().SetIsOnWithoutNotify(nodal.downNodes.Contains(currentBotPos));
+                        }
                     }
                 }
+            } else {
+                this.gameObject.SetActive(false);
             }
+            this.entityData = aEntityData;
         } else {
-            this.gameObject.SetActive(false);
+            print("InodalPanelbase declined to reload");
         }
+
         
     }
 

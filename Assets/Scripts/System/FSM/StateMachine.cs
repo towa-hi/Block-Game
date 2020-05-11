@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class StateMachine {
+    [SerializeField]
     GameState state;
 
     public void ChangeState(GameState aState) {
@@ -16,7 +17,11 @@ public class StateMachine {
 
     public void Update() {
         if (this.state != null) {
-            this.state.Execute();
+            this.state.Update();
         }
+    }
+
+    public GameState GetState() {
+        return this.state;
     }
 }

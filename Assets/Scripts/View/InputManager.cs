@@ -16,9 +16,10 @@ public class InputManager : Singleton<InputManager> {
     public Vector3 dragOffset;
     public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
+    public MouseStateEnum rightMouseState;
     bool mouseIsHeldDownOneFrame;
     bool mouseIsReleasedOneFrame;
-
+    
     void Awake() {
         this.controls = new Controls();
         this.mouseState = MouseStateEnum.DEFAULT;
@@ -26,20 +27,29 @@ public class InputManager : Singleton<InputManager> {
         this.mouseIsReleasedOneFrame = false;
     }
 
-    // public void OnNewMousePos(InputAction.CallbackContext context) {
-    //     this.oldMousePos = this.mousePos;
-    //     this.mousePos = GetMousePos();
-    // }
-
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
+                // TODO: WHAT THE FUCK IS THE DEAL WITH ISPOINTEROVERGAMEOBJECT RETURNING TRUE ON TOGGLES 
+                // BUT ONLY FOR THE FIRST COUPLE SECONDS AFTER YOU CLICK ON IT WTF???
                 if (!EventSystem.current.IsPointerOverGameObject()) {
+                    print("set to clicked");
                     this.mouseState = MouseStateEnum.CLICKED;
                 }
                 break;
             case InputActionPhase.Canceled:
                 this.mouseState = MouseStateEnum.RELEASED;
+                break;
+        }
+    }
+
+    public void OnRightClickDown(InputAction.CallbackContext context) {
+        switch (context.phase) {
+            case InputActionPhase.Performed:
+                this.rightMouseState = MouseStateEnum.CLICKED;
+                break;
+            case InputActionPhase.Canceled:
+                this.rightMouseState = MouseStateEnum.DEFAULT;
                 break;
         }
     }
@@ -53,7 +63,6 @@ public class InputManager : Singleton<InputManager> {
             this.mouseIsReleasedOneFrame = false;
             this.mouseState = MouseStateEnum.DEFAULT;
         }
-
         // this Update() must run before anything else.
         this.oldMousePos = this.mousePos;
         this.oldMousePosV2 = this.mousePosV2; 
@@ -73,7 +82,6 @@ public class InputManager : Singleton<InputManager> {
             case MouseStateEnum.HELD:
                 this.oldDragOffset = this.dragOffset;
                 this.dragOffset = this.mousePos - this.clickedPos;
-                OnHoldUpdate();
                 break;
             case MouseStateEnum.RELEASED:
                 // runs once for one frame before mouseState changes to DEFAULT
@@ -85,12 +93,6 @@ public class InputManager : Singleton<InputManager> {
                 break;
         }
     }
-
-
-
-    public void OnHoldUpdate() {
-    }
-
 
     public Vector3 GetMousePos() {
         RaycastHit hit;

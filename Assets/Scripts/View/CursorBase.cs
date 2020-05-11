@@ -34,4 +34,7 @@ public class CursorBase : SerializedMonoBehaviour {
         this.myRenderer.color = aColor;
     }
 
+    public void SetVisible(bool aIsVisible) {
+        this.myRenderer.enabled = aIsVisible;
+    }
 }

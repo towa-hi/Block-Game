@@ -3,278 +3,89 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-    BoardManager boardManager;
-    
-
-    public EditModeEnum editMode;
-    public Vector2Int clickPosOffset;
-    [Header("Picker Mode")]
-    [SerializeField] EntitySchema pickerModePlaceSchema;
-    [SerializeField] EntityData pickerModeLastPlacedEntityData;
-    public EntityData pickerModeMoveEntity;
-    public Vector2Int pickerModeMovePos;
-
-    public bool pickerModePlaceIsValid;
-    [Header("Edit Mode")]
-    public EntityData editModeClickedEntity;
 
     [Header("Set In Editor")]
-    public PreviewCubeBase previewCubeBase;
+    // public PreviewCubeBase previewCubeBase;
     public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;
     public CursorBase cursorBase;
 
-    StateMachine editStateMachine = new StateMachine();
+    public StateMachine stateMachine = new StateMachine();
 
+    // public OnPickerItemClickEvent onPickerItemClickEvent = new OnPickerItemClickEvent();
+    // public OnSetEditTabEvent onSetEditTabEvent = new OnSetEditTabEvent();
+    // public OnEditModeColorPickerClickEvent onEditModeColorPickerClickEvent = new OnEditModeColorPickerClickEvent();
+    // public  OnEditModeFixedToggleEvent onEditModeFixedToggleEvent = new OnEditModeFixedToggleEvent();
+    // public  OnOptionsModeTitleChangeEvent onOptionsModeTitleChangeEvent = new OnOptionsModeTitleChangeEvent();
+    // public  OnOptionsModeParChangeEvent onOptionsModeParChangeEvent = new OnOptionsModeParChangeEvent();
+    
     public void Init() {
-        this.editStateMachine.ChangeState(new EditTabPickerModeState(this));
+        this.stateMachine.ChangeState(new EditTabPickerModeMoveState());
         SetEditMode(EditModeEnum.PICKER);
-        this.boardManager = GM.boardManager;
-        this.pickerModePlaceSchema = null;
-        this.pickerModeLastPlacedEntityData = null;
-        this.editModeClickedEntity = null;
-        this.pickerModeLastPlacedEntityData = null;
         this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
         this.previewStudioBase.Init();
         
     }
 
     void Update() {
-        this.editStateMachine.Update();
-        switch (this.editMode) {
-            case EditModeEnum.PICKER:
-                PickerModeUpdate();
-                break;
-            case EditModeEnum.EDIT:
-                EditModeUpdate();
-                break;
-            case EditModeEnum.OPTIONS:
-                break;
-        }
-    }
-
-    void PickerModeUpdate() {
-        if (this.pickerModePlaceSchema != null) {
-            PickerModePlaceUpdate();
-        } else {
-            PickerModeMoveUpdate();
-        }
-    }
-
-    void PickerModePlaceUpdate() {
-        this.previewCubeBase.SetPos(GM.inputManager.mousePosV2);
-        this.pickerModePlaceIsValid = GM.boardData.IsRectEmpty(this.previewCubeBase.pos, this.previewCubeBase.size);
-        switch (GM.inputManager.mouseState) {
-            case MouseStateEnum.CLICKED:
-                if (this.pickerModePlaceIsValid) {
-                    PickerModePlaceOnClick();
-                }
-                break;
-            case MouseStateEnum.HELD:
-                break;
-            case MouseStateEnum.RELEASED:
-                break;
-            case MouseStateEnum.DEFAULT:
-                if (this.pickerModePlaceIsValid) {
-                    this.previewCubeBase.SetColor(Color.green);
-                } else {
-                    this.previewCubeBase.SetColor(Color.red);
-                }
-                break;
-        }
-    }
-
-    void PickerModePlaceOnClick() {
-        EntityData newEntityData = new EntityData(this.pickerModePlaceSchema, this.previewCubeBase.pos, Vector2Int.right, Constants.DEFAULTCOLOR);
-        if (GM.boardData.IsRectInBoard(this.previewCubeBase.pos, this.previewCubeBase.size)) {
-            this.boardManager.CreateEntityFromData(newEntityData);
-            this.pickerModeLastPlacedEntityData = newEntityData;
-        }
-    }
-
-    void PickerModeMoveUpdate() {
-        PickerModeMoveCursorUpdate();
-        switch (GM.inputManager.mouseState) {
-            case MouseStateEnum.CLICKED:
-                EntityData hoveredEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
-                if (hoveredEntity != null) {
-                    if (hoveredEntity.IsMovableInPickerMode()) {
-                        this.pickerModeMoveEntity = hoveredEntity;
-                        this.pickerModeMoveEntity.entityView.SetGhost(true);
-                        this.clickPosOffset = GM.inputManager.mousePosV2 - this.pickerModeMoveEntity.pos;
-                        print(this.clickPosOffset);
-                    }
-                }
-                break;
-            case MouseStateEnum.HELD:
-                if (this.pickerModeMoveEntity != null) {
-                    this.pickerModeMovePos = GM.inputManager.mousePosV2 - this.clickPosOffset;
-                    this.pickerModeMoveEntity.entityBase.SetViewPosition(this.pickerModeMovePos);
-                }
-                break;
-            case MouseStateEnum.RELEASED:
-                if (this.pickerModeMoveEntity != null) {
-                    if (IsPickerModeMoveValid()) {
-                        this.pickerModeMoveEntity.SetPos(this.pickerModeMovePos);
-                    }
-                    this.pickerModeMoveEntity.entityBase.ResetViewPosition();
-                    this.pickerModeMoveEntity.entityView.SetGhost(false);
-                    this.pickerModeMoveEntity = null;
-                }
-                break;
-            case MouseStateEnum.DEFAULT:
-                break;
-        }
-    }
-
-    void PickerModeMoveCursorUpdate() {
-        if (GM.boardData.IsPosInBoard(GM.inputManager.mousePosV2)) {
-            this.cursorBase.gameObject.SetActive(true);
-            // if holding a entity to move
-            if (this.pickerModeMoveEntity != null) {
-                // set cursor pos to entity size and pos to place where entity will be dropped
-                this.cursorBase.SetSize(this.pickerModeMoveEntity.size);
-                this.cursorBase.SetPos(this.pickerModeMovePos);
-                // if that pos is invalid, cursor becomes red
-                if (IsPickerModeMoveValid()) {
-                    this.cursorBase.SetColor(Color.white);
-                } else {
-                    this.cursorBase.SetColor(Color.red);
-                }
-            } else {
-                // set cursor back to white when no entities held
-                this.cursorBase.SetColor(Color.white);
-                // check for an entity at mousePos and set cursor as that entity if true else reset
-                EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
-                if (maybeAEntity != null && !maybeAEntity.isBoundary) {
-                    this.cursorBase.SetAsEntity(maybeAEntity);
-                } else {
-                    this.cursorBase.ResetCursorOnMousePos();
-                }
-            }
-        } else {
-            this.cursorBase.gameObject.SetActive(false);
-        }
-    }
-
-    void EditModeUpdate() {
-        switch (GM.inputManager.mouseState) {
-            case MouseStateEnum.CLICKED:
-                this.editModeClickedEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
-                if (this.editModeClickedEntity != null) {
-                    this.previewCubeBase.SetColor(Color.white);
-                    this.previewCubeBase.SetAsEntity(this.editModeClickedEntity);
-                    this.previewCubeBase.SetActive(true);
-                } else {
-                    this.previewCubeBase.SetActive(false);
-                }
-                this.editPanelBase.SetEditModeEntity(this.editModeClickedEntity);
-                break;
-        }
-    }
-
-    void EditModeCursorUpdate() {
-
+        this.stateMachine.Update();
     }
 
     public void SetEditMode(EditModeEnum aEditMode) {
-        this.editMode = aEditMode;
-        this.pickerModePlaceSchema = null;
-        this.previewCubeBase.SetActive(false);
         switch (aEditMode) {
             case EditModeEnum.PICKER:
-                this.editStateMachine.ChangeState(new EditTabPickerModeState(this));
+                this.stateMachine.ChangeState(new EditTabPickerModeMoveState());
                 break;
             case EditModeEnum.EDIT:
-                this.editStateMachine.ChangeState(new EditTabEditModeState(this));
-                EditModeSetEntity(this.pickerModeLastPlacedEntityData);
-                this.editModeClickedEntity = this.pickerModeLastPlacedEntityData;
-                this.pickerModeLastPlacedEntityData = null;
+                this.stateMachine.ChangeState(new EditTabEditModeState());
                 break;
             case EditModeEnum.OPTIONS:
-                this.editStateMachine.ChangeState(new EditTabOptionsModeState(this));
+                this.stateMachine.ChangeState(new EditTabOptionsModeState());
                 this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
                 break;
         }
     }
 
-    public void OnRightClick(InputAction.CallbackContext context) {
-        if (context.phase == InputActionPhase.Performed) {
-            switch (this.editMode) {
-                case EditModeEnum.PICKER:
-                    if (this.pickerModePlaceSchema != null) {
-                        PickerModePlaceReset();
-                    }
-                    break;
-                case EditModeEnum.EDIT:
-                print("edit mode right click");
-                    if (this.editModeClickedEntity != null) {
-                        EditModeReset();
-                    }
-                    break;
-                case EditModeEnum.OPTIONS:
-                    break;
-            }
-        }
-    }
-
-    void PickerModePlaceReset() {
-        this.pickerModePlaceSchema = null;
-        this.pickerModeLastPlacedEntityData = null;
-        this.previewCubeBase.SetActive(false);
-    }
-
-    public void EditModeReset() {
-        this.editModeClickedEntity = null;
-        this.previewCubeBase.SetActive(false);
-        EditModeSetEntity(null);
-    }
-
-    public void EditModeSetEntity(EntityData aEntityData) {
-        this.previewCubeBase.SetActive(aEntityData != null);
+    public void SetEditModeEntity(EntityData aEntityData) {
         if (aEntityData != null) {
-            this.previewCubeBase.SetColor(Color.white);
-            this.previewCubeBase.SetAsEntity(aEntityData);
-            
+            print("set edit entity to " + aEntityData.name);
         }
-        
         this.editPanelBase.SetEditModeEntity(aEntityData);
     }
 
     // picker mode
 
     public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
-        this.pickerModePlaceSchema = aEntitySchema;
-        previewCubeBase.SetAsSchema(aEntitySchema);
-    }
-
-    public bool IsPickerModeMoveValid() {
-        return GM.boardData.IsRectEmpty(this.pickerModeMovePos, this.pickerModeMoveEntity.size, this.pickerModeMoveEntity);
+        this.stateMachine.ChangeState(new EditTabPickerModePlaceState(aEntitySchema));
     }
 
     // edit mode
 
     public void OnEditModeColorPickerClick(Color aColor) {
-        this.editModeClickedEntity.SetDefaultColor(aColor);
+        if (this.stateMachine.GetState() is EditTabEditModeState) {
+            EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
+            state.ChangeEntityColor(aColor);
+        }
     }
     public void OnEditModeFixedToggle(bool aIsFixed) {
-        this.editModeClickedEntity.isFixed = aIsFixed;
+        if (this.stateMachine.GetState() is EditTabEditModeState) {
+            EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
+            state.ChangeEntityFixed(aIsFixed);
+        }
+        
     }
 
     public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
-        INodal nodal = this.editModeClickedEntity.entityBase.GetCachedIComponent<INodal>() as INodal;
-        Vector2Int currentPos = aNodeToggleStruct.node;
-        if (aNodeToggleStruct.toggled) {
-            nodal.AddNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
-        } else {
-            nodal.RemoveNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
+        if (this.stateMachine.GetState() is EditTabEditModeState) {
+            EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
+            state.ChangeEntityNodes(aNodeToggleStruct);
         }
-        this.editPanelBase.SetEditModeEntity(this.editModeClickedEntity);
     }
     
     public void OnEditModeExtraButtonClick() {
@@ -282,14 +93,17 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void OnEditModeFlipButtonClick() {
-        this.editModeClickedEntity.FlipEntity();
+        if (this.stateMachine.GetState() is EditTabEditModeState) {
+            EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
+            state.FlipEntity();
+        }
     }
 
     public void OnEditModeDeleteButtonClick() {
-        EditModeSetEntity(null);
-        this.boardManager.DestroyEntity(this.editModeClickedEntity);
-        this.editModeClickedEntity = null;
-        print("delete button clicked");
+        if (this.stateMachine.GetState() is EditTabEditModeState) {
+            EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
+            state.DeleteEntity();
+        }
     }
 
     // options mode
@@ -331,69 +145,235 @@ public class EditManager : SerializedMonoBehaviour {
 
     }
 
-
-
-
-
-    private class EditTabPickerModeState : GameState {
-        EditManager editManager;
-
-        public EditTabPickerModeState(EditManager aEditManager) {
-            this.editManager = aEditManager;
-        }
-
-        public void Enter() {
-            Debug.Log("EditTabPickerModeState - entering");
-        }
-
-        public void Execute() {
-            // Debug.Log("EditTabPickerModeState - executing");
-        }
-
-        public void Exit() {
-            Debug.Log("EditTabPickerModeState - exiting");
-        }
-    }
-
-    private class EditTabEditModeState : GameState {
-        EditManager editManager;
-
-        public EditTabEditModeState(EditManager aEditManager) {
-            this.editManager = aEditManager;
-        }
-
-        public void Enter() {
-            Debug.Log("EditTabEditModeState - entering");
-        }
-
-        public void Execute() {
-            // Debug.Log("EditTabEditModeState - executing");
-        }
-
-        public void Exit() {
-            Debug.Log("EditTabEditModeState - exiting");
-        }
-    }
-
-    private class EditTabOptionsModeState : GameState {
-        EditManager editManager;
-
-        public EditTabOptionsModeState(EditManager aEditManager) {
-            this.editManager = aEditManager;
-        }
-
-        public void Enter() {
-            Debug.Log("EditTabOptionsModeState - entering");
-        }
-
-        public void Execute() {
-            // Debug.Log("EditTabOptionsModeState - executing");
-        }
-
-        public void Exit() {
-            Debug.Log("EditTabOptionsModeState - exiting");
-        }
-    }
-
-
 }
+
+
+public class EditTabPickerModeMoveState : GameState {
+    EntityData entityData;
+    Vector2Int movePos;
+    Vector2Int clickPosOffset;
+    bool isMoveValid;
+    public EditTabPickerModeMoveState() {
+    }
+
+    public void Enter() {
+        // Debug.Log("EditTabPickerModeState - entering"); 
+        GM.cursorBase.SetVisible(true);      
+    }
+
+    public void Update() {
+        // Debug.Log("EditTabPickerModeState - updating");
+        CursorUpdate();
+        switch (GM.inputManager.mouseState) {
+            case MouseStateEnum.CLICKED:
+                EntityData hoveredEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+                if (hoveredEntity != null) {
+                    if (hoveredEntity.IsMovableInPickerMode()) {
+                        this.entityData = hoveredEntity;
+                        this.clickPosOffset = GM.inputManager.mousePosV2 - this.entityData.pos;
+                    }
+                }
+                break;
+            case MouseStateEnum.HELD:
+                if (this.entityData != null) {
+                    this.isMoveValid = GM.boardData.IsRectEmpty(this.movePos, this.entityData.size, this.entityData);
+                    this.movePos = GM.inputManager.mousePosV2 - this.clickPosOffset;
+                    this.entityData.entityBase.SetViewPosition(this.movePos);
+                }
+                break;
+            case MouseStateEnum.RELEASED:
+                if (this.entityData != null) {
+                    if (this.isMoveValid) {
+                        this.entityData.SetPos(this.movePos);
+                    }
+                    this.entityData.entityBase.ResetViewPosition();
+                    this.entityData = null;
+                }
+                break;
+        }
+    }
+
+    void CursorUpdate() {
+        if (this.entityData != null) {
+            GM.cursorBase.SetSize(this.entityData.size);
+            GM.cursorBase.SetPos(this.movePos);
+            if (isMoveValid) {
+                GM.cursorBase.SetColor(Color.green);
+            } else {
+                GM.cursorBase.SetColor(Color.red);
+            }
+        } else {
+            GM.cursorBase.SetColor(Color.white);
+            EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+            if (maybeAEntity != null && !maybeAEntity.isBoundary) {
+                GM.cursorBase.SetAsEntity(maybeAEntity);
+            } else {
+                GM.cursorBase.ResetCursorOnMousePos();
+            }
+        }
+    }
+
+    public void Exit() {
+        GM.cursorBase.SetVisible(false);
+        // Debug.Log("EditTabPickerModeState - exiting");
+    }
+}
+
+public class EditTabPickerModePlaceState : GameState {
+    public EntitySchema entitySchema;
+    bool isPlacementValid;
+
+    public EditTabPickerModePlaceState(EntitySchema aEntitySchema) {
+        this.entitySchema = aEntitySchema;
+    }
+
+    public void Enter() {
+        // Debug.Log("EditTabPickerModePlaceState - entering");
+    }
+
+    public void Update() {
+        // Debug.Log("EditTabPickerModePlaceState - updating");
+        CursorUpdate();
+        this.isPlacementValid = GM.boardData.IsRectEmpty(GM.inputManager.mousePosV2, this.entitySchema.size);
+        if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
+            if (this.isPlacementValid) {
+                EntityData entityData = new EntityData(this.entitySchema, GM.inputManager.mousePosV2, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
+                GM.boardManager.CreateEntityFromData(entityData);
+            }
+        } else if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
+            GM.editManager.stateMachine.ChangeState(new EditTabPickerModeMoveState());
+        }
+    }
+
+    void CursorUpdate() {
+        GM.cursorBase.SetVisible(true);
+        GM.cursorBase.SetSize(this.entitySchema.size);
+        GM.cursorBase.SetPos(GM.inputManager.mousePosV2);
+        if (this.isPlacementValid) {
+            GM.cursorBase.SetColor(Color.green);
+        } else {
+            GM.cursorBase.SetColor(Color.red);
+        }
+    }
+    
+    public void Exit() {
+        GM.cursorBase.SetVisible(false);
+        // Debug.Log("EditTabPickerModePlaceState - exiting");
+    }
+}
+
+public class EditTabEditModeState : GameState {
+    [SerializeField]
+    EntityData entityData;
+
+    public EditTabEditModeState() {
+        Debug.Log("Instantiating EditTabEditModeState setting entityData to null");
+        this.entityData = null;
+    }
+
+    public void Enter() {
+        // Debug.Log("EditTabEditModeState - entering");
+        GM.cursorBase.SetColor(Color.white);
+        GM.cursorBase.SetVisible(true);
+        GM.editManager.SetEditModeEntity(null);
+    }
+
+    public void Update() {
+        UpdateCursor();
+        // Debug.Log("EditTabEditModeState - updating");
+        if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
+            Debug.Log("setting entityData");
+            this.entityData = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+            GM.editManager.SetEditModeEntity(this.entityData);
+        } else if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
+            this.entityData = null;
+            GM.editManager.SetEditModeEntity(null);
+        }
+    }
+
+    void UpdateCursor() {
+        if (this.entityData != null) {
+            GM.cursorBase.SetAsEntity(this.entityData);
+        } else {
+            GM.cursorBase.SetColor(Color.white);
+            EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
+            if (maybeAEntity != null) {
+                GM.cursorBase.SetAsEntity(maybeAEntity);
+                GM.cursorBase.SetColor(Color.green);
+            } else {
+                GM.cursorBase.ResetCursorOnMousePos();
+            }
+        }
+    }
+
+
+    public void ChangeEntityNodes(NodeToggleStruct aNodeToggleStruct) {
+        INodal nodal = this.entityData.entityBase.GetCachedIComponent<INodal>() as INodal;
+        Vector2Int currentPos = aNodeToggleStruct.node;
+        if (aNodeToggleStruct.toggled) {
+            nodal.AddNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
+        } else {
+            nodal.RemoveNode(aNodeToggleStruct.node, aNodeToggleStruct.upDown);
+        }
+        GM.editManager.SetEditModeEntity(this.entityData);
+    } 
+
+    public void ChangeEntityColor(Color aColor) {
+        this.entityData.SetDefaultColor(aColor);
+    }
+
+    public void ChangeEntityFixed(bool aIsFixed) {
+        this.entityData.isFixed = aIsFixed;
+    }
+
+    public void FlipEntity() {
+        if (this.entityData.facing == Vector2Int.right) {
+            this.entityData.facing = Vector2Int.left;
+        } else if (this.entityData.facing == Vector2Int.left) {
+            this.entityData.facing = Vector2Int.right;
+        }
+    }
+
+    public void DeleteEntity() {
+        GM.editManager.SetEditModeEntity(null);
+        GM.boardManager.DestroyEntity(this.entityData);
+        this.entityData = null;
+        Debug.Log("EditTabEditModeState - deleted entity");
+    }
+
+    public void Exit() {
+        GM.cursorBase.SetVisible(false);
+        // Debug.Log("EditTabEditModeState - exiting");
+    }
+}
+
+public class EditTabOptionsModeState : GameState {
+
+    public EditTabOptionsModeState() {
+    }
+
+    public void Enter() {
+        // Debug.Log("EditTabOptionsModeState - entering");
+    }
+
+    public void Update() {
+        // Debug.Log("EditTabOptionsModeState - updating");
+    }
+
+    public void Exit() {
+        // Debug.Log("EditTabOptionsModeState - exiting");
+    }
+}
+
+// [System.Serializable]
+// public class OnPickerItemClickEvent : UnityEvent<EntitySchema>{};
+// [System.Serializable]
+// public class OnSetEditTabEvent : UnityEvent<int> {};
+// [System.Serializable]
+// public class OnEditModeColorPickerClickEvent : UnityEvent<Color> {};
+// [System.Serializable]
+// public class OnEditModeFixedToggleEvent : UnityEvent<bool> {};
+// [System.Serializable]
+// public class OnOptionsModeTitleChangeEvent : UnityEvent<string> {};
+// [System.Serializable]
+// public class OnOptionsModeParChangeEvent : UnityEvent<int> {};

@@ -75,15 +75,20 @@ public class BoardData {
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
         // Util.DebugAreaPulse(aOrigin, aSize);
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
-            if (GetEntityDataAtPos(currentPos) != null) {
-                if (aIgnoreEntity != null) {
-                    if (GetEntityDataAtPos(currentPos) != aIgnoreEntity) {
+            if (IsPosInBoard(currentPos)) {
+                if (GetEntityDataAtPos(currentPos) != null) {
+                    if (aIgnoreEntity != null) {
+                        if (GetEntityDataAtPos(currentPos) != aIgnoreEntity) {
+                            return false;
+                        }
+                    } else {
                         return false;
                     }
-                } else {
-                    return false;
                 }
+            } else {
+                return false;
             }
+            
         }
         return true;
     }
