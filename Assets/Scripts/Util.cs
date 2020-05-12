@@ -74,4 +74,22 @@ public class Util {
             }
         }
     }
+
+    // public static bool WillAttackerWin(EntityData aAttacker, EntityData aDefender) {
+    //     if (aAttacker.team != aDefender.team) {
+    //         if (defenderIDeath != null && attackerIKillOnTouch != null) {
+    //             if (attackerIKillOnTouch.power > defenderIDeath.defense) {
+    //                 return true;
+    //             } else {
+    //                 Debug.Log("WillAttackerWin - attacker lacks power");
+    //                 return false;
+    //             }
+    //         } else {
+    //             Debug.Log("WillAttackerWin - one entity lacks required component");
+    //         }
+    //     } else {
+    //         Debug.Log("WillAttackerWin - both entities are on the same team");
+    //     }
+    //     return false;
+    // }
 }

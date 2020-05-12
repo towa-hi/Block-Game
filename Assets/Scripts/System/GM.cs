@@ -40,15 +40,16 @@ public class GM : Singleton<GM> {
         GM.cursorBase = this.boardManagerGameObject.GetComponentInChildren<CursorBase>();
         GM.boardManager.Init();
         GM.editManager.Init();
+        GM.playManager.Init();
         AddBoundaries();
     }
 
     public void AddBoundaries() {
         EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
         EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.MOB, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
+        EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.PLAYER, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
         GM.boardManager.CreateEntityFromData(leftBoundary);
         GM.boardManager.CreateEntityFromData(rightBoundary);
         GM.boardManager.CreateEntityFromData(upBoundary);

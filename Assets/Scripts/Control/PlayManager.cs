@@ -10,10 +10,13 @@ public class PlayManager : SerializedMonoBehaviour {
     public HashSet<EntityData> selectedEntitySet;
     public EntityData clickedEntityData;
     
+    public HashSet<EntityData> destroyOnNextFrame;
+
     public void Init() {
         this.selectionState = SelectionStateEnum.UNSELECTED;
         this.timeState = TimeStateEnum.NORMAL;
         this.selectedEntitySet = new HashSet<EntityData>();
+        this.destroyOnNextFrame = new HashSet<EntityData>();
     }
 
     void Update() {
@@ -39,5 +42,21 @@ public class PlayManager : SerializedMonoBehaviour {
             case TimeStateEnum.PAUSED:
                 break;
         }
+
+        foreach (EntityData deadEntity in this.destroyOnNextFrame) {
+            GM.boardManager.DestroyEntity(deadEntity);
+        }
+        this.destroyOnNextFrame.Clear();
     }
+
+    public void BeginEntityDeath(EntityData aEntityData) {
+        GM.boardData.BanishEntity(aEntityData);
+        aEntityData.Die();
+    }    
+
+    public void FinishEntityDeath(EntityData aEntityData) {
+        this.destroyOnNextFrame.Add(aEntityData);
+    }
+
+
 }

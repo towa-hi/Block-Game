@@ -50,5 +50,7 @@ public class BoardManager : SerializedMonoBehaviour {
         // set view
         aEntityData.entityBase.SetViewPosition(aPos);
     }
+
+    
     
 }

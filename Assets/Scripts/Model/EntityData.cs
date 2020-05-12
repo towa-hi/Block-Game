@@ -36,9 +36,16 @@ public class EntityData {
     public Color defaultColor;
     public bool isFixed;
     public bool isBoundary;
+    public TeamEnum team;
     // INodal data
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
+
+    public bool isDying;
+    public int touchAttack;
+    public int fallAttack;
+    public int touchDefense;
+    public int fallDefense;
     StateMachine state;
 
     // use when creating from a schema
@@ -55,6 +62,8 @@ public class EntityData {
         this.name = GenerateName();
         this.upNodes = new HashSet<Vector2Int>();
         this.downNodes = new HashSet<Vector2Int>();
+        SetDefaultTeam();
+        this.isDying = false;
     }
 
     // use when creating from scratch
@@ -71,6 +80,41 @@ public class EntityData {
         this.name = GenerateName();
         this.upNodes = new HashSet<Vector2Int>();
         this.downNodes = new HashSet<Vector2Int>();
+        SetDefaultTeam();
+        this.isDying = false;
+    }
+    // TODO: get rid of this stupid thing
+    public void SetDefaultTeam() {
+        switch (this.type) {
+            case EntityTypeEnum.BLOCK:
+                this.team = TeamEnum.NEUTRAL;
+                this.touchAttack = 0;
+                this.touchDefense = 999;
+                this.fallAttack = 0;
+                this.fallDefense = 999;
+                break;
+            case EntityTypeEnum.MOB:
+                this.team = TeamEnum.ENEMY;
+                this.touchAttack = 3;
+                this.touchDefense = 3;
+                this.fallAttack = 0;
+                this.fallDefense = 2;
+                break;
+            case EntityTypeEnum.PLAYER:
+                this.team = TeamEnum.PLAYER;
+                this.touchAttack = 0;
+                this.touchDefense = 1;
+                this.fallAttack = 0;
+                this.fallDefense = 2;
+                break;
+            case EntityTypeEnum.SPECIALBLOCK:
+                this.team = TeamEnum.NEUTRAL;
+                this.touchAttack = 0;
+                this.touchDefense = 999;
+                this.fallAttack = 0;
+                this.fallDefense = 999;
+                break;
+        }
     }
 
     public List<Vector2Int> GetOccupiedPos() {
@@ -94,6 +138,11 @@ public class EntityData {
         }
     }
     
+    public void Die() {
+        Debug.Log("I'm dying");
+        this.isDying = true;
+    }
+
     public void SetPos(Vector2Int aPos) {
         this.pos = aPos;
     }

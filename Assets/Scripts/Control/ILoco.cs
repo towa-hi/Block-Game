@@ -11,17 +11,22 @@ public class ILoco : IComponent {
     [SerializeField]
     StateMachine stateMachine;
     [Header("Set In Editor")]
+    public bool canKillOnTouch;
+    public int touchDamage;
+    public bool canKillOnFall;
+    public int fallDamage;
+    public bool canHop;
     public float walkingMoveSpeed;
     public float turningMoveSpeed;
     public float hoppingMoveSpeed;
     public AnimationCurve hoppingCurve;
-
+    public HashSet<EntityData> entitiesToKill;
 
     public override void Init() {
         this.stateMachine = new StateMachine();
         this.destination = Vector2Int.zero;
         this.stateMachine.ChangeState(new ILocoWaitingState(this));
-
+        this.entitiesToKill = new HashSet<EntityData>();
     }
 
     public override void DoFrame() {
@@ -36,25 +41,36 @@ public class ILoco : IComponent {
                 Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
                 Vector2Int facingUpPos = facingPos + Vector2Int.up;
                 Vector2Int facingDownPos = facingPos + Vector2Int.down;
-                if (GM.boardData.IsEntityPosGroundedAndValid(facingUpPos, this.entityData)) {
-                    print("hopping up");
-                    this.destination = facingUpPos;
-                    this.stateMachine.ChangeState(new ILocoHoppingState(this));
-                } else if (GM.boardData.IsEntityPosGroundedAndValid(facingPos, this.entityData)) {
-                    print("walking side");
-                    this.destination = facingPos;
-                    this.stateMachine.ChangeState(new ILocoWalkingState(this));
-                } else if (GM.boardData.IsEntityPosGroundedAndValid(facingDownPos, this.entityData)) {
-                    print("hopping down");
-                    this.destination = facingDownPos;
-                    this.stateMachine.ChangeState(new ILocoHoppingState(this));
+                if (this.canHop) {
+                    if (BumpCheck(facingUpPos, this.entityData)) {
+                        // print("hopping up");
+                        this.destination = facingUpPos;
+                        this.stateMachine.ChangeState(new ILocoHoppingState(this));
+                    } else if (BumpCheck(facingPos, this.entityData)) {
+                        // print("walking side");
+                        this.destination = facingPos;
+                        this.stateMachine.ChangeState(new ILocoWalkingState(this));
+                    } else if (BumpCheck(facingDownPos, this.entityData)) {
+                        // print("hopping down");
+                        this.destination = facingDownPos;
+                        this.stateMachine.ChangeState(new ILocoHoppingState(this));
+                    } else {
+                        // print("turning");
+                        this.destination = Vector2Int.zero;
+                        this.stateMachine.ChangeState(new ILocoTurningState(this));
+                    }
                 } else {
-                    this.destination = Vector2Int.zero;
-                    this.stateMachine.ChangeState(new ILocoTurningState(this));
+                    if (BumpCheck(facingPos, this.entityData)) {
+                        // print("walking side");
+                        this.destination = facingPos;
+                        this.stateMachine.ChangeState(new ILocoWalkingState(this));
+                    } else {
+                        // print("turning");
+                        this.destination = Vector2Int.zero;
+                        this.stateMachine.ChangeState(new ILocoTurningState(this));
+                    }
                 }
-
             }
-            
         }
         this.stateMachine.Update();
     }
@@ -63,6 +79,68 @@ public class ILoco : IComponent {
         this.doNext = aDoNext;
     }
 
+    public bool BumpCheck(Vector2Int aPos, EntityData aEntityData) {
+        bool isBlocked = false;
+        HashSet<EntityData> maybeEntitiesToKill = new HashSet<EntityData>();
+        if (GM.boardData.IsRectInBoard(aPos, aEntityData.size)) {
+            HashSet<EntityData> entitySet = GM.boardData.SetOfEntitiesInRect(aPos, aEntityData.size);
+            // foreach touched entity in the place i'm about to move to
+            foreach (EntityData touchedEntityData in entitySet) {
+                // if touched entity not me
+                if (touchedEntityData != aEntityData) {
+                    // if i can kill touched entity
+                    if (aEntityData.touchAttack > touchedEntityData.touchDefense) {
+                        maybeEntitiesToKill.Add(touchedEntityData);
+                    } else {
+                        // i'm blocked
+                        isBlocked = true;
+                    }
+                }
+            }
+            if (isBlocked != true) {
+                // check if ground exists after all this while ignoring everything im about to kill
+                for (int x = aPos.x; x < aPos.x + aEntityData.size.x; x++) {
+                    Vector2Int currentPos = new Vector2Int(x, aPos.y - 1);
+                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.cyan);
+                    EntityData currentEntity = GM.boardData.GetEntityDataAtPos(currentPos);
+                    // if a entity exists in floor location
+                    if (currentEntity != null) {
+                        // if entity is not self
+                        if (currentEntity != aEntityData) {
+                            // if entity is not about to be killed
+                            if (!maybeEntitiesToKill.Contains(currentEntity)) {
+                                this.entitiesToKill = maybeEntitiesToKill;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool IsEntityPosGroundedAndValid(Vector2Int aPos, EntityData aEntityData) {
+        if (GM.boardData.IsEntityPosValid(aPos, aEntityData)) {
+            // Debug.Log("entity pos is valid" + aPos);
+            if (!GM.boardData.IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData)) {
+                // Debug.Log("entity pos is grounded returning true" + aPos);
+                return true;
+            } else {
+                // Debug.Log("entity pos is not grounded" + aPos);
+            }
+        } else {
+            // Debug.Log("entity pos is invalid" + aPos);
+        }
+        return false;
+    }
+    
+    public void KillEntities() {
+        foreach (EntityData entityToKill in this.entitiesToKill) {
+            GM.playManager.BeginEntityDeath(entityToKill);
+        }
+        this.entitiesToKill.Clear();
+    }
     class ILocoWalkingState : GameState {
         ILoco iLoco;
         EntityBase entityBase;
@@ -79,8 +157,9 @@ public class ILoco : IComponent {
         }
 
         public void Enter() {
-            print("ILocoWalkingState - entered");
+            // print("ILocoWalkingState - entered");
             this.iLoco.DoNext(false);
+            this.iLoco.KillEntities();
             this.startPosition = this.entityBase.transform.position;
             GM.boardData.MoveEntity(this.iLoco.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.iLoco.destination, this.entityData.size);
@@ -116,7 +195,7 @@ public class ILoco : IComponent {
         }
 
         public void Enter() {
-            print("ILocoTurningState - entered");
+            // print("ILocoTurningState - entered");
             this.iLoco.DoNext(false);
             this.entityData.FlipEntity();
             this.startRotation = this.entityBase.transform.rotation;
@@ -147,7 +226,7 @@ public class ILoco : IComponent {
         float t;
 
         public ILocoFallingState(ILoco aILoco) {
-            print("ILocoFallingState - entered");
+            // print("ILocoFallingState - entered");
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
@@ -192,8 +271,9 @@ public class ILoco : IComponent {
         }
 
         public void Enter() {
-            print("ILocoHoppingState - entered");
+            // print("ILocoHoppingState - entered");
             this.iLoco.DoNext(false);
+            this.iLoco.KillEntities();
             this.startPosition = this.entityBase.transform.position;
             GM.boardData.MoveEntity(this.iLoco.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.iLoco.destination, this.entityData.size);
@@ -215,13 +295,14 @@ public class ILoco : IComponent {
             this.entityBase.ResetViewPosition();
         }
     } 
+
     class ILocoWaitingState : GameState {
         ILoco iLoco;
         EntityBase entityBase;
         EntityData entityData;
 
         public ILocoWaitingState(ILoco aILoco) {
-            print("ILocoWaitingState - entered");
+            // print("ILocoWaitingState - entered");
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;

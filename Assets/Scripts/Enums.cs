@@ -1,5 +1,10 @@
 ﻿// mysterious enum dumping ground
-
+public enum DeathType {
+    BUMP,
+    BISECTED,
+    FIRE,
+    SQUISHED,
+}
 public enum EditModeEnum {
     PICKER,
     EDIT,
@@ -9,6 +14,7 @@ public enum EntityTypeEnum {
     BLOCK,
     MOB,
     SPECIALBLOCK,
+    PLAYER,
 }
 
 public enum EntityPrefabEnum {
@@ -53,6 +59,12 @@ public enum SelectionStateEnum {
     UNSELECTED,
     SELECTED,
     INVALID,
+}
+
+public enum TeamEnum {
+    PLAYER,
+    NEUTRAL,
+    ENEMY
 }
 
 public enum TimeStateEnum {
