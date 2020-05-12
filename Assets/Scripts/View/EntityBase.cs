@@ -11,6 +11,7 @@ public class EntityBase : SerializedMonoBehaviour {
     public EntityView entityView;
     public EntityData entityData;
     public bool isInTempPos;
+
     // we want to initialize entityBase, all the iComponents and entityView with entityData
     public void Init(EntityData aEntityData) {
         this.entityData = aEntityData;
@@ -50,4 +51,6 @@ public class EntityBase : SerializedMonoBehaviour {
         this.transform.position = Util.V2IOffsetV3(this.entityData.pos, this.entityData.size);
         this.isInTempPos = false;
     }
+
 }
+

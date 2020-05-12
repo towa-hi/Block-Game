@@ -13,6 +13,7 @@ public class BoardData {
     public int par;
     public Vector2Int size;
     public int attempts;
+    public bool isInitialized;
 
     public BoardData() {
         this.entityDataSet = new HashSet<EntityData>();
@@ -22,6 +23,10 @@ public class BoardData {
         this.size = new Vector2Int(40, 20);
         this.gameGrid = new GameGrid(this.size);
         this.attempts = 0;
+        
+    }
+
+    public void InitEmptyBoard() {
         EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
         EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
         EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
@@ -30,6 +35,7 @@ public class BoardData {
         RegisterEntityData(rightBoundary);
         RegisterEntityData(upBoundary);
         RegisterEntityData(downBoundary);
+        this.isInitialized = true;
     }
 
     public void RegisterEntityData(EntityData aEntityData) {
@@ -37,7 +43,7 @@ public class BoardData {
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = aEntityData;
         }
-        // Debug.Log("BoardData - RegisterEntity: " + aEntityData.entitySchema.name);
+        Debug.Log("BoardData - RegisterEntity: " + aEntityData.name);
     }
 
     public void UnRegisterEntityData(EntityData aEntityData) {
@@ -45,7 +51,7 @@ public class BoardData {
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = null;
         }
-        // Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.entitySchema.name);
+        Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.name);
     }
 
     public EntityData GetEntityDataAtPos(Vector2Int aPos) {
@@ -58,9 +64,13 @@ public class BoardData {
 
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
         if (IsPosInBoard(aPos)) {
-            UnRegisterEntityData(aEntityData);
+            foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
+                this.gameGrid.GetCell(currentPos).entityData = null;
+            }
             aEntityData.SetPos(aPos);
-            RegisterEntityData(aEntityData);
+            foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
+                this.gameGrid.GetCell(currentPos).entityData = aEntityData;
+            }
         }
     }
 
@@ -73,7 +83,6 @@ public class BoardData {
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
-        // Util.DebugAreaPulse(aOrigin, aSize);
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
             if (IsPosInBoard(currentPos)) {
                 if (GetEntityDataAtPos(currentPos) != null) {
@@ -93,6 +102,21 @@ public class BoardData {
         return true;
     }
 
+    public bool IsEntityPosValid(Vector2Int aPos, EntityData aEntityData) {
+        return IsRectEmpty(aPos, aEntityData.size, aEntityData);
+    }
+
+    public bool IsEntityPosFloating(Vector2Int aPos, EntityData aEntityData) {
+        return IsRectEmpty(aPos, aEntityData.size, aEntityData);
+    }
+    public bool IsEntityOffsetValid(Vector2Int aOffset, EntityData aEntityData) {
+        return IsRectEmpty(aEntityData.pos + aOffset, aEntityData.size, aEntityData);
+    }
+
+    public bool IsEntityFloating(EntityData aEntityData) {
+        return IsEntityOffsetValid(Vector2Int.down, aEntityData);
+    }
+
     public bool IsPosInBoard(Vector2Int aPos) {
         return Util.IsInside(aPos, Vector2Int.zero, this.size);
     }
@@ -101,7 +125,22 @@ public class BoardData {
         return Util.IsRectInside(aOrigin, aSize, Vector2Int.zero, this.size);
     }
     
+    public bool IsEntityPosGroundedAndValid(Vector2Int aPos, EntityData aEntityData) {
+        if (IsEntityPosValid(aPos, aEntityData)) {
+            // Debug.Log("entity pos is valid" + aPos);
+            if (!IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData)) {
+                // Debug.Log("entity pos is grounded returning true" + aPos);
+                return true;
+            } else {
+                // Debug.Log("entity pos is not grounded" + aPos);
+            }
+        } else {
+            // Debug.Log("entity pos is invalid" + aPos);
+        }
+        return false;
+    }
     public GameGrid GetGameGrid() {
         return this.gameGrid;
     }
+
 }

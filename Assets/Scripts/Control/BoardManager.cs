@@ -17,8 +17,11 @@ public class BoardManager : SerializedMonoBehaviour {
             Destroy(entityBase.gameObject);
         }
         this.entityBaseList = new List<EntityBase>();
+        // print("initial entityDataList size" + aBoardData.entityDataSet.Count);
         foreach (EntityData entityData in aBoardData.entityDataSet) {
+            // print("2 entityDataList size" + aBoardData.entityDataSet.Count);
             CreateEntityFromData(entityData);
+            // print("5 entityDataList size" + aBoardData.entityDataSet.Count);
         }
     }
 
@@ -28,9 +31,10 @@ public class BoardManager : SerializedMonoBehaviour {
         // get the EntityBase for this prefab
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
         this.entityBaseList.Add(entityBase);
-        // 
+        // print("3 entityDataList size" + GM.boardData.entityDataSet.Count);
         entityBase.Init(aEntityData);
         GM.boardData.RegisterEntityData(aEntityData);
+        // print("4 entityDataList size" + GM.boardData.entityDataSet.Count);
     }
 
     public void DestroyEntity(EntityData aEntityData) {

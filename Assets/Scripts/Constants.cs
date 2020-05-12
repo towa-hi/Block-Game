@@ -10,4 +10,5 @@ public static class Constants {
     public static float DRAGTHRESHOLD = 0.2f;
     public static Vector2Int DEFAULTFACING = new Vector2Int(1, 0);
     public static Color DEFAULTCOLOR = new Color(0.7f, 0.7f, 0.7f, 1f);
+    public static float GRAVITY = 0.5f;
 }

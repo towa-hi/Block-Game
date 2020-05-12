@@ -14,7 +14,6 @@ public class EditManager : SerializedMonoBehaviour {
     public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;
-    public CursorBase cursorBase;
 
     public StateMachine stateMachine = new StateMachine();
 
@@ -35,6 +34,12 @@ public class EditManager : SerializedMonoBehaviour {
 
     void Update() {
         this.stateMachine.Update();
+        if (this.stateMachine.GetState() is EditTabPickerModePlaceState) {
+            if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
+                GM.editManager.stateMachine.ChangeState(new EditTabPickerModeMoveState());
+            }
+        }
+        
     }
 
     public void SetEditMode(EditModeEnum aEditMode) {
@@ -132,6 +137,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModePlaytestButtonClick() {
         print("playtest button clicked");
+        GM.I.PlayTest();
     }
 
     public void LoadLevelFromFilePicker(string aFilename) {
@@ -189,7 +195,7 @@ public class EditTabPickerModeMoveState : GameState {
             case MouseStateEnum.RELEASED:
                 if (this.entityData != null) {
                     if (this.isMoveValid) {
-                        this.entityData.SetPos(this.movePos);
+                        GM.boardData.MoveEntity(this.movePos, this.entityData);
                     }
                     this.entityData.entityBase.ResetViewPosition();
                     this.entityData = null;
@@ -247,8 +253,6 @@ public class EditTabPickerModePlaceState : GameState {
                 EntityData entityData = new EntityData(this.entitySchema, GM.inputManager.mousePosV2, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
                 GM.boardManager.CreateEntityFromData(entityData);
             }
-        } else if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
-            GM.editManager.stateMachine.ChangeState(new EditTabPickerModeMoveState());
         }
     }
 

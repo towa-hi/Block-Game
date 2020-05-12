@@ -16,6 +16,7 @@ public class GM : Singleton<GM> {
     [Header("Set In Editor")]
     public GameObject boardManagerGameObject;
     public GameObject editPanel;
+    public GameObject playPanel;
     public GameObject pausePanel;
     public GameObject blockPrefabMaster;
     public GameObject playerPrefabMaster;
@@ -39,6 +40,20 @@ public class GM : Singleton<GM> {
         GM.cursorBase = this.boardManagerGameObject.GetComponentInChildren<CursorBase>();
         GM.boardManager.Init();
         GM.editManager.Init();
+        AddBoundaries();
+    }
+
+    public void AddBoundaries() {
+        EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.MOB, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
+        GM.boardManager.CreateEntityFromData(leftBoundary);
+        GM.boardManager.CreateEntityFromData(rightBoundary);
+        GM.boardManager.CreateEntityFromData(upBoundary);
+        GM.boardManager.CreateEntityFromData(downBoundary);
+        GM.boardManager.CreateEntityFromData(player);
     }
 
     public void LoadBoard(BoardData aBoardData) {
@@ -51,16 +66,28 @@ public class GM : Singleton<GM> {
         this.gameMode = aGameMode;
         switch (this.gameMode) {
             case GameModeEnum.EDITING:
+                Time.timeScale = 0;
                 this.editPanel.SetActive(true);
+                this.playPanel.SetActive(false);
                 GM.editManager.enabled = true;
                 GM.playManager.enabled = false;
                 break;
             case GameModeEnum.PLAYING:
+                Time.timeScale = 1;
                 this.editPanel.SetActive(false);
+                this.playPanel.SetActive(true);
                 GM.playManager.enabled = true;
                 GM.editManager.enabled = false;
                 break;
         }
+    }
+
+    public void PlayTest() {
+        SetGameMode(GameModeEnum.PLAYING);
+    }
+
+    public void ExitPlayTest() {
+        SetGameMode(GameModeEnum.EDITING);
     }
 
     public static GameObject EntityPrefabEnumToPrefab(EntityPrefabEnum aEntityPrefabEnum) {
@@ -80,6 +107,7 @@ public class GM : Singleton<GM> {
         this.pausePanel.SetActive(this.isFullPaused);
         AudioListener.pause = this.isFullPaused;
         this.editPanel.SetActive(!this.isFullPaused);
+        this.playPanel.SetActive(!this.isFullPaused);
         if (this.isFullPaused) {
             Time.timeScale = 0;
         } else {

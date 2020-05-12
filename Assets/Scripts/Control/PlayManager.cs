@@ -33,7 +33,7 @@ public class PlayManager : SerializedMonoBehaviour {
         switch (this.timeState) {
             case TimeStateEnum.NORMAL:
                 foreach (EntityData entityData in GM.boardData.entityDataSet) {
-                    entityData.DoFrame();
+                    entityData.entityBase.DoFrame();
                 }
                 break;
             case TimeStateEnum.PAUSED:

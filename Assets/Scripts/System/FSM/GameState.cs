@@ -8,3 +8,4 @@ public interface GameState {
     void Update();
     void Exit();
 }
+

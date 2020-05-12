@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 [SelectionBase]
 public class CellViewBase: SerializedMonoBehaviour {
     public GameCell gameCell;
-    // set by editor
+    [Header("Set In Editor")]
     public MeshRenderer panelRenderer;
     private Coroutine colorFadeCoroutine;
     public Color gizmoColor;
@@ -28,7 +28,6 @@ public class CellViewBase: SerializedMonoBehaviour {
     // temporarily highlights the entity and then have it fade away
     // does not change defaultColor
     public void TempHighlight(Color aColor) {
-        print("started");
         SetPanelVisbility(true);
         // if in the middle of another colorfade, stop it immediately
         if (this.colorFadeCoroutine != null) {
@@ -37,7 +36,7 @@ public class CellViewBase: SerializedMonoBehaviour {
         // set object to new color
         // SetColor(aColor);
         // start a new colorFade
-        this.colorFadeCoroutine = StartCoroutine(ColorFade(aColor, 1f));
+        this.colorFadeCoroutine = StartCoroutine(ColorFade(aColor, 0.5f));
         
     }
 
@@ -50,11 +49,9 @@ public class CellViewBase: SerializedMonoBehaviour {
             Color currentColor = this.panelRenderer.material.color;
             currentColor.a = Mathf.Lerp(aColor.a, 0f, t);
             this.panelRenderer.material.color = currentColor;
-            print("current opacity: " + currentColor.a);
             yield return null;
         }
         SetPanelVisbility(false);
-        print("ended");
     }
 
     void OnDrawGizmos() {

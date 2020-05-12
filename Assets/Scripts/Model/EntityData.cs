@@ -39,6 +39,7 @@ public class EntityData {
     // INodal data
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
+    StateMachine state;
 
     // use when creating from a schema
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
@@ -94,9 +95,7 @@ public class EntityData {
     }
     
     public void SetPos(Vector2Int aPos) {
-        GM.boardData.UnRegisterEntityData(this);
         this.pos = aPos;
-        GM.boardData.RegisterEntityData(this);
     }
 
     public void SetDefaultColor(Color aDefaultColor) {
@@ -114,9 +113,5 @@ public class EntityData {
         } else {
             this.facing = Vector2Int.right;
         }
-    }
-
-    public void DoFrame() {
-        this.entityBase.DoFrame();
     }
 }
