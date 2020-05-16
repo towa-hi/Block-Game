@@ -25,7 +25,8 @@ public enum EntityPrefabEnum {
 }
 public enum GameModeEnum {
     PLAYING,
-    EDITING
+    EDITING,
+    PLAYTESTING,
 }
 
 public enum LocomotionStateEnum {

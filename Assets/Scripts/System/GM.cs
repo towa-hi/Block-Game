@@ -79,12 +79,21 @@ public class GM : Singleton<GM> {
                 this.playPanel.SetActive(true);
                 GM.playManager.enabled = true;
                 GM.editManager.enabled = false;
+                GM.playManager.SetPlaytest(false);
+                break;
+            case GameModeEnum.PLAYTESTING:
+                Time.timeScale = 1;
+                this.editPanel.SetActive(false);
+                this.playPanel.SetActive(true);
+                GM.playManager.enabled = true;
+                GM.editManager.enabled = false;
+                GM.playManager.SetPlaytest(true);
                 break;
         }
     }
 
     public void PlayTest() {
-        SetGameMode(GameModeEnum.PLAYING);
+        SetGameMode(GameModeEnum.PLAYTESTING);
     }
 
     public void ExitPlayTest() {

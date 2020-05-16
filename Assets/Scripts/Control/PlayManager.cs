@@ -7,9 +7,10 @@ public class PlayManager : SerializedMonoBehaviour {
     public TimeStateEnum timeState;
     public SelectionStateEnum selectionState;
 
+    public bool isPlaytest;
+
     public HashSet<EntityData> selectedEntitySet;
     public EntityData clickedEntityData;
-    
     public HashSet<EntityData> destroyOnNextFrame;
 
     public void Init() {
@@ -17,6 +18,11 @@ public class PlayManager : SerializedMonoBehaviour {
         this.timeState = TimeStateEnum.NORMAL;
         this.selectedEntitySet = new HashSet<EntityData>();
         this.destroyOnNextFrame = new HashSet<EntityData>();
+    }
+
+    // called from GM
+    public void SetPlaytest(bool aIsPlaytest) {
+        this.isPlaytest = aIsPlaytest;
     }
 
     void Update() {
