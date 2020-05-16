@@ -288,15 +288,12 @@ MonoBehaviour:
     - Name: stateMachine
       Entry: 6
       Data: 
-    - Name: entitiesToKill
-      Entry: 6
-      Data: 
-  destination: {x: 0, y: 0}
   doNext: 0
   canKillOnTouch: 0
   touchDamage: 0
   canKillOnFall: 0
   fallDamage: 0
+  canWalk: 1
   canHop: 1
   canBeLifted: 1
   walkingMoveSpeed: 1

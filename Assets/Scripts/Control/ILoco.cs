@@ -12,11 +12,14 @@ public class ILoco : IComponent {
     [Header("Set In Editor")]
     public bool canKillOnTouch;
     public int touchDamage;
+    [Space]
     public bool canKillOnFall;
     public int fallDamage;
+    [Space]
     public bool canWalk;
     public bool canHop;
     public bool canBeLifted;
+    [Space]
     public float walkingMoveSpeed;
     public float turningMoveSpeed;
     public float hoppingMoveSpeed;
