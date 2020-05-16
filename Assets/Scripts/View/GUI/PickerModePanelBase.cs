@@ -19,7 +19,7 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
     public OnPickerItemClick pickerItemClick = new OnPickerItemClick();
 
     // TODO: figure out why clicking on the scroll bar makes everything spaz out
-    void Start() {
+    void Awake() {
         this.contentList = new List<PickerModeItemBase>();
         this.fullEntityList = new List<PickerModeItemBase>();
         // load all the entitySchemas in the ScriptableObjects folder

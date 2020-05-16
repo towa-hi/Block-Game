@@ -2506,7 +2506,7 @@ MonoBehaviour:
     SerializationNodes: []
   isPlaytest: 0
   titleText: {fileID: 500536013}
-  playtestPanel: {fileID: 0}
+  playtestPanel: {fileID: 1550903364}
 --- !u!1 &913422798
 GameObject:
   m_ObjectHideFlags: 0
@@ -5084,12 +5084,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1453528422}
-        m_MethodName: ExitPlayTest
-        m_Mode: 1
+        m_MethodName: SetGameModeWithInt
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5366,6 +5366,8 @@ MonoBehaviour:
       Data: 
   timeState: 0
   selectionState: 0
+  isPlaytest: 0
+  playPanelBase: {fileID: 787016940}
 --- !u!114 &637639725399458364
 MonoBehaviour:
   m_ObjectHideFlags: 0
