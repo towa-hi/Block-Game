@@ -5,119 +5,79 @@ using Sirenix.OdinInspector;
 
 public class ILoco : IComponent {
     [SerializeField]
-    Vector2Int destination;
-    [SerializeField]
     bool doNext;
     [SerializeField]
     StateMachine stateMachine;
+    HashSet<EntityData> entitiesToKill;
     [Header("Set In Editor")]
     public bool canKillOnTouch;
     public int touchDamage;
     public bool canKillOnFall;
     public int fallDamage;
     public bool canHop;
+    public bool canBeLifted;
     public float walkingMoveSpeed;
     public float turningMoveSpeed;
     public float hoppingMoveSpeed;
     public AnimationCurve hoppingCurve;
-    public HashSet<EntityData> entitiesToKill;
 
     public override void Init() {
         this.stateMachine = new StateMachine();
-        this.destination = Vector2Int.zero;
         this.stateMachine.ChangeState(new ILocoWaitingState(this));
         this.entitiesToKill = new HashSet<EntityData>();
     }
 
     public override void DoFrame() {
         if (this.doNext) {
-            // if floating
-            if (GM.boardData.IsEntityFloating(this.entityData)) {
-                this.destination = this.entityData.pos + Vector2Int.down;
-                DoNext(false);
-                // fall down
-                this.stateMachine.ChangeState(new ILocoFallingState(this));
-            } else {
-                Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
-                Vector2Int facingUpPos = facingPos + Vector2Int.up;
-                Vector2Int facingDownPos = facingPos + Vector2Int.down;
-                if (this.canHop) {
-                    if (BumpCheck(facingUpPos, this.entityData)) {
-                        // print("hopping up");
-                        this.destination = facingUpPos;
-                        this.stateMachine.ChangeState(new ILocoHoppingState(this));
-                    } else if (BumpCheck(facingPos, this.entityData)) {
-                        // print("walking side");
-                        this.destination = facingPos;
-                        this.stateMachine.ChangeState(new ILocoWalkingState(this));
-                    } else if (BumpCheck(facingDownPos, this.entityData)) {
-                        // print("hopping down");
-                        this.destination = facingDownPos;
-                        this.stateMachine.ChangeState(new ILocoHoppingState(this));
-                    } else {
-                        // print("turning");
-                        this.destination = Vector2Int.zero;
-                        this.stateMachine.ChangeState(new ILocoTurningState(this));
-                    }
-                } else {
-                    if (BumpCheck(facingPos, this.entityData)) {
-                        // print("walking side");
-                        this.destination = facingPos;
-                        this.stateMachine.ChangeState(new ILocoWalkingState(this));
-                    } else {
-                        // print("turning");
-                        this.destination = Vector2Int.zero;
-                        this.stateMachine.ChangeState(new ILocoTurningState(this));
-                    }
-                }
-            }
+            this.stateMachine.ChangeState(ChooseNextState());
         }
         this.stateMachine.Update();
     }
 
-    public void DoNext(bool aDoNext) {
-        this.doNext = aDoNext;
-    }
-
-    public bool BumpCheck(Vector2Int aPos, EntityData aEntityData) {
-        bool isBlocked = false;
-        HashSet<EntityData> maybeEntitiesToKill = new HashSet<EntityData>();
-        if (GM.boardData.IsRectInBoard(aPos, aEntityData.size)) {
-            HashSet<EntityData> entitySet = GM.boardData.SetOfEntitiesInRect(aPos, aEntityData.size);
-            // foreach touched entity in the place i'm about to move to
-            foreach (EntityData touchedEntityData in entitySet) {
-                // if touched entity not me
-                if (touchedEntityData != aEntityData) {
-                    // if i can kill touched entity
-                    if (aEntityData.touchAttack > touchedEntityData.touchDefense) {
-                        maybeEntitiesToKill.Add(touchedEntityData);
-                    } else {
-                        // i'm blocked
-                        isBlocked = true;
-                    }
+    public GameState ChooseNextState() {
+         if (this.canBeLifted) {
+                if (GM.playManager.EntityFanCheck(this.entityData)) {
+                    // TODO finish this
+                    print("should be lifted");
                 }
             }
-            if (isBlocked != true) {
-                // check if ground exists after all this while ignoring everything im about to kill
-                for (int x = aPos.x; x < aPos.x + aEntityData.size.x; x++) {
-                    Vector2Int currentPos = new Vector2Int(x, aPos.y - 1);
-                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.cyan);
-                    EntityData currentEntity = GM.boardData.GetEntityDataAtPos(currentPos);
-                    // if a entity exists in floor location
-                    if (currentEntity != null) {
-                        // if entity is not self
-                        if (currentEntity != aEntityData) {
-                            // if entity is not about to be killed
-                            if (!maybeEntitiesToKill.Contains(currentEntity)) {
-                                this.entitiesToKill = maybeEntitiesToKill;
-                                return true;
-                            }
-                        }
+            // if floating
+        if (GM.boardData.IsEntityFloating(this.entityData)) {
+            // fall down
+            return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
+        } else {
+            Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
+            Vector2Int facingUpPos = facingPos + Vector2Int.up;
+            Vector2Int facingDownPos = facingPos + Vector2Int.down;
+            HashSet<EntityData> facingBumpCheck = GM.playManager.BumpCheck(facingPos, this.entityData);
+            HashSet<EntityData> facingUpBumpCheck = GM.playManager.BumpCheck(facingUpPos, this.entityData);
+            HashSet<EntityData> facingDownBumpCheck = GM.playManager.BumpCheck(facingDownPos, this.entityData);
+            if (facingBumpCheck != null) {
+                // print("walking side");
+                GM.playManager.KillEntities(facingBumpCheck);
+                return new ILocoWalkingState(this, facingPos);
+            } else if (this.canHop) {
+                    if (facingUpBumpCheck != null) {
+                        // print("hopping up");
+                        GM.playManager.KillEntities(facingUpBumpCheck);
+                        return new ILocoHoppingState(this, facingUpPos);
+                    } else if (facingDownBumpCheck != null) {
+                        // print("hopping down");
+                        GM.playManager.KillEntities(facingDownBumpCheck);
+                        return new ILocoHoppingState(this, facingDownPos);
+                    } else {
+                        // print("turning");
+                        return new ILocoTurningState(this);
                     }
-                }
+            } else {
+                // print("turning");
+                return new ILocoTurningState(this);
             }
         }
-        return false;
+    }
+
+    public void DoNext(bool aDoNext) {
+        this.doNext = aDoNext;
     }
 
     public bool IsEntityPosGroundedAndValid(Vector2Int aPos, EntityData aEntityData) {
@@ -134,38 +94,115 @@ public class ILoco : IComponent {
         }
         return false;
     }
-    
-    public void KillEntities() {
-        foreach (EntityData entityToKill in this.entitiesToKill) {
-            GM.playManager.BeginEntityDeath(entityToKill);
-        }
-        this.entitiesToKill.Clear();
-    }
-    class ILocoWalkingState : GameState {
+    class ILocoFloatingState : GameState {
         ILoco iLoco;
         EntityBase entityBase;
         EntityData entityData;
-        Vector3 startPosition;
-        Vector3 endPosition;
-        float t;
 
-        public ILocoWalkingState(ILoco aILoco) {
-            this.iLoco = aILoco;
-            this.entityBase = aILoco.entityBase;
-            this.entityData = aILoco.entityData;
-            this.t = 0f;
+        public ILocoFloatingState(ILoco aIloco) {
+            this.iLoco = aIloco;
+            this.entityBase = aIloco.entityBase;
+            this.entityData = aIloco.entityData;
         }
 
         public void Enter() {
-            // print("ILocoWalkingState - entered");
+            // print("ILocoRisingState - entered");
             this.iLoco.DoNext(false);
-            this.iLoco.KillEntities();
-            this.startPosition = this.entityBase.transform.position;
-            GM.boardData.MoveEntity(this.iLoco.destination, this.entityData);
-            this.endPosition = Util.V2IOffsetV3(this.iLoco.destination, this.entityData.size);
         }
 
         public void Update() {
+            this.iLoco.DoNext(true);
+        }
+
+        public void Exit() {
+            this.entityBase.ResetViewPosition();
+        }
+    }
+
+    void OnDrawGizmos() {
+        ILocoState currentState = this.stateMachine.GetState() as ILocoState;
+        if ( currentState != null && currentState.destination != null) {
+            Vector3 zOffset = new Vector3(0, 0, -1.01f);
+            Gizmos.color = new Color(0, 1, 0, 0.2f);
+            Vector3 origin = this.entityBase.transform.position;
+            Vector3 destination = Util.V2IOffsetV3(currentState.destination, this.entityData.size);
+            Gizmos.DrawLine(origin, destination);
+            Gizmos.DrawCube(destination, this.entityView.GetComponent<Renderer>().bounds.size);
+        }
+    }
+
+    #region StateClasses
+
+    // base class for ILoco states that contains data needed for movement stuff
+    abstract class ILocoState : GameState {
+        protected ILoco iLoco;
+        protected EntityBase entityBase;
+        protected EntityData entityData;
+        [SerializeField]
+        public Vector2Int destination;
+        protected Vector3 startPosition;
+        protected Vector3 endPosition;
+        [SerializeField]
+        protected float t;
+
+        abstract public void Enter();
+        abstract public void Update();
+        abstract public void Exit();
+    }
+
+    // state causes object to rise up one tile when raised by a fan
+    class ILocoRisingState : ILocoState {
+
+        public ILocoRisingState(ILoco aIloco, Vector2Int aDestination) {
+            this.iLoco = aIloco;
+            this.entityBase = aIloco.entityBase;
+            this.entityData = aIloco.entityData;
+            this.destination = aDestination;
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+            // print("ILocoRisingState - entered");
+            this.iLoco.DoNext(false);
+            this.startPosition = this.entityBase.transform.position;
+            GM.boardData.MoveEntity(this.destination, this.entityData);
+            this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+        }
+
+        public override void Update() {
+            if (this.t < 1) {
+                this.t += Time.deltaTime / Constants.GRAVITY;
+                this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
+            } else {
+                this.iLoco.DoNext(true);
+            }
+        }
+
+        public override void Exit() {
+             // print("ILocoRisingState - exited");
+            this.entityBase.ResetViewPosition();
+        }
+    }
+
+    class ILocoWalkingState : ILocoState {
+
+        public ILocoWalkingState(ILoco aILoco, Vector2Int aDestination) {
+            this.iLoco = aILoco;
+            this.entityBase = aILoco.entityBase;
+            this.entityData = aILoco.entityData;
+            this.destination = aDestination;
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+            // print("ILocoWalkingState - entered");
+            this.iLoco.DoNext(false);
+            this.startPosition = this.entityBase.transform.position;
+            GM.boardData.MoveEntity(this.destination, this.entityData);
+            this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+        }
+
+        public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.iLoco.walkingMoveSpeed;
                 this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
@@ -174,27 +211,25 @@ public class ILoco : IComponent {
             }
         }
 
-        public void Exit() {
+        public override void Exit() {
+            // print("ILocoWalkingState - exited");
             this.entityBase.ResetViewPosition();
         }
     }
 
-    class ILocoTurningState : GameState {
-        ILoco iLoco;
-        EntityBase entityBase;
-        EntityData entityData;
+    class ILocoTurningState : ILocoState {
         Quaternion startRotation;
         Quaternion endRotation;
-        float t;
 
         public ILocoTurningState(ILoco aILoco) {
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
+            this.destination = this.entityData.pos;
             this.t = 0f;
         }
 
-        public void Enter() {
+        public override void Enter() {
             // print("ILocoTurningState - entered");
             this.iLoco.DoNext(false);
             this.entityData.FlipEntity();
@@ -202,7 +237,7 @@ public class ILoco : IComponent {
             this.endRotation = Quaternion.AngleAxis(180, Vector3.up) * this.startRotation;
         }
 
-        public void Update() {
+        public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.iLoco.turningMoveSpeed;
                 this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
@@ -211,36 +246,31 @@ public class ILoco : IComponent {
             }
         }
 
-        public void Exit() {
-            
+        public override void Exit() {
+            // print("ILocoTurningState - exited");
+            this.entityBase.transform.rotation = this.endRotation;
         }
     }
 
-    class ILocoFallingState : GameState {
-        ILoco iLoco;
-        EntityBase entityBase;
-        EntityData entityData;
-        Vector2Int destination;
-        Vector3 startPosition;
-        Vector3 endPosition;
-        float t;
+    class ILocoFallingState : ILocoState {
 
-        public ILocoFallingState(ILoco aILoco) {
-            // print("ILocoFallingState - entered");
+        public ILocoFallingState(ILoco aILoco, Vector2Int aDestination) {
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
+            this.destination = aDestination;
             this.t = 0f;
         }
 
-        public void Enter() {
+        public override void Enter() {
+            // print("ILocoFallingState - entered");
             this.iLoco.DoNext(false);
             this.startPosition = this.entityBase.transform.position;
-            GM.boardData.MoveEntity(this.iLoco.destination, this.entityData);
-            this.endPosition = Util.V2IOffsetV3(this.iLoco.destination, this.entityData.size);
+            GM.boardData.MoveEntity(this.destination, this.entityData);
+            this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
 
-        public void Update() {
+        public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.iLoco.walkingMoveSpeed;
                 this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
@@ -249,41 +279,35 @@ public class ILoco : IComponent {
             }
         }
 
-        public void Exit() {
+        public override void Exit() {
             this.entityBase.ResetViewPosition();
+            // print("ILocoFallingState - exited");
         }
     }
 
-    class ILocoHoppingState : GameState {
-        ILoco iLoco;
-        EntityBase entityBase;
-        EntityData entityData;
-        Vector3 startPosition;
-        Vector3 endPosition;
-        float t;
+    class ILocoHoppingState : ILocoState {
 
-        public ILocoHoppingState(ILoco aILoco) {
+        public ILocoHoppingState(ILoco aILoco, Vector2Int aDestination) {
             
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
+            this.destination = aDestination;
             this.t = 0f;
         }
 
-        public void Enter() {
+        public override void Enter() {
             // print("ILocoHoppingState - entered");
             this.iLoco.DoNext(false);
-            this.iLoco.KillEntities();
             this.startPosition = this.entityBase.transform.position;
-            GM.boardData.MoveEntity(this.iLoco.destination, this.entityData);
-            this.endPosition = Util.V2IOffsetV3(this.iLoco.destination, this.entityData.size);
+            GM.boardData.MoveEntity(this.destination, this.entityData);
+            this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
 
-        public void Update() {
+        public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.iLoco.hoppingMoveSpeed;
                 Vector3 yOffset = new Vector3(0, this.iLoco.hoppingCurve.Evaluate(t), 0);
-                // Vector3 yOffset = Vector3.zero;
                 Vector3 newPosition = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
                 this.entityBase.transform.position = newPosition + yOffset;
             } else {
@@ -291,45 +315,35 @@ public class ILoco : IComponent {
             }
         }
 
-        public void Exit() {
+        public override void Exit() {
+            // print("ILocoHoppingState - exited");
             this.entityBase.ResetViewPosition();
         }
     } 
 
-    class ILocoWaitingState : GameState {
-        ILoco iLoco;
-        EntityBase entityBase;
-        EntityData entityData;
+    class ILocoWaitingState : ILocoState {
 
         public ILocoWaitingState(ILoco aILoco) {
-            // print("ILocoWaitingState - entered");
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
+            this.destination = this.entityData.pos;
         }
 
-        public void Enter() {
+        public override void Enter() {
+            // print("ILocoWaitingState - entered");
             this.iLoco.DoNext(false);
 
         }
 
-        public void Update() {
+        public override void Update() {
             this.iLoco.DoNext(true);
         }
 
-        public void Exit() {
-            
+        public override void Exit() {
+            // print("ILocoWaitingState - exited");
         }
     }
 
-    void OnDrawGizmos() {
-        if (this.destination != Vector2Int.zero) {
-            Vector3 zOffset = new Vector3(0, 0, -1.01f);
-            Gizmos.color = new Color(0, 1, 0, 0.2f);
-            Vector3 origin = this.entityBase.transform.position;
-            Vector3 destination = Util.V2IOffsetV3(this.destination, this.entityData.size);
-            Gizmos.DrawLine(origin, destination);
-            Gizmos.DrawCube(destination, this.entityView.GetComponent<Renderer>().bounds.size);
-        }
-    }
+    #endregion
 }

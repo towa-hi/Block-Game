@@ -144,4 +144,37 @@ public class BoardData {
         return this.gameGrid;
     }
 
+    public bool EmptyStraightBetween(Vector2Int aStart, Vector2Int aEnd, EntityData aIgnore = null) {
+        if (aStart.x == aEnd.x) {
+            int minY = System.Math.Min(aStart.y, aEnd.y);
+            int maxY = System.Math.Max(aStart.y, aEnd.y);
+            for (int y = minY + 1; y < maxY; y++) {
+                Vector2Int currentPos = new Vector2Int(aStart.x, y);
+                EntityData maybeAEntity = GetEntityDataAtPos(currentPos);
+                if (maybeAEntity != null && maybeAEntity != aIgnore) {
+                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.red);
+                    return false;
+                } else {
+                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.green);
+                }
+            }
+            return true;
+        } else if (aStart.y == aEnd.y) {
+            int minX = System.Math.Min(aStart.x, aEnd.x);
+            int maxX = System.Math.Max(aStart.x, aEnd.x);
+            for (int x = minX + 1; x < maxX; x++) {
+                Vector2Int currentPos = new Vector2Int(x, aStart.y);
+                EntityData maybeAEntity = GetEntityDataAtPos(currentPos);
+                if (maybeAEntity != null && maybeAEntity != aIgnore) {
+                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.red);
+                    return false;
+                } else {
+                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.green);
+                }
+            }
+            return true;
+        } else {
+            throw new System.Exception("EmptyStraightBetween given invalid points");
+        }
+    }
 }

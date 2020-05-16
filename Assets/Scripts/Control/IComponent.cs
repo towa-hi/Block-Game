@@ -4,7 +4,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 // abstract class for all components related to entities
-
+[RequireComponent(typeof(EntityBase))]
+[DisallowMultipleComponent]
 public abstract class IComponent : SerializedMonoBehaviour {
     public EntityData entityData {
         get {
