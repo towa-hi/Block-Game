@@ -10,7 +10,6 @@ using Sirenix.OdinInspector;
 public class EditManager : SerializedMonoBehaviour {
 
     [Header("Set In Editor")]
-    // public PreviewCubeBase previewCubeBase;
     public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;

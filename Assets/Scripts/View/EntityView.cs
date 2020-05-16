@@ -22,11 +22,11 @@ public class EntityView : SerializedMonoBehaviour {
         // do any special accomidations to the entity depending on type. mainly to adjust BLOCK size
         switch (aEntityData.type) {
             case EntityTypeEnum.BLOCK:
+                // transform this cube into the shape of the block
+                // TODO: remove this later when blocks are just models
                 this.transform.localScale = Util.V2IToV3(aEntityData.size) + Constants.BLOCKTHICCNESS;
                 break;
             case EntityTypeEnum.MOB:
-                // TODO: this just sets a capsule to a reasonable size for now
-                // this.transform.localScale = new Vector3(2, 2, 2);
                 break;
         }
 

@@ -30,10 +30,7 @@ public class InputManager : Singleton<InputManager> {
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
-                // TODO: WHAT THE FUCK IS THE DEAL WITH ISPOINTEROVERGAMEOBJECT RETURNING TRUE ON TOGGLES 
-                // BUT ONLY FOR THE FIRST COUPLE SECONDS AFTER YOU CLICK ON IT WTF???
                 if (!EventSystem.current.IsPointerOverGameObject()) {
-                    print("set to clicked");
                     this.mouseState = MouseStateEnum.CLICKED;
                 }
                 break;
