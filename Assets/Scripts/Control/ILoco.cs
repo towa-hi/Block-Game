@@ -14,6 +14,7 @@ public class ILoco : IComponent {
     public int touchDamage;
     public bool canKillOnFall;
     public int fallDamage;
+    public bool canWalk;
     public bool canHop;
     public bool canBeLifted;
     public float walkingMoveSpeed;
@@ -45,7 +46,7 @@ public class ILoco : IComponent {
         if (GM.boardData.IsEntityFloating(this.entityData)) {
             // fall down
             return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
-        } else {
+        } else if (this.canWalk) {
             Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
             Vector2Int facingUpPos = facingPos + Vector2Int.up;
             Vector2Int facingDownPos = facingPos + Vector2Int.down;
@@ -73,6 +74,8 @@ public class ILoco : IComponent {
                 // print("turning");
                 return new ILocoTurningState(this);
             }
+        } else {
+            return new ILocoWaitingState(this);
         }
     }
 
@@ -150,7 +153,7 @@ public class ILoco : IComponent {
         abstract public void Exit();
     }
 
-    // state causes object to rise up one tile when raised by a fan
+    // causes entity to rise up one tile when raised by a fan
     class ILocoRisingState : ILocoState {
 
         public ILocoRisingState(ILoco aIloco, Vector2Int aDestination) {
@@ -165,6 +168,7 @@ public class ILoco : IComponent {
             // print("ILocoRisingState - entered");
             this.iLoco.DoNext(false);
             this.startPosition = this.entityBase.transform.position;
+            // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
@@ -184,6 +188,7 @@ public class ILoco : IComponent {
         }
     }
 
+    // makes entity move to destination
     class ILocoWalkingState : ILocoState {
 
         public ILocoWalkingState(ILoco aILoco, Vector2Int aDestination) {
@@ -198,6 +203,7 @@ public class ILoco : IComponent {
             // print("ILocoWalkingState - entered");
             this.iLoco.DoNext(false);
             this.startPosition = this.entityBase.transform.position;
+            // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
@@ -217,6 +223,7 @@ public class ILoco : IComponent {
         }
     }
 
+    // makes entity turn around 180 degrees
     class ILocoTurningState : ILocoState {
         Quaternion startRotation;
         Quaternion endRotation;
@@ -232,6 +239,7 @@ public class ILoco : IComponent {
         public override void Enter() {
             // print("ILocoTurningState - entered");
             this.iLoco.DoNext(false);
+            // flip this entity
             this.entityData.FlipEntity();
             this.startRotation = this.entityBase.transform.rotation;
             this.endRotation = Quaternion.AngleAxis(180, Vector3.up) * this.startRotation;
@@ -252,6 +260,7 @@ public class ILoco : IComponent {
         }
     }
 
+    // makes entity fall to destination
     class ILocoFallingState : ILocoState {
 
         public ILocoFallingState(ILoco aILoco, Vector2Int aDestination) {
@@ -266,6 +275,7 @@ public class ILoco : IComponent {
             // print("ILocoFallingState - entered");
             this.iLoco.DoNext(false);
             this.startPosition = this.entityBase.transform.position;
+            // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
@@ -284,7 +294,8 @@ public class ILoco : IComponent {
             // print("ILocoFallingState - exited");
         }
     }
-
+    
+    // makes entity hop to destination
     class ILocoHoppingState : ILocoState {
 
         public ILocoHoppingState(ILoco aILoco, Vector2Int aDestination) {
@@ -300,6 +311,7 @@ public class ILoco : IComponent {
             // print("ILocoHoppingState - entered");
             this.iLoco.DoNext(false);
             this.startPosition = this.entityBase.transform.position;
+            // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
         }
@@ -321,6 +333,7 @@ public class ILoco : IComponent {
         }
     } 
 
+    /// does nothing for one frame
     class ILocoWaitingState : ILocoState {
 
         public ILocoWaitingState(ILoco aILoco) {
@@ -333,7 +346,6 @@ public class ILoco : IComponent {
         public override void Enter() {
             // print("ILocoWaitingState - entered");
             this.iLoco.DoNext(false);
-
         }
 
         public override void Update() {

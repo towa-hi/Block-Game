@@ -21,7 +21,7 @@ public class INodal : IComponent {
             this.entityData.downNodes = value;
         }
     }
-    // set by editor
+    [Header("Set In Editor")]
     public GameObject studMaster;
 
     public override void Init() {
@@ -105,11 +105,6 @@ public class INodal : IComponent {
         DrawNodes();
     }
 
-    public void UseNodes(HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
-        this.upNodes = aUpNodes;
-        this.downNodes = aDownNodes;
-    }
-
     public HashSet<Vector2Int> GetRelativeNodePosSet(bool aIsUp) {
         if (aIsUp) {
             return this.upNodes;
@@ -128,7 +123,7 @@ public class INodal : IComponent {
         return absoluteNodePosSet;
     }
 
-    public bool HasNodeOnThisAbsolutePosition(Vector2Int aPos, bool aIsNodePointingUp) {
+    public bool HasNodeOnAbsolutePosition(Vector2Int aPos, bool aIsNodePointingUp) {
         foreach (Vector2Int absoluteNodePos in GetAbsoluteNodePosSet(aIsNodePointingUp)) {
             if (absoluteNodePos == aPos) {
                 return true;
