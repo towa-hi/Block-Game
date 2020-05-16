@@ -70,4 +70,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # temp files in game
-Assets/Boards/PlaytestTemp.board
+/[Aa]ssets/Boards/PlaytestTemp.board
