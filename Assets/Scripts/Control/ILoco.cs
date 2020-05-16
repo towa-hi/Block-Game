@@ -42,11 +42,13 @@ public class ILoco : IComponent {
                     print("should be lifted");
                 }
             }
-            // if floating
+        // if floating
         if (GM.boardData.IsEntityFloating(this.entityData)) {
             // fall down
             return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
-        } else if (this.canWalk) {
+        }
+        
+        if (this.canWalk) {
             Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
             Vector2Int facingUpPos = facingPos + Vector2Int.up;
             Vector2Int facingDownPos = facingPos + Vector2Int.down;
@@ -286,7 +288,7 @@ public class ILoco : IComponent {
 
         public override void Update() {
             if (this.t < 1) {
-                this.t += Time.deltaTime / this.iLoco.walkingMoveSpeed;
+                this.t += Time.deltaTime / Constants.GRAVITY;
                 this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
             } else {
                 this.iLoco.DoNext(true);
