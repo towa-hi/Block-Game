@@ -73,8 +73,8 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     public bool EntityFanCheck(EntityData aEntityData) {
-        for (int x = aEntityData.pos.x; x < aEntityData.size.x; x++) {
-            for (int y = aEntityData.pos.y; y >= 0; y++) {
+        for (int x = aEntityData.pos.x; x < aEntityData.pos.x + aEntityData.size.x; x++) {
+            for (int y = aEntityData.pos.y; y >= 0; y--) {
                 Vector2Int currentPos = new Vector2Int(x, y);
                 EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(currentPos);
                 if (maybeAEntity != null) {
@@ -100,16 +100,20 @@ public class PlayManager : SerializedMonoBehaviour {
         bool isBlocked = false;
         HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
         Dictionary<Vector2Int, EntityData> entityDict = GM.boardData.EntityDataDictInRect(aPos, aEntityData.size);
-        foreach(KeyValuePair<Vector2Int, EntityData> kvp in entityDict) {
+        foreach (KeyValuePair<Vector2Int, EntityData> kvp in entityDict) {
             EntityData touchedEntityData = kvp.Value;
             // if touchedEntityData exists and is not aEntityData
             if (touchedEntityData != null && touchedEntityData != aEntityData) {
-                // if aEntityData capable of killing touchedEntityData
-                if (iLoco.touchDamage > touchedEntityData.touchDefense) {
-                    // add touchedEntityData to the list of entities to kill later
-                    entitiesToKill.Add(touchedEntityData);
+                // if entities are not on the same team
+                if (touchedEntityData.team != aEntityData.team) {
+                    // if aEntityData capable of killing touchedEntityData
+                    if (iLoco.touchDamage > touchedEntityData.touchDefense) {
+                        // add touchedEntityData to the list of entities to kill later
+                        entitiesToKill.Add(touchedEntityData);
+                    } else {
+                        isBlocked = true;
+                    }
                 } else {
-                    // aEntityData is blocked by a entity it can't kill
                     isBlocked = true;
                 }
             }
@@ -131,7 +135,6 @@ public class PlayManager : SerializedMonoBehaviour {
                 }
             }
         }
-        
         return null;
     }
 }

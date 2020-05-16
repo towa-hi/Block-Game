@@ -9,4 +9,7 @@ public class EntitySchema : SerializedScriptableObject {
     public Vector2Int size;
     public EntityTypeEnum type;
     public EntityPrefabEnum prefab;
+    public int touchDefense;
+    public int fallDefense;
+    public TeamEnum defaultTeam;
 }

@@ -20,8 +20,9 @@ public enum EntityTypeEnum {
 public enum EntityPrefabEnum {
     BLOCKPREFAB,
     PLAYERPREFAB,
-    SHUFFLEBOTPREFAB
-
+    SHUFFLEBOTPREFAB,
+    PUSHABLEPREFAB,
+    FANPREFAB
 }
 public enum GameModeEnum {
     PLAYING,

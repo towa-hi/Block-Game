@@ -40,12 +40,16 @@ public class SaveLoad {
 
     public static bool IsValidSave(BoardData aBoardData) {
         // TODO: make a validation function for save files
-        if (aBoardData.title == null) {
-            return false;
-        } 
-        if (aBoardData.creator == null) {
-            return false;
-        }
-        return true;
+        return
+            aBoardData.gameGrid != null &&
+            aBoardData.entityDataSet != null &&
+            aBoardData.playerEntityData != null &&
+            aBoardData.title != null &&
+            aBoardData.title.Length > 0 &&
+            aBoardData.creator != null &&
+            aBoardData.creator.Length > 0 &&
+            aBoardData.par > 0 &&
+            aBoardData.par <= Constants.MAXPAR &&
+            aBoardData.size == aBoardData.gameGrid.size;
     }
 }

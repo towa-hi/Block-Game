@@ -7,11 +7,11 @@ using Sirenix.OdinInspector;
 public class EditPanelBase : SerializedMonoBehaviour {
     Button[] topPanelArray;
     GameObject[] botPanelArray;
+    GameObject activeBotPanel;
     [Header("Set In Editor")]
     public GameObject pickerPanel;
     public GameObject editPanel;
     public GameObject optionsPanel;
-    public GameObject activeBotPanel;
     public Button pickerButton;
     public Button editButton;
     public Button optionsButton;
@@ -57,7 +57,6 @@ public class EditPanelBase : SerializedMonoBehaviour {
 
     public void SetOptionsModeTitleField(string aValue) {
         this.titleInput.SetTextWithoutNotify(aValue);
-        this.optionsModeSaveButton.interactable = (aValue.Length != 0);
     }
 
     // from EditManager

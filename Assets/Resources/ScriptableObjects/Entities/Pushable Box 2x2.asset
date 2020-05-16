@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebdba317aa75b114ba62ca0b14c07ea4, type: 3}
-  m_Name: Block 6x1
+  m_Name: Pushable Box 2x2
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,9 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  size: {x: 6, y: 1}
-  type: 0
-  prefab: 0
-  touchDefense: 99
-  fallDefense: 99
+  size: {x: 2, y: 2}
+  type: 1
+  prefab: 3
+  touchDefense: 50
+  fallDefense: 50
   defaultTeam: 1

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using Sirenix.OdinInspector;
 
 public class GM : Singleton<GM> {
@@ -22,9 +23,9 @@ public class GM : Singleton<GM> {
     public GameObject blockPrefabMaster;
     public GameObject playerPrefabMaster;
     public GameObject shufflebotPrefabMaster;
+    public GameObject pushablePrefabMaster;
 
     public bool isFullPaused;
-
     private void Awake() {
         // set as editing by default
         this.gameMode = GameModeEnum.EDITING;
@@ -46,12 +47,22 @@ public class GM : Singleton<GM> {
         AddBoundaries();
     }
 
+    // TODO: remove this and replace it with a ready made level later
     public void AddBoundaries() {
-        EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.PLAYER, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
+        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Block 1x20.asset");
+        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Block 38x1.asset");
+        EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Player.asset");
+        EntityData leftBoundary = new EntityData(tallBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        EntityData rightBoundary = new EntityData(tallBoy, new Vector2Int(39, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        EntityData downBoundary = new EntityData(longBoy, new Vector2Int(1, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        EntityData upBoundary = new EntityData(longBoy, new Vector2Int(1, 19), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.yellow);
+        
+        // EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        // EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        // EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        // EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
+        // EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.PLAYER, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
         GM.boardManager.CreateEntityFromData(leftBoundary);
         GM.boardManager.CreateEntityFromData(rightBoundary);
         GM.boardManager.CreateEntityFromData(upBoundary);
@@ -103,6 +114,8 @@ public class GM : Singleton<GM> {
         }
     }
 
+    // lookup function for prefabs. edit this to add new prefabs
+    // TODO: questionable practice
     public static GameObject EntityPrefabEnumToPrefab(EntityPrefabEnum aEntityPrefabEnum) {
         switch (aEntityPrefabEnum) {
             case EntityPrefabEnum.BLOCKPREFAB:
@@ -111,6 +124,8 @@ public class GM : Singleton<GM> {
                 return GM.I.playerPrefabMaster;
             case EntityPrefabEnum.SHUFFLEBOTPREFAB:
                 return GM.I.shufflebotPrefabMaster;
+            case EntityPrefabEnum.PUSHABLEPREFAB:
+                return GM.I.pushablePrefabMaster;
         }
         throw new System.Exception("Unknown entity prefab enum");
     }

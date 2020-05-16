@@ -15,7 +15,7 @@ public class BoardData {
     public int par;
     public Vector2Int size;
     public int attempts;
-    public bool isInitialized;
+    // public bool isInitialized;
 
     public BoardData() {
         this.entityDataSet = new HashSet<EntityData>();
@@ -28,6 +28,11 @@ public class BoardData {
         
     }
     
+    
+    public void SetPlayerEntity(EntityData aEntityData) {
+        this.playerEntityData = aEntityData;
+    }
+
     // adds aEntityData to the entityDataSet and have the cells register it
     // does not remove self from board if already in
     public void RegisterEntityData(EntityData aEntityData) {

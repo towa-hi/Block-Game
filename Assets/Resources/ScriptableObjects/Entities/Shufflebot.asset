@@ -24,3 +24,6 @@ MonoBehaviour:
   size: {x: 2, y: 2}
   type: 1
   prefab: 2
+  touchDefense: 0
+  fallDefense: 0
+  defaultTeam: 2

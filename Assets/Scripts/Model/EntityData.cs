@@ -42,8 +42,8 @@ public class EntityData {
     public HashSet<Vector2Int> downNodes;
 
     public bool isDying;
-    public int touchAttack;
-    public int fallAttack;
+    // public int touchAttack;
+    // public int fallAttack;
     public int touchDefense;
     public int fallDefense;
     StateMachine state;
@@ -62,60 +62,12 @@ public class EntityData {
         this.name = GenerateName();
         this.upNodes = new HashSet<Vector2Int>();
         this.downNodes = new HashSet<Vector2Int>();
-        SetDefaultTeam();
         this.isDying = false;
+        this.touchDefense = aEntitySchema.touchDefense;
+        this.fallDefense = aEntitySchema.fallDefense;
+        this.team = aEntitySchema.defaultTeam;
     }
 
-    // use when creating from scratch
-    public EntityData(EntityPrefabEnum aPrefab, Vector2Int aSize, EntityTypeEnum aType, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
-        this.componentsAreInitialized = false;
-        this.pos = aPos;
-        this.facing = aFacing;
-        this.size = aSize;
-        this.type = aType;
-        this.prefab= aPrefab;
-        this.defaultColor = aDefaultColor;
-        this.isFixed = aIsFixed;
-        this.isBoundary = aIsBoundary;
-        this.name = GenerateName();
-        this.upNodes = new HashSet<Vector2Int>();
-        this.downNodes = new HashSet<Vector2Int>();
-        SetDefaultTeam();
-        this.isDying = false;
-    }
-    // TODO: get rid of this stupid thing
-    public void SetDefaultTeam() {
-        switch (this.type) {
-            case EntityTypeEnum.BLOCK:
-                this.team = TeamEnum.NEUTRAL;
-                this.touchAttack = 0;
-                this.touchDefense = 999;
-                this.fallAttack = 0;
-                this.fallDefense = 999;
-                break;
-            case EntityTypeEnum.MOB:
-                this.team = TeamEnum.ENEMY;
-                this.touchAttack = 3;
-                this.touchDefense = 3;
-                this.fallAttack = 0;
-                this.fallDefense = 2;
-                break;
-            case EntityTypeEnum.PLAYER:
-                this.team = TeamEnum.PLAYER;
-                this.touchAttack = 0;
-                this.touchDefense = 1;
-                this.fallAttack = 0;
-                this.fallDefense = 2;
-                break;
-            case EntityTypeEnum.SPECIALBLOCK:
-                this.team = TeamEnum.NEUTRAL;
-                this.touchAttack = 0;
-                this.touchDefense = 999;
-                this.fallAttack = 0;
-                this.fallDefense = 999;
-                break;
-        }
-    }
 
     public List<Vector2Int> GetOccupiedPos() {
         return Util.V2IInRect(this.pos, this.size);

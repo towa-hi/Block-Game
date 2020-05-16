@@ -48,8 +48,6 @@ public class ILoco : IComponent {
         // if floating
         if (GM.boardData.IsEntityPosFloating(this.entityData.pos, this.entityData)) {
             // fall down
-            Debug.Log("entity is floating" + this.entityData.pos);
-            Debug.Log(GM.boardData.GetEntityDataAtPos(this.entityData.pos + Vector2Int.down));
             return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
         }
         

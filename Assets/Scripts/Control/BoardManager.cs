@@ -21,6 +21,14 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void CreateEntityFromData(EntityData aEntityData) {
+        if (aEntityData.type == EntityTypeEnum.PLAYER) {
+            if (GM.boardData.playerEntityData == null) {
+                GM.boardData.SetPlayerEntity(aEntityData);
+            } else {
+                print("player entity already exists");
+            }
+            
+        }
         // instantiate EntityData's prefab by using GM to lookup which prefab to get
         GameObject entityPrefab = Instantiate(GM.EntityPrefabEnumToPrefab(aEntityData.prefab), this.transform);
         // get the EntityBase for this prefab
@@ -29,10 +37,14 @@ public class BoardManager : SerializedMonoBehaviour {
         // print("3 entityDataList size" + GM.boardData.entityDataSet.Count);
         entityBase.Init(aEntityData);
         GM.boardData.RegisterEntityData(aEntityData);
+        
         // print("4 entityDataList size" + GM.boardData.entityDataSet.Count);
     }
 
     public void DestroyEntity(EntityData aEntityData) {
+        if (aEntityData == GM.boardData.playerEntityData) {
+            GM.boardData.SetPlayerEntity(null);
+        }
         GM.boardData.UnRegisterEntityData(aEntityData);
         Destroy(aEntityData.entityBase.gameObject);
         this.entityBaseList.Remove(aEntityData.entityBase);

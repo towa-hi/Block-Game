@@ -6,8 +6,9 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
 public class PickerModeItemBase : SerializedMonoBehaviour {
-    public EntitySchema entitySchema;
-    public PickerModePanelBase pickerModePanelBase;
+    EntitySchema entitySchema;
+    PickerModePanelBase pickerModePanelBase;
+    Button button;
     // set by editor
     public Text text; 
 
@@ -15,8 +16,15 @@ public class PickerModeItemBase : SerializedMonoBehaviour {
         this.entitySchema = aEntitySchema;
         this.text.text = GenPickerItemText(this.entitySchema);
         this.pickerModePanelBase = aPickerModePanelBase;
+        this.button = this.gameObject.GetComponent<Button>();
     }
 
+    // TODO: remove this nasty update later
+    void Update() {
+        if (entitySchema.type == EntityTypeEnum.PLAYER) {
+            this.button.interactable = (GM.boardData.playerEntityData == null);
+        }
+    }
     string GenPickerItemText(EntitySchema aEntitySchema) {
         return aEntitySchema.name;
     }

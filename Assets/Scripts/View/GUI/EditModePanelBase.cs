@@ -13,7 +13,8 @@ public class EditModePanelBase : SerializedMonoBehaviour {
     public Text nameText;
     public Toggle isFixedToggle;
     public LongClickButton deleteButton;
-
+    public Button extraButton;
+    public Button flipButton;
     public void Init() {
         SetEntity(null);
     }
@@ -22,6 +23,9 @@ public class EditModePanelBase : SerializedMonoBehaviour {
         this.previewStudioBase.SetEntity(aEntityData);
         this.editModeVerticalLayout.SetActive(aEntityData != null);
         this.editModeNullText.SetActive(aEntityData == null);
+        this.extraButton.interactable = (aEntityData != null);
+        this.flipButton.interactable = (aEntityData != null);
+        this.deleteButton.interactable = (aEntityData != null);
         if (aEntityData != null) {
             this.nameText.text = aEntityData.name;
             this.isFixedToggle.SetIsOnWithoutNotify(aEntityData.isFixed);

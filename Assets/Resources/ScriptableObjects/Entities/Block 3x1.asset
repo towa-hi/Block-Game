@@ -23,6 +23,7 @@ MonoBehaviour:
     SerializationNodes: []
   size: {x: 3, y: 1}
   type: 0
-  components: []
-  entityObject: {fileID: 6104724258390018009, guid: e931d81918f7a064ebd79bf7736bd06f,
-    type: 3}
+  prefab: 0
+  touchDefense: 99
+  fallDefense: 99
+  defaultTeam: 1
