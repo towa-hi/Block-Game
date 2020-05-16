@@ -12,6 +12,7 @@ public class PlayManager : SerializedMonoBehaviour {
     public HashSet<EntityData> selectedEntitySet;
     public EntityData clickedEntityData;
     public HashSet<EntityData> destroyOnNextFrame;
+    public PlayPanelBase playPanelBase;
 
     public void Init() {
         this.selectionState = SelectionStateEnum.UNSELECTED;
@@ -23,6 +24,7 @@ public class PlayManager : SerializedMonoBehaviour {
     // called from GM
     public void SetPlaytest(bool aIsPlaytest) {
         this.isPlaytest = aIsPlaytest;
+        this.playPanelBase.SetPlaytest(aIsPlaytest);
     }
 
     void Update() {
@@ -90,42 +92,46 @@ public class PlayManager : SerializedMonoBehaviour {
         return false;
     }
     public HashSet<EntityData> BumpCheck(Vector2Int aPos, EntityData aEntityData) {
+        ILoco iLoco = aEntityData.entityBase.GetCachedIComponent<ILoco>() as ILoco;
+        if (iLoco == null) {
+            print("BumpCheck - " + aEntityData.name + " lacks iLoco");
+        }
         bool isBlocked = false;
-        HashSet<EntityData> maybeEntitiesToKill = new HashSet<EntityData>();
-        if (GM.boardData.IsRectInBoard(aPos, aEntityData.size)) {
-            HashSet<EntityData> entitySet = GM.boardData.SetOfEntitiesInRect(aPos, aEntityData.size);
-            // foreach touched entity in the place i'm about to move to
-            foreach (EntityData touchedEntityData in entitySet) {
-                // if touched entity not me
-                if (touchedEntityData != aEntityData) {
-                    // if i can kill touched entity
-                    if (aEntityData.touchAttack > touchedEntityData.touchDefense) {
-                        maybeEntitiesToKill.Add(touchedEntityData);
-                    } else {
-                        // i'm blocked
-                        isBlocked = true;
-                    }
+        HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
+        Dictionary<Vector2Int, EntityData> entityDict = GM.boardData.EntityDataDictInRect(aPos, aEntityData.size);
+        foreach(KeyValuePair<Vector2Int, EntityData> kvp in entityDict) {
+            EntityData touchedEntityData = kvp.Value;
+            // if touchedEntityData exists and is not aEntityData
+            if (touchedEntityData != null && touchedEntityData != aEntityData) {
+                // if aEntityData capable of killing touchedEntityData
+                if (iLoco.touchDamage > touchedEntityData.touchDefense) {
+                    // add touchedEntityData to the list of entities to kill later
+                    entitiesToKill.Add(touchedEntityData);
+                } else {
+                    // aEntityData is blocked by a entity it can't kill
+                    isBlocked = true;
                 }
             }
-            if (isBlocked != true) {
-                // check if ground exists after all this while ignoring everything im about to kill
-                for (int x = aPos.x; x < aPos.x + aEntityData.size.x; x++) {
-                    Vector2Int currentPos = new Vector2Int(x, aPos.y - 1);
-                    Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.cyan);
-                    EntityData currentEntity = GM.boardData.GetEntityDataAtPos(currentPos);
-                    // if a entity exists in floor location
-                    if (currentEntity != null) {
-                        // if entity is not self
-                        if (currentEntity != aEntityData) {
-                            // if entity is not about to be killed
-                            if (!maybeEntitiesToKill.Contains(currentEntity)) {
-                                return maybeEntitiesToKill;
-                            }
+        }
+        if (isBlocked != true) {
+            // check if ground exists after all this while ignoring everything im about to kill
+            for (int x = aPos.x; x < aPos.x + aEntityData.size.x; x++) {
+                Vector2Int currentPos = new Vector2Int(x, aPos.y - 1);
+                Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.cyan);
+                EntityData currentEntity = GM.boardData.GetEntityDataAtPos(currentPos);
+                // if a entity exists in floor location
+                if (currentEntity != null) {
+                    // if entity is not self
+                    if (currentEntity != aEntityData) {
+                        // if entity is not about to be killed
+                        if (!entitiesToKill.Contains(currentEntity)) {
+                            return entitiesToKill;
                         }
                     }
                 }
             }
         }
+        
         return null;
     }
 }

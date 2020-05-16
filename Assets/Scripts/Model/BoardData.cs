@@ -8,7 +8,6 @@ public class BoardData {
 
     public GameGrid gameGrid;
     public HashSet<EntityData> entityDataSet;
-    public HashSet<EntityData> graveyardSet;
 
     public EntityData playerEntityData;
     public string title;
@@ -28,34 +27,35 @@ public class BoardData {
         this.attempts = 0;
         
     }
-
+    
+    // adds aEntityData to the entityDataSet and have the cells register it
+    // does not remove self from board if already in
     public void RegisterEntityData(EntityData aEntityData) {
         this.entityDataSet.Add(aEntityData);
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = aEntityData;
         }
-        Debug.Log("BoardData - RegisterEntity: " + aEntityData.name);
+        // Debug.Log("BoardData - RegisterEntity: " + aEntityData.name);
     }
 
+    // removes aEntityData from the entityDataSet and have the cells register it
+    // does not remove entityBase from the actual game
     public void UnRegisterEntityData(EntityData aEntityData) {
         this.entityDataSet.Remove(aEntityData);
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = null;
         }
-        Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.name);
+        // Debug.Log("BoardData - UnRegisterEntity: " + aEntityData.name);
     }
 
+    // removes this aEntityData from cells in gameGrid, usually before moving or killing it
     public void BanishEntity(EntityData aEntityData) {
         foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).entityData = null;
         }
     }
 
-    public void AddToGraveyard(EntityData aEntityData) {
-        UnRegisterEntityData(aEntityData);
-        this.graveyardSet.Add(aEntityData);
-    }
-
+    // gets EntityData at aPos
     public EntityData GetEntityDataAtPos(Vector2Int aPos) {
         if (IsPosInBoard(aPos)) {
             return this.gameGrid.GetCell(aPos).entityData;
@@ -64,11 +64,10 @@ public class BoardData {
         }
     }
 
+    // removes aEntityData from gameGrid temporarily then sets entityData to new pos and adds it back in
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
         if (IsPosInBoard(aPos)) {
-            foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
-                this.gameGrid.GetCell(currentPos).entityData = null;
-            }
+            BanishEntity(aEntityData);
             aEntityData.SetPos(aPos);
             foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
                 this.gameGrid.GetCell(currentPos).entityData = aEntityData;
@@ -76,14 +75,21 @@ public class BoardData {
         }
     }
 
+    // returns dict of positions and EntityData in rect. basically a slice of gameGrid.gridDict
     public Dictionary<Vector2Int, EntityData> EntityDataDictInRect(Vector2Int aOrigin, Vector2Int aSize) {
         Dictionary<Vector2Int, EntityData> entityDataInRect = new Dictionary<Vector2Int, EntityData>();
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
-            entityDataInRect[currentPos] = GetEntityDataAtPos(currentPos);
+            if (IsPosInBoard(currentPos)) {
+                entityDataInRect[currentPos] = GetEntityDataAtPos(currentPos);
+            } else {
+                Debug.Log("EntityDataDictInRect - checked out of bounds pos");
+            }
+            
         }
         return entityDataInRect;
     }
 
+    // check if area in rect has .entityData of null
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
         foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
             if (IsPosInBoard(currentPos)) {
@@ -104,19 +110,10 @@ public class BoardData {
         return true;
     }
 
-    public bool IsEntityPosValid(Vector2Int aPos, EntityData aEntityData) {
-        return IsRectEmpty(aPos, aEntityData.size, aEntityData);
-    }
-
+    // check if any entities exist below aEntityData when its in aPos
     public bool IsEntityPosFloating(Vector2Int aPos, EntityData aEntityData) {
-        return IsRectEmpty(aPos, aEntityData.size, aEntityData);
-    }
-    public bool IsEntityOffsetValid(Vector2Int aOffset, EntityData aEntityData) {
-        return IsRectEmpty(aEntityData.pos + aOffset, aEntityData.size, aEntityData);
-    }
-
-    public bool IsEntityFloating(EntityData aEntityData) {
-        return IsEntityOffsetValid(Vector2Int.down, aEntityData);
+        // TODO: make this ignore walk-thru entities and entities that aEntityData can stomp
+        return IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData);
     }
 
     public bool IsPosInBoard(Vector2Int aPos) {

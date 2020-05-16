@@ -10,22 +10,27 @@ public class SaveLoad {
     // public static string saveFilename = "serializationTestBinary1";
     public static BoardData mySaveData;
 
-    public static void SaveBoard(BoardData aBoardData) {
-        string saveFilename = ConvertTitleToSafeFileName(aBoardData.title) + ".board";
+    public static void SaveBoard(BoardData aBoardData, bool aIsPlaytestTemp = false) {
+        string saveFilename;
+        if (aIsPlaytestTemp) {
+            saveFilename = "PlaytestTemp.board";
+        } else {
+            saveFilename = ConvertTitleToSafeFileName(aBoardData.title) + ".board";
+        }
         Debug.Log("SaveLoad - attempting to save " + saveFilename);
         byte[] bytes = SerializationUtility.SerializeValue<BoardData>(aBoardData, DataFormat.Binary);
         File.WriteAllBytes(Config.PATHTOBOARDS + saveFilename, bytes);
     }
 
-    public static void LoadBoard(string aFilename) {
+    public static BoardData LoadBoard(string aFilename) {
         if (!File.Exists(Config.PATHTOBOARDS + aFilename)) {
             Debug.Log("SaveLoad - .board file with name " + aFilename + " not found!");
-            return;
+            return null;
         }
         byte[] bytes = File.ReadAllBytes(Config.PATHTOBOARDS + aFilename);
         mySaveData = SerializationUtility.DeserializeValue<BoardData>(bytes, DataFormat.Binary);
         Debug.Log("SaveLoad - now loading " + aFilename);
-        GM.I.LoadBoard(mySaveData);
+        return mySaveData;
     }
 
     public static string ConvertTitleToSafeFileName(string aTitle) {

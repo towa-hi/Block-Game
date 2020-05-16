@@ -14,7 +14,7 @@ public class PlayPanelBase : SerializedMonoBehaviour {
         SetTitle();
     }
 
-    void SetPlaytest(bool aIsPlaytest) {
+    public void SetPlaytest(bool aIsPlaytest) {
         this.isPlaytest = aIsPlaytest;
         this.playtestPanel.SetActive(aIsPlaytest);
     }

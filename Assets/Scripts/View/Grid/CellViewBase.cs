@@ -45,7 +45,8 @@ public class CellViewBase: SerializedMonoBehaviour {
         // Color currentColor = this.panelRenderer.material.color;
         float t = 0f;
         while (t < 1) {
-            t += Time.deltaTime / aDuration;
+            // we use unscaledDeltaTime here or else this effect will pause when the game is paused
+            t += Time.unscaledDeltaTime  / aDuration;
             Color currentColor = this.panelRenderer.material.color;
             currentColor.a = Mathf.Lerp(aColor.a, 0f, t);
             this.panelRenderer.material.color = currentColor;

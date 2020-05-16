@@ -131,16 +131,22 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeSaveButtonClick() {
         print("save button clicked");
-        SaveLoad.SaveBoard(GM.boardData);
+        if (IsValidSave()) {
+            SaveLoad.SaveBoard(GM.boardData);
+        } else {
+            print("invalid save");
+        }
+        
     }
 
     public void OnOptionsModePlaytestButtonClick() {
         print("playtest button clicked");
-        GM.I.PlayTest();
+        GM.I.SetGameMode(GameModeEnum.PLAYTESTING);
+        SaveLoad.SaveBoard(GM.boardData, true);
     }
 
     public void LoadLevelFromFilePicker(string aFilename) {
-        SaveLoad.LoadBoard(aFilename);
+        GM.I.LoadBoard(SaveLoad.LoadBoard(aFilename));
         EndFilePicker();
     }
 
@@ -150,6 +156,10 @@ public class EditManager : SerializedMonoBehaviour {
 
     }
 
+    public bool IsValidSave() {
+        // TODO: write a validator for save data
+        return true;
+    }
 }
 
 

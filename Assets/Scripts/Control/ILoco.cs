@@ -46,8 +46,10 @@ public class ILoco : IComponent {
                 }
             }
         // if floating
-        if (GM.boardData.IsEntityFloating(this.entityData)) {
+        if (GM.boardData.IsEntityPosFloating(this.entityData.pos, this.entityData)) {
             // fall down
+            Debug.Log("entity is floating" + this.entityData.pos);
+            Debug.Log(GM.boardData.GetEntityDataAtPos(this.entityData.pos + Vector2Int.down));
             return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
         }
         
@@ -86,21 +88,6 @@ public class ILoco : IComponent {
 
     public void DoNext(bool aDoNext) {
         this.doNext = aDoNext;
-    }
-
-    public bool IsEntityPosGroundedAndValid(Vector2Int aPos, EntityData aEntityData) {
-        if (GM.boardData.IsEntityPosValid(aPos, aEntityData)) {
-            // Debug.Log("entity pos is valid" + aPos);
-            if (!GM.boardData.IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData)) {
-                // Debug.Log("entity pos is grounded returning true" + aPos);
-                return true;
-            } else {
-                // Debug.Log("entity pos is not grounded" + aPos);
-            }
-        } else {
-            // Debug.Log("entity pos is invalid" + aPos);
-        }
-        return false;
     }
 
     void OnDrawGizmos() {

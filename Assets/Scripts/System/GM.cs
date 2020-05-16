@@ -13,6 +13,7 @@ public class GM : Singleton<GM> {
     public static CursorBase cursorBase;
 
     public GameModeEnum gameMode;
+
     [Header("Set In Editor")]
     public GameObject boardManagerGameObject;
     public GameObject editPanel;
@@ -63,7 +64,14 @@ public class GM : Singleton<GM> {
         GM.editManager.Init();
     }
 
+    public void SetGameModeWithInt(int gameModeEnumInt) {
+        SetGameMode((GameModeEnum)gameModeEnumInt);
+    }
+    
     public void SetGameMode(GameModeEnum aGameMode) {
+        if (this.gameMode == GameModeEnum.PLAYTESTING) {
+            LoadBoard(SaveLoad.LoadBoard("PlaytestTemp.board"));
+        }
         this.gameMode = aGameMode;
         switch (this.gameMode) {
             case GameModeEnum.EDITING:
@@ -90,14 +98,6 @@ public class GM : Singleton<GM> {
                 GM.playManager.SetPlaytest(true);
                 break;
         }
-    }
-
-    public void PlayTest() {
-        SetGameMode(GameModeEnum.PLAYTESTING);
-    }
-
-    public void ExitPlayTest() {
-        SetGameMode(GameModeEnum.EDITING);
     }
 
     public static GameObject EntityPrefabEnumToPrefab(EntityPrefabEnum aEntityPrefabEnum) {
