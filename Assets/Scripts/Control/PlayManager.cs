@@ -91,6 +91,7 @@ public class PlayManager : SerializedMonoBehaviour {
         }
         return false;
     }
+    
     public HashSet<EntityData> BumpCheck(Vector2Int aPos, EntityData aEntityData) {
         ILoco iLoco = aEntityData.entityBase.GetCachedIComponent<ILoco>() as ILoco;
         if (iLoco == null) {
@@ -117,7 +118,6 @@ public class PlayManager : SerializedMonoBehaviour {
             // check if ground exists after all this while ignoring everything im about to kill
             for (int x = aPos.x; x < aPos.x + aEntityData.size.x; x++) {
                 Vector2Int currentPos = new Vector2Int(x, aPos.y - 1);
-                Util.DebugAreaPulse(currentPos, new Vector2Int(1,1), Color.cyan);
                 EntityData currentEntity = GM.boardData.GetEntityDataAtPos(currentPos);
                 // if a entity exists in floor location
                 if (currentEntity != null) {

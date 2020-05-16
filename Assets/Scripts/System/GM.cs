@@ -42,6 +42,7 @@ public class GM : Singleton<GM> {
         GM.boardManager.Init();
         GM.editManager.Init();
         GM.playManager.Init();
+        GM.gridViewBase.Init();
         AddBoundaries();
     }
 
@@ -62,8 +63,10 @@ public class GM : Singleton<GM> {
         GM.boardData = aBoardData;
         GM.boardManager.Init();
         GM.editManager.Init();
+        GM.gridViewBase.Init();
     }
 
+    // sets game mode but with int because unity is too dumb to use enums in editor
     public void SetGameModeWithInt(int gameModeEnumInt) {
         SetGameMode((GameModeEnum)gameModeEnumInt);
     }

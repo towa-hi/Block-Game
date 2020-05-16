@@ -37,4 +37,15 @@ public class SaveLoad {
         char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
         return new string(aTitle.Where(ch => !invalidFileNameChars.Contains(ch)).ToArray());
     }
+
+    public static bool IsValidSave(BoardData aBoardData) {
+        // TODO: make a validation function for save files
+        if (aBoardData.title == null) {
+            return false;
+        } 
+        if (aBoardData.creator == null) {
+            return false;
+        }
+        return true;
+    }
 }

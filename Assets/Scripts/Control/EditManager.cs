@@ -131,7 +131,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModeSaveButtonClick() {
         print("save button clicked");
-        if (IsValidSave()) {
+        if (SaveLoad.IsValidSave(GM.boardData)) {
             SaveLoad.SaveBoard(GM.boardData);
         } else {
             print("invalid save");
@@ -155,13 +155,9 @@ public class EditManager : SerializedMonoBehaviour {
         GM.I.ToggleFullPauseGame(false);
 
     }
-
-    public bool IsValidSave() {
-        // TODO: write a validator for save data
-        return true;
-    }
 }
 
+#region editStates
 
 public class EditTabPickerModeMoveState : GameState {
     [SerializeField]
@@ -385,15 +381,4 @@ public class EditTabOptionsModeState : GameState {
     }
 }
 
-// [System.Serializable]
-// public class OnPickerItemClickEvent : UnityEvent<EntitySchema>{};
-// [System.Serializable]
-// public class OnSetEditTabEvent : UnityEvent<int> {};
-// [System.Serializable]
-// public class OnEditModeColorPickerClickEvent : UnityEvent<Color> {};
-// [System.Serializable]
-// public class OnEditModeFixedToggleEvent : UnityEvent<bool> {};
-// [System.Serializable]
-// public class OnOptionsModeTitleChangeEvent : UnityEvent<string> {};
-// [System.Serializable]
-// public class OnOptionsModeParChangeEvent : UnityEvent<int> {};
+#endregion

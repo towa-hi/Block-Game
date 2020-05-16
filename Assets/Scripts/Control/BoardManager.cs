@@ -5,11 +5,9 @@ using Sirenix.OdinInspector;
 
 public class BoardManager : SerializedMonoBehaviour {
     public List<EntityBase> entityBaseList;
-    public GridViewBase gridViewBase;
 
     public void Init() {
         LoadBoardData(GM.boardData);
-        this.gridViewBase.Init();
     }
 
     public void LoadBoardData(BoardData aBoardData) {
@@ -17,11 +15,8 @@ public class BoardManager : SerializedMonoBehaviour {
             Destroy(entityBase.gameObject);
         }
         this.entityBaseList = new List<EntityBase>();
-        // print("initial entityDataList size" + aBoardData.entityDataSet.Count);
         foreach (EntityData entityData in aBoardData.entityDataSet) {
-            // print("2 entityDataList size" + aBoardData.entityDataSet.Count);
             CreateEntityFromData(entityData);
-            // print("5 entityDataList size" + aBoardData.entityDataSet.Count);
         }
     }
 
