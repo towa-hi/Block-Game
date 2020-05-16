@@ -97,30 +97,6 @@ public class ILoco : IComponent {
         }
         return false;
     }
-    class ILocoFloatingState : GameState {
-        ILoco iLoco;
-        EntityBase entityBase;
-        EntityData entityData;
-
-        public ILocoFloatingState(ILoco aIloco) {
-            this.iLoco = aIloco;
-            this.entityBase = aIloco.entityBase;
-            this.entityData = aIloco.entityData;
-        }
-
-        public void Enter() {
-            // print("ILocoRisingState - entered");
-            this.iLoco.DoNext(false);
-        }
-
-        public void Update() {
-            this.iLoco.DoNext(true);
-        }
-
-        public void Exit() {
-            this.entityBase.ResetViewPosition();
-        }
-    }
 
     void OnDrawGizmos() {
         ILocoState currentState = this.stateMachine.GetState() as ILocoState;
@@ -156,10 +132,10 @@ public class ILoco : IComponent {
     // causes entity to rise up one tile when raised by a fan
     class ILocoRisingState : ILocoState {
 
-        public ILocoRisingState(ILoco aIloco, Vector2Int aDestination) {
-            this.iLoco = aIloco;
-            this.entityBase = aIloco.entityBase;
-            this.entityData = aIloco.entityData;
+        public ILocoRisingState(ILoco aILoco, Vector2Int aDestination) {
+            this.iLoco = aILoco;
+            this.entityBase = aILoco.entityBase;
+            this.entityData = aILoco.entityData;
             this.destination = aDestination;
             this.t = 0f;
         }
@@ -171,6 +147,7 @@ public class ILoco : IComponent {
             // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+            // TODO: do some kind of rising animation
         }
 
         public override void Update() {
@@ -184,6 +161,31 @@ public class ILoco : IComponent {
 
         public override void Exit() {
              // print("ILocoRisingState - exited");
+            this.entityBase.ResetViewPosition();
+        }
+    }
+
+    class ILocoFloatingState : ILocoState {
+
+        public ILocoFloatingState(ILoco aILoco) {
+            this.iLoco = aILoco;
+            this.entityBase = aILoco.entityBase;
+            this.entityData = aILoco.entityData;
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+            // print("ILocoFloatingState - entered");
+            this.iLoco.DoNext(false);
+            // TODO: do some kind of floating animation
+        }
+
+        public override void Update() {
+            this.iLoco.DoNext(true);
+        }
+
+        public override void Exit() {
+             // print("ILocoFloatingState - exited");
             this.entityBase.ResetViewPosition();
         }
     }
@@ -206,6 +208,7 @@ public class ILoco : IComponent {
             // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+            // TODO: do some kind of walking animation
         }
 
         public override void Update() {
@@ -278,6 +281,7 @@ public class ILoco : IComponent {
             // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+            // TODO: do some kind of falling animation
         }
 
         public override void Update() {
@@ -294,7 +298,7 @@ public class ILoco : IComponent {
             // print("ILocoFallingState - exited");
         }
     }
-    
+
     // makes entity hop to destination
     class ILocoHoppingState : ILocoState {
 
@@ -314,6 +318,7 @@ public class ILoco : IComponent {
             // move the entity to new pos
             GM.boardData.MoveEntity(this.destination, this.entityData);
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
+            // TODO: do some kind of hopping animation
         }
 
         public override void Update() {
@@ -346,6 +351,7 @@ public class ILoco : IComponent {
         public override void Enter() {
             // print("ILocoWaitingState - entered");
             this.iLoco.DoNext(false);
+            // TODO: do some kind of idle animation
         }
 
         public override void Update() {
