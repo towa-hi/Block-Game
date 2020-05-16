@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
 public class EditPanelBase : SerializedMonoBehaviour {
+    Button[] topPanelArray;
+    GameObject[] botPanelArray;
+    [Header("Set In Editor")]
     public GameObject pickerPanel;
     public GameObject editPanel;
     public GameObject optionsPanel;
@@ -13,11 +16,7 @@ public class EditPanelBase : SerializedMonoBehaviour {
     public Button editButton;
     public Button optionsButton;
     public InputField titleInput;
-
     public Button optionsModeSaveButton;
-    public EditManager editManager;
-    Button[] topPanelArray;
-    GameObject[] botPanelArray;
     
     void Awake() {
         this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton};

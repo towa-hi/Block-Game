@@ -2418,6 +2418,7 @@ GameObject:
   - component: {fileID: 787016937}
   - component: {fileID: 787016939}
   - component: {fileID: 787016938}
+  - component: {fileID: 787016940}
   m_Layer: 5
   m_Name: PlayPanel
   m_TagString: Untagged
@@ -2482,6 +2483,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787016936}
   m_CullTransparentMesh: 0
+--- !u!114 &787016940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787016936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1a6a1961b9f0f4fba7a3032d3a309e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  isPlaytest: 0
+  titleText: {fileID: 500536013}
+  playtestPanel: {fileID: 0}
 --- !u!1 &913422798
 GameObject:
   m_ObjectHideFlags: 0
@@ -3560,7 +3585,7 @@ GameObject:
   - component: {fileID: 1550903367}
   - component: {fileID: 1550903366}
   m_Layer: 5
-  m_Name: DebugPanel
+  m_Name: PlaytestPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7191,7 +7216,6 @@ MonoBehaviour:
   optionsButton: {fileID: 1345539335293482714}
   titleInput: {fileID: 1345539335016362961}
   optionsModeSaveButton: {fileID: 1345539334222518730}
-  editManager: {fileID: 0}
 --- !u!114 &1345539334078355868
 MonoBehaviour:
   m_ObjectHideFlags: 0
