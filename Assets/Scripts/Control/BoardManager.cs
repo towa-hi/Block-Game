@@ -27,7 +27,6 @@ public class BoardManager : SerializedMonoBehaviour {
             } else {
                 print("player entity already exists");
             }
-            
         }
         // instantiate EntityData's prefab by using GM to lookup which prefab to get
         GameObject entityPrefab = Instantiate(GM.EntityPrefabEnumToPrefab(aEntityData.prefab), this.transform);

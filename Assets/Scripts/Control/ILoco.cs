@@ -37,7 +37,7 @@ public class ILoco : IComponent {
         }
         this.stateMachine.Update();
     }
-
+    //TODO: make this work with fans
     public GameState ChooseNextState() {
          if (this.canBeLifted) {
                 if (GM.playManager.EntityFanCheck(this.entityData)) {

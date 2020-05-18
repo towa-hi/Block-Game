@@ -1,5 +1,46 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7126457913944490699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5355635047958650694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba6d2338e4ebd7d4e9d54d3cffd03f9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: stateMachine
+      Entry: 6
+      Data: 
+  doNext: 0
+  canKillOnTouch: 0
+  touchDamage: 0
+  canKillOnFall: 1
+  fallDamage: 10
+  canWalk: 0
+  canHop: 0
+  canBeLifted: 0
+  walkingMoveSpeed: 0
+  turningMoveSpeed: 0
+  hoppingMoveSpeed: 0
+  hoppingCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!65 &1553075704065556143
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -60,44 +101,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-7126457913944490699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5355635047958650694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba6d2338e4ebd7d4e9d54d3cffd03f9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010c000000730074006100740065004d0061006300680069006e006500
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  doNext: 0
-  canKillOnTouch: 0
-  touchDamage: 0
-  canKillOnFall: 1
-  fallDamage: 10
-  canWalk: 0
-  canHop: 0
-  canBeLifted: 0
-  walkingMoveSpeed: 0
-  turningMoveSpeed: 0
-  hoppingMoveSpeed: 0
-  hoppingCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1001 &7460550473340329418
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -183,22 +186,23 @@ PrefabInstance:
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedBytes.Array.size
-      value: 26
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializationNodes.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
+        type: 3}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedFormat
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6046906246738112412, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
@@ -268,22 +272,23 @@ PrefabInstance:
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedBytes.Array.size
-      value: 26
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializationNodes.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
+        type: 3}
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
       propertyPath: serializationData.SerializedFormat
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6917146761042709821, guid: c7552f875f79a0e408b9e65bee1fa219,
         type: 3}
