@@ -70,6 +70,7 @@ public class BoardData {
     }
 
     // removes aEntityData from gameGrid temporarily then sets entityData to new pos and adds it back in
+    // does not change position of EntityView
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
         if (IsRectEmpty(aPos, aEntityData.size, aEntityData)) {
             BanishEntity(aEntityData);
@@ -95,7 +96,7 @@ public class BoardData {
         return entityDataInRect;
     }
 
-    public Dictionary<Vector2Int, GameCell> GetSlice(Vector2Int aOrigin, Vector2Int aSize) {
+    public Dictionary<Vector2Int, GameCell> GetCellSlice(Vector2Int aOrigin, Vector2Int aSize) {
         return this.gameGrid.GetSlice(aOrigin, aSize);
     }
 
@@ -129,14 +130,15 @@ public class BoardData {
         return true;
     }
 
-    // returns false if rect is out of bounds
-    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityData> aIgnoreEntityList) {
+    // returns false if rect is out of bounds but with set of entities to ignore
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityData> aIgnoreEntitySet) {
+        Debug.Assert(aIgnoreEntitySet != null);
         if (!IsRectInBoard(aOrigin, aSize)) {
             return false;
         }
         foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.GetSlice(aOrigin, aSize)) {
             if (kvp.Value.entityData != null) {
-                if (!aIgnoreEntityList.Contains(kvp.Value.entityData)) {
+                if (!aIgnoreEntitySet.Contains(kvp.Value.entityData)) {
                     return false;
                 }
             }
@@ -145,9 +147,15 @@ public class BoardData {
     }
 
     // check if any entities exist below aEntityData when its in aPos
-    public bool IsEntityPosFloating(Vector2Int aPos, EntityData aEntityData) {
+    public bool IsEntityPosFloating(Vector2Int aPos, EntityData aEntityData, HashSet<EntityData> aIgnoreEntitySet = null) {
         // TODO: make this ignore walk-thru entities and entities that aEntityData can stomp
-        return IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData);
+        if (aIgnoreEntitySet != null) {
+            // add self to list of exceptions
+            aIgnoreEntitySet.Add(aEntityData);
+            return IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aIgnoreEntitySet);
+        } else {
+            return IsRectEmpty(aPos + Vector2Int.down, aEntityData.size, aEntityData);
+        }
     }
 
     public bool IsPosInBoard(Vector2Int aPos) {
