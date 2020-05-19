@@ -344,11 +344,7 @@ public class EditTabEditModeState : GameState {
     }
 
     public void FlipEntity() {
-        if (this.entityData.facing == Vector2Int.right) {
-            this.entityData.facing = Vector2Int.left;
-        } else if (this.entityData.facing == Vector2Int.left) {
-            this.entityData.facing = Vector2Int.right;
-        }
+        this.entityData.FlipEntity();
     }
 
     public void DeleteEntity() {

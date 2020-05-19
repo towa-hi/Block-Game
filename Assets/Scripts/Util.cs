@@ -67,6 +67,7 @@ public class Util {
         return V2IList;
     }
 
+    // will return true on (0, 0)
     public static bool IsDirection (Vector2Int aDirection) {
         if (-1 <= aDirection.x && aDirection.x <= 1) {
             if (-1 <= aDirection.y && aDirection.y <= 1) {
@@ -83,4 +84,15 @@ public class Util {
             }
         }
     }
+
+    // public static Quaternion FacingToQuaternion(Vector2Int aFacing) {
+    //     Debug.Assert(IsDirection(aFacing));
+    //     Debug.Assert(aFacing.x != 0);
+    //     Debug.Assert(aFacing.y == 0);
+    //     if (aFacing == Vector2Int.right) {
+    //         return new Quaternion();
+    //     } else if (aFacing == Vector2Int.left) {
+    //         return new Quaternion(0, -1, 0,);
+    //     }
+    // }
 }

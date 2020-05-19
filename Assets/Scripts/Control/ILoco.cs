@@ -44,7 +44,7 @@ public class ILoco : IComponent {
     // this answers the question: what do i have to kill/push before I can move
     // to this position? if null, it means this move is blocked by something that i cant kill or push
     // also checks if position has a ground after everything has been killed/pushed
-    public BumpCheckResults BumpCheck(Vector2Int aDirection) {
+    BumpCheckResults BumpCheck(Vector2Int aDirection) {
         // print("doing bumpcheck for " + this.entityData.name + " at direction" + aDirection);
         HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
         HashSet<EntityData> entitiesToPush = new HashSet<EntityData>();
@@ -85,7 +85,7 @@ public class ILoco : IComponent {
     }
 
     //TODO: make this work with fans
-    public GameState ChooseNextState() {
+    GameState ChooseNextState() {
          if (this.canBeLifted) {
                 // if (GM.playManager.EntityFanCheck(this.entityData)) {
                 //     // TODO finish this
@@ -133,12 +133,12 @@ public class ILoco : IComponent {
         }
     }
 
-    public void DoNext(bool aDoNext) {
+    void DoNext(bool aDoNext) {
         this.doNext = aDoNext;
     }
 
     // kills or pushes everything in BumpCheckResults so entity can move to a empty place
-    public void DoBumpCheckResults(BumpCheckResults aBumpCheck) {
+    void DoBumpCheckResults(BumpCheckResults aBumpCheck) {
         // if killables exist, yeet them
         foreach (EntityData entityToKill in aBumpCheck.entitiesToKill) {
             GM.playManager.BeginEntityDeath(entityToKill);

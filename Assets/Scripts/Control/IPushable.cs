@@ -144,6 +144,7 @@ public class IPushable : IComponent {
 
         public void Update() {
             if (this.t < 1) {
+                // stuff always gets pushed twice as fast as the velocity of the pusher
                 this.t += Time.deltaTime / (Constants.PUSHSPEED / 2f);
                 this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
             } else {

@@ -74,7 +74,7 @@ public class EntityData {
         return Util.V2IInRect(this.pos, this.size);
     }
 
-    public string GenerateName() {
+    string GenerateName() {
         string nameString = this.type.ToString() + " " + this.size;
         if (this.isBoundary) {
             nameString += " (boundary)";
