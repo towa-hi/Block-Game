@@ -81,10 +81,10 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: pushedBy
+    - Name: stateMachine
       Entry: 6
       Data: 
-  direction: {x: 0, y: 0}
+  canKillOnFall: 1
 --- !u!1001 &7460550473340329418
 PrefabInstance:
   m_ObjectHideFlags: 0
