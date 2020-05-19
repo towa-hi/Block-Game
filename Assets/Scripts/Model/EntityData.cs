@@ -43,7 +43,6 @@ public class EntityData {
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
 
-    public bool isDying;
     // public int touchAttack;
     // public int fallAttack;
     public int touchDefense;
@@ -64,7 +63,6 @@ public class EntityData {
         this.name = GenerateName();
         this.upNodes = new HashSet<Vector2Int>();
         this.downNodes = new HashSet<Vector2Int>();
-        this.isDying = false;
         this.touchDefense = aEntitySchema.touchDefense;
         this.fallDefense = aEntitySchema.fallDefense;
         this.team = aEntitySchema.defaultTeam;
@@ -90,11 +88,6 @@ public class EntityData {
         } else {
             return false;
         }
-    }
-    
-    public void Die() {
-        // Debug.Log("I'm dying");
-        this.isDying = true;
     }
 
     public void SetPos(Vector2Int aPos) {

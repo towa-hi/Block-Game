@@ -22,11 +22,7 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void CreateEntityFromData(EntityData aEntityData) {
         if (aEntityData.type == EntityTypeEnum.PLAYER) {
-            if (GM.boardData.playerEntityData == null) {
-                GM.boardData.SetPlayerEntity(aEntityData);
-            } else {
-                print("player entity already exists");
-            }
+            GM.boardData.SetPlayerEntity(aEntityData);
         }
         // instantiate EntityData's prefab by using GM to lookup which prefab to get
         GameObject entityPrefab = Instantiate(GM.EntityPrefabEnumToPrefab(aEntityData.prefab), this.transform);

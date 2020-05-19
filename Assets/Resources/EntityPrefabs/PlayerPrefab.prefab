@@ -216,6 +216,7 @@ GameObject:
   - component: {fileID: 7264846230685124844}
   - component: {fileID: 1936895859784377848}
   - component: {fileID: -3569235229017692847}
+  - component: {fileID: 7860404305753381323}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Entity
@@ -264,6 +265,9 @@ MonoBehaviour:
       Data: 
   entityView: {fileID: 1654358045956032345}
   isInTempPos: 0
+  isDying: 0
+  animator: {fileID: 7860404305753381323}
+  originalHeight: 0
 --- !u!114 &-3569235229017692847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,18 +292,14 @@ MonoBehaviour:
     - Name: stateMachine
       Entry: 6
       Data: 
-  doNext: 0
   canKillOnTouch: 0
   touchDamage: 0
   canKillOnFall: 0
   fallDamage: 0
-  canWalk: 1
-  canHop: 1
-  canBeLifted: 1
-  canPush: 1
-  canBePushed: 0
-  walkingMoveSpeed: 1
   turningMoveSpeed: 1
+  canWalk: 1
+  walkingMoveSpeed: 1
+  canHop: 1
   hoppingMoveSpeed: 1
   hoppingCurve:
     serializedVersion: 2
@@ -334,3 +334,24 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  canPush: 1
+  canBeLifted: 1
+--- !u!95 &7860404305753381323
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7264846230685124840}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: ec045fe672f34ce4fb2437fa2a262cbd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -11,7 +11,11 @@ public class EntityBase : SerializedMonoBehaviour {
     public EntityView entityView;
     public EntityData entityData;
     public bool isInTempPos;
+    public bool isDying;
+    DeathType deathType;
+    public Animator animator;
     float t;
+    public float originalHeight;
 
     // we want to initialize entityBase, all the iComponents and entityView with entityData
     public void Init(EntityData aEntityData) {
@@ -26,6 +30,7 @@ public class EntityBase : SerializedMonoBehaviour {
             iComponent.Init();
         }
         this.entityData.componentsAreInitialized = true;
+        this.isDying = false;
     }
 
     public IComponent GetCachedIComponent<T>() {
@@ -38,7 +43,7 @@ public class EntityBase : SerializedMonoBehaviour {
     }
 
     public void DoFrame() {
-        if (this.entityData.isDying) {
+        if (this.isDying) {
             if (this.t < 1) {
                 t += Time.deltaTime / Constants.DEATHSTATETIME;
                 this.entityView.myRenderer.material.color = Color.Lerp(this.entityData.defaultColor, Color.black, t);
@@ -52,6 +57,50 @@ public class EntityBase : SerializedMonoBehaviour {
         }
         }
         
+    }
+
+    public void Die(DeathType aDeathType) {
+        this.isDying = true;
+        this.deathType = aDeathType;
+        switch (this.deathType) {
+            case DeathType.BUMP:   
+                break;
+            case DeathType.FIRE:
+                break;
+            case DeathType.BISECTED:
+                break;
+            case DeathType.SQUISHED:
+                print("squished");
+                animator.SetTrigger("Squish");
+                break;
+        }
+    }
+
+    void DeathUpdate() {
+        switch (this.deathType) {
+            case DeathType.BUMP:
+                if (this.t < 1) {
+                    t += Time.deltaTime / Constants.DEATHSTATETIME;
+                    this.entityView.myRenderer.material.color = Color.Lerp(this.entityData.defaultColor, Color.black, t);
+                }
+                break;
+            case DeathType.FIRE:
+                if (this.t < 1) {
+                    t += Time.deltaTime / Constants.DEATHSTATETIME;
+                }
+                break;
+            case DeathType.BISECTED:
+                if (this.t < 1) {
+                    t += Time.deltaTime / Constants.DEATHSTATETIME;
+                }
+                break;
+            case DeathType.SQUISHED:
+                if (this.t < 1) {
+                    t += Time.deltaTime / Constants.DEATHSTATETIME;
+
+                }
+                break;
+        }
     }
 
     public void SetViewPosition(Vector2Int aPos) {

@@ -10,6 +10,7 @@ public class IPushable : IComponent {
     EntityData pushedBy;
     [Header("Set In Editor")]
     public bool canKillOnFall;
+    public int fallDamage;
 
     public override void Init() {
         this.stateMachine = new StateMachine();
@@ -19,7 +20,9 @@ public class IPushable : IComponent {
     public override void DoFrame() {
         if (this.doNext) {
             // if floating
-            if (GM.boardData.IsRectEmpty(this.entityData.pos + Vector2Int.down, this.entityData.size, this.entityData)) {
+            BumpCheckResults fallCheck = FallCheck();
+            if (fallCheck != null) {
+                DoFallCheckResults(fallCheck);
                 this.stateMachine.ChangeState(new IPushableFallingState(this));
             } else {
                 this.stateMachine.ChangeState(new IPushableWaitingState(this));
@@ -51,6 +54,32 @@ public class IPushable : IComponent {
         this.doNext = aDoNext;
     }
 
+    BumpCheckResults FallCheck() {
+        HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
+        HashSet<EntityData> entitiesToPush = new HashSet<EntityData>();
+        Vector2Int newPos = this.entityData.pos + Vector2Int.down;
+        // evaluate the new position to see if theres anything here i cant kill or push
+        foreach (EntityData touchedEntity in GM.boardData.GetEntitiesInRect(newPos, this.entityData.size, this.entityData)) {
+            if (this.canKillOnFall) {
+                if (this.fallDamage > touchedEntity.fallDefense) {
+                    entitiesToKill.Add(touchedEntity);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+        return new BumpCheckResults(Vector2Int.down, entitiesToKill, entitiesToPush);
+    }
+
+    void DoFallCheckResults(BumpCheckResults aFallCheck) {
+        if (this.canKillOnFall) {
+            foreach (EntityData entityToKill in aFallCheck.entitiesToKill) {
+                GM.playManager.BeginEntityDeath(entityToKill, DeathType.SQUISHED);
+            }
+        }
+    }
     #region StateClasses
 
     class IPushableWaitingState : GameState {

@@ -85,6 +85,7 @@ MonoBehaviour:
       Entry: 6
       Data: 
   canKillOnFall: 1
+  fallDamage: 10
 --- !u!1001 &7460550473340329418
 PrefabInstance:
   m_ObjectHideFlags: 0

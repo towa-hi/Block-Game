@@ -47,6 +47,7 @@ public class ILoco : IComponent {
         HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
         HashSet<EntityData> entitiesToPush = new HashSet<EntityData>();
         Vector2Int newPos = this.entityData.pos + aDirection;
+        // evaluate the new position to see if theres anything here i cant kill or push
         foreach (EntityData touchedEntity in GM.boardData.GetEntitiesInRect(newPos, this.entityData.size, this.entityData)) {
             // if same team, is blocked
             if (touchedEntity.team == this.entityData.team) {
@@ -66,7 +67,7 @@ public class ILoco : IComponent {
                 }
             } else {
                 // print("is blocked because entity cant be pushed or killed");
-                return null;;
+                return null;
             }
         }
         // make a set of entities to ignore when doing a ground check
@@ -78,7 +79,7 @@ public class ILoco : IComponent {
             // print("no ground under entity")
             return null;
         } else {
-            return new BumpCheckResults(aDirection, entitiesToKill, entitiesToPush);;
+            return new BumpCheckResults(aDirection, entitiesToKill, entitiesToPush);
         }
     }
 
@@ -139,17 +140,15 @@ public class ILoco : IComponent {
     void DoBumpCheckResults(BumpCheckResults aBumpCheck) {
         // if killables exist, yeet them
         foreach (EntityData entityToKill in aBumpCheck.entitiesToKill) {
-            GM.playManager.BeginEntityDeath(entityToKill);
+            GM.playManager.BeginEntityDeath(entityToKill, DeathType.BUMP);
         }
         // if pushables exist
         if (this.canPush) {
-            if (aBumpCheck.entitiesToPush.Count != 0) {
-                foreach (EntityData entityToPush in aBumpCheck.entitiesToPush) {
-                    IPushable entityIPushable = entityToPush.entityBase.GetCachedIComponent<IPushable>() as IPushable;
-                    Debug.Assert(entityIPushable.CanBePushed(aBumpCheck.direction, this.entityData));
-                    // set that ones state to  be pushed
-                    entityIPushable.Push(aBumpCheck.direction, this.entityData);
-                }
+            foreach (EntityData entityToPush in aBumpCheck.entitiesToPush) {
+                IPushable entityIPushable = entityToPush.entityBase.GetCachedIComponent<IPushable>() as IPushable;
+                Debug.Assert(entityIPushable.CanBePushed(aBumpCheck.direction, this.entityData));
+                // set that ones state to  be pushed
+                entityIPushable.Push(aBumpCheck.direction, this.entityData);
             }
         }
     }

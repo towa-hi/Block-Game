@@ -57,19 +57,13 @@ public class PlayManager : SerializedMonoBehaviour {
         this.destroyOnNextFrame.Clear();
     }
 
-    public void BeginEntityDeath(EntityData aEntityData) {
+    public void BeginEntityDeath(EntityData aEntityData, DeathType aDeathType) {
         GM.boardData.BanishEntity(aEntityData);
-        aEntityData.Die();
+        aEntityData.entityBase.Die(aDeathType);
     }    
 
     public void FinishEntityDeath(EntityData aEntityData) {
         this.destroyOnNextFrame.Add(aEntityData);
-    }
-
-    public void KillEntities(HashSet<EntityData> aEntitiesToKill) {
-        foreach (EntityData entityToKill in aEntitiesToKill) {
-            BeginEntityDeath(entityToKill);
-        }
     }
 
     public bool EntityFanCheck(EntityData aEntityData) {

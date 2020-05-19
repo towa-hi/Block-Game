@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-    
+
     [Header("Set In Editor")]
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;
@@ -132,8 +132,12 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void OnOptionsModePlaytestButtonClick() {
         print("playtest button clicked");
-        GM.I.SetGameMode(GameModeEnum.PLAYTESTING);
-        SaveLoad.SaveBoard(GM.boardData, true);
+        if (SaveLoad.IsValidSave(GM.boardData)) {
+            GM.I.SetGameMode(GameModeEnum.PLAYTESTING);
+            SaveLoad.SaveBoard(GM.boardData, true);
+        } else {
+            print("invalid save");
+        }
     }
 
     public void LoadLevelFromFilePicker(string aFilename) {

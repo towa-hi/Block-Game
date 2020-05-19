@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3304017683362054792}
   - component: {fileID: 6046906246738112412}
+  - component: {fileID: 4820019655585187134}
   m_Layer: 0
   m_Name: EntityPrefab
   m_TagString: Entity
@@ -53,17 +54,31 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: initialEntityData
+    - Name: entityData
       Entry: 6
       Data: 
-  pos: {x: 0, y: 0}
-  facing: {x: 0, y: 0}
-  size: {x: 0, y: 0}
-  type: 0
-  color: {r: 0, g: 0, b: 0, a: 0}
-  isFixed: 0
-  components: []
   entityView: {fileID: 6917146761042709821}
+  isInTempPos: 0
+  isDying: 0
+--- !u!95 &4820019655585187134
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3304017683362054796}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5047275158572285197
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,6 +130,11 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
   myRenderer: {fileID: 0}
+  childRenderers: []
   entityBase: {fileID: 6046906246738112412}
+  isGhost: 0
