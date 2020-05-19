@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 // TODO: change how bumpcheck and apply bumpcheck works so pushing is done before evaluating ground
 // so junkbot will push stuff when theres a 1 tile gap
 public class ILoco : IComponent {
-    Vector2Int destination;
     [SerializeField]
     bool doNext;
     [SerializeField]
@@ -37,7 +36,7 @@ public class ILoco : IComponent {
 
     public override void DoFrame() {
         if (this.doNext) {
-            this.stateMachine.ChangeState(ChooseNextStateAndSetDestination());
+            this.stateMachine.ChangeState(ChooseNextState());
         }
         this.stateMachine.Update();
     }
@@ -88,7 +87,7 @@ public class ILoco : IComponent {
     }
 
     //TODO: make this work with fans
-    public GameState ChooseNextStateAndSetDestination() {
+    public GameState ChooseNextState() {
          if (this.canBeLifted) {
                 // if (GM.playManager.EntityFanCheck(this.entityData)) {
                 //     // TODO finish this
@@ -98,13 +97,10 @@ public class ILoco : IComponent {
         // if floating
         if (GM.boardData.IsEntityPosFloating(this.entityData.pos, this.entityData)) {
             // fall down
-            return new ILocoFallingState(this, this.entityData.pos + Vector2Int.down);
+            return new ILocoFallingState(this);
         }
-        
+        // if can walk
         if (this.canWalk) {
-            Vector2Int facingPos = this.entityData.pos + this.entityData.facing;
-            Vector2Int facingUpPos = facingPos + Vector2Int.up;
-            Vector2Int facingDownPos = facingPos + Vector2Int.down;
             BumpCheckResults facingBumpCheck = BumpCheck(this.entityData.facing);
             if (facingBumpCheck != null) {
                 // print("walking side");
@@ -112,7 +108,7 @@ public class ILoco : IComponent {
                 if (facingBumpCheck.shouldPush) {
                     return new ILocoPushingState(this, this.entityData.facing);
                 } else {
-                    return new ILocoWalkingState(this, facingPos);
+                    return new ILocoWalkingState(this, this.entityData.facing);
                 }
             } else if (this.canHop) {
                     BumpCheckResults facingUpBumpCheck = BumpCheck(this.entityData.facing + Vector2Int.up);
@@ -120,11 +116,11 @@ public class ILoco : IComponent {
                     if (facingUpBumpCheck != null) {
                         // print("hopping up");
                         DoBumpCheckResults(facingUpBumpCheck);
-                        return new ILocoHoppingState(this, facingUpPos);
+                        return new ILocoHoppingState(this, this.entityData.facing + Vector2Int.up);
                     } else if (facingDownBumpCheck != null) {
                         // print("hopping down");
                         DoBumpCheckResults(facingDownBumpCheck);
-                        return new ILocoHoppingState(this, facingDownPos);
+                        return new ILocoHoppingState(this, this.entityData.facing + Vector2Int.down);
                     } else {
                         // print("turning");
                         return new ILocoTurningState(this);
@@ -181,6 +177,7 @@ public class ILoco : IComponent {
         protected EntityBase entityBase;
         protected EntityData entityData;
         [SerializeField]
+        public Vector2Int direction;
         public Vector2Int destination;
         protected Vector3 startPosition;
         protected Vector3 endPosition;
@@ -195,11 +192,12 @@ public class ILoco : IComponent {
     // causes entity to rise up one tile when raised by a fan
     class ILocoRisingState : ILocoState {
 
-        public ILocoRisingState(ILoco aILoco, Vector2Int aDestination) {
+        public ILocoRisingState(ILoco aILoco) {
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
-            this.destination = aDestination;
+            this.direction = Vector2Int.up;
+            this.destination = aILoco.entityData.pos + Vector2Int.up;
             this.t = 0f;
         }
 
@@ -256,11 +254,12 @@ public class ILoco : IComponent {
     // makes entity move to destination
     class ILocoWalkingState : ILocoState {
 
-        public ILocoWalkingState(ILoco aILoco, Vector2Int aDestination) {
+        public ILocoWalkingState(ILoco aILoco, Vector2Int aDirection) {
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
-            this.destination = aDestination;
+            this.direction = aDirection;
+            this.destination = aILoco.entityData.pos + aDirection;
             this.t = 0f;
         }
 
@@ -329,11 +328,13 @@ public class ILoco : IComponent {
     // makes entity fall to destination
     class ILocoFallingState : ILocoState {
 
-        public ILocoFallingState(ILoco aILoco, Vector2Int aDestination) {
+        public ILocoFallingState(ILoco aILoco) {
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
-            this.destination = aDestination;
+            this.direction = Vector2Int.down;
+            this.destination = aILoco.entityData.pos + this.direction;
+
             this.t = 0f;
         }
 
@@ -365,12 +366,13 @@ public class ILoco : IComponent {
     // makes entity hop to destination
     class ILocoHoppingState : ILocoState {
 
-        public ILocoHoppingState(ILoco aILoco, Vector2Int aDestination) {
+        public ILocoHoppingState(ILoco aILoco, Vector2Int aDirection) {
             
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
-            this.destination = aDestination;
+            this.direction = aDirection;
+            this.destination = aILoco.entityData.pos + aDirection;
             this.t = 0f;
         }
 
@@ -427,7 +429,6 @@ public class ILoco : IComponent {
     }
 
     class ILocoPushingState : ILocoState {
-        Vector2Int direction;
         // HashSet<ILoco> targetsILocoSet;
         public ILocoPushingState(ILoco aILoco, Vector2Int aDirection) {
             this.iLoco = aILoco;
