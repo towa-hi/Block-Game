@@ -67,6 +67,15 @@ public class Util {
         return V2IList;
     }
 
+    public static bool IsDirection (Vector2Int aDirection) {
+        if (-1 <= aDirection.x && aDirection.x <= 1) {
+            if (-1 <= aDirection.y && aDirection.y <= 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void DebugAreaPulse(Vector2Int aOrigin, Vector2Int aSize, Color aColor) {
         foreach (Vector2Int pos in V2IInRect(aOrigin, aSize)) {
             if (GM.boardData.IsPosInBoard(pos)) {
@@ -74,22 +83,4 @@ public class Util {
             }
         }
     }
-
-    // public static bool WillAttackerWin(EntityData aAttacker, EntityData aDefender) {
-    //     if (aAttacker.team != aDefender.team) {
-    //         if (defenderIDeath != null && attackerIKillOnTouch != null) {
-    //             if (attackerIKillOnTouch.power > defenderIDeath.defense) {
-    //                 return true;
-    //             } else {
-    //                 Debug.Log("WillAttackerWin - attacker lacks power");
-    //                 return false;
-    //             }
-    //         } else {
-    //             Debug.Log("WillAttackerWin - one entity lacks required component");
-    //         }
-    //     } else {
-    //         Debug.Log("WillAttackerWin - both entities are on the same team");
-    //     }
-    //     return false;
-    // }
 }

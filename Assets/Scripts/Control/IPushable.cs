@@ -20,7 +20,7 @@ public class IPushable : IComponent {
     public override void DoFrame() {
         if (this.doNext) {
             if (GM.boardData.IsRectEmpty(this.entityData.pos + Vector2Int.down, this.entityData.size, this.entityData)) {
-                this.stateMachine.ChangeState(new IPushableFallingState(this, Vector2Int.down));
+                this.stateMachine.ChangeState(new IPushableFallingState(this));
             } else {
                 this.stateMachine.ChangeState(new IPushableWaitingState(this));
             }
@@ -64,6 +64,7 @@ public class IPushable : IComponent {
         }
 
         public void Update() {
+            this.iPushable.DoNext(true);
         }
 
         public void Exit() {
@@ -81,12 +82,12 @@ public class IPushable : IComponent {
         public Vector3 endPosition;
         public float t;
 
-        public IPushableFallingState(IPushable aIPushable, Vector2Int aDirection) {
+        public IPushableFallingState(IPushable aIPushable) {
             this.iPushable = aIPushable;
-            this.direction = aDirection;
+            this.direction = Vector2Int.down;
             this.entityData = aIPushable.entityData;
             this.entityBase = aIPushable.entityBase;
-            this.destination = this.entityData.pos + this.direction;
+            this.destination = aIPushable.entityData.pos + Vector2Int.down;
             this.t = 0f;
         }
 
@@ -123,6 +124,7 @@ public class IPushable : IComponent {
         public float t;
 
         public IPushablePushedState(IPushable aIPushable, Vector2Int aDirection) {
+            Debug.Assert(Util.IsDirection(aDirection));
             this.iPushable = aIPushable;
             this.direction = aDirection;
             this.entityData = aIPushable.entityData;

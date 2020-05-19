@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 // TODO: change how bumpcheck and apply bumpcheck works so pushing is done before evaluating ground
 // so junkbot will push stuff when theres a 1 tile gap
+// TODO: entities that can push wont push if they have to hop first. this is intentional for now
 public class ILoco : IComponent {
     [SerializeField]
     bool doNext;
@@ -41,21 +42,18 @@ public class ILoco : IComponent {
         this.stateMachine.Update();
     }
 
-    public GameState GetState() {
-        return this.stateMachine.GetState();
-    }
-
     // this answers the question: what do i have to kill/push before I can move
     // to this position? if null, it means this move is blocked by something that i cant kill or push
+    // also checks if position has a ground after everything has been killed/pushed
     public BumpCheckResults BumpCheck(Vector2Int aDirection) {
-        print("doing bumpcheck for " + this.entityData.name + " at direction" + aDirection);
+        // print("doing bumpcheck for " + this.entityData.name + " at direction" + aDirection);
         HashSet<EntityData> entitiesToKill = new HashSet<EntityData>();
         HashSet<EntityData> entitiesToPush = new HashSet<EntityData>();
         Vector2Int newPos = this.entityData.pos + aDirection;
         foreach (EntityData touchedEntity in GM.boardData.GetEntitiesInRect(newPos, this.entityData.size, this.entityData)) {
             // if same team, is blocked
             if (touchedEntity.team == this.entityData.team) {
-                print("is blocked because same team");
+                // print("is blocked because same team");
                 return null;
             }
             IPushable touchedIPushable = touchedEntity.entityBase.GetCachedIComponent<IPushable>() as IPushable;
@@ -66,14 +64,15 @@ public class ILoco : IComponent {
                 if (touchedIPushable.CanBePushed(aDirection, this.entityData)) {
                     entitiesToPush.Add(touchedEntity);
                 } else {
-                    print("is blocked cuz pushable cant be pushed");
+                    // print("is blocked cuz pushable cant be pushed");
                     return null;
                 }
             } else {
-                print("is blocked because entity cant be pushed or killed");
+                // print("is blocked because entity cant be pushed or killed");
                 return null;;
             }
         }
+        // make a set of entities to ignore when doing a ground check
         HashSet<EntityData> ignoreSet = new HashSet<EntityData>();
         ignoreSet.UnionWith(entitiesToKill);
         ignoreSet.UnionWith(entitiesToPush);
@@ -102,27 +101,28 @@ public class ILoco : IComponent {
         // if can walk
         if (this.canWalk) {
             BumpCheckResults facingBumpCheck = BumpCheck(this.entityData.facing);
+            // if can walk in facing direction
             if (facingBumpCheck != null) {
-                // print("walking side");
                 DoBumpCheckResults(facingBumpCheck);
                 if (facingBumpCheck.shouldPush) {
                     return new ILocoPushingState(this, this.entityData.facing);
                 } else {
                     return new ILocoWalkingState(this, this.entityData.facing);
                 }
+            // else if can hop
             } else if (this.canHop) {
                     BumpCheckResults facingUpBumpCheck = BumpCheck(this.entityData.facing + Vector2Int.up);
                     BumpCheckResults facingDownBumpCheck = BumpCheck(this.entityData.facing + Vector2Int.down);
+                    // if can hop up
                     if (facingUpBumpCheck != null) {
-                        // print("hopping up");
                         DoBumpCheckResults(facingUpBumpCheck);
                         return new ILocoHoppingState(this, this.entityData.facing + Vector2Int.up);
+                    // if can hop down
                     } else if (facingDownBumpCheck != null) {
-                        // print("hopping down");
                         DoBumpCheckResults(facingDownBumpCheck);
                         return new ILocoHoppingState(this, this.entityData.facing + Vector2Int.down);
+                    // turn around
                     } else {
-                        // print("turning");
                         return new ILocoTurningState(this);
                     }
             } else {
@@ -138,6 +138,7 @@ public class ILoco : IComponent {
         this.doNext = aDoNext;
     }
 
+    // kills or pushes everything in BumpCheckResults so entity can move to a empty place
     public void DoBumpCheckResults(BumpCheckResults aBumpCheck) {
         // if killables exist, yeet them
         foreach (EntityData entityToKill in aBumpCheck.entitiesToKill) {
@@ -154,7 +155,6 @@ public class ILoco : IComponent {
                 }
             }
         }
-        
     }
 
     void OnDrawGizmos() {
@@ -255,6 +255,7 @@ public class ILoco : IComponent {
     class ILocoWalkingState : ILocoState {
 
         public ILocoWalkingState(ILoco aILoco, Vector2Int aDirection) {
+            Debug.Assert(Util.IsDirection(aDirection));
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
@@ -367,7 +368,7 @@ public class ILoco : IComponent {
     class ILocoHoppingState : ILocoState {
 
         public ILocoHoppingState(ILoco aILoco, Vector2Int aDirection) {
-            
+            Debug.Assert(Util.IsDirection(aDirection));
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
@@ -428,17 +429,18 @@ public class ILoco : IComponent {
         }
     }
 
+    // pushing is done in DoBumpCheckResults. this just moves the entity
+    // in the right direction but slowly and does the animation
     class ILocoPushingState : ILocoState {
-        // HashSet<ILoco> targetsILocoSet;
+
         public ILocoPushingState(ILoco aILoco, Vector2Int aDirection) {
+            Debug.Assert(Util.IsDirection(aDirection));
             this.iLoco = aILoco;
             this.entityBase = aILoco.entityBase;
             this.entityData = aILoco.entityData;
             this.destination = aILoco.entityData.pos + aDirection;
             this.direction = aDirection;
-            // this.targetsILocoSet = aTargetsILocoSet;
             this.t = 0f;
-
         }
 
         public override void Enter() {
@@ -446,10 +448,6 @@ public class ILoco : IComponent {
             this.iLoco.DoNext(false);
             // set starting position
             this.startPosition = this.iLoco.transform.position;
-            // move target entity first before moving self
-            // foreach(ILoco targetILoco in targetsILocoSet) {
-            //     targetILoco.Push(this.direction);
-            // }
             GM.boardData.MoveEntity(this.destination, this.entityData);
             // set ending opsition
             this.endPosition = Util.V2IOffsetV3(this.destination, this.entityData.size);
@@ -462,7 +460,6 @@ public class ILoco : IComponent {
             } else {
                 this.iLoco.DoNext(true);
             }
-            
         }
 
         public override void Exit() {
@@ -474,10 +471,13 @@ public class ILoco : IComponent {
     #endregion
 }
 
+// class for bump check results that holds two sets for entities
+// that need to be killed or pushed before you can move to a location
 public class BumpCheckResults {
     public HashSet<EntityData> entitiesToKill;
     public HashSet<EntityData> entitiesToPush;
     public Vector2Int direction;
+
     public bool shouldPush {
         get {return entitiesToPush.Count > 0;}
     }
