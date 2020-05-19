@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 // represents the initial state of the entity
 
+// TODO: there's something weird about playerEntityData
 public class EntityData {
     public EntityBase entityBase {
         get {

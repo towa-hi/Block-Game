@@ -296,6 +296,8 @@ MonoBehaviour:
   canWalk: 1
   canHop: 1
   canBeLifted: 1
+  canPush: 1
+  canBePushed: 0
   walkingMoveSpeed: 1
   turningMoveSpeed: 1
   hoppingMoveSpeed: 1

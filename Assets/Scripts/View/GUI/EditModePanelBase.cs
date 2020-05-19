@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
+// TODO: figure out why longclick delete button doesnt work after going back from playtest mode
 public class EditModePanelBase : SerializedMonoBehaviour {
     // set by editor
     public PreviewStudioBase previewStudioBase;
@@ -12,7 +13,7 @@ public class EditModePanelBase : SerializedMonoBehaviour {
     public INodalPanelBase iNodalPanelBase;
     public Text nameText;
     public Toggle isFixedToggle;
-    public LongClickButton deleteButton;
+    public Button deleteButton;
     public Button extraButton;
     public Button flipButton;
     public void Init() {

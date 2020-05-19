@@ -71,12 +71,14 @@ public class BoardData {
 
     // removes aEntityData from gameGrid temporarily then sets entityData to new pos and adds it back in
     public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
-        if (IsPosInBoard(aPos)) {
+        if (IsRectEmpty(aPos, aEntityData.size, aEntityData)) {
             BanishEntity(aEntityData);
             aEntityData.SetPos(aPos);
             foreach (Vector2Int currentPos in aEntityData.GetOccupiedPos()) {
                 this.gameGrid.GetCell(currentPos).entityData = aEntityData;
             }
+        } else {
+            throw new System.Exception("MoveEntity tried to move to an non-empty position");
         }
     }
 
@@ -89,28 +91,55 @@ public class BoardData {
             } else {
                 Debug.Log("EntityDataDictInRect - checked out of bounds pos");
             }
-            
         }
         return entityDataInRect;
     }
 
-    // check if area in rect has .entityData of null
+    public Dictionary<Vector2Int, GameCell> GetSlice(Vector2Int aOrigin, Vector2Int aSize) {
+        return this.gameGrid.GetSlice(aOrigin, aSize);
+    }
+
+    public HashSet<EntityData> GetEntitiesInRect(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
+        HashSet<EntityData> entityDataSet = new HashSet<EntityData>();
+        foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.GetSlice(aOrigin, aSize)) {
+            if (kvp.Value.entityData != null) {
+                entityDataSet.Add(kvp.Value.entityData);
+            }
+        }
+        entityDataSet.Remove(aIgnoreEntity);
+        return entityDataSet;
+    }
+
+    // returns false if rect is out of bounds 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, EntityData aIgnoreEntity = null) {
-        foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
-            if (IsPosInBoard(currentPos)) {
-                if (GetEntityDataAtPos(currentPos) != null) {
-                    if (aIgnoreEntity != null) {
-                        if (GetEntityDataAtPos(currentPos) != aIgnoreEntity) {
-                            return false;
-                        }
-                    } else {
+        if (!IsRectInBoard(aOrigin, aSize)) {
+            return false;
+        }
+        foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.GetSlice(aOrigin, aSize)) {
+            if (kvp.Value.entityData != null) {
+                if (aIgnoreEntity != null) {
+                    if (aIgnoreEntity != kvp.Value.entityData) {
                         return false;
                     }
+                } else {
+                    return false;
                 }
-            } else {
-                return false;
             }
-            
+        }
+        return true;
+    }
+
+    // returns false if rect is out of bounds
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityData> aIgnoreEntityList) {
+        if (!IsRectInBoard(aOrigin, aSize)) {
+            return false;
+        }
+        foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.GetSlice(aOrigin, aSize)) {
+            if (kvp.Value.entityData != null) {
+                if (!aIgnoreEntityList.Contains(kvp.Value.entityData)) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -127,19 +156,6 @@ public class BoardData {
 
     public bool IsRectInBoard(Vector2Int aOrigin, Vector2Int aSize) {
         return Util.IsRectInside(aOrigin, aSize, Vector2Int.zero, this.size);
-    }
-    
-    public HashSet<EntityData> SetOfEntitiesInRect(Vector2Int aOrigin, Vector2Int aSize) {
-        HashSet<EntityData> entitySet = new HashSet<EntityData>();
-        foreach (Vector2Int pos in Util.V2IInRect(aOrigin, aSize)) {
-            if (GM.boardData.IsPosInBoard(pos)) {
-                EntityData maybeAEntity = GM.boardData.GetEntityDataAtPos(pos);
-                if (maybeAEntity != null) {
-                    entitySet.Add(GM.boardData.GetEntityDataAtPos(pos));
-                }
-            }
-        }
-        return entitySet;
     }
 
     public GameGrid GetGameGrid() {

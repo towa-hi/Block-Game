@@ -26,4 +26,14 @@ public class GameGrid {
     public GameCell GetCell(Vector2Int aPos) {
         return this.gridDict[aPos];
     }
+
+    public Dictionary<Vector2Int, GameCell> GetSlice(Vector2Int aOrigin, Vector2Int aSize) {
+        Dictionary<Vector2Int, GameCell> sliceDict = new Dictionary<Vector2Int, GameCell>();
+        foreach (Vector2Int pos in Util.V2IInRect(aOrigin, aSize)) {
+            if (this.gridDict.ContainsKey(pos)) {
+                sliceDict[pos] = this.gridDict[pos];
+            }
+        }
+        return sliceDict;
+    }
 }

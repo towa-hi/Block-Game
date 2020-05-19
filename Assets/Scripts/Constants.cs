@@ -12,5 +12,5 @@ public static class Constants {
     public static Color DEFAULTCOLOR = new Color(0.7f, 0.7f, 0.7f, 1f);
     public static float GRAVITY = 0.5f;
     public static int MAXPAR = 99;
-
+    public static float PUSHSPEED = 1.5f;
 }

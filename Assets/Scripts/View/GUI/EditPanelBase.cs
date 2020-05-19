@@ -93,6 +93,7 @@ public class EditPanelBase : SerializedMonoBehaviour {
     }
 
     public void OnEditModeDeleteButtonClick() {
+        print("EditPanelBase - on delete button clicked");
         GM.editManager.OnEditModeDeleteButtonClick();
     }
 
@@ -118,4 +119,9 @@ public class EditPanelBase : SerializedMonoBehaviour {
     public void OnOptionsModePlaytestButtonClick() {
         GM.editManager.OnOptionsModePlaytestButtonClick();
     }
+
+    public void Benis() {
+        print("benis");
+    }
+
 }

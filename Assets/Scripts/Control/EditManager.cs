@@ -104,6 +104,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void OnEditModeDeleteButtonClick() {
+        print("EditManager - on delete button clicked");
         if (this.stateMachine.GetState() is EditTabEditModeState) {
             EditTabEditModeState state = this.stateMachine.GetState() as EditTabEditModeState;
             state.DeleteEntity();
