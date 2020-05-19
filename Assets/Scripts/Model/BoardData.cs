@@ -148,7 +148,6 @@ public class BoardData {
 
     // check if any entities exist below aEntityData when its in aPos
     public bool IsEntityPosFloating(Vector2Int aPos, EntityData aEntityData, HashSet<EntityData> aIgnoreEntitySet = null) {
-        // TODO: make this ignore walk-thru entities and entities that aEntityData can stomp
         if (aIgnoreEntitySet != null) {
             // add self to list of exceptions
             aIgnoreEntitySet.Add(aEntityData);

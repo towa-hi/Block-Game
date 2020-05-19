@@ -57,12 +57,6 @@ public class GM : Singleton<GM> {
         EntityData downBoundary = new EntityData(longBoy, new Vector2Int(1, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
         EntityData upBoundary = new EntityData(longBoy, new Vector2Int(1, 19), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
         EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.yellow);
-        
-        // EntityData leftBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(0, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        // EntityData rightBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(1, 20), EntityTypeEnum.BLOCK, new Vector2Int(39, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        // EntityData downBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 0), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        // EntityData upBoundary = new EntityData(EntityPrefabEnum.BLOCKPREFAB, new Vector2Int(38, 1), EntityTypeEnum.BLOCK, new Vector2Int(1, 19), Vector2Int.right, Constants.DEFAULTCOLOR, true, true);
-        // EntityData player = new EntityData(EntityPrefabEnum.PLAYERPREFAB, new Vector2Int(2, 3), EntityTypeEnum.PLAYER, new Vector2Int(5, 1), Vector2Int.right, Color.yellow);
         GM.boardManager.CreateEntityFromData(leftBoundary);
         GM.boardManager.CreateEntityFromData(rightBoundary);
         GM.boardManager.CreateEntityFromData(upBoundary);

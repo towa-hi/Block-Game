@@ -13,4 +13,5 @@ public static class Constants {
     public static float GRAVITY = 0.5f;
     public static int MAXPAR = 99;
     public static float PUSHSPEED = 1.5f;
+    public static float DEATHSTATETIME = 2f;
 }

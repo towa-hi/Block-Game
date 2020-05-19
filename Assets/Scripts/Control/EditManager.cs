@@ -10,24 +10,14 @@ using Sirenix.OdinInspector;
 public class EditManager : SerializedMonoBehaviour {
 
     [Header("Set In Editor")]
-    public PreviewStudioBase previewStudioBase;
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;
-
     public StateMachine stateMachine = new StateMachine();
 
-    // public OnPickerItemClickEvent onPickerItemClickEvent = new OnPickerItemClickEvent();
-    // public OnSetEditTabEvent onSetEditTabEvent = new OnSetEditTabEvent();
-    // public OnEditModeColorPickerClickEvent onEditModeColorPickerClickEvent = new OnEditModeColorPickerClickEvent();
-    // public  OnEditModeFixedToggleEvent onEditModeFixedToggleEvent = new OnEditModeFixedToggleEvent();
-    // public  OnOptionsModeTitleChangeEvent onOptionsModeTitleChangeEvent = new OnOptionsModeTitleChangeEvent();
-    // public  OnOptionsModeParChangeEvent onOptionsModeParChangeEvent = new OnOptionsModeParChangeEvent();
-    
     public void Init() {
         this.stateMachine.ChangeState(new EditTabPickerModeMoveState());
         SetEditMode(EditModeEnum.PICKER);
         this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
-        this.previewStudioBase.Init();
         
     }
 

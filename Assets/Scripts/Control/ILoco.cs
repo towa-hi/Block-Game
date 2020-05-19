@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-// TODO: change how bumpcheck and apply bumpcheck works so pushing is done before evaluating ground
-// so junkbot will push stuff when theres a 1 tile gap
 // TODO: entities that can push wont push if they have to hop first. this is intentional for now
 public class ILoco : IComponent {
     [SerializeField]

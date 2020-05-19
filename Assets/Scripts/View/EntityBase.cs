@@ -11,8 +11,6 @@ public class EntityBase : SerializedMonoBehaviour {
     public EntityView entityView;
     public EntityData entityData;
     public bool isInTempPos;
-    //TODO put this somewhere else
-    float timeToDie = 2f;
     float t;
 
     // we want to initialize entityBase, all the iComponents and entityView with entityData
@@ -42,7 +40,7 @@ public class EntityBase : SerializedMonoBehaviour {
     public void DoFrame() {
         if (this.entityData.isDying) {
             if (this.t < 1) {
-                t += Time.deltaTime / timeToDie;
+                t += Time.deltaTime / Constants.DEATHSTATETIME;
                 this.entityView.myRenderer.material.color = Color.Lerp(this.entityData.defaultColor, Color.black, t);
             } else {
                 print("dying for real now");
