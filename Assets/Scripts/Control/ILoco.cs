@@ -7,10 +7,8 @@ using Sirenix.OdinInspector;
 // TODO: entities that can push wont push if they have to hop first. this is intentional for now
 public class ILoco : IComponent {
     [SerializeField]
-    bool doNext;
-    [SerializeField]
     StateMachine stateMachine;
-    HashSet<EntityData> entitiesToKill;
+    bool doNext;
     [Header("Set In Editor")]
     public bool canKillOnTouch;
     public int touchDamage;
@@ -18,21 +16,22 @@ public class ILoco : IComponent {
     public bool canKillOnFall;
     public int fallDamage;
     [Space]
+    public float turningMoveSpeed;
+    [Space]
     public bool canWalk;
+    public float walkingMoveSpeed;
+    [Space]
     public bool canHop;
-    public bool canBeLifted;
+    public float hoppingMoveSpeed;
+    public AnimationCurve hoppingCurve;
     [Space]
     public bool canPush;
     [Space]
-    public float walkingMoveSpeed;
-    public float turningMoveSpeed;
-    public float hoppingMoveSpeed;
-    public AnimationCurve hoppingCurve;
+    public bool canBeLifted;
 
     public override void Init() {
         this.stateMachine = new StateMachine();
         this.stateMachine.ChangeState(new ILocoWaitingState(this));
-        this.entitiesToKill = new HashSet<EntityData>();
     }
 
     public override void DoFrame() {
