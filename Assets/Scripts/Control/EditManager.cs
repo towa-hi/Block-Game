@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-
+    
     [Header("Set In Editor")]
     public EditPanelBase editPanelBase;
     public FilePickerBase filePickerBase;

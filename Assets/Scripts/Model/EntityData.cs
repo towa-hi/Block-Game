@@ -5,6 +5,7 @@ using UnityEngine;
 
 // TODO: there's something weird about playerEntityData
 public class EntityData {
+
     public EntityBase entityBase {
         get {
             foreach (EntityBase entityBase in GM.boardManager.entityBaseList) {
@@ -92,7 +93,7 @@ public class EntityData {
     }
     
     public void Die() {
-        Debug.Log("I'm dying");
+        // Debug.Log("I'm dying");
         this.isDying = true;
     }
 

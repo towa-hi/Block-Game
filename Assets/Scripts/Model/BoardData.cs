@@ -5,10 +5,9 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class BoardData {
-
+    
     public GameGrid gameGrid;
     public HashSet<EntityData> entityDataSet;
-
     public EntityData playerEntityData;
     public string title;
     public string creator;
@@ -27,7 +26,6 @@ public class BoardData {
         this.attempts = 0;
         
     }
-    
     
     public void SetPlayerEntity(EntityData aEntityData) {
         this.playerEntityData = aEntityData;
