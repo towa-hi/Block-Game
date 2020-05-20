@@ -22,7 +22,9 @@ public enum EntityPrefabEnum {
     PLAYERPREFAB,
     SHUFFLEBOTPREFAB,
     PUSHABLEPREFAB,
-    FANPREFAB
+    FANPREFAB,
+    TESTBLOCKPREFAB,
+    BIGGERTESTBLOCKPREFAB,
 }
 public enum GameModeEnum {
     PLAYING,

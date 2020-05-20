@@ -64,7 +64,38 @@ public class PlayManager : SerializedMonoBehaviour {
 
     public void FinishEntityDeath(EntityData aEntityData) {
         this.destroyOnNextFrame.Add(aEntityData);
+        if (aEntityData == GM.boardData.playerEntityData) {
+            LoseBoard();
+        }
     }
+
+    public void LoseBoard() {
+        print("GAME OVER YEAH");
+        // SetTimeState(TimeStateEnum.PAUSED);
+    }
+
+    public void WinBoard() {
+        print("YOU WIN");
+        // SetTimeState(TimeStateEnum.PAUSED);
+    }
+
+    public void SetTimeState(TimeStateEnum aTime) {
+        this.timeState = aTime;
+        switch (aTime) {
+            case TimeStateEnum.PAUSED:
+                Time.timeScale = 0;
+                break;
+            case TimeStateEnum.NORMAL:
+                Time.timeScale = 1;
+                break;
+            case TimeStateEnum.DOUBLE:
+                Time.timeScale = 2;
+                break;
+        }
+    }
+    
+
+
 
     public bool EntityFanCheck(EntityData aEntityData) {
         for (int x = aEntityData.pos.x; x < aEntityData.pos.x + aEntityData.size.x; x++) {

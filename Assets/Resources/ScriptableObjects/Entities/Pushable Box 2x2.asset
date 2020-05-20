@@ -23,7 +23,7 @@ MonoBehaviour:
     SerializationNodes: []
   size: {x: 2, y: 2}
   type: 1
-  prefab: 3
+  prefab: 6
   touchDefense: 50
   fallDefense: 50
   defaultTeam: 1

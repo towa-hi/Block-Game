@@ -6,6 +6,8 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ShufflebotAnimatorController
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Name: ShufflebotAnimationController
+  m_Controller: {fileID: 9100000, guid: 47f52fc60303b3046816d35e6039fdcb, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 83a11a405f1d1174e8c865ec86ca4110, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 78c3a7355f15afa4891d06a56f604df5, type: 2}

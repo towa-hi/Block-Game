@@ -24,7 +24,9 @@ public class GM : Singleton<GM> {
     public GameObject playerPrefabMaster;
     public GameObject shufflebotPrefabMaster;
     public GameObject pushablePrefabMaster;
-
+    public GameObject testPrefabMaster;
+    public GameObject biggerTestPrefabMaster;
+    
     public bool isFullPaused;
     private void Awake() {
         // set as editing by default
@@ -120,6 +122,10 @@ public class GM : Singleton<GM> {
                 return GM.I.shufflebotPrefabMaster;
             case EntityPrefabEnum.PUSHABLEPREFAB:
                 return GM.I.pushablePrefabMaster;
+            case EntityPrefabEnum.TESTBLOCKPREFAB:
+                return GM.I.testPrefabMaster;
+            case EntityPrefabEnum.BIGGERTESTBLOCKPREFAB:
+                return GM.I.biggerTestPrefabMaster;
         }
         throw new System.Exception("Unknown entity prefab enum");
     }

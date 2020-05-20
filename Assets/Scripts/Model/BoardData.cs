@@ -21,7 +21,7 @@ public class BoardData {
         this.title = "largeBlankBoard";
         this.creator = Config.USERNAME;
         this.par = 5;
-        this.size = new Vector2Int(40, 20);
+        this.size = new Vector2Int(40, 24);
         this.gameGrid = new GameGrid(this.size);
         this.attempts = 0;
         
