@@ -18,7 +18,7 @@ public class EditManager : SerializedMonoBehaviour {
         this.stateMachine.ChangeState(new EditTabPickerModeMoveState());
         SetEditMode(EditModeEnum.PICKER);
         this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
-        
+        SetEditModeEntity(null);
     }
 
     void Update() {

@@ -25,7 +25,7 @@ public class BoardManager : SerializedMonoBehaviour {
             GM.boardData.SetPlayerEntity(aEntityData);
         }
         // instantiate EntityData's prefab by using GM to lookup which prefab to get
-        GameObject entityPrefab = Instantiate(GM.EntityPrefabEnumToPrefab(aEntityData.prefab), this.transform);
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityData.prefabPath), this.transform);
         // get the EntityBase for this prefab
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
         this.entityBaseList.Add(entityBase);

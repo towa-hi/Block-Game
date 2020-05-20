@@ -21,9 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  prefabPath: PlayerPrefab
   size: {x: 2, y: 3}
   type: 3
-  prefab: 1
   touchDefense: 5
   fallDefense: 5
   defaultTeam: 0

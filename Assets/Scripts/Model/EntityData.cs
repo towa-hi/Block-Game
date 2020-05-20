@@ -34,7 +34,8 @@ public class EntityData {
     public Vector2Int facing;
     public Vector2Int size;
     public EntityTypeEnum type;
-    public EntityPrefabEnum prefab;
+    // public EntityPrefabEnum prefab;
+    public string prefabPath;
     public Color defaultColor;
     public bool isFixed;
     public bool isBoundary;
@@ -51,12 +52,13 @@ public class EntityData {
 
     // use when creating from a schema
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+        Debug.Log(aEntitySchema);
         this.componentsAreInitialized = false;
         this.pos = aPos;
         this.facing = aFacing;
         this.size = aEntitySchema.size;
         this.type = aEntitySchema.type;
-        this.prefab = aEntitySchema.prefab;
+        this.prefabPath = aEntitySchema.prefabPath;
         this.defaultColor = aDefaultColor;
         this.isFixed = aIsFixed;
         this.isBoundary = aIsBoundary;

@@ -308,7 +308,10 @@ public class ILoco : IComponent {
         }
 
         public override void Update() {
-            if (this.t < 1) {
+            // if turnspeed is zero, dont turn the view
+            if (this.iLoco.turningMoveSpeed == 0) {
+                this.iLoco.DoNext(true);
+            } else if (this.t < 1) {
                 this.t += Time.deltaTime / this.iLoco.turningMoveSpeed;
                 this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
             } else {
@@ -318,7 +321,10 @@ public class ILoco : IComponent {
 
         public override void Exit() {
             // print("ILocoTurningState - exited");
-            this.entityBase.transform.rotation = this.endRotation;
+            if (this.iLoco.turningMoveSpeed != 0) {
+                this.entityBase.transform.rotation = this.endRotation;
+            }
+            
         }
     }
 

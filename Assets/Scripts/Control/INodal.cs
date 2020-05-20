@@ -48,14 +48,9 @@ public class INodal : IComponent {
             Vector3 currentPosV3 = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
             float studX = currentPosV3.x;
             float studY = currentPosV3.y + 0.75f;
-            float studZ = 0.5f;
-
-            GameObject studBack = Instantiate(this.studMaster, new Vector3(studX, studY, studZ), Quaternion.identity);
-            studBack.transform.SetParent(this.entityView.transform, true);
-            studBack.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
-            GameObject studFront = Instantiate(this.studMaster, new Vector3(studX, studY, studZ * -1), Quaternion.identity);
-            studFront.transform.SetParent(this.entityView.transform, true);
-            studFront.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
+            GameObject stud = Instantiate(this.studMaster, new Vector3(studX, studY, 0), Quaternion.identity);
+            stud.transform.SetParent(this.entityView.transform, true);
+            stud.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
         }
     }
 
