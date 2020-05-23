@@ -51,38 +51,35 @@ public class GM : Singleton<GM> {
 
     // TODO: remove this and replace it with a ready made level later
     public void AddBoundaries() {
-        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/rounded 1x10.asset");
-        EntitySchema smallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/rounded 1x1.asset");
-        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/rounded 12x1.asset");
-        EntitySchema wideBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/rounded 2x1.asset");
+        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
+        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
         HashSet<EntityData> boundarySet = new HashSet<EntityData>();
         boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(wideBoy, new Vector2Int(12, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(14, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(wideBoy, new Vector2Int(26, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(28, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
         boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(wideBoy, new Vector2Int(12, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(14, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(wideBoy, new Vector2Int(26, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(28, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/player.asset");
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+
+        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Mobs/2x3 player.asset");
         EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.white);
         foreach (EntityData boundaryEntityData in boundarySet) {
             GM.boardManager.CreateEntityFromData(boundaryEntityData);
         }
-        GM.boardManager.CreateEntityFromData(player);
+        // GM.boardManager.CreateEntityFromData(player);
     }
 
     public void LoadBoard(BoardData aBoardData) {

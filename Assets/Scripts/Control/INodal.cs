@@ -21,12 +21,24 @@ public class INodal : IComponent {
             this.entityData.downNodes = value;
         }
     }
+    Dictionary<Vector2Int, GameObject> studDict;
     [Header("Set In Editor")]
     public GameObject studMaster;
 
     public override void Init() {
+        this.studDict = new Dictionary<Vector2Int, GameObject>();
         if (!this.entityData.componentsAreInitialized) {
             GenerateNodes();
+        }
+        foreach(Vector2Int upNode in this.upNodes) {
+            Vector2Int currentPos = this.entityData.pos + upNode;
+            Vector3 currentPosition = Util.V2IOffsetV3(currentPos, new Vector2Int(1,1));
+            float studX = currentPosition.x;
+            float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
+            GameObject stud = Instantiate(this.studMaster, new Vector3(studX, studY, 0), Quaternion.identity);
+            stud.transform.SetParent(this.entityView.transform, true);
+            stud.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
+            this.studDict.Add(upNode, stud);
         }
         DrawNodes();
         this.entityView.SetChildRenderers();
@@ -38,19 +50,8 @@ public class INodal : IComponent {
     }
 
     public void DrawNodes() {
-        foreach (Transform child in this.entityView.transform) {
-            if (child.tag == "Stud") {
-                Destroy(child.gameObject);
-            }
-        }
-        foreach (Vector2Int upNode in this.upNodes) {
-            Vector2Int currentPos = this.entityData.pos + upNode;
-            Vector3 currentPosV3 = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
-            float studX = currentPosV3.x;
-            float studY = currentPosV3.y + 0.75f;
-            GameObject stud = Instantiate(this.studMaster, new Vector3(studX, studY, 0), Quaternion.identity);
-            stud.transform.SetParent(this.entityView.transform, true);
-            stud.GetComponent<Renderer>().material.color = this.entityData.defaultColor;
+        foreach (KeyValuePair<Vector2Int, GameObject> kvp in this.studDict) {
+            kvp.Value.SetActive(this.upNodes.Contains(kvp.Key));
         }
     }
 
