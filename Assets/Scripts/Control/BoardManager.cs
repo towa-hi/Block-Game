@@ -5,6 +5,8 @@ using Sirenix.OdinInspector;
 
 public class BoardManager : SerializedMonoBehaviour {
     public List<EntityBase> entityBaseList;
+    public List<BgBase> bgBaseList;
+    public GameObject backgroundContainer;
 
     public void Init() {
         LoadBoardData(GM.boardData);
@@ -18,6 +20,27 @@ public class BoardManager : SerializedMonoBehaviour {
         foreach (EntityData entityData in aBoardData.entityDataSet) {
             CreateEntityFromData(entityData);
         }
+        foreach (BgBase bgBase in this.bgBaseList) {
+            Destroy(bgBase.gameObject);
+        }
+        this.bgBaseList = new List<BgBase>();
+        foreach (BgData bgData in aBoardData.backgroundData.bgDataSet) {
+            CreateBgFromData(bgData);
+        }
+    }
+
+    public void CreateBgFromData(BgData aBgData) {
+        GameObject bgPrefab = Instantiate(GM.LoadBgPrefabByFilename(aBgData.prefabPath), this.backgroundContainer.transform);
+        BgBase bgBase = bgPrefab.GetComponent<BgBase>();
+        this.bgBaseList.Add(bgBase);
+        GM.boardData.backgroundData.RegisterBgData(aBgData);
+    }
+
+    public void DestroyBg(BgData aBgData) {
+        GM.boardData.backgroundData.UnRegisterBgData(aBgData);
+        Destroy(aBgData.bgBase.gameObject);
+        this.bgBaseList.Remove(aBgData.bgBase);
+        print("BoardManager - DestroyBg: + " + aBgData.name);
     }
 
     public void CreateEntityFromData(EntityData aEntityData) {

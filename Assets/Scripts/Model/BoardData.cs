@@ -8,6 +8,7 @@ public class BoardData {
     
     public GameGrid gameGrid;
     public HashSet<EntityData> entityDataSet;
+    public BackgroundData backgroundData;
     public EntityData playerEntityData;
     public string title;
     public string creator;
@@ -18,6 +19,7 @@ public class BoardData {
 
     public BoardData() {
         this.entityDataSet = new HashSet<EntityData>();
+        this.backgroundData = new BackgroundData(this);
         this.title = "largeBlankBoard";
         this.creator = Config.USERNAME;
         this.par = 5;

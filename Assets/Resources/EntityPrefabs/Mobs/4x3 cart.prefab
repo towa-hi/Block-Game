@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2560540633279906359}
   - component: {fileID: 3727952587664657662}
   - component: {fileID: 1935629695873375845}
+  - component: {fileID: 1463961934726001457}
   m_Layer: 0
   m_Name: Model 0
   m_TagString: Untagged
@@ -79,6 +80,34 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5267160159216120650}
   m_Mesh: {fileID: -4619554832309304917}
+--- !u!114 &1463961934726001457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5267160159216120650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c110c5f10d390ea4a8994917232c847e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
+  myRenderer: {fileID: 0}
+  childRenderers: []
+  entityBase: {fileID: 0}
+  isGhost: 0
 --- !u!1 &6932952021507497975
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,6 +68,9 @@ public class EntityData {
         this.touchDefense = aEntitySchema.touchDefense;
         this.fallDefense = aEntitySchema.fallDefense;
         this.team = aEntitySchema.defaultTeam;
+        if (this.type == EntityTypeEnum.MOB || this.type == EntityTypeEnum.PLAYER) {
+            this.defaultColor = Color.white;
+        }
     }
 
 

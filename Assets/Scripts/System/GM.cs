@@ -131,6 +131,10 @@ public class GM : Singleton<GM> {
         return Resources.Load("EntityPrefabs/" + aFilename) as GameObject;
     }
 
+    public static GameObject LoadBgPrefabByFilename(string aFilename) {
+        return Resources.Load("BgPrefabs/" + aFilename) as GameObject;
+    }
+
     public void ToggleFullPauseGame(bool aIsFullPaused) {
         this.isFullPaused = aIsFullPaused;
         this.pausePanel.SetActive(this.isFullPaused);

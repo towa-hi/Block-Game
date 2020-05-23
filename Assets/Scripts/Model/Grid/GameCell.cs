@@ -8,6 +8,7 @@ public class GameCell {
     // set by constructor
     public Vector2Int pos;
     public EntityData entityData;
+    public BgData bgData;
     public Vector2Int push;
     public bool panelVisible;
     public Color panelColor;
