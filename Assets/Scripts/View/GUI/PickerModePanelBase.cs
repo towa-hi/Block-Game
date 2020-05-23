@@ -8,6 +8,8 @@ using Sirenix.OdinInspector;
 
 [System.Serializable]
 public class OnPickerItemClick : UnityEvent<EntitySchema>{};
+[System.Serializable]
+public class OnBgPickerItemClick : UnityEvent<BgSchema>{};
 
 public class PickerModePanelBase : SerializedMonoBehaviour {
     List<PickerModeItemBase> contentList;
@@ -17,22 +19,36 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
     public GameObject pickerItemMaster;
     public InputField pickerModeSearchField;
     public OnPickerItemClick pickerItemClick = new OnPickerItemClick();
+    public OnBgPickerItemClick bgPickerItemClick = new OnBgPickerItemClick();
+    public bool isBg;
 
     // TODO: figure out why clicking on the scroll bar makes everything spaz out
     void Awake() {
         this.contentList = new List<PickerModeItemBase>();
         this.fullEntityList = new List<PickerModeItemBase>();
         // load all the entitySchemas in the ScriptableObjects folder
-        List<EntitySchema> schemaList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
-        // sort by name
-        schemaList.OrderBy(entitySchema => entitySchema.name.ToLower());
-        // instantiate a pickerItem for each schema
-        foreach (EntitySchema entitySchema in schemaList) {
-            GameObject pickerItem = Instantiate(pickerItemMaster, content.transform);
-            PickerModeItemBase pickerModeItemBase = pickerItem.GetComponent<PickerModeItemBase>();
-            pickerModeItemBase.Init(entitySchema, this);
-            this.fullEntityList.Add(pickerModeItemBase);
+        if (isBg) {
+            List<BgSchema> bgSchemaList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList();
+            bgSchemaList.OrderBy(bgSchema => bgSchema.name.ToLower());
+            foreach (BgSchema bgSchema in bgSchemaList) {
+                GameObject pickerItem = Instantiate(pickerItemMaster, content.transform);
+                PickerModeItemBase pickerModeItemBase = pickerItem.GetComponent<PickerModeItemBase>();
+                pickerModeItemBase.Init(bgSchema, this);
+                this.fullEntityList.Add(pickerModeItemBase);
+            }
+        } else {
+            List<EntitySchema> schemaList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
+            // sort by name
+            schemaList.OrderBy(entitySchema => entitySchema.name.ToLower());
+            // instantiate a pickerItem for each schema
+            foreach (EntitySchema entitySchema in schemaList) {
+                GameObject pickerItem = Instantiate(pickerItemMaster, content.transform);
+                PickerModeItemBase pickerModeItemBase = pickerItem.GetComponent<PickerModeItemBase>();
+                pickerModeItemBase.Init(entitySchema, this);
+                this.fullEntityList.Add(pickerModeItemBase);
+            }
         }
+        
         this.contentList = this.fullEntityList;
     }
 
@@ -52,6 +68,9 @@ public class PickerModePanelBase : SerializedMonoBehaviour {
         pickerItemClick.Invoke(aEntitySchema);
     }
 
+    public void OnBgPickerModeItemClicked(BgSchema aBgSchema) {
+        bgPickerItemClick.Invoke(aBgSchema);
+    }
     // hides pickerItems not in contentList
     public void SetContent() {
         foreach(PickerModeItemBase pickerItem in this.fullEntityList) {

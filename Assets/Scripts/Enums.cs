@@ -8,7 +8,9 @@ public enum DeathType {
 public enum EditModeEnum {
     PICKER,
     EDIT,
-    OPTIONS
+    OPTIONS,
+    BGPICKER,
+    BGEDIT,
 }
 public enum EntityTypeEnum {
     BLOCK,

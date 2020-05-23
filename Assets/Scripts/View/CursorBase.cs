@@ -8,6 +8,7 @@ public class CursorBase : SerializedMonoBehaviour {
     Vector2Int pos;
     Vector3 zOffset = new Vector3(0, 0, -1.01f);
 
+    // TODO: have a layer for bg stuff that offsets the position of the cursor back by z = 2f
     public SpriteRenderer myRenderer;
     public void SetPos(Vector2Int aPos) {
         this.pos = aPos;

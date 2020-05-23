@@ -52,7 +52,6 @@ public class EntityData {
 
     // use when creating from a schema
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
-        Debug.Log(aEntitySchema);
         this.componentsAreInitialized = false;
         this.pos = aPos;
         this.facing = aFacing;

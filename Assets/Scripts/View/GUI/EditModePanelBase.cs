@@ -37,4 +37,5 @@ public class EditModePanelBase : SerializedMonoBehaviour {
         }
         this.iNodalPanelBase.SetEntity(aEntityData);
     }
+    
 }

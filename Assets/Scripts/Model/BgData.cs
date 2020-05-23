@@ -20,6 +20,14 @@ public class BgData {
     public string prefabPath;
     public string name;
 
+    public BgData(BgSchema aBgSchema, Vector2Int aPos, Color aDefaultColor) {
+        this.pos = aPos;
+        this.size = aBgSchema.size;
+        this.defaultColor = aDefaultColor;
+        this.name = aBgSchema.name;
+        this.prefabPath = aBgSchema.prefabPath;
+    }
+
     public List<Vector2Int> GetOccupiedPos() {
         return Util.V2IInRect(this.pos, this.size);
     }

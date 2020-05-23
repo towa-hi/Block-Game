@@ -6,8 +6,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
 
+// TODO: make background editing less jank
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
+    bool bgMode;
 
     [Header("Set In Editor")]
     public EditPanelBase editPanelBase;
@@ -28,7 +30,11 @@ public class EditManager : SerializedMonoBehaviour {
                 GM.editManager.stateMachine.ChangeState(new EditTabPickerModeMoveState());
             }
         }
-        
+        if (this.stateMachine.GetState() is EditTabBgPickerModePlaceState) {
+            if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
+                GM.editManager.stateMachine.ChangeState(new EditTabBgPickerModeMoveState());
+            }
+        }
     }
 
     public void SetEditMode(EditModeEnum aEditMode) {
@@ -42,6 +48,12 @@ public class EditManager : SerializedMonoBehaviour {
             case EditModeEnum.OPTIONS:
                 this.stateMachine.ChangeState(new EditTabOptionsModeState());
                 this.editPanelBase.SetOptionsModeTitleField(GM.boardData.title);
+                break;
+            case EditModeEnum.BGPICKER:
+                this.stateMachine.ChangeState(new EditTabBgPickerModeMoveState());
+                break;
+            case EditModeEnum.BGEDIT:
+                print("bgEdit clicked");
                 break;
         }
     }
@@ -59,6 +71,9 @@ public class EditManager : SerializedMonoBehaviour {
         this.stateMachine.ChangeState(new EditTabPickerModePlaceState(aEntitySchema));
     }
 
+    public void OnBgPickerModeItemClick(BgSchema aBgSchema) {
+        this.stateMachine.ChangeState(new EditTabBgPickerModePlaceState(aBgSchema));
+    }
     // edit mode
 
     public void OnEditModeColorPickerClick(Color aColor) {
@@ -242,6 +257,8 @@ public class EditTabPickerModePlaceState : GameState {
 
     public void Enter() {
         // Debug.Log("EditTabPickerModePlaceState - entering");
+        GM.cursorBase.SetVisible(true);
+        GM.cursorBase.SetSize(this.entitySchema.size);
     }
 
     public void Update() {
@@ -257,8 +274,6 @@ public class EditTabPickerModePlaceState : GameState {
     }
 
     void CursorUpdate() {
-        GM.cursorBase.SetVisible(true);
-        GM.cursorBase.SetSize(this.entitySchema.size);
         GM.cursorBase.SetPos(GM.inputManager.mousePosV2);
         if (this.isPlacementValid) {
             GM.cursorBase.SetColor(Color.green);
@@ -372,4 +387,121 @@ public class EditTabOptionsModeState : GameState {
     }
 }
 
+public class EditTabBgPickerModePlaceState : GameState {
+    [SerializeField]
+    BgSchema bgSchema;
+    [SerializeField]
+    bool isPlacementValid;
+
+    public EditTabBgPickerModePlaceState(BgSchema aBgSchema) {
+        this.bgSchema = aBgSchema;
+    }
+
+    public void Enter() {
+        GM.cursorBase.SetVisible(true);
+        GM.cursorBase.SetSize(this.bgSchema.size);
+    }
+
+    public void Update() {
+        CursorUpdate();
+        this.isPlacementValid = GM.boardData.backgroundData.IsRectEmpty(GM.inputManager.mousePosV2, this.bgSchema.size);
+        if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
+            if (this.isPlacementValid) {
+                BgData bgData = new BgData(this.bgSchema, GM.inputManager.mousePosV2, Constants.DEFAULTCOLOR);
+                GM.boardManager.CreateBgFromData(bgData);
+            }
+        }
+    }
+
+    void CursorUpdate() {
+        GM.cursorBase.SetPos(GM.inputManager.mousePosV2);
+        if (this.isPlacementValid) {
+            GM.cursorBase.SetColor(Color.green);
+        } else {
+            GM.cursorBase.SetColor(Color.red);
+        }
+    }
+
+    public void Exit() {
+
+    }
+
+}
+
+public class EditTabBgPickerModeMoveState : GameState {
+    [SerializeField]
+    BgData bgData;
+    [SerializeField]
+    Vector2Int movePos;
+    [SerializeField]
+    Vector2Int clickPosOffset;
+    [SerializeField]
+    bool isMoveValid;
+
+    public EditTabBgPickerModeMoveState() {
+        GM.cursorBase.SetVisible(true);
+    }
+    public void Enter() {
+
+    }
+
+    public void Update() {
+        CursorUpdate();
+        switch (GM.inputManager.mouseState) {
+            case MouseStateEnum.CLICKED:
+                BgData hoveredBg = GM.boardData.backgroundData.GetBgDataAtPos(GM.inputManager.mousePosV2);
+                if (hoveredBg != null) {
+                    this.bgData = hoveredBg;
+                    this.clickPosOffset = GM.inputManager.mousePosV2 - this.bgData.pos;
+                }
+                break;
+            case MouseStateEnum.HELD:
+                if (this.bgData != null) {
+                    this.isMoveValid = GM.boardData.backgroundData.IsRectEmpty(this.movePos, this.bgData.size, this.bgData);
+                    this.movePos = GM.inputManager.mousePosV2 - this.clickPosOffset;
+                    this.bgData.bgBase.SetViewPosition(this.movePos);
+                }
+                break;
+            case MouseStateEnum.RELEASED:
+                if (this.bgData != null) {
+                    if (this.isMoveValid) {
+                        GM.boardData.backgroundData.MoveBg(this.movePos, this.bgData);
+                    }
+                    this.bgData.bgBase.ResetViewPosition();
+                    this.bgData = null;
+                }
+                break;
+        }
+    }
+
+    void CursorUpdate() {
+        if (this.bgData != null) {
+            GM.cursorBase.SetSize(this.bgData.size);
+            GM.cursorBase.SetPos(this.movePos);
+            if (isMoveValid) {
+                GM.cursorBase.SetColor(Color.green);
+            } else {
+                GM.cursorBase.SetColor(Color.red);
+            }
+        } else {
+            GM.cursorBase.SetColor(Color.white);
+            BgData maybeABg = GM.boardData.backgroundData.GetBgDataAtPos(GM.inputManager.mousePosV2);
+            if (maybeABg != null) {
+                GM.cursorBase.SetPos(maybeABg.pos);
+                GM.cursorBase.SetColor(Color.green);
+                GM.cursorBase.SetSize(maybeABg.size);
+
+                
+            } else {
+                GM.cursorBase.ResetCursorOnMousePos();
+            }
+        }
+    }
+
+    public void Exit() {
+        GM.cursorBase.SetVisible(false);
+    }
+
+    
+}
 #endregion

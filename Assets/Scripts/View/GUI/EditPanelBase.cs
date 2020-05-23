@@ -11,16 +11,20 @@ public class EditPanelBase : SerializedMonoBehaviour {
     [Header("Set In Editor")]
     public GameObject pickerPanel;
     public GameObject editPanel;
+    public GameObject bgPickerPanel;
+    public GameObject bgEditPanel;
     public GameObject optionsPanel;
     public Button pickerButton;
     public Button editButton;
+    public Button bgPickerButton;
+    public Button bgEditButton;
     public Button optionsButton;
     public InputField titleInput;
     public Button optionsModeSaveButton;
     
     void Awake() {
-        this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton};
-        this.botPanelArray = new GameObject[] {this.pickerPanel, this.editPanel, this.optionsPanel};
+        this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton, this.bgPickerButton, this.bgEditButton};
+        this.botPanelArray = new GameObject[] {this.pickerPanel, this.editPanel, this.optionsPanel, this.bgPickerPanel, this.bgEditPanel};
         SetBotPanel(EditModeEnum.PICKER);
     }
 
@@ -35,18 +39,41 @@ public class EditPanelBase : SerializedMonoBehaviour {
                 this.pickerButton.interactable = false;
                 this.editButton.interactable = true;
                 this.optionsButton.interactable = true;
+                this.bgPickerButton.interactable = true;
+                this.bgEditButton.interactable = true;
                 break;
             case EditModeEnum.EDIT:
                 this.activeBotPanel = this.editPanel;
                 this.pickerButton.interactable = true;
                 this.editButton.interactable = false;
                 this.optionsButton.interactable = true;
+                this.bgPickerButton.interactable = true;
+                this.bgEditButton.interactable = true;
                 break;
             case EditModeEnum.OPTIONS:
                 this.activeBotPanel = this.optionsPanel;
                 this.pickerButton.interactable = true;
                 this.editButton.interactable = true;
                 this.optionsButton.interactable = false;
+                this.bgPickerButton.interactable = true;
+                this.bgEditButton.interactable = true;
+                break;
+            case EditModeEnum.BGPICKER:
+                this.activeBotPanel = this.bgPickerPanel;
+                this.pickerButton.interactable = true;
+                this.editButton.interactable = true;
+                this.optionsButton.interactable = true;
+                this.bgPickerButton.interactable = false;
+                this.bgEditButton.interactable = true;
+
+                break;
+            case EditModeEnum.BGEDIT:
+                this.activeBotPanel = this.bgEditPanel;
+                this.pickerButton.interactable = true;
+                this.editButton.interactable = true;
+                this.optionsButton.interactable = true;
+                this.bgPickerButton.interactable = true;
+                this.bgEditButton.interactable = false;
                 break;
         }
         foreach (GameObject botPanel in botPanelArray) {
@@ -71,6 +98,9 @@ public class EditPanelBase : SerializedMonoBehaviour {
         GM.editManager.OnPickerModeItemClick(aEntitySchema);
     }
 
+    public void OnBgPickerModeItemClick(BgSchema aBgSchema) {
+        GM.editManager.OnBgPickerModeItemClick(aBgSchema);
+    }
     // edit mode
 
     public void OnEditModeColorPickerClick(Color aColor) {

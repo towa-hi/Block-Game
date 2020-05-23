@@ -132,6 +132,7 @@ public class GM : Singleton<GM> {
     }
 
     public static GameObject LoadBgPrefabByFilename(string aFilename) {
+        print("loading" + "BgPrefabs/" + aFilename);
         return Resources.Load("BgPrefabs/" + aFilename) as GameObject;
     }
 

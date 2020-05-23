@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebdba317aa75b114ba62ca0b14c07ea4, type: 3}
-  m_Name: 2x3 postbox
+  m_Script: {fileID: 11500000, guid: 91ae48090afcb9046a67fc51c42e4072, type: 3}
+  m_Name: 2x2 bg brickwall
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,9 +21,5 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  prefabPath: SpecialBlocks/2x3 postbox
-  size: {x: 2, y: 3}
-  type: 1
-  touchDefense: 999
-  fallDefense: 999
-  defaultTeam: 1
+  prefabPath: 2x2 bg brickwall
+  size: {x: 2, y: 2}

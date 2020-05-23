@@ -12,7 +12,7 @@ public class BackgroundData {
     public GameGrid gameGrid {
         get {return this.boardData.gameGrid;}
     }
-    
+
     public BackgroundData(BoardData aBoardData) {
         this.boardData = aBoardData;
         this.bgDataSet = new HashSet<BgData>();
@@ -32,7 +32,7 @@ public class BackgroundData {
         }
     }
 
-    public void MoveBg(BgData aBgData, Vector2Int aPos) {
+    public void MoveBg(Vector2Int aPos, BgData aBgData) {
         foreach (Vector2Int currentPos in aBgData.GetOccupiedPos()) {
             this.gameGrid.GetCell(currentPos).bgData = null;
         }
@@ -53,5 +53,23 @@ public class BackgroundData {
 
     public bool IsPosInBoard(Vector2Int aPos) {
         return Util.IsInside(aPos, Vector2Int.zero, this.size);
+    }
+
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, BgData aIgnoreEntity = null) {
+        if (!this.boardData.IsRectInBoard(aOrigin, aSize)) {
+            return false;
+        }
+        foreach (KeyValuePair<Vector2Int, GameCell> kvp in this.gameGrid.GetSlice(aOrigin, aSize)) {
+            if (kvp.Value.bgData != null) {
+                if (aIgnoreEntity != null) {
+                    if (aIgnoreEntity != kvp.Value.bgData) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -32,6 +32,7 @@ public class BoardManager : SerializedMonoBehaviour {
     public void CreateBgFromData(BgData aBgData) {
         GameObject bgPrefab = Instantiate(GM.LoadBgPrefabByFilename(aBgData.prefabPath), this.backgroundContainer.transform);
         BgBase bgBase = bgPrefab.GetComponent<BgBase>();
+        bgBase.Init(aBgData);
         this.bgBaseList.Add(bgBase);
         GM.boardData.backgroundData.RegisterBgData(aBgData);
     }
