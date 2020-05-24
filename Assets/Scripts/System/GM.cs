@@ -26,12 +26,14 @@ public class GM : Singleton<GM> {
     public GameObject pushablePrefabMaster;
     public GameObject testPrefabMaster;
     public GameObject biggerTestPrefabMaster;
-    
+    GameObject activePanel;
+
     public bool isFullPaused;
     private void Awake() {
         // set as editing by default
-        this.gameMode = GameModeEnum.EDITING;
         NewBoard();
+        
+        SetGameMode(GameModeEnum.EDITING);
     }
 
     public void NewBoard() {
@@ -65,15 +67,7 @@ public class GM : Singleton<GM> {
 
         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-
-        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 11), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(smallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        // boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 13), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        
         EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Mobs/2x3 player.asset");
         EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.white);
         foreach (EntityData boundaryEntityData in boundarySet) {
@@ -103,28 +97,29 @@ public class GM : Singleton<GM> {
             case GameModeEnum.EDITING:
                 Time.timeScale = 0;
                 GM.editManager.Init();
-                this.editPanel.SetActive(true);
+                this.activePanel = this.editPanel;
                 this.playPanel.SetActive(false);
                 GM.editManager.enabled = true;
                 GM.playManager.enabled = false;
                 break;
             case GameModeEnum.PLAYING:
                 Time.timeScale = 1;
+                this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
-                this.playPanel.SetActive(true);
                 GM.playManager.enabled = true;
                 GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(false);
                 break;
             case GameModeEnum.PLAYTESTING:
                 Time.timeScale = 1;
+                this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
-                this.playPanel.SetActive(true);
                 GM.playManager.enabled = true;
                 GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(true);
                 break;
         }
+        this.activePanel.SetActive(true);
     }
 
     public static GameObject LoadEntityPrefabByFilename(string aFilename) {
@@ -132,7 +127,6 @@ public class GM : Singleton<GM> {
     }
 
     public static GameObject LoadBgPrefabByFilename(string aFilename) {
-        print("loading" + "BgPrefabs/" + aFilename);
         return Resources.Load("BgPrefabs/" + aFilename) as GameObject;
     }
     // TODO: fix this dumb ass function that turns both play and edit panels on when deactivated
@@ -140,8 +134,7 @@ public class GM : Singleton<GM> {
         this.isFullPaused = aIsFullPaused;
         this.pausePanel.SetActive(this.isFullPaused);
         AudioListener.pause = this.isFullPaused;
-        this.editPanel.SetActive(!this.isFullPaused);
-        this.playPanel.SetActive(!this.isFullPaused);
+        this.activePanel.SetActive(!this.isFullPaused);
         if (this.isFullPaused) {
             Time.timeScale = 0;
         } else {
