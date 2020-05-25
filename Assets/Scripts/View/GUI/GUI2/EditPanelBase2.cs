@@ -37,9 +37,16 @@ public class EditPanelBase2 : GUIBase {
         base.OnEnable();
     }
 
-    public void SetVisiblePickerItems() {
+    public override void OnDisable() {
+        foreach (Transform child in this.pickerScrollRectContent.transform) {
+            Destroy(child.gameObject);
+        }
+        base.OnDisable();
+    }
+
+    public void SetVisiblePickerItems(bool aIsFront) {
         foreach (EditorPickerItem pickerItem in this.editorPickerItems) {
-            if (GM.editManager2.GetState().isFront) {
+            if (aIsFront) {
                 pickerItem.gameObject.SetActive(pickerItem.schema is EntitySchema);
             } else {
                 pickerItem.gameObject.SetActive(pickerItem.schema is BgSchema);
@@ -58,7 +65,7 @@ public class EditPanelBase2 : GUIBase {
     public override void OnUpdateState() {
         EditorState currentState = GM.editManager2.GetState();
         SetActiveBotPanel(currentState.activeTab);
-        SetVisiblePickerItems();
+        SetVisiblePickerItems(currentState.isFront);
     }
 
     void SetActiveBotPanel(EditTabEnum aActiveTab) {
