@@ -29,10 +29,31 @@ public class Util {
     }
 
     public static bool IsRectInside(Vector2Int aRectPos, Vector2Int aRectSize, Vector2Int aBoundPos, Vector2Int aBoundSize) {
-        Rect rect = new Rect(aRectPos, aRectSize);
-        Rect boundingBox = new Rect(aBoundPos, aBoundSize);
-        return boundingBox.Overlaps(rect);
+        int xBoundLeft = aBoundPos.x;
+        int xBoundRight = aBoundPos.x + aBoundSize.x;
+        int yBoundDown = aBoundPos.y;
+        int yBoundUp = aBoundPos.y + aBoundSize.y;
+
+        int xRectLeft = aRectPos.x;
+        int xRectRight = aRectPos.x + aRectSize.x;
+        int yRectDown = aRectPos.y;
+        int yRectUp = aRectPos.y + aRectSize.y;
+
+        if (xRectLeft < xBoundLeft) {
+            return false;
+        }
+        if (xRectRight > xBoundRight) {
+            return false;
+        }
+        if (yRectDown < yBoundDown) {
+            return false;
+        }
+        if (yRectUp > yBoundUp) {
+            return false;
+        }
+        return true;
     }
+
     // helper for node stuff to turn bools into vectors
     public static Vector2Int UpOrDown(bool aIsUp) {
         if (aIsUp) {

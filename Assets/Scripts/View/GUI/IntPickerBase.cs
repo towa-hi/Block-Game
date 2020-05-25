@@ -11,6 +11,7 @@ public class OnValueChanged : UnityEvent<int>{};
 public class IntPickerBase : SerializedMonoBehaviour {
     public int defaultInt;
     int currentInt;
+
     // set in editor
     public OnValueChanged onValueChanged = new OnValueChanged();
 
@@ -21,6 +22,7 @@ public class IntPickerBase : SerializedMonoBehaviour {
         this.defaultInt = GM.boardData.par;
         SetCurrentInt(this.defaultInt);
     }
+
 
     public void OnIntPickerButtonClicked(bool aIsPlus) {
         if (aIsPlus) {
@@ -43,4 +45,31 @@ public class IntPickerBase : SerializedMonoBehaviour {
     public int GetCurrentInt() {
         return this.currentInt;
     }
+
+
+
+    // // new code
+    // void OnEnable() {
+    //     GM.editManager2.onUpdateState += OnUpdateState;
+        
+    //     OnUpdateState();
+    // }
+
+    // void OnDisable() {
+    //     GM.editManager2.onUpdateState -= OnUpdateState;
+    // }
+
+    // // updates the view
+    // public void OnUpdateState() {
+    //     GM.EditManager2.editState.par // doesnt exist yet
+    // }
+
+    // // when clicked
+    // public void OnIntPickerButtonClicked(bool aIsPlus) {
+    //     EditorState newState = GM.editManager2.GetCurrentState();
+    //     newState = EditorState.SetPar(newState, 1);
+    //     GM.EditManager2.UpdateState(newState);
+    // }
+
 }
+

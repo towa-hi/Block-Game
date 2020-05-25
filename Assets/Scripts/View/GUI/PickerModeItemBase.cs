@@ -31,14 +31,14 @@ public class PickerModeItemBase : SerializedMonoBehaviour {
     }
 
     // TODO: remove this nasty update later
-    void Update() {
-        if (!isBg) {
-            if (this.entitySchema.type == EntityTypeEnum.PLAYER) {
-                this.button.interactable = (GM.boardData.playerEntityData == null);
-            }
-        }
+    // void Update() {
+    //     if (!isBg) {
+    //         if (this.entitySchema.type == EntityTypeEnum.PLAYER) {
+    //             this.button.interactable = (GM.boardData.playerEntityData == null);
+    //         }
+    //     }
         
-    }
+    // }
 
     public void OnClick() {
         if (isBg) {

@@ -40,10 +40,10 @@ public class FilePickerBase : SerializedMonoBehaviour {
     }
 
     public void OnLoadButtonClick() {
-        GM.editManager.LoadLevelFromFilePicker(currentFileName);
+        // GM.editManager.LoadLevelFromFilePicker(currentFileName);
     }
 
     public void OnCancelButtonClick() {
-        GM.editManager.EndFilePicker();
+        // GM.editManager.EndFilePicker();
     }
 }

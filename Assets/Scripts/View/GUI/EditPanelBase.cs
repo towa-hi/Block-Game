@@ -5,153 +5,143 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
 public class EditPanelBase : SerializedMonoBehaviour {
-    Button[] topPanelArray;
-    GameObject[] botPanelArray;
-    GameObject activeBotPanel;
-    [Header("Set In Editor")]
-    public GameObject pickerPanel;
-    public GameObject editPanel;
-    public GameObject bgPickerPanel;
-    public GameObject bgEditPanel;
-    public GameObject optionsPanel;
-    public Button pickerButton;
-    public Button editButton;
-    public Button bgPickerButton;
-    public Button bgEditButton;
-    public Button optionsButton;
-    public InputField titleInput;
-    public Button optionsModeSaveButton;
+    // Button[] topPanelArray;
+    // GameObject[] botPanelArray;
+    // GameObject activeBotPanel;
+    // [Header("Set In Editor")]
+    // public GameObject pickerPanel;
+    // public GameObject editPanel;
+    // public GameObject bgPickerPanel;
+    // public GameObject bgEditPanel;
+    // public GameObject optionsPanel;
+    // public Button pickerButton;
+    // public Button editButton;
+    // public Button bgPickerButton;
+    // public Button bgEditButton;
+    // public Button optionsButton;
+    // public InputField titleInput;
+    // public Button optionsModeSaveButton;
     
-    void Awake() {
-        this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton, this.bgPickerButton, this.bgEditButton};
-        this.botPanelArray = new GameObject[] {this.pickerPanel, this.editPanel, this.optionsPanel, this.bgPickerPanel, this.bgEditPanel};
-        SetBotPanel(EditModeEnum.PICKER);
-    }
+    // void Awake() {
+    //     this.topPanelArray = new Button[] {this.pickerButton, this.editButton, this.optionsButton, this.bgPickerButton, this.bgEditButton};
+    //     this.botPanelArray = new GameObject[] {this.pickerPanel, this.editPanel, this.optionsPanel, this.bgPickerPanel, this.bgEditPanel};
+    //     SetBotPanel(EditModeEnum.PICKER);
+    // }
 
-    public void OnEditTabClick(int aPanelInt) {
-        SetBotPanel((EditModeEnum)aPanelInt);
-    }
+    // public void OnEditTabClick(int aPanelInt) {
+    //     SetBotPanel((EditModeEnum)aPanelInt);
+    // }
 
-    public void SetBotPanel(EditModeEnum aEditMode) {
-        switch (aEditMode) {
-            case EditModeEnum.PICKER:
-                this.activeBotPanel = this.pickerPanel;
-                this.pickerButton.interactable = false;
-                this.editButton.interactable = true;
-                this.optionsButton.interactable = true;
-                this.bgPickerButton.interactable = true;
-                this.bgEditButton.interactable = true;
-                break;
-            case EditModeEnum.EDIT:
-                this.activeBotPanel = this.editPanel;
-                this.pickerButton.interactable = true;
-                this.editButton.interactable = false;
-                this.optionsButton.interactable = true;
-                this.bgPickerButton.interactable = true;
-                this.bgEditButton.interactable = true;
-                break;
-            case EditModeEnum.OPTIONS:
-                this.activeBotPanel = this.optionsPanel;
-                this.pickerButton.interactable = true;
-                this.editButton.interactable = true;
-                this.optionsButton.interactable = false;
-                this.bgPickerButton.interactable = true;
-                this.bgEditButton.interactable = true;
-                break;
-            case EditModeEnum.BGPICKER:
-                this.activeBotPanel = this.bgPickerPanel;
-                this.pickerButton.interactable = true;
-                this.editButton.interactable = true;
-                this.optionsButton.interactable = true;
-                this.bgPickerButton.interactable = false;
-                this.bgEditButton.interactable = true;
+    // public void SetBotPanel(EditModeEnum aEditMode) {
+    //     switch (aEditMode) {
+    //         case EditModeEnum.PICKER:
+    //             this.activeBotPanel = this.pickerPanel;
+    //             this.pickerButton.interactable = false;
+    //             this.editButton.interactable = true;
+    //             this.optionsButton.interactable = true;
+    //             break;
+    //         case EditModeEnum.EDIT:
+    //             this.activeBotPanel = this.editPanel;
+    //             this.pickerButton.interactable = true;
+    //             this.editButton.interactable = false;
+    //             this.optionsButton.interactable = true;
+    //             break;
+    //         case EditModeEnum.OPTIONS:
+    //             this.activeBotPanel = this.optionsPanel;
+    //             this.pickerButton.interactable = true;
+    //             this.editButton.interactable = true;
+    //             this.optionsButton.interactable = false;
+    //             break;
+    //         case EditModeEnum.BGPICKER:
+    //             this.activeBotPanel = this.bgPickerPanel;
+    //             this.pickerButton.interactable = true;
+    //             this.editButton.interactable = true;
+    //             this.optionsButton.interactable = true;
 
-                break;
-            case EditModeEnum.BGEDIT:
-                this.activeBotPanel = this.bgEditPanel;
-                this.pickerButton.interactable = true;
-                this.editButton.interactable = true;
-                this.optionsButton.interactable = true;
-                this.bgPickerButton.interactable = true;
-                this.bgEditButton.interactable = false;
-                break;
-        }
-        foreach (GameObject botPanel in botPanelArray) {
-            botPanel.SetActive(botPanel == this.activeBotPanel);
-        }
-        GM.editManager.SetEditMode(aEditMode);
-    }
+    //             break;
+    //         case EditModeEnum.BGEDIT:
+    //             this.activeBotPanel = this.bgEditPanel;
+    //             this.pickerButton.interactable = true;
+    //             this.editButton.interactable = true;
+    //             this.optionsButton.interactable = true;
+    //             break;
+    //     }
+    //     foreach (GameObject botPanel in botPanelArray) {
+    //         botPanel.SetActive(botPanel == this.activeBotPanel);
+    //     }
+    //     GM.editManager.SetEditMode(aEditMode);
+    // }
 
-    public void SetOptionsModeTitleField(string aValue) {
-        this.titleInput.SetTextWithoutNotify(aValue);
-    }
+    // public void SetOptionsModeTitleField(string aValue) {
+    //     this.titleInput.SetTextWithoutNotify(aValue);
+    // }
 
-    // from EditManager
+    // // from EditManager
 
-    public void SetEditModeEntity(EntityData aEntityData) {
-        this.editPanel.GetComponent<EditModePanelBase>().SetEntity(aEntityData);
-    }
+    // public void SetEditModeEntity(EntityData aEntityData) {
+    //     this.editPanel.GetComponent<EditModePanelBase>().SetEntity(aEntityData);
+    // }
 
-    // picker mode
+    // // picker mode
 
-    public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
-        GM.editManager.OnPickerModeItemClick(aEntitySchema);
-    }
+    // public void OnPickerModeItemClick(EntitySchema aEntitySchema) {
+    //     GM.editManager.OnPickerModeItemClick(aEntitySchema);
+    // }
 
-    public void OnBgPickerModeItemClick(BgSchema aBgSchema) {
-        GM.editManager.OnBgPickerModeItemClick(aBgSchema);
-    }
-    // edit mode
+    // public void OnBgPickerModeItemClick(BgSchema aBgSchema) {
+    //     GM.editManager.OnBgPickerModeItemClick(aBgSchema);
+    // }
+    // // edit mode
 
-    public void OnEditModeColorPickerClick(Color aColor) {
-        GM.editManager.OnEditModeColorPickerClick(aColor);
+    // public void OnEditModeColorPickerClick(Color aColor) {
+    //     GM.editManager.OnEditModeColorPickerClick(aColor);
 
-    }
-    public void OnEditModeFixedToggle(bool aIsFixed) {
-        GM.editManager.OnEditModeFixedToggle(aIsFixed);
-    }
+    // }
+    // public void OnEditModeFixedToggle(bool aIsFixed) {
+    //     GM.editManager.OnEditModeFixedToggle(aIsFixed);
+    // }
     
-    public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
-        GM.editManager.OnEditModeNodeToggle(aNodeToggleStruct);
-    }
-    public void OnEditModeExtraButtonClick() {
-        GM.editManager.OnEditModeExtraButtonClick();
-    }
+    // public void OnEditModeNodeToggle(NodeToggleStruct aNodeToggleStruct) {
+    //     GM.editManager.OnEditModeNodeToggle(aNodeToggleStruct);
+    // }
+    // public void OnEditModeExtraButtonClick() {
+    //     GM.editManager.OnEditModeExtraButtonClick();
+    // }
 
-    public void OnEditModeFlipButtonClick() {
-        GM.editManager.OnEditModeFlipButtonClick();
-    }
+    // public void OnEditModeFlipButtonClick() {
+    //     GM.editManager.OnEditModeFlipButtonClick();
+    // }
 
-    public void OnEditModeDeleteButtonClick() {
-        print("EditPanelBase - on delete button clicked");
-        GM.editManager.OnEditModeDeleteButtonClick();
-    }
+    // public void OnEditModeDeleteButtonClick() {
+    //     print("EditPanelBase - on delete button clicked");
+    //     GM.editManager.OnEditModeDeleteButtonClick();
+    // }
 
-    // options mode
+    // // options mode
 
-    public void OnOptionsModeTitleChange(string aValue) {
-        this.optionsModeSaveButton.interactable = (aValue.Length != 0);
-        GM.editManager.OnOptionsModeTitleChange(aValue);
-    }
+    // public void OnOptionsModeTitleChange(string aValue) {
+    //     this.optionsModeSaveButton.interactable = (aValue.Length != 0);
+    //     GM.editManager.OnOptionsModeTitleChange(aValue);
+    // }
 
-    public void OnOptionsModeParIntPickerChange(int aValue) {
-        GM.editManager.OnOptionsModeParIntPickerChange(aValue);
-    }
+    // public void OnOptionsModeParIntPickerChange(int aValue) {
+    //     GM.editManager.OnOptionsModeParIntPickerChange(aValue);
+    // }
 
-    public void OnOptionsModeLoadButtonClick() {
-        GM.editManager.OnOptionsModeLoadButtonClick();
-    }
+    // public void OnOptionsModeLoadButtonClick() {
+    //     GM.editManager.OnOptionsModeLoadButtonClick();
+    // }
 
-    public void OnOptionsModeSaveButtonClick() {
-        GM.editManager.OnOptionsModeSaveButtonClick();
-    }
+    // public void OnOptionsModeSaveButtonClick() {
+    //     GM.editManager.OnOptionsModeSaveButtonClick();
+    // }
 
-    public void OnOptionsModePlaytestButtonClick() {
-        GM.editManager.OnOptionsModePlaytestButtonClick();
-    }
+    // public void OnOptionsModePlaytestButtonClick() {
+    //     GM.editManager.OnOptionsModePlaytestButtonClick();
+    // }
 
-    public void Benis() {
-        print("benis");
-    }
+    // public void OnLayerPickerClick(bool aIsFront) {
+    //     GM.editManager.OnLayerPickerClick(aIsFront);
+    // }
 
 }

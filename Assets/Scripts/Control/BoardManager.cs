@@ -53,11 +53,8 @@ public class BoardManager : SerializedMonoBehaviour {
         // get the EntityBase for this prefab
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
         this.entityBaseList.Add(entityBase);
-        // print("3 entityDataList size" + GM.boardData.entityDataSet.Count);
         entityBase.Init(aEntityData);
         GM.boardData.RegisterEntityData(aEntityData);
-        
-        // print("4 entityDataList size" + GM.boardData.entityDataSet.Count);
     }
 
     public void DestroyEntity(EntityData aEntityData) {
@@ -77,6 +74,4 @@ public class BoardManager : SerializedMonoBehaviour {
         aEntityData.entityBase.SetViewPosition(aPos);
     }
 
-    
-    
 }

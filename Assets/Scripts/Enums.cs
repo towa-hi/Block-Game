@@ -12,6 +12,13 @@ public enum EditModeEnum {
     BGPICKER,
     BGEDIT,
 }
+
+public enum EditTabEnum {
+    PICKER,
+    EDIT,
+    OPTIONS
+}
+
 public enum EntityTypeEnum {
     BLOCK,
     MOB,

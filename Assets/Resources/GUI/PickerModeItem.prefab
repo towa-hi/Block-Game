@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 699798165063972906}
   - component: {fileID: 699798165063972907}
   - component: {fileID: 699798165063972908}
-  - component: {fileID: 699798165063972909}
+  - component: {fileID: 2245269622695939648}
   m_Layer: 5
   m_Name: PickerModeItem
   m_TagString: Untagged
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 699798165063972909}
+      - m_Target: {fileID: 2245269622695939648}
         m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
@@ -207,7 +207,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &699798165063972909
+--- !u!114 &2245269622695939648
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -216,7 +216,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 699798165063972911}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: accfaf64055acd243a1fc4e12b9f3979, type: 3}
+  m_Script: {fileID: 11500000, guid: e049e1f1512a2dd4e806888b8d273a9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -228,6 +228,3 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  entitySchema: {fileID: 0}
-  pickerModePanelBase: {fileID: 0}
-  text: {fileID: 699798164264600334}

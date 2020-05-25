@@ -8,7 +8,8 @@ public class GM : Singleton<GM> {
     public static BoardData boardData;
     public static InputManager inputManager;
     public static BoardManager boardManager;
-    public static EditManager editManager;
+    // public static EditManager editManager;
+    public static EditManager2 editManager2;
     public static PlayManager playManager;
     public static GridViewBase gridViewBase;
     public static CursorBase cursorBase;
@@ -39,13 +40,17 @@ public class GM : Singleton<GM> {
     public void NewBoard() {
         GM.boardData = new BoardData();
         GM.boardManager = this.boardManagerGameObject.GetComponent<BoardManager>();
-        GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
+        // GM.editManager = this.boardManagerGameObject.GetComponent<EditManager>();
+        // temporary
+        GM.editManager2 = this.boardManagerGameObject.GetComponent<EditManager2>();
+
         GM.inputManager = this.boardManagerGameObject.GetComponent<InputManager>();
         GM.playManager = this.boardManagerGameObject.GetComponent<PlayManager>();
         GM.gridViewBase = this.boardManagerGameObject.GetComponentInChildren<GridViewBase>();
         GM.cursorBase = this.boardManagerGameObject.GetComponentInChildren<CursorBase>();
         GM.boardManager.Init();
-        GM.editManager.Init();
+        // GM.editManager.Init();
+        GM.editManager2.Init();
         GM.playManager.Init();
         GM.gridViewBase.Init();
         AddBoundaries();
@@ -79,7 +84,7 @@ public class GM : Singleton<GM> {
     public void LoadBoard(BoardData aBoardData) {
         GM.boardData = aBoardData;
         GM.boardManager.Init();
-        GM.editManager.Init();
+        // GM.editManager.Init();
         GM.gridViewBase.Init();
     }
 
@@ -96,10 +101,10 @@ public class GM : Singleton<GM> {
         switch (this.gameMode) {
             case GameModeEnum.EDITING:
                 Time.timeScale = 0;
-                GM.editManager.Init();
+                // GM.editManager.Init();
                 this.activePanel = this.editPanel;
                 this.playPanel.SetActive(false);
-                GM.editManager.enabled = true;
+                // GM.editManager.enabled = true;
                 GM.playManager.enabled = false;
                 break;
             case GameModeEnum.PLAYING:
@@ -107,7 +112,7 @@ public class GM : Singleton<GM> {
                 this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
                 GM.playManager.enabled = true;
-                GM.editManager.enabled = false;
+                // GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(false);
                 break;
             case GameModeEnum.PLAYTESTING:
@@ -115,7 +120,7 @@ public class GM : Singleton<GM> {
                 this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
                 GM.playManager.enabled = true;
-                GM.editManager.enabled = false;
+                // GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(true);
                 break;
         }
