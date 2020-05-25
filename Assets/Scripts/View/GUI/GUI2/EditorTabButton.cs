@@ -15,7 +15,7 @@ public class EditorTabButton : GUIBase {
     }
 
     public void OnClick() {
-        EditorState newState = EditorState.SetActiveTabIndex(GM.editManager2.GetState(), this.editTabEnum);
+        EditorState newState = EditorState.SetActiveTab(GM.editManager2.GetState(), this.editTabEnum);
         GM.editManager2.UpdateState(newState);
     }
 

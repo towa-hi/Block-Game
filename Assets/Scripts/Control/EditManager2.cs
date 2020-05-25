@@ -14,7 +14,7 @@ public struct EditorState {
     public EditTabEnum activeTab;
     public List<EntitySchema> frontContentList;
     public List<BgSchema> backContentList;
-    public Object currentSchema;
+    public Object selectedSchema;
     public Object selectedObject;
     
     public void Init() {
@@ -23,6 +23,8 @@ public struct EditorState {
         this.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
         this.backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList();
         this.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
+        this.selectedSchema = null;
+        this.selectedObject = null;
         this.par = GM.boardData.par;
         
     }
@@ -30,12 +32,14 @@ public struct EditorState {
     public static EditorState SetCurrentSchema(EditorState aState, Object aCurrentSchema) {
         // assert that if isFront, aCurrentSchema is a EntitySchema otherwise if !isFront, aCurrentSchema is a BgSchema
         Debug.Assert((aState.isFront && aCurrentSchema is EntitySchema) || (!aState.isFront && aCurrentSchema is BgSchema));
-        aState.currentSchema = aCurrentSchema;
+        aState.selectedSchema = aCurrentSchema;
         return aState;
     }
 
     public static EditorState SetIsFront(EditorState aState, bool aIsFront) {
         aState.isFront = aIsFront;
+        aState.selectedSchema = null;
+        aState.selectedObject = null;
         return aState;
     }
 
@@ -49,8 +53,10 @@ public struct EditorState {
         return aState;
     }
 
-    public static EditorState SetActiveTabIndex(EditorState aState, EditTabEnum aEditTab) {
+    public static EditorState SetActiveTab(EditorState aState, EditTabEnum aEditTab) {
         aState.activeTab = aEditTab;
+        aState.selectedObject = null;
+        aState.selectedSchema = null;
         return aState;
     }
 
