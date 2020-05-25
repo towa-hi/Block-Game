@@ -10,6 +10,7 @@ public class EditorPickerItem : SerializedMonoBehaviour {
     Renderer myRenderer;
 
     public void Init(Object aSchema) {
+        Debug.Assert(aSchema is EntitySchema || aSchema is BgSchema);
         this.button = GetComponent<Button>();
         this.schema = aSchema;
         Text text = GetComponentInChildren<Text>();

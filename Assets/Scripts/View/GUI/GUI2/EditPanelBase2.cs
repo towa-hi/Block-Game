@@ -33,7 +33,6 @@ public class EditPanelBase2 : GUIBase {
             editorPickerItem.Init(entitySchema);
             this.editorPickerItems.Add(editorPickerItem);
         }
-        // SetVisiblePickerItems();
         base.OnEnable();
     }
 
@@ -66,6 +65,7 @@ public class EditPanelBase2 : GUIBase {
     public override void OnUpdateState() {
         EditorState currentState = GM.editManager2.GetState();
         SetActiveBotPanel(currentState.activeTab);
+        // TODO: could be optimized to not setPickerItems if on another tab
         SetPickerItems(currentState.isFront);
     }
 
