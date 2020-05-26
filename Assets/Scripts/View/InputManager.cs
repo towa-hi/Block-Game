@@ -11,6 +11,7 @@ public class InputManager : Singleton<InputManager> {
     [System.NonSerialized] public Vector3 mousePos;
     public Vector2Int mousePosV2;
     [System.NonSerialized] public Vector3 oldMousePos;
+    public bool isCursorOverUI;
     public Vector2Int oldMousePosV2;
     public Vector3 clickedPos;
     public Vector3 dragOffset;
@@ -30,7 +31,7 @@ public class InputManager : Singleton<InputManager> {
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
-                if (!EventSystem.current.IsPointerOverGameObject()) {
+                if (!isCursorOverUI) {
                     this.mouseState = MouseStateEnum.CLICKED;
                 }
                 break;
@@ -52,6 +53,7 @@ public class InputManager : Singleton<InputManager> {
     }
 
     void Update() {
+        this.isCursorOverUI = EventSystem.current.IsPointerOverGameObject();
         if (this.mouseIsHeldDownOneFrame) {
             this.mouseIsHeldDownOneFrame = false;
             this.mouseState = MouseStateEnum.HELD;

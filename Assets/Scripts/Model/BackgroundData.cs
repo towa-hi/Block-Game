@@ -72,4 +72,13 @@ public class BackgroundData {
         }
         return true;
     }
+
+    public bool CanEditorPlaceBgSchema(Vector2Int aPos, BgSchema aBgSchema) {
+        if (IsRectEmpty(aPos, aBgSchema.size)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

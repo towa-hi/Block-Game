@@ -9,6 +9,7 @@ using System.IO;
 public class BgSchema : SerializedScriptableObject {
     public string prefabPath;
     public Vector2Int size;
+    public bool isBlocking;
 
     [ContextMenu("BgFileNameToNameField")]
     public void BgFileNameToNameField() {

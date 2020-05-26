@@ -19,6 +19,7 @@ public class BgData {
     public Color defaultColor;
     public string prefabPath;
     public string name;
+    public bool isBlocking;
 
     public BgData(BgSchema aBgSchema, Vector2Int aPos, Color aDefaultColor) {
         this.pos = aPos;
@@ -26,6 +27,7 @@ public class BgData {
         this.defaultColor = aDefaultColor;
         this.name = aBgSchema.name;
         this.prefabPath = aBgSchema.prefabPath;
+        this.isBlocking = aBgSchema.isBlocking;
     }
 
     public List<Vector2Int> GetOccupiedPos() {

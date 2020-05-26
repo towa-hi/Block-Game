@@ -1,4 +1,14 @@
 ﻿// mysterious enum dumping ground
+
+public enum CursorModeEnum {
+    POINTING,
+    PLACING,
+    SELECTING,
+    HOLDING,
+    GAME,
+    OFF
+}
+
 public enum DeathType {
     BUMP,
     BISECTED,

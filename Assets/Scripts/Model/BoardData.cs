@@ -126,6 +126,10 @@ public class BoardData {
                     return false;
                 }
             }
+            // TODO: change how this blocking shit works later
+            if (kvp.Value.bgData != null && kvp.Value.bgData.isBlocking) {
+                return false;
+            }
         }
         return true;
     }
@@ -141,6 +145,10 @@ public class BoardData {
                 if (!aIgnoreEntitySet.Contains(kvp.Value.entityData)) {
                     return false;
                 }
+            }
+            // TODO: change how this blocking shit works later
+            if (kvp.Value.bgData != null && kvp.Value.bgData.isBlocking) {
+                return false;
             }
         }
         return true;
@@ -167,6 +175,14 @@ public class BoardData {
 
     public GameGrid GetGameGrid() {
         return this.gameGrid;
+    }
+
+    public bool CanEditorPlaceEntitySchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+        if (IsRectEmpty(aPos, aEntitySchema.size)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public bool EmptyStraightBetween(Vector2Int aStart, Vector2Int aEnd, EntityData aIgnore = null) {

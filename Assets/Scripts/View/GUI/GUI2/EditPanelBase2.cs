@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Sirenix.OdinInspector;
 
 public class EditPanelBase2 : GUIBase {
@@ -12,6 +13,7 @@ public class EditPanelBase2 : GUIBase {
     public GameObject pickerModePanel;
     public GameObject editModePanel;
     public GameObject optionsModePanel;
+    public Text parPickerText;
     HashSet<GameObject> botPanels;
     List<EditorPickerItem> editorPickerItems;
 
@@ -43,14 +45,18 @@ public class EditPanelBase2 : GUIBase {
         base.OnDisable();
     }
 
-    public void SetPickerItems(bool aIsFront) {
+    public void SetPickerItems(bool aIsFront, Object aSchema) {
         foreach (EditorPickerItem pickerItem in this.editorPickerItems) {
             if (aIsFront) {
                 pickerItem.gameObject.SetActive(pickerItem.schema is EntitySchema);
             } else {
                 pickerItem.gameObject.SetActive(pickerItem.schema is BgSchema);
             }
-            pickerItem.SetInteractable(pickerItem.schema != GM.editManager2.GetState().selectedSchema);
+            if (aSchema != null) {
+                pickerItem.SetInteractable(pickerItem.schema != aSchema);
+            } else {
+                pickerItem.SetInteractable(true);
+            }
         }
     }
 
@@ -66,7 +72,8 @@ public class EditPanelBase2 : GUIBase {
         EditorState currentState = GM.editManager2.GetState();
         SetActiveBotPanel(currentState.activeTab);
         // TODO: could be optimized to not setPickerItems if on another tab
-        SetPickerItems(currentState.isFront);
+        SetPickerItems(currentState.isFront, currentState.selectedSchema);
+        SetParPickerText(currentState.par);
     }
 
     void SetActiveBotPanel(EditTabEnum aActiveTab) {
@@ -84,5 +91,24 @@ public class EditPanelBase2 : GUIBase {
                 this.optionsModePanel.SetActive(true);
                 break;
         }
+    }
+
+    public void SetParPickerText(int aPar) {
+        this.parPickerText.text = aPar.ToString();
+    }
+
+    public void OnParPickerButtonClick(bool aIsUp) {
+        int newPar = GM.boardData.par;
+        if (aIsUp) {
+            newPar += 1;
+        } else {
+            newPar -= 1;
+        }
+        EditorState newState = EditorState.SetPar(GM.editManager2.GetState(), newPar);
+        GM.editManager2.UpdateState(newState);
+    }
+
+    public void OnTitleField(string aTitle) {
+        EditorState newState = EditorState.SetLevelTitle(GM.editManager2.GetState(), aTitle);
     }
 }
