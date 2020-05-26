@@ -30,16 +30,6 @@ public class PickerModeItemBase : SerializedMonoBehaviour {
         this.isBg = true;
     }
 
-    // TODO: remove this nasty update later
-    // void Update() {
-    //     if (!isBg) {
-    //         if (this.entitySchema.type == EntityTypeEnum.PLAYER) {
-    //             this.button.interactable = (GM.boardData.playerEntityData == null);
-    //         }
-    //     }
-        
-    // }
-
     public void OnClick() {
         if (isBg) {
             this.pickerModePanelBase.OnBgPickerModeItemClicked(this.bgSchema);

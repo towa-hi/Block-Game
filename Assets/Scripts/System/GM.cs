@@ -134,7 +134,7 @@ public class GM : Singleton<GM> {
     public static GameObject LoadBgPrefabByFilename(string aFilename) {
         return Resources.Load("BgPrefabs/" + aFilename) as GameObject;
     }
-    // TODO: fix this dumb ass function that turns both play and edit panels on when deactivated
+    
     public void ToggleFullPauseGame(bool aIsFullPaused) {
         this.isFullPaused = aIsFullPaused;
         this.pausePanel.SetActive(this.isFullPaused);
