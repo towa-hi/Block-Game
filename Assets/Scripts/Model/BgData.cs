@@ -37,4 +37,9 @@ public class BgData {
     public void SetPos(Vector2Int aPos) {
         this.pos = aPos;
     }
+
+    public void SetDefaultColor(Color aDefaultColor) {
+        this.defaultColor = aDefaultColor;
+        this.bgBase.SetColor(aDefaultColor);
+    }
 }

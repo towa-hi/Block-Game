@@ -83,7 +83,8 @@ public struct EditorState {
     }
 
     public static EditorState SetLevelTitle(EditorState aState, string aTitle) {
-        if (0 < aTitle.Length || aTitle.Length <= 32) {
+        // TODO: better input validation here
+        if (0 < aTitle.Length && aTitle.Length <= 32) {
             aState.title = aTitle;
         }
         return aState;
@@ -109,21 +110,25 @@ public class EditManager2 : SerializedMonoBehaviour {
     EditorState currentState;
     public delegate void OnUpdateStateHandler();
     public event OnUpdateStateHandler OnUpdateState;
-
-    // Start is called before the first frame update
-    public StateMachine stateMachine = new StateMachine();
+    EditTabEnum activeTab;
+    [SerializeField]
+    StateMachine inputStateMachine = new StateMachine();
     
     public void Init() {
-        this.stateMachine = new StateMachine();
-        this.stateMachine.ChangeState(GetEditorGameState(this.currentState));
+        this.inputStateMachine = new StateMachine();
         this.currentState = new EditorState();
         this.currentState.Init();
+        this.inputStateMachine.ChangeState(GetEditorGameState(GetState()));
     }
 
 
 
     void Update() {
-        this.stateMachine.Update();
+        if (GetState().activeTab != this.activeTab) {
+            this.inputStateMachine.ChangeState(GetEditorGameState(GetState()));
+            this.activeTab = GetState().activeTab;
+        }
+        this.inputStateMachine.Update();
     }
 
     public EditorState GetState() {
@@ -135,13 +140,6 @@ public class EditManager2 : SerializedMonoBehaviour {
         GM.boardData.par = aEditorState.par;
         GM.boardData.title = aEditorState.title;
         OnUpdateState?.Invoke();
-    }
-
-    public void SetLevelTitle(string aTitle) {
-        if (0 < aTitle.Length || aTitle.Length < 32) {
-            GM.boardData.title = aTitle;
-
-        }
     }
 
     public void TryPlaceSchema(Vector2Int aPos, Object aSchema) {
@@ -160,7 +158,6 @@ public class EditManager2 : SerializedMonoBehaviour {
             }
         }
     }
-    
 
     static GameState GetEditorGameState(EditorState aEditorState) {
         switch (aEditorState.activeTab) {
@@ -230,7 +227,17 @@ public class EditorEditState : GameState {
     }
 
     public void Update() {
-
+        EditorState currentState = GM.editManager2.GetState();
+        switch (GM.inputManager.mouseState) {
+            case MouseStateEnum.CLICKED:
+                EditorState newClickedState = EditorState.SetSelectionToMousePos(currentState);
+                GM.editManager2.UpdateState(newClickedState);
+                break;
+        }
+        if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
+            EditorState newRightClickedState = EditorState.ClearSelection(currentState);
+            GM.editManager2.UpdateState(newRightClickedState);
+        }
     }
 
     public void Exit() {

@@ -19,21 +19,6 @@ public class EntityView : SerializedMonoBehaviour {
     public void Init(EntityData aEntityData) {
         this.entityData = aEntityData;
         this.myRenderer = GetComponent<Renderer>();
-        // do any special accomidations to the entity depending on type. mainly to adjust BLOCK size
-        // switch (aEntityData.prefab) {
-        //     case EntityPrefabEnum.BLOCKPREFAB:
-        //         // transform this cube into the shape of the block
-        //         // TODO: remove this later when blocks are just models
-        //         this.transform.localScale = Util.V2IToV3(aEntityData.size) + Constants.BLOCKTHICCNESS;
-        //         break;
-        //     case EntityPrefabEnum.TESTBLOCKPREFAB:
-        //         break;
-        // }
-
-        // // cache any renderer components in children after they've been made in OnEntityViewInit
-        // this.childRenderers = GetComponentsInChildren<Renderer>();
-
-        // this.defaultColor = aEntityData.defaultColor;
         SetColor(this.entityData.defaultColor);
     }
 

@@ -10,6 +10,8 @@ public class OnColorPickerClick : UnityEvent<Color>{};
 
 public class ColorPickerBase : SerializedMonoBehaviour {
     Color[] colorArray;
+    public GameObject colorPickerBar;
+    public GameObject colorButtonMaster;
     [Header("Set In Editor")]
     public OnColorPickerClick onColorPickerClick = new OnColorPickerClick();
 
