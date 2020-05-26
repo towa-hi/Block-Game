@@ -111,7 +111,12 @@ public class EntityBase : SerializedMonoBehaviour {
     public void ResetViewPosition() {
         this.transform.position = Util.V2IOffsetV3(this.entityData.pos, this.entityData.size);
         this.isInTempPos = false;
+        if (this.entityData.facing == Vector2Int.right) {
+            this.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+        } else if (this.entityData.facing == Vector2Int.left) {
+            this.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        }
     }
-
+    // TODO: have a reset that lerps quickly back to pos
 }
 

@@ -47,18 +47,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010a00000065006e0074006900740079004400610074006100
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
   entityView: {fileID: 0}
   isInTempPos: 0
   isDying: 0
-  animator: {fileID: 0}
+  animator: {fileID: 6968970567592863175}
   originalHeight: 0
 --- !u!95 &6968970567592863175
 Animator:
@@ -92,14 +95,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010c000000730074006100740065004d0061006300680069006e006500
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: stateMachine
+      Entry: 6
+      Data: 
   canKillOnTouch: 0
   touchDamage: 0
   canKillOnFall: 0
@@ -237,14 +243,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010a00000065006e0074006900740079004400610074006100
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: entityData
+      Entry: 6
+      Data: 
   myRenderer: {fileID: 0}
   childRenderers: []
   entityBase: {fileID: 0}

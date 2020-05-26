@@ -159,6 +159,28 @@ public class EditManager2 : SerializedMonoBehaviour {
         }
     }
 
+    
+    public void TryMoveEntity(Vector2Int aPos, EntityData aEntityData) {
+        if (EditManager2.CanMoveEntityInEditor(aEntityData)) {
+            if (GM.boardData.IsRectEmpty(aPos, aEntityData.size, aEntityData)) {
+                GM.boardManager.MoveEntityAndView(aPos, aEntityData);
+            }
+        }
+    }
+
+    public void TryMoveBg(Vector2Int aPos, BgData aBgData) {
+        if (GM.boardData.backgroundData.IsRectEmpty(aPos, aBgData.size, aBgData)) {
+            GM.boardManager.MoveBgAndView(aPos, aBgData);
+        }
+    }
+
+    static bool CanMoveEntityInEditor(EntityData aEntityData) {
+        if (aEntityData.isBoundary) {
+            return false;
+        }
+        return true;
+    }
+
     static GameState GetEditorGameState(EditorState aEditorState) {
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
@@ -173,7 +195,7 @@ public class EditManager2 : SerializedMonoBehaviour {
 }
 
 public class EditorPickerState : GameState {
-
+    // TODO: make clickposoffset work
     public EditorPickerState() {
 
     }
@@ -202,8 +224,20 @@ public class EditorPickerState : GameState {
                     GM.editManager2.UpdateState(newClickedState);
                     break;
                 case MouseStateEnum.HELD:
+                    if (currentState.selectedEntityData != null) {
+                        currentState.selectedEntityData.entityBase.SetViewPosition(GM.inputManager.mousePosV2);
+                    } else if (currentState.selectedBgData != null) {
+                        currentState.selectedBgData.bgBase.SetViewPosition(GM.inputManager.mousePosV2);
+                    }
                     break;
                 case MouseStateEnum.RELEASED:
+                    if (currentState.selectedEntityData != null) {
+                        GM.editManager2.TryMoveEntity(GM.inputManager.mousePosV2, currentState.selectedEntityData);
+                        currentState.selectedEntityData.entityBase.ResetViewPosition();
+                    } else if (currentState.selectedBgData != null) {
+                        GM.editManager2.TryMoveBg(GM.inputManager.mousePosV2, currentState.selectedBgData);
+                        currentState.selectedBgData.bgBase.ResetViewPosition();
+                    }
                     EditorState newReleasedState = EditorState.ClearSelection(currentState);
                     GM.editManager2.UpdateState(newReleasedState);
                     break;

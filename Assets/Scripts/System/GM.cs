@@ -85,6 +85,7 @@ public class GM : Singleton<GM> {
         GM.boardData = aBoardData;
         GM.boardManager.Init();
         // GM.editManager.Init();
+        GM.editManager2.Init();
         GM.gridViewBase.Init();
     }
 

@@ -58,7 +58,7 @@ public class CursorBase : GUIBase {
                     this.heldDataSize = aEditorState.selectedEntityData.size;
                     return CursorModeEnum.HOLDING;
                 } else {
-                    return CursorModeEnum.POINTING;
+                    return CursorModeEnum.SELECTING;
                 }
             case (EditTabEnum.EDIT):
                     return CursorModeEnum.SELECTING;
@@ -87,7 +87,8 @@ public class CursorBase : GUIBase {
                 break;
         }
     }
-
+    // TODO: have the cursor linger on the selected thing in edit mode
+    
     void CursorModePointingUpdate() {
         SetPos(GM.inputManager.mousePosV2);
         SetSize(new Vector2Int(1, 1));
@@ -150,40 +151,5 @@ public class CursorBase : GUIBase {
     void SetColor(Color aColor) {
         this.myRenderer.color = aColor;
     }
-
-    // public void SetFront(bool aIsFront) {
-    //     this.isFront = aIsFront;
-    // }
-
-    // public void SetPos(Vector2Int aPos) {
-    //     this.pos = aPos;
-    //     // this.transform.position = Util.V2IToV3(this.pos) + zOffset;
-    // }
-
-    // public void SetSize(Vector2Int aSize) {
-    //     this.size = aSize;
-    //     // this.transform.position = Util.V2IToV3(this.pos) + zOffset;
-    //     this.myRenderer.size = new Vector2(this.size.x, this.size.y * Constants.BLOCKHEIGHT);
-    // }
-
-    // public void SetAsEntity(EntityData aEntityData) {
-    //     SetSize(aEntityData.size);
-    //     SetPos(aEntityData.pos);
-    // }
-
-    // public void ResetCursorOnMousePos() {
-    //     SetSize(new Vector2Int(1, 1));
-    //     SetPos(GM.inputManager.mousePosV2);
-    //     SetColor(Color.white);
-    // }
-
-    // public void SetColor(Color aColor) {
-    //     this.myRenderer.color = aColor;
-    // }
-
-    // public void SetVisible(bool aIsVisible) {
-    //     this.myRenderer.enabled = aIsVisible;
-    // }
-
     
 }

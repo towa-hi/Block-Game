@@ -10,6 +10,11 @@ public class PreviewStudioBase : SerializedMonoBehaviour {
     // set by editor
     public Camera myCamera;
     
+    public void Init() {
+        this.entityData = null;
+        this.bgData = null;
+    }
+    
     public void SetEntity(EntityData aEntityData) {
         ResetLastEntity();
         if (aEntityData != null) {

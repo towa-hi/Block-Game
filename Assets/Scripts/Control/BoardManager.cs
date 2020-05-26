@@ -67,11 +67,20 @@ public class BoardManager : SerializedMonoBehaviour {
         print("BoardManager - DestroyEntity: " + aEntityData.name);
     }
 
-    public void MoveEntity(Vector2Int aPos, EntityData aEntityData) {
+    public void MoveEntityAndView(Vector2Int aPos, EntityData aEntityData) {
         // set model
         GM.boardData.MoveEntity(aPos, aEntityData);
         // set view
-        aEntityData.entityBase.SetViewPosition(aPos);
+        aEntityData.entityBase.ResetViewPosition();
     }
 
+    public void MoveBgAndView(Vector2Int aPos, BgData aBgData) {
+        GM.boardData.backgroundData.MoveBg(aPos, aBgData);
+        aBgData.bgBase.ResetViewPosition();
+    }
+
+    public void FlipEntityAndView(EntityData aEntityData) {
+        aEntityData.FlipEntity();
+        aEntityData.entityBase.ResetViewPosition();
+    }
 }
