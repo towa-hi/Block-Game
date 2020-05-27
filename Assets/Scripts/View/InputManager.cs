@@ -14,6 +14,7 @@ public class InputManager : Singleton<InputManager> {
     public bool isCursorOverUI;
     public Vector2Int oldMousePosV2;
     public Vector3 clickedPos;
+    public Vector2Int clickedPosV2;
     public Vector3 dragOffset;
     public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
@@ -75,6 +76,7 @@ public class InputManager : Singleton<InputManager> {
                 // runs once for one frame before mouseState changes to HELD
                 // print("GameManger - clicked: " + this.mousePos);
                 this.clickedPos = this.mousePos;
+                this.clickedPosV2 = Util.V3ToV2I(this.clickedPos);
                 // OnClickDown();
                 this.mouseIsHeldDownOneFrame = true;
                 break;

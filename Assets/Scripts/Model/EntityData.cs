@@ -48,7 +48,6 @@ public class EntityData {
     // public int fallAttack;
     public int touchDefense;
     public int fallDefense;
-    StateMachine state;
 
     // use when creating from a schema
     public EntityData(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {

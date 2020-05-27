@@ -31,6 +31,21 @@ public class CursorBase : GUIBase {
 
     public SpriteRenderer myRenderer;
 
+    public void PlayInit() {
+        this.cursorMode = CursorModeEnum.SELECTING;
+        this.isFront = true;
+    }
+
+    public void SetHolding(EntityData aEntityData) {
+        this.heldDataPos = aEntityData.pos;
+        this.heldDataSize = aEntityData.size;
+        this.cursorMode = CursorModeEnum.HOLDING;
+    }
+
+    public void SetSelecting() {
+        this.cursorMode = CursorModeEnum.SELECTING;
+    }
+    
     void Awake() {
         this.cursorMode = CursorModeEnum.POINTING;
     }
@@ -38,10 +53,8 @@ public class CursorBase : GUIBase {
     public override void OnUpdateState() {
         EditorState currentState = GM.editManager2.GetState();
         this.isFront = currentState.isFront;
-        // this.cursorMode = currentState.cursorMode;
         this.selectedSchema = currentState.selectedSchema;
         this.cursorMode = ChooseMode(currentState);
-        
     }
 
     public CursorModeEnum ChooseMode(EditorState aEditorState) {

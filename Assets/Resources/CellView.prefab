@@ -57,6 +57,7 @@ MonoBehaviour:
       Entry: 6
       Data: 
   panelRenderer: {fileID: 7638773906564742669}
+  gizmoColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &4330746306182071190
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,7 +85,7 @@ Transform:
   m_GameObject: {fileID: 4330746306182071190}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -1.01}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.15}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.125}
   m_Children: []
   m_Father: {fileID: 2138854329898015415}
   m_RootOrder: 0

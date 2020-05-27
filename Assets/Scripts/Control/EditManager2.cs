@@ -121,8 +121,6 @@ public class EditManager2 : SerializedMonoBehaviour {
         this.inputStateMachine.ChangeState(GetEditorGameState(GetState()));
     }
 
-
-
     void Update() {
         if (GetState().activeTab != this.activeTab) {
             this.inputStateMachine.ChangeState(GetEditorGameState(GetState()));

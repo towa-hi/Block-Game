@@ -69,8 +69,8 @@ public class EditPanelBase2 : GUIBase {
         EditorState currentState = GM.editManager2.GetState();
         SetActiveBotPanel(currentState);
         // TODO: could be optimized to not setPickerItems if on another tab
-        SetPickerItems(currentState.isFront, currentState.selectedSchema);
-        SetParPickerText(currentState.par);
+        
+        
         SetTitleField(currentState.title);
     }
 
@@ -81,6 +81,7 @@ public class EditPanelBase2 : GUIBase {
         switch(aState.activeTab) {
             case EditTabEnum.PICKER:
                 this.pickerModePanel.SetActive(true);
+                SetPickerItems(aState.isFront, aState.selectedSchema);
                 break;
             case EditTabEnum.EDIT:
                 this.editModePanel.SetActive(true);
@@ -93,6 +94,8 @@ public class EditPanelBase2 : GUIBase {
                 break;
             case EditTabEnum.OPTIONS:
                 this.optionsModePanel.SetActive(true);
+                SetParPickerText(aState.par);
+                SetTitleField(aState.title);
                 break;
         }
     }
@@ -164,6 +167,13 @@ public class EditPanelBase2 : GUIBase {
 
 
     // called by UI
+
+    public void OnIsFixedToggle(bool aIsOn) {
+        EditorState currentState = GM.editManager2.GetState();
+        Debug.Assert(currentState.selectedEntityData != null);
+        currentState.selectedEntityData.isFixed = aIsOn;
+        GM.editManager2.UpdateState(currentState);
+    }
 
     public void OnEditColorButtonClick(Color aColor) {
         print(aColor);

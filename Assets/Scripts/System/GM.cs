@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
-
+// TODO: add custom Inodal support to specialblocks
 public class GM : Singleton<GM> {
     public static BoardData boardData;
     public static InputManager inputManager;
@@ -49,7 +49,6 @@ public class GM : Singleton<GM> {
         GM.gridViewBase = this.boardManagerGameObject.GetComponentInChildren<GridViewBase>();
         GM.cursorBase = this.boardManagerGameObject.GetComponentInChildren<CursorBase>();
         GM.boardManager.Init();
-        // GM.editManager.Init();
         GM.editManager2.Init();
         GM.playManager.Init();
         GM.gridViewBase.Init();
@@ -84,7 +83,6 @@ public class GM : Singleton<GM> {
     public void LoadBoard(BoardData aBoardData) {
         GM.boardData = aBoardData;
         GM.boardManager.Init();
-        // GM.editManager.Init();
         GM.editManager2.Init();
         GM.gridViewBase.Init();
     }
@@ -102,27 +100,31 @@ public class GM : Singleton<GM> {
         switch (this.gameMode) {
             case GameModeEnum.EDITING:
                 Time.timeScale = 0;
-                // GM.editManager.Init();
                 this.activePanel = this.editPanel;
                 this.playPanel.SetActive(false);
-                // GM.editManager.enabled = true;
+                GM.editManager2.enabled = true;
                 GM.playManager.enabled = false;
+                GM.editManager2.Init();
                 break;
             case GameModeEnum.PLAYING:
                 Time.timeScale = 1;
                 this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
+                GM.editManager2.enabled = false;
                 GM.playManager.enabled = true;
                 // GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(false);
+                GM.playManager.Init();
                 break;
             case GameModeEnum.PLAYTESTING:
                 Time.timeScale = 1;
                 this.activePanel = this.playPanel;
                 this.editPanel.SetActive(false);
+                GM.editManager2.enabled = false;
                 GM.playManager.enabled = true;
                 // GM.editManager.enabled = false;
                 GM.playManager.SetPlaytest(true);
+                GM.playManager.Init();
                 break;
         }
         this.activePanel.SetActive(true);
