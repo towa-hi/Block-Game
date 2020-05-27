@@ -5754,13 +5754,14 @@ MonoBehaviour:
     - Name: clickedEntityData
       Entry: 6
       Data: 
+  debugLineMaster: {fileID: 4264403628898355638, guid: 3c3a50a0dccc12f45938e83b80adc792,
+    type: 3}
   timeState: 0
   selectionState: 0
   isPlaytest: 0
   playPanelBase: {fileID: 787016940}
   selectionPrimed: 0
   selectionDragIsUp: 0
-  offsetV2: {x: 0, y: 0}
 --- !u!114 &637639725399458364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5788,6 +5789,7 @@ MonoBehaviour:
   clickedPos: {x: 0, y: 0, z: 0}
   clickedPosV2: {x: 0, y: 0}
   dragOffset: {x: 0, y: 0, z: 0}
+  dragOffsetV2: {x: 0, y: 0}
   oldDragOffset: {x: 0, y: 0, z: 0}
   mouseState: 0
   rightMouseState: 0

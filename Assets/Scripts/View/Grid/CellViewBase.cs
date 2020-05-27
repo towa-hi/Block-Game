@@ -36,7 +36,7 @@ public class CellViewBase: SerializedMonoBehaviour {
         // set object to new color
         // SetColor(aColor);
         // start a new colorFade
-        this.colorFadeCoroutine = StartCoroutine(ColorFade(aColor, 0.5f));
+        this.colorFadeCoroutine = StartCoroutine(ColorFade(aColor, 2.5f));
         
     }
 

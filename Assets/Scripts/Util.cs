@@ -106,6 +106,7 @@ public class Util {
         }
     }
 
+
     // public static Quaternion FacingToQuaternion(Vector2Int aFacing) {
     //     Debug.Assert(IsDirection(aFacing));
     //     Debug.Assert(aFacing.x != 0);

@@ -186,7 +186,6 @@ public class EditPanelBase2 : GUIBase {
 
     public void OnEditDeleteButtonClick() {
         EditorState currentState = GM.editManager2.GetState();
-        Debug.Assert(currentState.selectedEntityData != null);
         this.previewStudioBase.ClearEntity();
         if (currentState.isFront) {
             GM.boardManager.DestroyEntity(currentState.selectedEntityData);

@@ -14,9 +14,10 @@ using Sirenix.OdinInspector;
 // }
 
 public class PlayManager : SerializedMonoBehaviour {
+    public GameObject debugLineMaster;
+
     public TimeStateEnum timeState;
     public SelectionStateEnum selectionState;
-
     public bool isPlaytest;
 
     public HashSet<EntityData> selectedEntitySet;
@@ -51,7 +52,6 @@ public class PlayManager : SerializedMonoBehaviour {
                 if (maybeAEntity != null) {
                     this.selectionPrimed = true;
                     this.clickedEntityData = maybeAEntity;
-                    
                 }
                 break;
             case MouseStateEnum.HELD:
@@ -71,7 +71,6 @@ public class PlayManager : SerializedMonoBehaviour {
                     }
                 }
                 if (this.selectedEntitySet.Count > 0) {
-
                     foreach (EntityData entityData in this.selectedEntitySet) {
                         entityData.entityBase.SetViewPosition(entityData.pos + GM.inputManager.dragOffsetV2);
                     }
@@ -80,8 +79,11 @@ public class PlayManager : SerializedMonoBehaviour {
             case MouseStateEnum.RELEASED:
                 this.clickedEntityData = null;
                 if (this.selectedEntitySet.Count > 0) {
-                    if (CanPlace(new Vector2Int(999, 999))) {
+                    if (CanPlace(GM.inputManager.dragOffsetV2)) {
                         // place blocks
+                        foreach (EntityData entityData in this.selectedEntitySet) {
+                            GM.boardManager.MoveEntityAndView(entityData.pos + GM.inputManager.dragOffsetV2, entityData);
+                        }
                     } else {
                         foreach (EntityData entityData in this.selectedEntitySet) {
                             entityData.entityBase.ResetViewPosition();
@@ -89,6 +91,7 @@ public class PlayManager : SerializedMonoBehaviour {
                     }
                 }
                 this.clickedEntityData = null;
+                this.selectedEntitySet.Clear();
                 GM.cursorBase.SetSelecting();
                 break;
         }
@@ -109,9 +112,14 @@ public class PlayManager : SerializedMonoBehaviour {
         this.destroyOnNextFrame.Clear();
     }
 
-    // TODO: write this stuff
     public bool CanPlace(Vector2Int aOffset) {
-        return false;
+        Debug.Assert(this.selectedEntitySet.Count > 0);
+        foreach (EntityData entity in this.selectedEntitySet) {
+            if (!GM.boardData.IsRectEmpty(entity.pos + aOffset, entity.size, this.selectedEntitySet)) {
+                return false;
+            }
+        }
+        return true;
     }
     public void BeginEntityDeath(EntityData aEntityData, DeathType aDeathType) {
         GM.boardData.BanishEntity(aEntityData);
@@ -132,7 +140,7 @@ public class PlayManager : SerializedMonoBehaviour {
         INodal entityINodal = aEntityData.entityBase.GetCachedIComponent<INodal>() as INodal;
         if (entityINodal != null) {
             foreach (EntityData connectedEntity in GetConnectedTree(aEntityData, aIsUp)) {
-                if (connectedEntity.isFixed) {
+                if (connectedEntity.isFixed || connectedEntity.isBoundary) {
                     print("entity not selected cuz tree blocked in aIsUp: " + aIsUp + " by entity " + connectedEntity.name);
                     return false;
                 }
@@ -143,19 +151,36 @@ public class PlayManager : SerializedMonoBehaviour {
             return false;
         }
     }
+
     public void SelectEntity(EntityData aEntityData, bool aIsUp) {
         print("entity selected");
         this.selectedEntitySet = GetSelectSet(aEntityData, aIsUp);
-        foreach (EntityData entity in this.selectedEntitySet) {
-            Util.DebugAreaPulse(entity.pos, entity.size, Color.red);
-        }
         GM.cursorBase.SetHolding(aEntityData);
     }
 
     public HashSet<EntityData> GetSelectSet(EntityData aRoot, bool aIsUp) {
         HashSet<EntityData> selectSet = new HashSet<EntityData>();
         HashSet<EntityData> mainTree = GetConnectedTree(aRoot, aIsUp);
+        HashSet<EntityData> connectedTree = new HashSet<EntityData>();
+        foreach (EntityData entityData in mainTree) {
+            Util.DebugAreaPulse(entityData.pos, entityData.size, Color.red);
+            HashSet<EntityData> connected = GetConnected(entityData, !aIsUp, mainTree);
+            foreach (EntityData hanger in connected) {
+                if (!IsEntityConnectedToFixed(hanger, mainTree)) {
+                    // Util.DebugAreaPulse(hanger.pos, hanger.size, Color.blue);
+                    HashSet<EntityData> hangerTree = GetAllConnected(hanger, mainTree);
+                    hangerTree.Add(hanger);
+                    foreach(EntityData hangerConnected in hangerTree) {
+                        Util.DebugAreaPulse(hangerConnected.pos, hangerConnected.size, Color.blue);
+                    }
+                    connectedTree.UnionWith(hangerTree);
+                } else {
+                    Util.DebugAreaPulse(hanger.pos, hanger.size, Color.yellow);
+                }
+            }
+        }
         selectSet.UnionWith(mainTree);
+        selectSet.UnionWith(connectedTree);
         return selectSet;
     }
     public void LoseBoard() {
@@ -183,7 +208,7 @@ public class PlayManager : SerializedMonoBehaviour {
         }
     }
 
-    public HashSet<EntityData> GetConnected(EntityData aRoot, bool aIsUp) {
+    public HashSet<EntityData> GetConnected(EntityData aRoot, bool aIsUp, HashSet<EntityData> aIgnoreSet = null) {
         INodal rootINodal = aRoot.entityBase.GetCachedIComponent<INodal>() as INodal;
         if (rootINodal != null) {
             HashSet<EntityData> connectedEntitySet = new HashSet<EntityData>();
@@ -197,7 +222,13 @@ public class PlayManager : SerializedMonoBehaviour {
                     INodal maybeINodal = maybeAEntity.entityBase.GetCachedIComponent<INodal>() as INodal;
                     if (maybeINodal != null) {
                         if (maybeINodal.HasNodeOnAbsolutePosition(currentPos, !aIsUp)) {
-                            connectedEntitySet.Add(maybeAEntity);
+                            if (aIgnoreSet != null) {
+                                if (!aIgnoreSet.Contains(maybeAEntity)) {
+                                    connectedEntitySet.Add(maybeAEntity);
+                                }
+                            } else {
+                                connectedEntitySet.Add(maybeAEntity);
+                            }
                         }
                     }
                 }
@@ -206,6 +237,13 @@ public class PlayManager : SerializedMonoBehaviour {
         } else {
             throw new System.Exception("root entity doesn't have an INodal");
         }
+    }
+
+    public HashSet<EntityData> GetConnected(EntityData aRoot, HashSet<EntityData> aIgnoreSet = null) {
+        HashSet<EntityData> connectedAboveSet = GetConnected(aRoot, true, aIgnoreSet);
+        HashSet<EntityData> connectedBelowSet = GetConnected(aRoot, false, aIgnoreSet);        
+        connectedAboveSet.UnionWith(connectedBelowSet);
+        return connectedAboveSet;
     }
 
     public HashSet<EntityData> GetConnectedTree(EntityData aRoot, bool aIsUp, HashSet<EntityData> aConnectedTreeSet = null) {
@@ -230,6 +268,65 @@ public class PlayManager : SerializedMonoBehaviour {
             throw new System.Exception("root entity doesn't have an INodal");
         }
     }
+
+    public HashSet<EntityData> GetAllConnected(EntityData aRoot, HashSet<EntityData> aIgnoreSet = null) {
+        if (aIgnoreSet == null) {
+            aIgnoreSet = new HashSet<EntityData>();
+        }
+        HashSet<EntityData> allConnectedSet = new HashSet<EntityData>();
+        HashSet<EntityData> ignoreSetClone = new HashSet<EntityData>(aIgnoreSet);
+        GetAllConnectedRecursive(aRoot, ignoreSetClone);
+        return allConnectedSet;
+
+        void GetAllConnectedRecursive(EntityData rRoot, HashSet<EntityData> rIgnoreSet) {
+            rIgnoreSet.Add(rRoot);
+            allConnectedSet.Add(rRoot);
+            foreach (EntityData connected in GetConnected(rRoot, rIgnoreSet)) {
+                if (!rIgnoreSet.Contains(connected)) {
+                    GetAllConnectedRecursive(connected, rIgnoreSet);
+                }
+            }
+        }
+    }
+
+    public bool IsEntityConnectedToFixed(EntityData aRoot, HashSet<EntityData> aIgnoreSet = null) {
+        bool isEntityConnectedToFixed = false;
+        if (aIgnoreSet == null) {
+            aIgnoreSet = new HashSet<EntityData>();
+        }
+        HashSet<EntityData> ignoreSetClone = new HashSet<EntityData>(aIgnoreSet);
+        IsEntityConnectedToFixedRecursive(aRoot, ignoreSetClone);
+        return isEntityConnectedToFixed;
+
+        void IsEntityConnectedToFixedRecursive(EntityData rRoot, HashSet<EntityData> rIgnoreSet) {
+            rIgnoreSet.Add(rRoot);
+            print("IsEntityConnectedToFixedRecursive - added " + rRoot.name + " to IgnoreSet with size of " + rIgnoreSet.Count);
+            if (rRoot.isFixed) {
+                isEntityConnectedToFixed = true;
+                Util.DebugAreaPulse(rRoot.pos, rRoot.size, Color.red);
+                print("IsEntityConnectedToFixedRecursive - returning because is connected to root");
+                return;
+            } else {
+                foreach (EntityData connected in GetConnected(rRoot, rIgnoreSet)) {
+                    if (!rIgnoreSet.Contains(connected)) {
+                        DebugDrawArrow(rRoot, connected);
+                        IsEntityConnectedToFixedRecursive(connected, rIgnoreSet);
+                    }
+                }
+            }
+        }
+    }
+
+    public void DebugDrawArrow(EntityData aOriginEntity, EntityData aEndEntity) {
+        Vector3 zOffset = new Vector3(0, 0, -1.01f);
+        Vector3 startPos = Util.V2IOffsetV3(aOriginEntity.pos, aOriginEntity.size) + zOffset;
+        Vector3 endPos = Util.V2IOffsetV3(aEndEntity.pos, aEndEntity.size) + zOffset;
+        GameObject lineObject = Instantiate(debugLineMaster, Vector3.zero, Quaternion.identity);
+        LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, startPos);
+        lineRenderer.SetPosition(1, endPos);
+    }
+
     // public bool EntityFanCheck(EntityData aEntityData) {
     //     for (int x = aEntityData.pos.x; x < aEntityData.pos.x + aEntityData.size.x; x++) {
     //         for (int y = aEntityData.pos.y; y >= 0; y--) {
