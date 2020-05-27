@@ -33,7 +33,7 @@ public class IPushable : IComponent {
 
     public bool CanBePushed(Vector2Int aDirection, EntityData aPusher) {
         // if not already in pushed state
-        if (!(this.stateMachine.GetState() is IPushablePushedState)) {
+        if (this.stateMachine.GetState() is IPushableWaitingState) {
             if (this.pushedBy == null || this.pushedBy == aPusher) {
                 print("CanBePushed direction" + aDirection);
                 if (GM.boardData.IsRectEmpty(this.entityData.pos + aDirection, this.entityData.size, this.entityData)) {

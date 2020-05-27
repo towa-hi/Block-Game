@@ -12,6 +12,7 @@ public class BgBase : SerializedMonoBehaviour {
         this.myRenderer = GetComponent<Renderer>();
         this.bgData = aBgData;
         ResetViewPosition();
+        SetColor(aBgData.defaultColor);
     }
     public void SetViewPosition(Vector2Int aPos) {
         Vector3 zOffset = new Vector3(0, 0, 2f);
