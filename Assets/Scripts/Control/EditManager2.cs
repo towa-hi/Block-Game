@@ -223,17 +223,17 @@ public class EditorPickerState : GameState {
                     break;
                 case MouseStateEnum.HELD:
                     if (currentState.selectedEntityData != null) {
-                        currentState.selectedEntityData.entityBase.SetViewPosition(GM.inputManager.mousePosV2);
+                        currentState.selectedEntityData.entityBase.SetViewPosition(currentState.selectedEntityData.pos + GM.inputManager.dragOffsetV2);
                     } else if (currentState.selectedBgData != null) {
-                        currentState.selectedBgData.bgBase.SetViewPosition(GM.inputManager.mousePosV2);
+                        currentState.selectedBgData.bgBase.SetViewPosition(currentState.selectedBgData.pos + GM.inputManager.dragOffsetV2);
                     }
                     break;
                 case MouseStateEnum.RELEASED:
                     if (currentState.selectedEntityData != null) {
-                        GM.editManager2.TryMoveEntity(GM.inputManager.mousePosV2, currentState.selectedEntityData);
+                        GM.editManager2.TryMoveEntity(currentState.selectedEntityData.pos + GM.inputManager.dragOffsetV2, currentState.selectedEntityData);
                         currentState.selectedEntityData.entityBase.ResetViewPosition();
                     } else if (currentState.selectedBgData != null) {
-                        GM.editManager2.TryMoveBg(GM.inputManager.mousePosV2, currentState.selectedBgData);
+                        GM.editManager2.TryMoveBg(currentState.selectedBgData.pos + GM.inputManager.dragOffsetV2, currentState.selectedBgData);
                         currentState.selectedBgData.bgBase.ResetViewPosition();
                     }
                     EditorState newReleasedState = EditorState.ClearSelection(currentState);

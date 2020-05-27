@@ -26,8 +26,6 @@ public class PlayManager : SerializedMonoBehaviour {
     public bool selectionPrimed;
     public EntityData clickedEntityData;
     public bool selectionDragIsUp;
-    // public Vector2Int dragOffsetV2;
-    public Vector2Int offsetV2;
 
     public void Init() {
         this.selectionState = SelectionStateEnum.UNSELECTED;
@@ -57,31 +55,30 @@ public class PlayManager : SerializedMonoBehaviour {
                 }
                 break;
             case MouseStateEnum.HELD:
-                this.offsetV2 = GM.inputManager.mousePosV2 - GM.inputManager.clickedPosV2;
-                if (this.selectionPrimed) {
+                if (this.clickedEntityData != null) {
                     if (GM.inputManager.dragOffset.y > Constants.DRAGTHRESHOLD) {
                         bool isDragUp = true;
                         if (IsEntitySelectable(this.clickedEntityData, isDragUp)) {
                             SelectEntity(this.clickedEntityData, isDragUp);
-                            this.selectionPrimed = false;
+                            this.clickedEntityData = null;
                         }
                     } else if (GM.inputManager.dragOffset.y < Constants.DRAGTHRESHOLD * -1) {
                         bool isDragUp = false;
                         if (IsEntitySelectable(this.clickedEntityData, isDragUp)) {
                             SelectEntity(this.clickedEntityData, isDragUp);
-                            this.selectionPrimed = false;
+                            this.clickedEntityData = null;
                         }
                     }
                 }
                 if (this.selectedEntitySet.Count > 0) {
 
                     foreach (EntityData entityData in this.selectedEntitySet) {
-                        entityData.entityBase.SetViewPosition(entityData.pos + this.offsetV2);
+                        entityData.entityBase.SetViewPosition(entityData.pos + GM.inputManager.dragOffsetV2);
                     }
                 }
                 break;
             case MouseStateEnum.RELEASED:
-                this.selectionPrimed = false;
+                this.clickedEntityData = null;
                 if (this.selectedEntitySet.Count > 0) {
                     if (CanPlace(new Vector2Int(999, 999))) {
                         // place blocks

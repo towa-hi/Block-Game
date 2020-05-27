@@ -45,7 +45,7 @@ public class CursorBase : GUIBase {
     public void SetSelecting() {
         this.cursorMode = CursorModeEnum.SELECTING;
     }
-    
+
     void Awake() {
         this.cursorMode = CursorModeEnum.POINTING;
     }
@@ -141,9 +141,9 @@ public class CursorBase : GUIBase {
             }
         }
     }
-
+    
     void CursorModeHoldingUpdate() {
-        SetPos(GM.inputManager.mousePosV2);
+        SetPos(this.heldDataPos + GM.inputManager.dragOffsetV2);
         SetSize(this.heldDataSize);
     }
 

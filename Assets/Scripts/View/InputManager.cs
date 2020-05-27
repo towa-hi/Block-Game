@@ -16,6 +16,7 @@ public class InputManager : Singleton<InputManager> {
     public Vector3 clickedPos;
     public Vector2Int clickedPosV2;
     public Vector3 dragOffset;
+    public Vector2Int dragOffsetV2;
     public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
     public MouseStateEnum rightMouseState;
@@ -81,8 +82,10 @@ public class InputManager : Singleton<InputManager> {
                 this.mouseIsHeldDownOneFrame = true;
                 break;
             case MouseStateEnum.HELD:
+
                 this.oldDragOffset = this.dragOffset;
                 this.dragOffset = this.mousePos - this.clickedPos;
+                this.dragOffsetV2 = this.mousePosV2 - this.clickedPosV2;
                 break;
             case MouseStateEnum.RELEASED:
                 // runs once for one frame before mouseState changes to DEFAULT
