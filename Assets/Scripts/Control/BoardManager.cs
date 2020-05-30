@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+
 using Sirenix.OdinInspector;
 
 public class BoardManager : SerializedMonoBehaviour {
@@ -10,6 +12,34 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void Init() {
         LoadBoardData(GM.boardData);
+        
+        AddBoundaries();
+    }
+
+    // TODO: remove this and replace it with a ready made level later
+    public void AddBoundaries() {
+        
+        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
+        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
+        HashSet<EntityData> boundarySet = new HashSet<EntityData>();
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+        
+        EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Mobs/2x3 player.asset");
+        EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.white);
+        foreach (EntityData boundaryEntityData in boundarySet) {
+            GM.boardManager.CreateEntityFromData(boundaryEntityData);
+        }
+        // GM.boardManager.CreateEntityFromData(player);
     }
 
     public void LoadBoardData(BoardData aBoardData) {

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &669930124088252189
+--- !u!1 &4999628672965785494
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 669930124088252191}
-  - component: {fileID: 669930124088252190}
-  - component: {fileID: 669930124088252188}
+  - component: {fileID: 5707302159922296937}
+  - component: {fileID: 956303660493241521}
+  - component: {fileID: 4999628672965785490}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &669930124088252191
+--- !u!4 &5707302159922296937
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669930124088252189}
+  m_GameObject: {fileID: 4999628672965785494}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 31.183298, y: 11.730528, z: -1.5195694}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,13 +32,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &669930124088252190
+--- !u!114 &956303660493241521
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669930124088252189}
+  m_GameObject: {fileID: 4999628672965785494}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
@@ -78,12 +78,24 @@ MonoBehaviour:
     m_ActionId: 413ded6f-d8cf-4dc8-8f0e-5b388efe207a
     m_ActionName: Board/Point[/Mouse/position]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: OnRightClickDown
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a997b3a8-dbfb-46f1-8f0f-a8c2203ef948
     m_ActionName: Board/RightClick[/Mouse/rightButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 669930124088252188}
+      - m_Target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+          type: 3}
         m_MethodName: OnEscapeMenu
         m_Mode: 0
         m_Arguments:
@@ -98,7 +110,8 @@ MonoBehaviour:
     m_ActionName: Board/Escape Menu[/Keyboard/escape]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 669930124088252188}
+      - m_Target: {fileID: 669930124088252188, guid: b8074da230c976a46b880f0239359d15,
+          type: 3}
         m_MethodName: OnEscapeMenu
         m_Mode: 0
         m_Arguments:
@@ -120,16 +133,16 @@ MonoBehaviour:
   m_DefaultActionMap: Board
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &669930124088252188
+--- !u!114 &4999628672965785490
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669930124088252189}
+  m_GameObject: {fileID: 4999628672965785494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2f341c9057f0f147b292116b7d64a15, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f4ee4290a52af34a91f484dde2d7cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -141,6 +154,21 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  gameMode: 0
+  boardManagerGameObject: {fileID: 0}
+  editPanel: {fileID: 0}
+  playPanel: {fileID: 0}
   pausePanel: {fileID: 0}
-  isMenu: 0
-  playerInput: {fileID: 669930124088252190}
+  blockPrefabMaster: {fileID: 6104724258390018009, guid: e931d81918f7a064ebd79bf7736bd06f,
+    type: 3}
+  playerPrefabMaster: {fileID: 1792630420253673571, guid: 319b531d3456c934790c1702cb958813,
+    type: 3}
+  shufflebotPrefabMaster: {fileID: 599243448704628822, guid: 2897c61059de90a40a39a40e2b5b0cbd,
+    type: 3}
+  pushablePrefabMaster: {fileID: 5355635047958650694, guid: 5bdb803ebcdd4a74dbda55c64dd0e71c,
+    type: 3}
+  testPrefabMaster: {fileID: 5123434623462801785, guid: 4a30ddf87b2f9c046a4dea0db9750048,
+    type: 3}
+  biggerTestPrefabMaster: {fileID: 3335697532362834002, guid: 62f2895717d690143ba49c7e453938e2,
+    type: 3}
+  isFullPaused: 0
