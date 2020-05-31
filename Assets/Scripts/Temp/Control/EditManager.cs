@@ -20,6 +20,7 @@ public class EditManager : SerializedMonoBehaviour {
     StateMachine inputStateMachine = new StateMachine();
     
     public void UpdateEditorState(EditorState aEditorState) {
+        print("EditManager - updating editor state");
         this.currentState = aEditorState;
         this.OnUpdateEditorState?.Invoke(this.editorState);
     }
@@ -39,6 +40,13 @@ public class EditManager : SerializedMonoBehaviour {
             }
         }
     }
+
+    public void SetActiveTab(EditTabEnum aEditTabEnum) {
+        print("SetActiveTab - changing tab");
+        EditorState newEditorState = EditorState.SetActiveTab(this.currentState, aEditTabEnum);
+        UpdateEditorState(newEditorState);
+    }
+    
     // public void Init() {
     //     this.inputStateMachine = new StateMachine();
     //     this.currentState = new EditorState();
