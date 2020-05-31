@@ -1,116 +1,116 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
+// using UnityEditor;
 
-using Sirenix.OdinInspector;
+// using Sirenix.OdinInspector;
 
-public class BoardManager : SerializedMonoBehaviour {
-    public List<EntityBase> entityBaseList;
-    public List<BgBase> bgBaseList;
-    public GameObject backgroundContainer;
+// public class BoardManager : SerializedMonoBehaviour {
+//     public List<EntityBase> entityBaseList;
+//     public List<BgBase> bgBaseList;
+//     public GameObject backgroundContainer;
 
-    public void Init() {
-        LoadBoardData(GM.boardData);
+//     public void Init() {
+//         LoadBoardData(GM.boardData);
         
-        AddBoundaries();
-    }
+//         AddBoundaries();
+//     }
 
-    // TODO: remove this and replace it with a ready made level later
-    public void AddBoundaries() {
+//     // TODO: remove this and replace it with a ready made level later
+//     public void AddBoundaries() {
         
-        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
-        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
-        HashSet<EntityData> boundarySet = new HashSet<EntityData>();
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
+//         EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
+//         HashSet<EntityData> boundarySet = new HashSet<EntityData>();
+//         boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
 
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
-        boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
+//         boundarySet.Add(new EntityData(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true));
         
-        EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Mobs/2x3 player.asset");
-        EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.white);
-        foreach (EntityData boundaryEntityData in boundarySet) {
-            GM.boardManager.CreateEntityFromData(boundaryEntityData);
-        }
-        // GM.boardManager.CreateEntityFromData(player);
-    }
+//         EntitySchema playerSchema = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Mobs/2x3 player.asset");
+//         EntityData player = new EntityData(playerSchema, new Vector2Int(5, 1), Constants.DEFAULTFACING, Color.white);
+//         foreach (EntityData boundaryEntityData in boundarySet) {
+//             GM.boardManager.CreateEntityFromData(boundaryEntityData);
+//         }
+//         // GM.boardManager.CreateEntityFromData(player);
+//     }
 
-    public void LoadBoardData(BoardData aBoardData) {
-        foreach (EntityBase entityBase in this.entityBaseList) {
-            Destroy(entityBase.gameObject);
-        }
-        this.entityBaseList = new List<EntityBase>();
-        foreach (EntityData entityData in aBoardData.entityDataSet) {
-            CreateEntityFromData(entityData);
-        }
-        foreach (BgBase bgBase in this.bgBaseList) {
-            Destroy(bgBase.gameObject);
-        }
-        this.bgBaseList = new List<BgBase>();
-        foreach (BgData bgData in aBoardData.backgroundData.bgDataSet) {
-            CreateBgFromData(bgData);
-        }
-    }
+//     public void LoadBoardData(BoardData aBoardData) {
+//         foreach (EntityBase entityBase in this.entityBaseList) {
+//             Destroy(entityBase.gameObject);
+//         }
+//         this.entityBaseList = new List<EntityBase>();
+//         foreach (EntityData entityData in aBoardData.entityDataSet) {
+//             CreateEntityFromData(entityData);
+//         }
+//         foreach (BgBase bgBase in this.bgBaseList) {
+//             Destroy(bgBase.gameObject);
+//         }
+//         this.bgBaseList = new List<BgBase>();
+//         foreach (BgData bgData in aBoardData.backgroundData.bgDataSet) {
+//             CreateBgFromData(bgData);
+//         }
+//     }
 
-    public void CreateBgFromData(BgData aBgData) {
-        GameObject bgPrefab = Instantiate(GM.LoadBgPrefabByFilename(aBgData.prefabPath), this.backgroundContainer.transform);
-        BgBase bgBase = bgPrefab.GetComponent<BgBase>();
-        bgBase.Init(aBgData);
-        this.bgBaseList.Add(bgBase);
-        GM.boardData.backgroundData.RegisterBgData(aBgData);
-    }
+//     public void CreateBgFromData(BgData aBgData) {
+//         GameObject bgPrefab = Instantiate(GM.LoadBgPrefabByFilename(aBgData.prefabPath), this.backgroundContainer.transform);
+//         BgBase bgBase = bgPrefab.GetComponent<BgBase>();
+//         bgBase.Init(aBgData);
+//         this.bgBaseList.Add(bgBase);
+//         GM.boardData.backgroundData.RegisterBgData(aBgData);
+//     }
 
-    public void DestroyBg(BgData aBgData) {
-        GM.boardData.backgroundData.UnRegisterBgData(aBgData);
-        Destroy(aBgData.bgBase.gameObject);
-        this.bgBaseList.Remove(aBgData.bgBase);
-        print("BoardManager - DestroyBg: + " + aBgData.name);
-    }
+//     public void DestroyBg(BgData aBgData) {
+//         GM.boardData.backgroundData.UnRegisterBgData(aBgData);
+//         Destroy(aBgData.bgBase.gameObject);
+//         this.bgBaseList.Remove(aBgData.bgBase);
+//         print("BoardManager - DestroyBg: + " + aBgData.name);
+//     }
 
-    public void CreateEntityFromData(EntityData aEntityData) {
-        if (aEntityData.type == EntityTypeEnum.PLAYER) {
-            GM.boardData.SetPlayerEntity(aEntityData);
-        }
-        // instantiate EntityData's prefab by using GM to lookup which prefab to get
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityData.prefabPath), this.transform);
-        // get the EntityBase for this prefab
-        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-        this.entityBaseList.Add(entityBase);
-        entityBase.Init(aEntityData);
-        GM.boardData.RegisterEntityData(aEntityData);
-    }
+//     public void CreateEntityFromData(EntityData aEntityData) {
+//         if (aEntityData.type == EntityTypeEnum.PLAYER) {
+//             GM.boardData.SetPlayerEntity(aEntityData);
+//         }
+//         // instantiate EntityData's prefab by using GM to lookup which prefab to get
+//         GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityData.prefabPath), this.transform);
+//         // get the EntityBase for this prefab
+//         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
+//         this.entityBaseList.Add(entityBase);
+//         entityBase.Init(aEntityData);
+//         GM.boardData.RegisterEntityData(aEntityData);
+//     }
 
-    public void DestroyEntity(EntityData aEntityData) {
-        if (aEntityData == GM.boardData.playerEntityData) {
-            GM.boardData.SetPlayerEntity(null);
-        }
-        GM.boardData.UnRegisterEntityData(aEntityData);
-        Destroy(aEntityData.entityBase.gameObject);
-        this.entityBaseList.Remove(aEntityData.entityBase);
-        print("BoardManager - DestroyEntity: " + aEntityData.name);
-    }
+//     public void DestroyEntity(EntityData aEntityData) {
+//         if (aEntityData == GM.boardData.playerEntityData) {
+//             GM.boardData.SetPlayerEntity(null);
+//         }
+//         GM.boardData.UnRegisterEntityData(aEntityData);
+//         Destroy(aEntityData.entityBase.gameObject);
+//         this.entityBaseList.Remove(aEntityData.entityBase);
+//         print("BoardManager - DestroyEntity: " + aEntityData.name);
+//     }
 
-    public void MoveEntityAndView(Vector2Int aPos, EntityData aEntityData) {
-        // set model
-        GM.boardData.MoveEntity(aPos, aEntityData);
-        // set view
-        aEntityData.entityBase.ResetViewPosition();
-    }
+//     public void MoveEntityAndView(Vector2Int aPos, EntityData aEntityData) {
+//         // set model
+//         GM.boardData.MoveEntity(aPos, aEntityData);
+//         // set view
+//         aEntityData.entityBase.ResetViewPosition();
+//     }
 
-    public void MoveBgAndView(Vector2Int aPos, BgData aBgData) {
-        GM.boardData.backgroundData.MoveBg(aPos, aBgData);
-        aBgData.bgBase.ResetViewPosition();
-    }
+//     public void MoveBgAndView(Vector2Int aPos, BgData aBgData) {
+//         GM.boardData.backgroundData.MoveBg(aPos, aBgData);
+//         aBgData.bgBase.ResetViewPosition();
+//     }
 
-    public void FlipEntityAndView(EntityData aEntityData) {
-        aEntityData.FlipEntity();
-        aEntityData.entityBase.ResetViewPosition();
-    }
-}
+//     public void FlipEntityAndView(EntityData aEntityData) {
+//         aEntityData.FlipEntity();
+//         aEntityData.entityBase.ResetViewPosition();
+//     }
+// }

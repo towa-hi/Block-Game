@@ -9,9 +9,9 @@ using System.IO;
 public class EntitySchema : SerializedScriptableObject {
     // set by editor
     public string prefabPath;
+    public bool isFront;
     public Vector2Int size;
-    public EntityTypeEnum type;
-    // public EntityPrefabEnum prefab;
+    public EntityTypeEnum entityType;
     public int touchDefense;
     public int fallDefense;
     public TeamEnum defaultTeam;

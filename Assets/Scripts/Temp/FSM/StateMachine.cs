@@ -5,9 +5,9 @@ using Sirenix.OdinInspector;
 
 public class StateMachine {
     [SerializeField]
-    GameState state;
+    StateMachineState state;
 
-    public void ChangeState(GameState aState) {
+    public void ChangeState(StateMachineState aState) {
         if (this.state != null) {
             this.state.Exit();
         }
@@ -21,7 +21,7 @@ public class StateMachine {
         }
     }
 
-    public GameState GetState() {
+    public StateMachineState GetState() {
         return this.state;
     }
 }

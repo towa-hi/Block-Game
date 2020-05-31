@@ -20,7 +20,7 @@ public class PlayPanelBase : SerializedMonoBehaviour {
     }
 
     public void SetTitle() {
-        this.titleText.text = GM.boardData.title;
+        this.titleText.text = GM.boardManager.boardState.title;
     }
 
     

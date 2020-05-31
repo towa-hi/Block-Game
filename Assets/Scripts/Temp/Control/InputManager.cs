@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 
-public class InputManager2 : SerializedMonoBehaviour {
+public class InputManager : SerializedMonoBehaviour {
     Controls controls;
     [Header("Mouse Pos")]
     [System.NonSerialized] public Vector3 mousePos;
@@ -30,6 +30,11 @@ public class InputManager2 : SerializedMonoBehaviour {
         this.mouseIsReleasedOneFrame = false;
     }
 
+    // special function called by GM.OnUpdateGameState delegate
+    public void OnUpdateGameState(GameState aGameState) {
+
+    }
+    
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
@@ -75,7 +80,6 @@ public class InputManager2 : SerializedMonoBehaviour {
                 break;
             case MouseStateEnum.CLICKED:
                 // runs once for one frame before mouseState changes to HELD
-                // print("GameManger - clicked: " + this.mousePos);
                 this.clickedPos = this.mousePos;
                 this.clickedPosV2 = Util.V3ToV2I(this.clickedPos);
                 // OnClickDown();
@@ -93,7 +97,6 @@ public class InputManager2 : SerializedMonoBehaviour {
                 this.oldDragOffset = Vector3.zero;
                 this.clickedPos = Vector3.zero;
                 this.mouseIsReleasedOneFrame = true;
-                // print("GameManger - released: " + this.mousePos +  " offset: " + this.dragOffset);
                 break;
         }
     }

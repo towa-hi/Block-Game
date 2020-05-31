@@ -98,13 +98,13 @@ public class Util {
         return false;
     }
 
-    public static void DebugAreaPulse(Vector2Int aOrigin, Vector2Int aSize, Color aColor) {
-        foreach (Vector2Int pos in V2IInRect(aOrigin, aSize)) {
-            if (GM.boardData.IsPosInBoard(pos)) {
-                GM.boardData.GetGameGrid().GetCell(pos).cellViewBase.TempHighlight(aColor);
-            }
-        }
-    }
+    // public static void DebugAreaPulse(Vector2Int aOrigin, Vector2Int aSize, Color aColor) {
+    //     foreach (Vector2Int pos in V2IInRect(aOrigin, aSize)) {
+    //         if (GM.boardData.IsPosInBoard(pos)) {
+    //             GM.boardData.GetGameGrid().GetCell(pos).cellViewBase.TempHighlight(aColor);
+    //         }
+    //     }
+    // }
 
 
     // public static Quaternion FacingToQuaternion(Vector2Int aFacing) {

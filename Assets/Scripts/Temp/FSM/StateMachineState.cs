@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public interface GameState {
+public interface StateMachineState {
     void Enter();
     void Update();
     void Exit();

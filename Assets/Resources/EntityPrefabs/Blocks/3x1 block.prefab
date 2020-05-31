@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7584169431636970728}
   - component: {fileID: 7152114632468791324}
   - component: {fileID: 3965548538467139879}
-  - component: {fileID: 825092865110373720}
   m_Layer: 0
   m_Name: Model 0
   m_TagString: Untagged
@@ -80,34 +79,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5503055257467542557}
   m_Mesh: {fileID: 1158512846649196294}
---- !u!114 &825092865110373720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5503055257467542557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c110c5f10d390ea4a8994917232c847e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: entityData
-      Entry: 6
-      Data: 
-  myRenderer: {fileID: 0}
-  childRenderers: []
-  entityBase: {fileID: 0}
-  isGhost: 0
 --- !u!1 &5956430231947734351
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,8 +88,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6727608731791734752}
-  - component: {fileID: -6653705604106434017}
-  - component: {fileID: 1534182132552162233}
+  - component: {fileID: 6042197577170672340}
   m_Layer: 0
   m_Name: 3x1 block
   m_TagString: Untagged
@@ -141,7 +111,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6653705604106434017
+--- !u!114 &6042197577170672340
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,37 +132,103 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: entityData
+    - Name: oldEntityState
+      Entry: 7
+      Data: EntityState, Assembly-CSharp
+    - Name: id
+      Entry: 3
+      Data: 0
+    - Name: name
       Entry: 6
       Data: 
-  entityView: {fileID: 0}
-  isInTempPos: 0
-  isDying: 0
-  animator: {fileID: 0}
-  originalHeight: 0
---- !u!114 &1534182132552162233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5956430231947734351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8bb88da6c7961428e3c3d04021d1ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  studMaster: {fileID: 4524965684442258551, guid: 297fb8b2a0f255c4091a49aa1b453a04,
-    type: 3}
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: entityType
+      Entry: 3
+      Data: 0
+    - Name: isBoundary
+      Entry: 5
+      Data: false
+    - Name: prefabPath
+      Entry: 6
+      Data: 
+    - Name: pos
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: facing
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: defaultColor
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: team
+      Entry: 3
+      Data: 0
+    - Name: upNodes
+      Entry: 6
+      Data: 
+    - Name: downNodes
+      Entry: 6
+      Data: 
+    - Name: touchDefense
+      Entry: 3
+      Data: 0
+    - Name: fallDefense
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+  id: 0
+  model: {fileID: 0}
+  modelRenderer: {fileID: 0}
+  childRenderers: []
 --- !u!28 &-7022275668235055644
 Texture2D:
   m_ObjectHideFlags: 0

@@ -93,5 +93,5 @@ public enum TeamEnum {
 public enum TimeStateEnum {
     NORMAL,
     PAUSED,
-    DOUBLE
+    DOUBLE,
 }

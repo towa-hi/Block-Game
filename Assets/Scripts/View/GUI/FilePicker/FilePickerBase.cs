@@ -39,18 +39,18 @@ public class FilePickerBase : SerializedMonoBehaviour {
         }
     }
 
-    public void OnLoadButtonClick() {
-        if (this.currentFileName != null) {
-            GM.I.ToggleFullPauseGame(false);
-            this.gameObject.SetActive(false);
-            GM.I.LoadBoard(SaveLoad.LoadBoard(this.currentFileName));
-        }
+    // public void OnLoadButtonClick() {
+    //     if (this.currentFileName != null) {
+    //         GM.I.ToggleFullPauseGame(false);
+    //         this.gameObject.SetActive(false);
+    //         GM.I.LoadBoard(SaveLoad.LoadBoard(this.currentFileName));
+    //     }
         
-    }
+    // }
 
-    public void OnCancelButtonClick() {
-        // GM.editManager.EndFilePicker();
-        GM.I.ToggleFullPauseGame(false);
-        this.gameObject.SetActive(false);
-    }
+    // public void OnCancelButtonClick() {
+    //     // GM.editManager.EndFilePicker();
+    //     GM.I.ToggleFullPauseGame(false);
+    //     this.gameObject.SetActive(false);
+    // }
 }
