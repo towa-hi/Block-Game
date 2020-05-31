@@ -29,8 +29,8 @@ public struct EditorState {
         this.selectedSchema = null;
         // this.selectedEntityData = null;
         // this.selectedBgData = null;
-        this.par = GM.boardManager.boardState.par;
-        this.title = GM.boardManager.boardState.title;
+        this.par = GM.boardManager.currentState.par;
+        this.title = GM.boardManager.currentState.title;
     }
 
     public static EditorState SetCurrentSchema(EditorState aState, Object aCurrentSchema) {

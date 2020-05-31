@@ -96,8 +96,6 @@ public struct EntityState {
         }
     }
 
-    
-
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
         aEntityState.pos = aPos;
         return aEntityState;
