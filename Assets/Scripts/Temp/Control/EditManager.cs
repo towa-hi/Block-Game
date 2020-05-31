@@ -19,8 +19,12 @@ public class EditManager : SerializedMonoBehaviour {
     [SerializeField]
     StateMachine inputStateMachine = new StateMachine();
     
+    void Awake() {
+        UpdateEditorState(EditorState.CreateEditorState());
+    }
+
     public void UpdateEditorState(EditorState aEditorState) {
-        print("EditManager - updating editor state");
+        print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
         this.currentState = aEditorState;
         this.OnUpdateEditorState?.Invoke(this.editorState);
     }
@@ -47,6 +51,11 @@ public class EditManager : SerializedMonoBehaviour {
         UpdateEditorState(newEditorState);
     }
     
+    public void SetLayer(bool aIsFront) {
+        EditorState newEditorState = EditorState.SetIsFront(this.currentState, aIsFront);
+        UpdateEditorState(newEditorState);
+    }
+
     // public void Init() {
     //     this.inputStateMachine = new StateMachine();
     //     this.currentState = new EditorState();

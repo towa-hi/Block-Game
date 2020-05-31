@@ -19,6 +19,14 @@ public class EntityBase : BoardStateListener {
         this.childRenderers = this.model.GetComponentsInChildren<Renderer>();
     }
 
+    public void Init(EntityState aEntityState) {
+        this.id = aEntityState.id;
+        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size);
+        SetColor(aEntityState.defaultColor);
+        this.oldEntityState = aEntityState;
+        this.name = aEntityState.name + " Id: " + aEntityState.id;
+    }
+
     public override void OnUpdateBoardState(BoardState aBoardState) {
         // when id is -1, this wont recieve any boardupdates because it hasn't been
         // assigned an ID yet by BoardManager.CreateView

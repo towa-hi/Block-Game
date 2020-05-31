@@ -8,10 +8,9 @@ public class GUIEditorTabButton : EditorStateListener {
     public EditTabEnum editTabEnum;
     Button button;
 
-    public override void OnEnable() {
+    void Awake() {
         this.button = GetComponent<Button>();
         this.button.onClick.AddListener(OnClick);
-        base.OnEnable();
     }
 
     void OnClick() {

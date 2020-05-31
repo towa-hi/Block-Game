@@ -25,6 +25,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void UpdateBoardState(BoardState aBoardState) {
+        print("BoardManager - Updating BoardState for " + this.OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         this.boardState = aBoardState;
         Dictionary<Vector2Int, BoardCell> newBoardCellDict = new Dictionary<Vector2Int, BoardCell>();
         for (int x = 0; x < aBoardState.size.x; x++) {
@@ -155,22 +156,16 @@ public class BoardManager : SerializedMonoBehaviour {
         // addEntity in boardstate will add id to the new version of that entity inside the tuple as nweEntityWithId
         BoardState newBoard = tuple.Item1;
         EntityState newEntityWithId = tuple.Item2;
+        // 
         UpdateBoardState(newBoard);
         // make the entity base
-        EntityBase entityBase2 = CreateEntityBase(newEntityWithId);
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityWithId.prefabPath), Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.size), Quaternion.identity,  this.transform); 
+        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
+        this.entityBaseDict[newEntityWithId.id] = entityBase;
+        entityBase.Init(newEntityWithId);
         // put the entitybase inside a dict with the id so we can get it later
-        this.entityBaseDict[newEntityWithId.id] = entityBase2;
         // update board 
-        UpdateBoardState(newBoard);
-
-        EntityBase CreateEntityBase(EntityState aEntityState) {
-            GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.prefabPath), Util.V2IOffsetV3(aEntityState.pos, aEntityState.size), Quaternion.identity,  this.transform); 
-            EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-            // id must be assigned here or entity will not recieve
-            entityBase.id = aEntityState.id;
-            entityBase.name = aEntityState.name + " Id: " + aEntityState.id;
-            return entityBase;
-        }
+        // UpdateBoardState(newBoard);
     }
 
     public void RemoveEntity(int aId) {

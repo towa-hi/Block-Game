@@ -43,6 +43,20 @@ public class GUIEditorPanel : EditorStateListener {
         this.oldEditorState = aNewEditorState;
     }
 
+    void SetPickerItems(bool aIsFront, Object aSchema) {
+        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
+            // function to turn picker items on and off depending on aIsFront
+        }
+    }
+
+    void SetParPickerText(int aPar) {
+        this.parPickerText.text = aPar.ToString();
+    }
+
+    void SetTitleField(string aTitle) {
+        this.titleInputField.SetTextWithoutNotify(aTitle);
+    }
+
     void SetActiveBotPanel(EditorState aEditorState) {
         foreach (GameObject botPanel in this.botPanels) {
             botPanel.SetActive(false);
@@ -57,22 +71,10 @@ public class GUIEditorPanel : EditorStateListener {
                 break;
             case EditTabEnum.OPTIONS:
                 this.optionsModePanel.SetActive(true);
+                SetTitleField(aEditorState.title);
+                SetParPickerText(aEditorState.par);
                 break;
         }
-    }
-
-    void SetPickerItems(bool aIsFront, Object aSchema) {
-        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
-            // function to turn picker items on and off depending on aIsFront
-        }
-    }
-
-    void SetParPickerText(int aPar) {
-        this.parPickerText.text = aPar.ToString();
-    }
-
-    void SetTitleField(string aTitle) {
-        this.titleInputField.SetTextWithoutNotify(aTitle);
     }
 
     // void SetEditModePanel(EntityState? aEntityState) {

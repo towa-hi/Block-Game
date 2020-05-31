@@ -20,17 +20,19 @@ public struct EditorState {
     //     }
     // }
 
-    public void Init() {
-        this.isFront = true;
-        this.frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
-        this.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
-        this.backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList();
-        this.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
-        this.selectedSchema = null;
+    public static EditorState CreateEditorState() {
+        EditorState newEditorState = new EditorState();
+        newEditorState.isFront = true;
+        newEditorState.frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
+        newEditorState.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
+        newEditorState.backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList();
+        newEditorState.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
+        newEditorState.selectedSchema = null;
         // this.selectedEntityData = null;
         // this.selectedBgData = null;
-        this.par = GM.boardManager.currentState.par;
-        this.title = GM.boardManager.currentState.title;
+        newEditorState.par = GM.boardManager.currentState.par;
+        newEditorState.title = GM.boardManager.currentState.title;
+        return newEditorState;
     }
 
     public static EditorState SetCurrentSchema(EditorState aState, Object aCurrentSchema) {
