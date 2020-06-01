@@ -41,9 +41,8 @@ public class GM : SerializedMonoBehaviour {
             print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
         }
         else {
-            print("GM - Updating GameState for 0 delegates");
+            print("GM - Updating GameState for no delegates");
         }
-        
         this.currentState = aGameState;
         this.OnUpdateGameState?.Invoke(this.gameState);
     }

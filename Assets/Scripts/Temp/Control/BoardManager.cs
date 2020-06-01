@@ -22,7 +22,12 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void UpdateBoardState(BoardState aBoardState) {
-        print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
+        if (OnUpdateBoardState != null) {
+            print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
+        }
+        else {
+            print("BoardManager - Updating BoardState for no delegates");
+        }
         this.boardState = aBoardState;
         Dictionary<Vector2Int, BoardCell> newBoardCellDict = new Dictionary<Vector2Int, BoardCell>();
         for (int x = 0; x < aBoardState.size.x; x++) {
@@ -163,12 +168,11 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void RemoveEntity(int aId) {
-        EntityState entityState = this.currentState.entityDict[aId];
         EntityBase entityBase = this.entityBaseDict[aId];
-
         BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
-        UpdateBoardState(newBoard);
         this.entityBaseDict.Remove(aId);
+        Destroy(entityBase);
+        UpdateBoardState(newBoard);
     }
 
     public void Init() {

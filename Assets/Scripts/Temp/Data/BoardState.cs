@@ -40,9 +40,7 @@ public struct BoardState {
     
     public static BoardState RemoveEntity(BoardState aBoardState, int aId) {
         aBoardState.entityDict.Remove(aId);
-
         return aBoardState;
-
     }
     
     public static BoardState SetTitle(BoardState aBoardState, string aTitle) {
@@ -50,6 +48,11 @@ public struct BoardState {
         return aBoardState;
     }
 
+    public static BoardState SetPar(BoardState aBoardState, int aPar) {
+        aBoardState.par = aPar;
+        return aBoardState;
+    }
+    
     public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
         aBoardState.entityDict[aEntityState.id] = aEntityState;
         return aBoardState;
