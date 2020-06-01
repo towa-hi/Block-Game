@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public struct EditorState {
@@ -8,7 +9,9 @@ public struct EditorState {
     public EditTabEnum activeTab;
     public List<EntitySchema> frontContentList;
     public List<BgSchema> backContentList;
-    public Object selectedSchema;
+    public EntitySchema selectedSchema;
+    public bool hasSelectedEntity;
+    public int selectedEntityId;
     // public EntityData selectedEntityData;
     // public BgData selectedBgData;
     // public bool isPlacing {
@@ -31,50 +34,47 @@ public struct EditorState {
         return newEditorState;
     }
 
-    public static EditorState SetSelectedSchema(EditorState aState, EntitySchema aEntitySchema) {
-        aState.selectedSchema = aEntitySchema;
-        return aState;
+    public static EditorState SetSelectedSchema(EditorState aEditorState, EntitySchema aEntitySchema) {
+        aEditorState.selectedSchema = aEntitySchema;
+        return aEditorState;
     }
 
-    public static EditorState ClearSelectedSchema(EditorState aState) {
-        aState.selectedSchema = null;
-        return aState;
+    public static EditorState ClearSelectedSchema(EditorState aEditorState) {
+        aEditorState.selectedSchema = null;
+        return aEditorState;
     }
 
-    // public static EditorState SetSelectionToMousePos(EditorState aState) {
-    //     // if (aState.isFront) {
-    //     //     aState.selectedEntityData = GM.boardData.GetEntityDataAtPos(GM.inputManager.mousePosV2);
-    //     // } else {
-    //     //     aState.selectedBgData = GM.boardData.backgroundData.GetBgDataAtPos(GM.inputManager.mousePosV2);
-    //     // }
-    //     return aState;
-    // }
-
-    public static EditorState ClearSelection(EditorState aState) {
+    public static EditorState SetSelectedEntityId(EditorState aEditorState, bool aHasSelectedEntity, int aId = -1) {
+        aEditorState.hasSelectedEntity = aHasSelectedEntity;
+        aEditorState.selectedEntityId = aId;
+        return aEditorState;
+    }
+    
+    public static EditorState ClearSelection(EditorState aEditorState) {
         // aState.selectedEntityData = null;
         // aState.selectedBgData = null;
-        return aState;
+        return aEditorState;
     }
 
-    public static EditorState SetIsFront(EditorState aState, bool aIsFront) {
-        aState.isFront = aIsFront;
-        aState.selectedSchema = null;
+    public static EditorState SetIsFront(EditorState aEditorState, bool aIsFront) {
+        aEditorState.isFront = aIsFront;
+        aEditorState.selectedSchema = null;
         // aState.selectedEntityData = null;
         // aState.selectedBgData = null;
         // aState.cursorMode = CursorModeEnum.SELECTING;
-        return aState;
+        return aEditorState;
     }
     
-    public static EditorState SetActiveTab(EditorState aState, EditTabEnum aEditTab) {
-        aState.activeTab = aEditTab;
-        aState.selectedSchema = null;
+    public static EditorState SetActiveTab(EditorState aEditorState, EditTabEnum aEditTab) {
+        aEditorState.activeTab = aEditTab;
+        aEditorState.selectedSchema = null;
         // aState.selectedEntityData = null;
         // aState.selectedBgData = null;
-        return aState;
+        return aEditorState;
     }
 
-    public static EditorState SetCursorSelect(EditorState aState, CursorModeEnum aCursorMode) {
+    public static EditorState SetCursorSelect(EditorState aEditorState, CursorModeEnum aCursorMode) {
         // aState.cursorMode = aCursorMode;
-        return aState;
+        return aEditorState;
     }
 }

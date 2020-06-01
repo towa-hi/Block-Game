@@ -16,6 +16,3 @@ public static class Constants {
     public static readonly float PUSHSPEED = 1.25f;
     public static readonly float DEATHSTATETIME = 2f;
 }
-
-
-// frame for 40x24 with background needs offset (20 ,15, 0) at scale 0.25

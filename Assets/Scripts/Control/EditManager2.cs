@@ -193,7 +193,6 @@
 // }
 
 // public class EditorPickerState : GameState {
-//     // TODO: make clickposoffset work
 //     public EditorPickerState() {
 
 //     }

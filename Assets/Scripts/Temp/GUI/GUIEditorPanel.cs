@@ -89,6 +89,7 @@ public class GUIEditorPanel : EditorStateListener {
                 break;
             case EditTabEnum.EDIT:
                 this.editModePanel.SetActive(true);
+                EditModePanelSetup(aEditorState);
                 break;
             case EditTabEnum.OPTIONS:
                 this.optionsModePanel.SetActive(true);
@@ -103,14 +104,21 @@ public class GUIEditorPanel : EditorStateListener {
     public void OnTitleFieldSet(string aInput) {
         GM.boardManager.SetTitle(aInput);
     }
-    
-    // void SetEditModePanel(EntityState? aEntityState) {
-    //     if (aEntityState != null) {
-    //         this.previewStudio.SetEntity(aEntityState);
-    //         this.editModeVerticalContainer.SetActive(true);
-    //         this.editModeNullTextContainer.SetActive(false);
-    //         this.editModeNameText.text = aEntityState.pos;
-    //     }
-    // }
+
+    public void EditModePanelSetup(EditorState aEditorState) {
+        Debug.Assert(aEditorState.activeTab == EditTabEnum.EDIT);
+        this.editModeNullTextContainer.SetActive(!aEditorState.hasSelectedEntity);
+        this.editModeHorizontalContainer.SetActive(aEditorState.hasSelectedEntity);
+        this.editModeVerticalContainer.SetActive(aEditorState.hasSelectedEntity);
+        if (aEditorState.hasSelectedEntity) {
+            EntityState selectedEntity = GM.editManager.GetSelectedEntity();
+            this.previewStudio.SetTarget(selectedEntity);
+            this.editModeNameText.text = selectedEntity.entityBase.name;
+            this.editModeIsFixedToggle.SetIsOnWithoutNotify(selectedEntity.isFixed);
+            this.editModeIsFixedToggle.interactable = !selectedEntity.isBoundary;
+            
+        }
+        
+    }
 }
 

@@ -112,6 +112,8 @@ public class InputManager : SerializedMonoBehaviour {
                 this.clickedPos = Vector3.zero;
                 this.mouseIsReleasedOneFrame = true;
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 

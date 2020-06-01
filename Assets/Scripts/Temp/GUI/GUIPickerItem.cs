@@ -14,5 +14,6 @@ public class GUIPickerItem : SerializedMonoBehaviour {
 
     public void Init(EntitySchema aEntitySchema) {
         this.entitySchema = aEntitySchema;
+        this.text.text = aEntitySchema.name;
     }
 }

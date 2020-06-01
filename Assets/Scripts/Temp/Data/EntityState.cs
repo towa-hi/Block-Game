@@ -33,6 +33,12 @@ public struct EntityState {
     public int touchDefense;
     public int fallDefense;
 
+    public EntityBase entityBase {
+        get {
+            return GM.boardManager.GetEntityBaseById(this.id);
+        }
+    }
+
     public bool CustomEquals(EntityState aOther) {        
         if (GetType() != aOther.GetType())
         {

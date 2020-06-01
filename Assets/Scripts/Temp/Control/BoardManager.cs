@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -29,6 +30,7 @@ public class BoardManager : SerializedMonoBehaviour {
             print("BoardManager - Updating BoardState for no delegates");
         }
         this.boardState = aBoardState;
+        // NOTE: if this isn't performant, clear the dict instead of replacing it
         Dictionary<Vector2Int, BoardCell> newBoardCellDict = new Dictionary<Vector2Int, BoardCell>();
         for (int x = 0; x < aBoardState.size.x; x++) {
             for (int y = 0; y < aBoardState.size.y; y++) {
@@ -71,10 +73,12 @@ public class BoardManager : SerializedMonoBehaviour {
             UpdateBoardState(newBoardState);
         }
     }
-    public void MoveEntity(EntityState aEntityState, Vector2Int aPos) {
+    
+    public void MoveEntity(Vector2Int aPos, EntityState aEntityState) {
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
         if (IsRectEmpty(aPos, aEntityState.size, ignoreSet)) {
             UpdateEntityAndBoardState(EntityState.SetPos(aEntityState, aPos));
+            aEntityState.entityBase.ResetTempView();
         } else {
             throw new Exception("MoveEntity - invalid move");
         }
@@ -159,12 +163,13 @@ public class BoardManager : SerializedMonoBehaviour {
         if (IsRectInBoard(aOrigin, aSize)) {
             foreach (KeyValuePair<Vector2Int, BoardCell> kvp in GetBoardGridSlice(aOrigin, aSize)) {
                 if (kvp.Value.entityState != null) {
-                    return false;
+                    if (aIgnoreSet.All(entityState => kvp.Value.entityState.Value.id != entityState.id)) {
+                        return false;
+                    }
                 }
             }
             return true;
         }
-
         return false;
     }
 
@@ -214,7 +219,34 @@ public class BoardManager : SerializedMonoBehaviour {
         AddEntity(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
     }
 
-    
+    public EntityState? GetEntityAtMousePos() {
+        Vector2Int mousePosV2 = GM.inputManager.mousePosV2;
+        if (IsPosInBoard(mousePosV2)) {
+            EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].entityState;
+            return entityAtMousePos;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public EntityState GetEntityById(int aId) {
+        if (this.currentState.entityDict.ContainsKey(aId)) {
+            return this.currentState.entityDict[aId];
+        }
+        else {
+            throw new Exception("GetEntityById - invalid id");
+        }
+    }
+
+    public EntityBase GetEntityBaseById(int aId) {
+        if (this.entityBaseDict.ContainsKey(aId)) {
+            return this.entityBaseDict[aId];
+        }
+        else {
+            throw new Exception("GetEntityBaseById - invalid id");
+        }
+    }
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
         

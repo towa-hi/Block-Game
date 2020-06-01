@@ -4,15 +4,20 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class GUIPreviewStudio : SerializedMonoBehaviour {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public int id;
+    int originalLayer;
+    public Camera myCamera;
+    EntityBase oldEntityBase;
+    
+    public void SetTarget(EntityState aEntityState) {
+        if (this.oldEntityBase != null) {
+            Util.SetLayerRecursively(this.oldEntityBase.gameObject, this.originalLayer);
+        }
+        this.id = aEntityState.id;
+        EntityBase entityBase = aEntityState.entityBase;
+        this.originalLayer = entityBase.gameObject.layer;
+        this.transform.position = entityBase.transform.position;
+        Util.SetLayerRecursively(entityBase.gameObject, 8);
+        this.oldEntityBase = entityBase;
     }
 }

@@ -12,6 +12,7 @@ public class GM : SerializedMonoBehaviour {
     public static BoardManager boardManager;
     public static EditManager editManager;
     public static PlayManager playManager;
+    public static Cursor cursor;
     
     [SerializeField]
     GameState currentState;
@@ -22,17 +23,19 @@ public class GM : SerializedMonoBehaviour {
     }
     public event OnUpdateGameStateHandler OnUpdateGameState;
     public GameObject coreGameObject;
-
+    
     void Awake() {
         this.OnUpdateGameState = null;
         GM.inputManager = this.coreGameObject.GetComponent<InputManager>();
         GM.boardManager = this.coreGameObject.GetComponent<BoardManager>();
         GM.editManager = this.coreGameObject.GetComponent<EditManager>();
         GM.playManager = this.coreGameObject.GetComponent<PlayManager>();
+        GM.cursor = this.coreGameObject.GetComponentInChildren<Cursor>();
         this.OnUpdateGameState += GM.boardManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.inputManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.editManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.playManager.OnUpdateGameState;
+        this.OnUpdateGameState += GM.cursor.OnUpdateGameState;
         UpdateGameState(GameState.CreateGameState(GameModeEnum.EDITING));
     }
 

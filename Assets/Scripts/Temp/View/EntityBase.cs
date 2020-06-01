@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 public class EntityBase : BoardStateListener {
     // temp
     public int id;
+    [SerializeField] bool isTempPos;
     public EntityState oldEntityState;
     public GameObject model;
     public Renderer modelRenderer;
@@ -49,6 +50,16 @@ public class EntityBase : BoardStateListener {
         }
     }
 
+    public void SetTempViewPosition(Vector2Int aPos) {
+        this.transform.position = Util.V2IOffsetV3(aPos, GM.boardManager.GetEntityById(this.id).size);
+        this.isTempPos = true;
+    }
+
+    public void ResetTempView() {
+        EntityState currentState = GM.boardManager.GetEntityById(this.id);
+        this.transform.position = Util.V2IOffsetV3(currentState.pos, currentState.size);
+        this.isTempPos = false;
+    }
     void OnDrawGizmos() {
         Gizmos.color = Color.red;
         Vector2Int size = this.oldEntityState.size;

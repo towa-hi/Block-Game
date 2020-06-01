@@ -241,7 +241,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484835692}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.572111, y: 13.203163, z: -8.826822}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -334,11 +334,8 @@ MonoBehaviour:
   mousePosV2: {x: 0, y: 0}
   isCursorOverUI: 0
   oldMousePosV2: {x: 0, y: 0}
-  clickedPos: {x: 0, y: 0, z: 0}
   clickedPosV2: {x: 0, y: 0}
-  dragOffset: {x: 0, y: 0, z: 0}
   dragOffsetV2: {x: 0, y: 0}
-  oldDragOffset: {x: 0, y: 0, z: 0}
   mouseState: 0
   rightMouseState: 0
 --- !u!114 &484835696
@@ -362,18 +359,12 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: currentState
+    - Name: editorState
       Entry: 7
       Data: EditorState, Assembly-CSharp
     - Name: isFront
       Entry: 5
       Data: false
-    - Name: par
-      Entry: 3
-      Data: 0
-    - Name: title
-      Entry: 6
-      Data: 
     - Name: activeTab
       Entry: 3
       Data: 0
@@ -386,6 +377,12 @@ MonoBehaviour:
     - Name: selectedSchema
       Entry: 6
       Data: 
+    - Name: hasSelectedEntity
+      Entry: 5
+      Data: false
+    - Name: selectedEntityId
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -2161,6 +2158,7 @@ GameObject:
   - component: {fileID: 7326398631545220876}
   - component: {fileID: 7326398631545220877}
   - component: {fileID: 7326398631545220882}
+  - component: {fileID: 7326398631545220881}
   m_Layer: 5
   m_Name: OptionsModeTitleField
   m_TagString: Untagged
@@ -2168,6 +2166,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7326398631545220881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7326398631545220880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95c3a8d53d86ade48bbe9b5dc8ffa6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!114 &7326398631545220882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2221,8 +2240,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnOptionsTitleField
+      - m_Target: {fileID: 7326398632780907872}
+        m_MethodName: OnTitleFieldSet
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2381,8 +2400,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnOptionsParButtonClick
+      - m_Target: {fileID: 7326398632780907872}
+        m_MethodName: OnParPickerButtonClick
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3755,6 +3774,7 @@ GameObject:
   - component: {fileID: 7326398632273428061}
   - component: {fileID: 7326398632273428063}
   - component: {fileID: 7326398632273428060}
+  - component: {fileID: 7326398632273428067}
   m_Layer: 5
   m_Name: OptionsModeParPanel
   m_TagString: Untagged
@@ -3762,6 +3782,30 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7326398632273428067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7326398632273428066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432c3dff23ac6dc4e871e209aef1f14f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  leftButton: {fileID: 7326398633284864772}
+  rightButton: {fileID: 7326398631558468139}
+  text: {fileID: 7326398631957885527}
 --- !u!222 &7326398632343845040
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3859,7 +3903,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7326398631750073103}
   m_HandleRect: {fileID: 7326398631750073100}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 11
   m_OnValueChanged:
@@ -4488,8 +4532,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   pickerModePanel: {fileID: 7326398633092402428}
-  pickerItemMaster: {fileID: 0}
-  pickerScrollRectContent: {fileID: 0}
+  pickerItemMaster: {fileID: 699798165063972911, guid: 92f36ebdd74091649abc7c47dd68abb7,
+    type: 3}
+  pickerScrollRectContent: {fileID: 7326398633020967444}
   pickerItemList: []
   editModePanel: {fileID: 8575073970988707732}
   previewStudio: {fileID: 0}
@@ -5205,7 +5250,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00012207031}
+  m_AnchoredPosition: {x: 0, y: 0.00012207031}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7326398633029703921
@@ -5883,8 +5928,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnOptionsParButtonClick
+      - m_Target: {fileID: 7326398632780907872}
+        m_MethodName: OnParPickerButtonClick
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
