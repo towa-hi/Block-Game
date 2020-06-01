@@ -22,8 +22,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   prefabPath: Blocks/4x2 block
+  isFront: 1
   size: {x: 4, y: 2}
-  type: 0
+  entityType: 0
   touchDefense: 99
   fallDefense: 99
   defaultTeam: 1

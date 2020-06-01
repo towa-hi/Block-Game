@@ -13,5 +13,5 @@ public abstract class EditorStateListener : SerializedMonoBehaviour {
         GM.editManager.OnUpdateEditorState -= OnUpdateEditorState;
     }
 
-    public abstract void OnUpdateEditorState(EditorState aEditorState);
+    protected abstract void OnUpdateEditorState(EditorState aEditorState);
 }

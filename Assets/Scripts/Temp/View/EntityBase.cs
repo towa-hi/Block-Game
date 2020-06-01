@@ -27,7 +27,7 @@ public class EntityBase : BoardStateListener {
         this.name = aEntityState.name + " Id: " + aEntityState.id;
     }
 
-    public override void OnUpdateBoardState(BoardState aBoardState) {
+    protected override void OnUpdateBoardState(BoardState aBoardState) {
         // when id is -1, this wont recieve any boardupdates because it hasn't been
         // assigned an ID yet by BoardManager.CreateView
         if (this.id == -42069) {

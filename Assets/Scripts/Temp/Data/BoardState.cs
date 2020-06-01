@@ -1,9 +1,7 @@
-﻿using System.Collections;
+﻿
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using Sirenix.OdinInspector;
 
 public struct BoardState {
     public Dictionary<int, EntityState> entityDict;
@@ -15,13 +13,14 @@ public struct BoardState {
     public int currentId;
 
     public static BoardState GenerateBlankBoard() {
-        BoardState newBoard = new BoardState();
-        newBoard.entityDict = new Dictionary<int, EntityState>();
-        newBoard.title = "Uninitialized Board";
-        newBoard.creator = Config.USERNAME;
-        newBoard.par = 5;
-        newBoard.size = new Vector2Int(40, 24);
-        newBoard.attempts = 0;
+        BoardState newBoard = new BoardState {
+            entityDict = new Dictionary<int, EntityState>(),
+            title = "Uninitialized Board",
+            creator = Config.USERNAME,
+            par = 5,
+            size = new Vector2Int(40, 24),
+            attempts = 0
+        };
         return newBoard;
     }
 

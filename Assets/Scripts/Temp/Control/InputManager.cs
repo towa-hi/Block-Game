@@ -1,30 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 
 public class InputManager : SerializedMonoBehaviour {
-    Controls controls;
     [Header("Mouse Pos")]
     [System.NonSerialized] public Vector3 mousePos;
     public Vector2Int mousePosV2;
     [System.NonSerialized] public Vector3 oldMousePos;
     public bool isCursorOverUI;
     public Vector2Int oldMousePosV2;
-    public Vector3 clickedPos;
+    [System.NonSerialized] public Vector3 clickedPos;
     public Vector2Int clickedPosV2;
-    public Vector3 dragOffset;
+    [System.NonSerialized] public Vector3 dragOffset;
     public Vector2Int dragOffsetV2;
-    public Vector3 oldDragOffset;
+    [System.NonSerialized] public Vector3 oldDragOffset;
     public MouseStateEnum mouseState;
     public MouseStateEnum rightMouseState;
     bool mouseIsHeldDownOneFrame;
     bool mouseIsReleasedOneFrame;
-
+    Camera mainCamera;
     void Awake() {
-        this.controls = new Controls();
+        this.mainCamera = Camera.main;
         this.mouseState = MouseStateEnum.DEFAULT;
         this.mouseIsHeldDownOneFrame = false;
         this.mouseIsReleasedOneFrame = false;
@@ -38,13 +36,21 @@ public class InputManager : SerializedMonoBehaviour {
     public void OnClickDown(InputAction.CallbackContext context) {
         switch (context.phase) {
             case InputActionPhase.Performed:
-                if (!isCursorOverUI) {
+                if (!this.isCursorOverUI) {
                     this.mouseState = MouseStateEnum.CLICKED;
                 }
                 break;
             case InputActionPhase.Canceled:
                 this.mouseState = MouseStateEnum.RELEASED;
                 break;
+            case InputActionPhase.Disabled:
+                break;
+            case InputActionPhase.Waiting:
+                break;
+            case InputActionPhase.Started:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -56,6 +62,14 @@ public class InputManager : SerializedMonoBehaviour {
             case InputActionPhase.Canceled:
                 this.rightMouseState = MouseStateEnum.DEFAULT;
                 break;
+            case InputActionPhase.Disabled:
+                break;
+            case InputActionPhase.Waiting:
+                break;
+            case InputActionPhase.Started:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -102,9 +116,8 @@ public class InputManager : SerializedMonoBehaviour {
     }
 
     public Vector3 GetMousePos() {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
+        Ray ray = this.mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) {
             return new Vector3(hit.point.x, hit.point.y, hit.point.z);
         } else {
             return this.mousePos;

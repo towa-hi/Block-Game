@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 public struct EditorState {
     public bool isFront;
@@ -20,18 +19,19 @@ public struct EditorState {
     //     }
     // }
 
+    [SuppressMessage("ReSharper", "ReturnValueOfPureMethodIsNotUsed")]
     public static EditorState CreateEditorState() {
-        EditorState newEditorState = new EditorState();
-        newEditorState.isFront = true;
-        newEditorState.frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList();
+        EditorState newEditorState = new EditorState {
+            isFront = true,
+            frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
+            backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList(),
+            selectedSchema = null,
+            par = GM.boardManager.currentState.par,
+            title = GM.boardManager.currentState.title
+        };
+        // TODO: this probably wont even work
         newEditorState.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
-        newEditorState.backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList();
         newEditorState.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
-        newEditorState.selectedSchema = null;
-        // this.selectedEntityData = null;
-        // this.selectedBgData = null;
-        newEditorState.par = GM.boardManager.currentState.par;
-        newEditorState.title = GM.boardManager.currentState.title;
         return newEditorState;
     }
 

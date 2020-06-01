@@ -1,31 +1,28 @@
-﻿using System.Collections;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using Sirenix.OdinInspector;
+using UnityEditor;
+using UnityEngine;
 
 public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
 
 public class BoardManager : SerializedMonoBehaviour {
     
-    [SerializeField]
-    BoardState boardState;
+    [SerializeField] private BoardState boardState;
     public BoardState currentState {
-        get {
-            return this.boardState;
-        }
+        get { return this.boardState; }
     }
+
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
-    void Awake() {
+    private void Awake() {
         Init();
     }
 
     public void UpdateBoardState(BoardState aBoardState) {
-        print("BoardManager - Updating BoardState for " + this.OnUpdateBoardState?.GetInvocationList().Length + " delegates");
+        print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         this.boardState = aBoardState;
         Dictionary<Vector2Int, BoardCell> newBoardCellDict = new Dictionary<Vector2Int, BoardCell>();
         for (int x = 0; x < aBoardState.size.x; x++) {
@@ -43,7 +40,7 @@ public class BoardManager : SerializedMonoBehaviour {
             }
         }
         this.boardCellDict = newBoardCellDict;
-        this.OnUpdateBoardState?.Invoke(this.currentState);
+        OnUpdateBoardState?.Invoke(this.currentState);
     }
 
     public void UpdateEntityAndBoardState(EntityState aEntityState) {
@@ -52,12 +49,11 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void MoveEntity(EntityState aEntityState, Vector2Int aPos) {
-        HashSet<EntityState> ignoreSet = new HashSet<EntityState>();
-        ignoreSet.Add(aEntityState);
+        HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
         if (IsRectEmpty(aPos, aEntityState.size, ignoreSet)) {
             UpdateEntityAndBoardState(EntityState.SetPos(aEntityState, aPos));
         } else {
-            throw new System.Exception("MoveEntity - invalid move");
+            throw new Exception("MoveEntity - invalid move");
         }
     }
 
@@ -65,7 +61,7 @@ public class BoardManager : SerializedMonoBehaviour {
         if (Util.IsDirection(aFacing)) {
             UpdateEntityAndBoardState(EntityState.SetFacing(aEntityState, aFacing));
         } else {
-            throw new System.Exception("SetEntityFacing - invalid facing direction");
+            throw new Exception("SetEntityFacing - invalid facing direction");
         }
     }
 
@@ -85,7 +81,7 @@ public class BoardManager : SerializedMonoBehaviour {
         if (aUpNodes != null && aDownNodes != null) {
             UpdateEntityAndBoardState(EntityState.SetNodes(aEntityState, aUpNodes, aDownNodes));
         } else {
-            throw new System.Exception("SetEntityNodes - params can't be null");
+            throw new Exception("SetEntityNodes - params can't be null");
         }
     }
 
@@ -93,7 +89,7 @@ public class BoardManager : SerializedMonoBehaviour {
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
             UpdateEntityAndBoardState(EntityState.SetTouchDefense(aEntityState, aTouchDefense));
         } else {
-            throw new System.Exception("SetEntityTouchDefense - invalid touchDefense");
+            throw new Exception("SetEntityTouchDefense - invalid touchDefense");
         }
     }
 
@@ -101,7 +97,7 @@ public class BoardManager : SerializedMonoBehaviour {
         if (0 <= aFallDefense && aFallDefense <= 999) {
             UpdateEntityAndBoardState(EntityState.SetFallDefense(aEntityState, aFallDefense));
         } else {
-            throw new System.Exception("SetEntityFallDefense - invalid touchDefense");
+            throw new Exception("SetEntityFallDefense - invalid touchDefense");
         }
     }
 
@@ -109,9 +105,9 @@ public class BoardManager : SerializedMonoBehaviour {
         // TODO: finish this
         if (IsRectEmpty(aPos, aEntitySchema.size)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public bool IsPosInBoard(Vector2Int aPos) {
@@ -131,9 +127,9 @@ public class BoardManager : SerializedMonoBehaviour {
                 }
             }
             return sliceDict;
-        } else {
-            throw new System.Exception("GetBoardGridSlice - rect not in board");
         }
+
+        throw new Exception("GetBoardGridSlice - rect not in board");
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null) {
@@ -144,18 +140,16 @@ public class BoardManager : SerializedMonoBehaviour {
                 }
             }
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public void AddEntity(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         // create the new entity without the id 
         EntityState newEntity = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
-        var tuple = BoardState.AddEntity(this.currentState, newEntity);
+        (BoardState newBoard, EntityState newEntityWithId) = BoardState.AddEntity(this.currentState, newEntity);
         // addEntity in boardstate will add id to the new version of that entity inside the tuple as nweEntityWithId
-        BoardState newBoard = tuple.Item1;
-        EntityState newEntityWithId = tuple.Item2;
         // 
         UpdateBoardState(newBoard);
         // make the entity base

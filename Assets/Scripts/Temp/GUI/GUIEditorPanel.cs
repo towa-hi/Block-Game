@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using Object = UnityEngine.Object;
 
 public class GUIEditorPanel : EditorStateListener {
     [Header("Set In Editor")]
@@ -10,8 +12,7 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject pickerModePanel;
     public GameObject pickerItemMaster;
     public GameObject pickerScrollRectContent;
-    [SerializeField]
-    List<GUIPickerItem> pickerItemList;
+    [SerializeField] private List<GUIPickerItem> pickerItemList;
     [Header("Edit Panel")]
     public GameObject editModePanel;
     public GUIPreviewStudio previewStudio;
@@ -31,14 +32,14 @@ public class GUIEditorPanel : EditorStateListener {
     HashSet<GameObject> botPanels;
     EditorState oldEditorState;
 
-    void Awake() {
-        HashSet<GameObject> newBotPanels = new HashSet<GameObject>();
-        newBotPanels.Add(pickerModePanel);
-        newBotPanels.Add(editModePanel);
-        newBotPanels.Add(optionsModePanel);
+    private void Awake()
+    {
+        this.pickerItemList = new List<GUIPickerItem>();
+        HashSet<GameObject> newBotPanels = new HashSet<GameObject> {pickerModePanel, editModePanel, optionsModePanel};
         this.botPanels = newBotPanels;
     }
-    public override void OnUpdateEditorState(EditorState aNewEditorState) {
+
+    protected override void OnUpdateEditorState(EditorState aNewEditorState) {
         SetActiveBotPanel(aNewEditorState);
         this.oldEditorState = aNewEditorState;
     }
@@ -74,6 +75,8 @@ public class GUIEditorPanel : EditorStateListener {
                 SetTitleField(aEditorState.title);
                 SetParPickerText(aEditorState.par);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 

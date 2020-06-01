@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 
 public delegate void OnUpdateGameStateHandler(GameState aGameState);
 
+// ReSharper disable once InconsistentNaming
 public class GM : SerializedMonoBehaviour {
 
     public static InputManager inputManager;
@@ -36,7 +37,13 @@ public class GM : SerializedMonoBehaviour {
     }
 
     public void UpdateGameState(GameState aGameState) {
-        print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
+        if (this.OnUpdateGameState != null) {
+            print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
+        }
+        else {
+            print("GM - Updating GameState for 0 delegates");
+        }
+        
         this.currentState = aGameState;
         this.OnUpdateGameState?.Invoke(this.gameState);
     }

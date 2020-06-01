@@ -13,5 +13,5 @@ public abstract class BoardStateListener : SerializedMonoBehaviour {
         GM.boardManager.OnUpdateBoardState -= OnUpdateBoardState;
     }
 
-    public abstract void OnUpdateBoardState(BoardState aBoardState);
+    protected abstract void OnUpdateBoardState(BoardState aBoardState);
 }

@@ -17,7 +17,7 @@ public class GUIEditorTabButton : EditorStateListener {
         GM.editManager.SetActiveTab(editTabEnum);
     }
 
-    public override void OnUpdateEditorState(EditorState aEditorState) {
+    protected override void OnUpdateEditorState(EditorState aEditorState) {
         this.button.interactable = (this.editTabEnum != aEditorState.activeTab);
     }
 }

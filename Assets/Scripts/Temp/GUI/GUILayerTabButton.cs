@@ -16,7 +16,7 @@ public class GUILayerTabButton : EditorStateListener {
         GM.editManager.SetLayer(isFront);
     }
 
-    public override void OnUpdateEditorState(EditorState aEditorState) {
+    protected override void OnUpdateEditorState(EditorState aEditorState) {
         this.button.interactable = (this.isFront != aEditorState.isFront);
     }
 }
