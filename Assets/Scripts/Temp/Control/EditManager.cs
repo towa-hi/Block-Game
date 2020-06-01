@@ -106,6 +106,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void ResetSelectedEntity() {
+        
         EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, false);
         UpdateEditorState(newEditorState);
     }
@@ -181,6 +182,7 @@ public class EditManager : SerializedMonoBehaviour {
         
         public void Enter() {
             GM.editManager.ResetSelectedEntity();
+            Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.PICKER);
         }
 
         public void Update() {
@@ -246,6 +248,7 @@ public class EditManager : SerializedMonoBehaviour {
 
         public void Enter() {
             GM.editManager.ResetSelectedEntity();
+            Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.EDIT);
         }
 
         public void Update() {
@@ -272,6 +275,8 @@ public class EditManager : SerializedMonoBehaviour {
     class EditorOptionsModeInputState : StateMachineState {
         
         public void Enter() {
+            GM.editManager.ResetSelectedEntity();
+            Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.OPTIONS);
         }
 
         public void Update() {

@@ -15,6 +15,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
+    Dictionary<Vector2Int, BoardCell> boardCellDictTemplate;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
@@ -31,25 +32,21 @@ public class BoardManager : SerializedMonoBehaviour {
         }
         this.boardState = aBoardState;
         // NOTE: if this isn't performant, clear the dict instead of replacing it
-        Dictionary<Vector2Int, BoardCell> newBoardCellDict = new Dictionary<Vector2Int, BoardCell>();
-        for (int x = 0; x < aBoardState.size.x; x++) {
-            for (int y = 0; y < aBoardState.size.y; y++) {
-                Vector2Int currentPos = new Vector2Int(x, y);
-                BoardCell newCell = new BoardCell(currentPos);
-                newBoardCellDict[currentPos] = newCell;
-            }
-        }
-        foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
-            foreach(Vector2Int currentPos in Util.V2IInRect(kvp.Value.pos, kvp.Value.size)) {
-                BoardCell updatedCell = newBoardCellDict[currentPos];
-                updatedCell.entityState = kvp.Value;
-                newBoardCellDict[currentPos] = updatedCell;
-            }
-        }
-        this.boardCellDict = newBoardCellDict;
+        SetBoardCellDict(aBoardState);
         OnUpdateBoardState?.Invoke(this.currentState);
     }
 
+    public void SetBoardCellDict(BoardState aBoardState) {
+        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>(this.boardCellDictTemplate);
+        foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
+            foreach(Vector2Int currentPos in Util.V2IInRect(kvp.Value.pos, kvp.Value.size)) {
+                BoardCell updatedCell = this.boardCellDict[currentPos];
+                updatedCell.entityState = kvp.Value;
+                this.boardCellDict[currentPos] = updatedCell;
+            }
+        }
+    }
+    
     public void UpdateEntityAndBoardState(EntityState aEntityState) {
         BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
         UpdateBoardState(newBoardState);
@@ -201,6 +198,14 @@ public class BoardManager : SerializedMonoBehaviour {
     public void Init() {
         this.entityBaseDict = new Dictionary<int, EntityBase>();
         BoardState newBoard = BoardState.GenerateBlankBoard();
+        this.boardCellDictTemplate = new Dictionary<Vector2Int, BoardCell>();
+        for (int x = 0; x < newBoard.size.x; x++) {
+            for (int y = 0; y < newBoard.size.y; y++) {
+                Vector2Int currentPos = new Vector2Int(x, y);
+                BoardCell newCell = new BoardCell(currentPos);
+                this.boardCellDictTemplate[currentPos] = newCell;
+            }
+        }
         UpdateBoardState(newBoard);
         // TODO: move this somewhere sensible
         EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");

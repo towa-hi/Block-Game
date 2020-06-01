@@ -10,4 +10,8 @@ public struct BoardCell {
         this.pos = aPos;
         this.entityState = aEntityState;
     }
+
+    public void Reset() {
+        this.entityState = null;
+    }
 }

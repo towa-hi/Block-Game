@@ -63,8 +63,11 @@ public class GUIEditorPanel : EditorStateListener {
     }
     
     void SetPickerItems(EditorState aEditorState) {
-        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
-            pickerItem.gameObject.SetActive(pickerItem.entitySchema.isFront == aEditorState.isFront);
+        if (aEditorState.isFront != this.oldEditorState.isFront) {
+            print("refreshing picker items");
+            foreach (GUIPickerItem pickerItem in this.pickerItemList) {
+                pickerItem.gameObject.SetActive(pickerItem.entitySchema.isFront == aEditorState.isFront);
+            }
         }
     }
 
@@ -77,22 +80,30 @@ public class GUIEditorPanel : EditorStateListener {
     }
 
     void SetEditorStateVars(EditorState aEditorState) {
-        
-        foreach (GameObject botPanel in this.botPanels) {
-            botPanel.SetActive(false);
-        }
         this.activeTab = aEditorState.activeTab;
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
-                this.pickerModePanel.SetActive(true);
+                if (!this.pickerModePanel.activeInHierarchy) {
+                    this.pickerModePanel.SetActive(true);
+                    this.editModePanel.SetActive(false);
+                    this.optionsModePanel.SetActive(false);
+                }
                 SetPickerItems(aEditorState);
                 break;
             case EditTabEnum.EDIT:
-                this.editModePanel.SetActive(true);
+                if (!this.editModePanel.activeInHierarchy) {
+                    this.pickerModePanel.SetActive(false);
+                    this.editModePanel.SetActive(true);
+                    this.optionsModePanel.SetActive(false);
+                }
                 EditModePanelSetup(aEditorState);
                 break;
             case EditTabEnum.OPTIONS:
-                this.optionsModePanel.SetActive(true);
+                if (!this.editModePanel.activeInHierarchy) {
+                    this.pickerModePanel.SetActive(false);
+                    this.editModePanel.SetActive(false);
+                    this.optionsModePanel.SetActive(true);
+                }
                 SetTitleField(GM.boardManager.currentState.title);
                 SetParPickerText(GM.boardManager.currentState.par);
                 break;
