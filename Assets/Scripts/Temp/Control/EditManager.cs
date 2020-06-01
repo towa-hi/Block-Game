@@ -9,10 +9,10 @@ public delegate void OnUpdateEditorStateHandler(EditorState aEditorState);
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
     [SerializeField]
-    EditorState currentState;
-    public EditorState editorState {
+    EditorState editorState;
+    public EditorState currentState {
         get {
-            return this.currentState;
+            return this.editorState;
         }
     }
     public event OnUpdateEditorStateHandler OnUpdateEditorState;
@@ -25,8 +25,8 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void UpdateEditorState(EditorState aEditorState) {
         print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
-        this.currentState = aEditorState;
-        this.OnUpdateEditorState?.Invoke(this.editorState);
+        this.editorState = aEditorState;
+        this.OnUpdateEditorState?.Invoke(this.currentState);
     }
     
     // special function called by GM.OnUpdateGameState delegate
@@ -36,12 +36,9 @@ public class EditManager : SerializedMonoBehaviour {
         }
     }
 
-    public void AddSchema(Vector2Int aPos, Object aSchema) {
-        if (aSchema is EntitySchema) {
-            EntitySchema entitySchema = aSchema as EntitySchema;
-            if (GM.boardManager.CanEditorPlaceSchema(aPos, entitySchema)) {
-                GM.boardManager.AddEntity(entitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, false, false);
-            }
+    public void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+        if (GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
+            GM.boardManager.AddEntity(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
 
@@ -56,6 +53,27 @@ public class EditManager : SerializedMonoBehaviour {
         UpdateEditorState(newEditorState);
     }
 
+    public void SetPar(bool aIsUp) {
+        int par = GM.boardManager.currentState.par;
+        if (aIsUp) {
+            par += 1;
+        } else {
+            par -= 1;
+        }
+        GM.boardManager.SetPar(par);
+    }
+
+    public void SetSelectedSchema(EntitySchema aEntitySchema) {
+        EditorState newEditorState = EditorState.SetSelectedSchema(this.currentState, aEntitySchema);
+        UpdateEditorState(newEditorState);
+    }
+
+    public void ClearSelectedSchema() {
+        EditorState newEditorState = EditorState.ClearSelectedSchema((this.currentState));
+        UpdateEditorState(newEditorState);
+    }
+    
+    
     // public void Init() {
     //     this.inputStateMachine = new StateMachine();
     //     this.currentState = new EditorState();

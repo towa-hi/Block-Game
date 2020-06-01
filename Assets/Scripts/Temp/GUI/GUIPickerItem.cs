@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.UI;
 
 public class GUIPickerItem : SerializedMonoBehaviour {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public EntitySchema entitySchema;
+    public Button button;
+    public Text text;
+    void Awake() {
+        this.button.onClick.AddListener(() => GM.editManager.SetSelectedSchema(this.entitySchema));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Init(EntitySchema aEntitySchema) {
+        this.entitySchema = aEntitySchema;
     }
 }

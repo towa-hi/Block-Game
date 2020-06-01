@@ -10,10 +10,7 @@ public class GUILayerTabButton : EditorStateListener {
 
     void Awake() {
         this.button = GetComponent<Button>();
-        this.button.onClick.AddListener(OnClick);
-    }
-    public void OnClick() {
-        GM.editManager.SetLayer(isFront);
+        this.button.onClick.AddListener(() => GM.editManager.SetLayer(this.isFront));
     }
 
     protected override void OnUpdateEditorState(EditorState aEditorState) {

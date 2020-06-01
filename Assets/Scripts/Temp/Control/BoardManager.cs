@@ -53,6 +53,24 @@ public class BoardManager : SerializedMonoBehaviour {
         UpdateBoardState(newBoardState);
     }
 
+    public void SetTitle(string aTitle) {
+        if (0 < aTitle.Length && aTitle.Length <= Constants.MAXTITLELENGTH) {
+            // TODO: validate titles so they can be valid filenames here
+            // char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            BoardState newBoardState = BoardState.SetTitle(this.currentState, aTitle);
+            UpdateBoardState(newBoardState);
+        }
+        else {
+            throw new Exception("SetTitle - invalid title");
+        }
+    }
+
+    public void SetPar(int aPar) {
+        if (0 < aPar && aPar <= Constants.MAXPAR) {
+            BoardState newBoardState = BoardState.SetPar(this.currentState, aPar);
+            UpdateBoardState(newBoardState);
+        }
+    }
     public void MoveEntity(EntityState aEntityState, Vector2Int aPos) {
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
         if (IsRectEmpty(aPos, aEntityState.size, ignoreSet)) {

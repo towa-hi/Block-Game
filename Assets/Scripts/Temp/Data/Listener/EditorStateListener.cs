@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 public abstract class EditorStateListener : SerializedMonoBehaviour {
     public virtual void OnEnable() {
         GM.editManager.OnUpdateEditorState += OnUpdateEditorState;
-        OnUpdateEditorState(GM.editManager.editorState);
+        OnUpdateEditorState(GM.editManager.currentState);
     }
 
     public virtual void OnDisable() {

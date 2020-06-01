@@ -10,11 +10,7 @@ public class GUIEditorTabButton : EditorStateListener {
 
     void Awake() {
         this.button = GetComponent<Button>();
-        this.button.onClick.AddListener(OnClick);
-    }
-
-    void OnClick() {
-        GM.editManager.SetActiveTab(editTabEnum);
+        this.button.onClick.AddListener(() => GM.editManager.SetActiveTab(this.editTabEnum));
     }
 
     protected override void OnUpdateEditorState(EditorState aEditorState) {
