@@ -30,7 +30,6 @@ public class BoardManager : SerializedMonoBehaviour {
             print("BoardManager - Updating BoardState for no delegates");
         }
         this.boardState = aBoardState;
-        // NOTE: if this isn't performant, clear the dict instead of replacing it
         SetBoardCellDict(aBoardState);
         OnUpdateBoardState?.Invoke(this.currentState);
     }
@@ -166,7 +165,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
-        print("IsRectEmpty started aOrigin: " + aOrigin + "aSize: " + aSize + "aIsFront: " + aIsFront);
+        // print("IsRectEmpty started aOrigin: " + aOrigin + "aSize: " + aSize + "aIsFront: " + aIsFront);
         if (IsRectInBoard(aOrigin, aSize)) {
             foreach (KeyValuePair<Vector2Int, BoardCell> kvp in GetBoardGridSlice(aOrigin, aSize)) {
                 if (aIsFront && kvp.Value.frontEntityState != null) {
@@ -206,6 +205,9 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void AddEntity(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+        if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
+            throw new Exception("AddEntity - Position is invalid");
+        }
         EntityState newEntity = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
         (BoardState newBoard, EntityState newEntityWithId) = BoardState.AddEntity(this.currentState, newEntity);
         UpdateBoardState(newBoard);
