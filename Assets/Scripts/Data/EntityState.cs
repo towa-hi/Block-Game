@@ -16,12 +16,7 @@ public struct EntityImmutableData {
     public string prefabPath;
 }
 
-
-
-
 public struct EntityState {
-    // public int id;
-    // never change this
     public EntityImmutableData data;
 
     public Vector2Int pos;

@@ -79,55 +79,60 @@ public class BoardManager : SerializedMonoBehaviour {
         }
     }
     
-    public void MoveEntity(Vector2Int aPos, EntityState aEntityState) {
-        HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
-        if (IsRectEmpty(aPos, aEntityState.data.size, ignoreSet, aEntityState.data.isFront)) {
-            UpdateEntityAndBoardState(EntityState.SetPos(aEntityState, aPos));
-            aEntityState.entityBase.ResetTempView();
+    public void MoveEntity(int aId, Vector2Int aPos) {
+        EntityState entityState = GetEntityById(aId);
+        HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
+        if (IsRectEmpty(aPos, entityState.data.size, ignoreSet, entityState.data.isFront)) {
+            UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos));
+            GetEntityBaseById(aId).ResetTempView();
         } else {
             throw new Exception("MoveEntity - invalid move");
         }
     }
 
-    public void SetEntityFacing(EntityState aEntityState, Vector2Int aFacing) {
+    public void SetEntityFacing(int aId, Vector2Int aFacing) {
+        EntityState entityState = GetEntityById(aId);
         if (Util.IsDirection(aFacing)) {
-            UpdateEntityAndBoardState(EntityState.SetFacing(aEntityState, aFacing));
+            UpdateEntityAndBoardState(EntityState.SetFacing(entityState, aFacing));
         } else {
             throw new Exception("SetEntityFacing - invalid facing direction");
         }
     }
 
-    public void SetEntityDefaultColor(EntityState aEntityState, Color aColor) {
-        UpdateEntityAndBoardState(EntityState.SetDefaultColor(aEntityState, aColor));
+    public void SetEntityDefaultColor(int aId, Color aColor) {
+        UpdateEntityAndBoardState(EntityState.SetDefaultColor(GetEntityById(aId), aColor));
     }
 
-    public void SetEntityIsFixed(EntityState aEntityState, bool aIsFixed) {
-        UpdateEntityAndBoardState(EntityState.SetIsFixed(aEntityState, aIsFixed));
+    public void SetEntityIsFixed(int aId, bool aIsFixed) {
+        UpdateEntityAndBoardState(EntityState.SetIsFixed(GetEntityById(aId), aIsFixed));
     }
 
-    public void SetEntityTeam(EntityState aEntityState, TeamEnum aTeam) {
-        UpdateEntityAndBoardState(EntityState.SetTeam(aEntityState, aTeam));
+    public void SetEntityTeam(int aId, TeamEnum aTeam) {
+        UpdateEntityAndBoardState(EntityState.SetTeam(GetEntityById(aId), aTeam));
     }
 
-    public void SetEntityNodes(EntityState aEntityState, HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
+    public void SetEntityNodes(int aId, HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
+        EntityState entityState = GetEntityById(aId);
         if (aUpNodes != null && aDownNodes != null) {
-            UpdateEntityAndBoardState(EntityState.SetNodes(aEntityState, aUpNodes, aDownNodes));
+            UpdateEntityAndBoardState(EntityState.SetNodes(entityState, aUpNodes, aDownNodes));
         } else {
             throw new Exception("SetEntityNodes - params can't be null");
         }
     }
 
-    public void SetEntityTouchDefense(EntityState aEntityState, int aTouchDefense) {
+    public void SetEntityTouchDefense(int aId, int aTouchDefense) {
+        EntityState entityState = GetEntityById(aId);
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
-            UpdateEntityAndBoardState(EntityState.SetTouchDefense(aEntityState, aTouchDefense));
+            UpdateEntityAndBoardState(EntityState.SetTouchDefense(entityState, aTouchDefense));
         } else {
             throw new Exception("SetEntityTouchDefense - invalid touchDefense");
         }
     }
 
-    public void SetEntityFallDefense(EntityState aEntityState, int aFallDefense) {
+    public void SetEntityFallDefense(int aId, int aFallDefense) {
+        EntityState entityState = GetEntityById(aId);
         if (0 <= aFallDefense && aFallDefense <= 999) {
-            UpdateEntityAndBoardState(EntityState.SetFallDefense(aEntityState, aFallDefense));
+            UpdateEntityAndBoardState(EntityState.SetFallDefense(entityState, aFallDefense));
         } else {
             throw new Exception("SetEntityFallDefense - invalid touchDefense");
         }
@@ -205,27 +210,37 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void AddEntity(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+        // if the area isn't clear, throw an exception
         if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             throw new Exception("AddEntity - Position is invalid");
         }
-        EntityState newEntity = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
-        (BoardState newBoard, EntityState newEntityWithId) = BoardState.AddEntity(this.currentState, newEntity);
+        // generate a fresh entityState without an ID
+        EntityState newEntityStateWithoutId = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
+        // add it to the board and get the new boardState and entityState with ID back
+        (BoardState newBoard, EntityState newEntityStateWithId) = BoardState.AddEntity(this.currentState, newEntityStateWithoutId);
+        // update the boardState
         UpdateBoardState(newBoard);
-        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.data.size, newEntityWithId.data.isFront);
-        if (!aEntitySchema.isFront) {
-            newEntityPosition += new Vector3(0, 0, Constants.BGZOFFSET);
-        }
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityWithId.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
+        // set the new EntityPosition
+        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityStateWithId.pos, newEntityStateWithId.data.size, newEntityStateWithId.data.isFront);
+        // instantiate a new gameObject entityPrefab from the schemas prefabPath
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityStateWithId.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
+        // get the entityBase
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-        this.entityBaseDict[newEntityWithId.data.id] = entityBase;
-        entityBase.Init(newEntityWithId);
+        // add it to the entityBaseDict
+        this.entityBaseDict[newEntityStateWithId.data.id] = entityBase;
+        // initialize entityBase with the newest state
+        entityBase.Init(newEntityStateWithId);
     }
 
     public void RemoveEntity(int aId) {
         EntityBase entityBase = this.entityBaseDict[aId];
-        BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
+        // remove the entityBase from the entityBaseDict
         this.entityBaseDict.Remove(aId);
+        // destroy the entitys gameObject
         Destroy(entityBase.gameObject);
+        // remove entity from boardstate
+        BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
+        // update the boardState
         UpdateBoardState(newBoard);
     }
 

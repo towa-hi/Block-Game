@@ -5,13 +5,17 @@ using Sirenix.OdinInspector;
 
 
 public class EntityBase : BoardStateListener {
-    // public int id;
     [SerializeField] bool isTempPos;
     public GameObject model;
-    public Renderer modelRenderer;
-    public Renderer[] childRenderers;
-    public EntityImmutableData data;
+    Renderer modelRenderer;
+    Renderer[] childRenderers;
+    EntityImmutableData data;
     EntityState oldEntityState;
+    [ShowInInspector] EntityState entityState {
+        get {
+            return GM.boardManager.GetEntityById(this.data.id);
+        }
+    }
     void Awake() {
         this.model = this.transform.GetChild(0).gameObject;
         this.modelRenderer = this.model.GetComponent<Renderer>();
@@ -19,11 +23,9 @@ public class EntityBase : BoardStateListener {
     }
 
     public void Init(EntityState aEntityState) {
-        // this.id = aEntityState.data.id;
         this.data = aEntityState.data;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, this.data.size, this.data.isFront);
         SetColor(aEntityState.defaultColor);
-        this.oldEntityState = aEntityState;
         this.name = this.data.name + " Id: " + this.data.id;
     }
 

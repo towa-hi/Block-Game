@@ -129,6 +129,12 @@ public class EditManager : SerializedMonoBehaviour {
         return false;
     }
 
+    public void OnIsFixedToggleValueChanged(bool aIsFixed) {
+        if (this.currentState.hasSelectedEntity) {
+            GM.boardManager.SetEntityIsFixed(this.currentState.selectedEntityId, aIsFixed);
+        }
+    }
+    
     public void OnDeleteButtonClicked() {
         if (this.currentState.hasSelectedEntity) {
             GM.boardManager.RemoveEntity(this.currentState.selectedEntityId);
@@ -138,8 +144,22 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void OnFlipButtonClicked() {
-        
+        if (this.currentState.hasSelectedEntity) {
+            EntityState selectedEntity = GetSelectedEntity();
+            if (Util.IsDirection(selectedEntity.facing)) {
+                if (selectedEntity.facing == Vector2Int.left) {
+                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.right);
+                }
+                else if (selectedEntity.facing == Vector2Int.right) {
+                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.left);
+                }
+                else {
+                    throw new Exception("OnFlipButtonClicked - selectedEntityFacing isn't left or right");
+                }
+            }
+        }
     }
+    
     class EditorPickerModeInputState : StateMachineState {
         EntityBase selectedEntityBase;
         
@@ -190,7 +210,7 @@ public class EditManager : SerializedMonoBehaviour {
                             // if entity can move
                             if (GM.editManager.CanMoveTo(newPos, selectedEntity)) {
                                 // move this entity
-                                GM.boardManager.MoveEntity(newPos, selectedEntity);
+                                GM.boardManager.MoveEntity(selectedEntity.data.id, newPos);
                             }
                             else {
                                 selectedEntity.entityBase.ResetTempView();
