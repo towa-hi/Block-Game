@@ -1,12 +1,14 @@
 ﻿// mysterious enum dumping ground
 
+using System.Diagnostics.CodeAnalysis;
+
 public enum CursorModeEnum {
     POINTING,
     PLACING,
     SELECTING,
     HOLDING,
     GAME,
-    OFF
+    OFF,
 }
 
 public enum DeathType {
@@ -26,15 +28,17 @@ public enum EditModeEnum {
 public enum EditTabEnum {
     PICKER,
     EDIT,
-    OPTIONS
+    OPTIONS,
 }
 
 public enum EntityTypeEnum {
+    BG,
     BLOCK,
     MOB,
     SPECIALBLOCK,
     PLAYER,
 }
+
 
 public enum EntityPrefabEnum {
     BLOCKPREFAB,
@@ -87,7 +91,7 @@ public enum SelectionStateEnum {
 public enum TeamEnum {
     PLAYER,
     NEUTRAL,
-    ENEMY
+    ENEMY,
 }
 
 public enum TimeStateEnum {

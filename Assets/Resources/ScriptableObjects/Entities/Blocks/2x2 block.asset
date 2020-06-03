@@ -24,7 +24,7 @@ MonoBehaviour:
   prefabPath: Blocks/2x2 block
   isFront: 1
   size: {x: 2, y: 2}
-  entityType: 0
+  entityType: 1
   touchDefense: 99
   fallDefense: 99
   defaultTeam: 1

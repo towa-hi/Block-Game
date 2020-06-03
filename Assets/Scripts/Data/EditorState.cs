@@ -8,7 +8,7 @@ public struct EditorState {
     public bool isFront;
     public EditTabEnum activeTab;
     public List<EntitySchema> frontContentList;
-    // public List<BgSchema> backContentList;
+    public List<EntitySchema> backContentList;
     public EntitySchema selectedSchema;
     public bool hasSelectedEntity;
     public int selectedEntityId;
@@ -25,7 +25,7 @@ public struct EditorState {
         EditorState newEditorState = new EditorState {
             isFront = true,
             frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
-            // backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(BgSchema)).Cast<BgSchema>().ToList(),
+            backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
             selectedSchema = null,
         };
         // TODO: this probably wont even work

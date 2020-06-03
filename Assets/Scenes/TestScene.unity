@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 484835695}
   - component: {fileID: 484835694}
   - component: {fileID: 484835696}
-  - component: {fileID: 484835697}
+  - component: {fileID: 484835698}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -396,16 +396,16 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
---- !u!114 &484835697
+--- !u!114 &484835698
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484835692}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 281489044db9a1b46b28faeaefb2c4e1, type: 3}
+  m_Script: {fileID: 11500000, guid: 7406f4db350e0364ba821a39b9f1b4c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -922,7 +922,6 @@ GameObject:
   - component: {fileID: 1922563757056264162}
   - component: {fileID: 1922563757056264172}
   - component: {fileID: 1922563757056264163}
-  - component: {fileID: 1922563757056264173}
   m_Layer: 5
   m_Name: FilePicker
   m_TagString: Untagged
@@ -989,33 +988,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922563757056264161}
   m_CullTransparentMesh: 0
---- !u!114 &1922563757056264173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922563757056264161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2406143368112f44879823bc10f5d52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  currentFileName: 
-  itemBaseList: []
-  content: {fileID: 1922563758258792783}
-  filePickerItemPrefabMaster: {fileID: 2888821130043325376, guid: bbad049556f1b124bbc29ab9cac4a4e1,
-    type: 3}
-  loadButton: {fileID: 1922563758991574956}
 --- !u!1 &1922563757503555370
 GameObject:
   m_ObjectHideFlags: 0
@@ -1905,7 +1877,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1922563757056264173}
+      - m_Target: {fileID: 0}
         m_MethodName: OnCancelButtonClick
         m_Mode: 1
         m_Arguments:
@@ -2034,7 +2006,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1922563757056264173}
+      - m_Target: {fileID: 0}
         m_MethodName: OnLoadButtonClick
         m_Mode: 1
         m_Arguments:
@@ -4119,8 +4091,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7326398631750073103}
   m_HandleRect: {fileID: 7326398631750073100}
   m_Direction: 2
-  m_Value: 0.0000013121706
-  m_Size: 0
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 11
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5466,7 +5438,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -553.23535}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7326398633029703921
@@ -9187,7 +9159,6 @@ GameObject:
   - component: {fileID: 8575073972074770474}
   - component: {fileID: 8575073972074770472}
   - component: {fileID: 8575073972074770473}
-  - component: {fileID: 8575073972074770479}
   m_Layer: 5
   m_Name: PlayPanel
   m_TagString: Untagged
@@ -9195,30 +9166,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &8575073972074770479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8575073972074770475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d1a6a1961b9f0f4fba7a3032d3a309e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  isPlaytest: 0
-  titleText: {fileID: 8575073972927565326}
-  playtestPanel: {fileID: 8575073971847754887}
 --- !u!222 &8575073972079431520
 CanvasRenderer:
   m_ObjectHideFlags: 0

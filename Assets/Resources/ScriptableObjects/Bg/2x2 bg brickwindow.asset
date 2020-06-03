@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ae48090afcb9046a67fc51c42e4072, type: 3}
+  m_Script: {fileID: 11500000, guid: ebdba317aa75b114ba62ca0b14c07ea4, type: 3}
   m_Name: 2x2 bg brickwindow
   m_EditorClassIdentifier: 
   serializationData:
@@ -21,5 +21,10 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  prefabPath: 2x2 bg brickwindow
+  prefabPath: Assets/Resources/ScriptableObjects/Bg/2x2 bg brickwindow.asset
+  isFront: 0
   size: {x: 2, y: 2}
+  entityType: 0
+  touchDefense: 0
+  fallDefense: 0
+  defaultTeam: 1
