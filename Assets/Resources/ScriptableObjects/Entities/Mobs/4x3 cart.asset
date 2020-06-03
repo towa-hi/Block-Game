@@ -22,8 +22,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   prefabPath: Mobs/4x3 cart
+  isFront: 1
   size: {x: 4, y: 3}
-  type: 1
+  entityType: 0
   touchDefense: 50
   fallDefense: 50
   defaultTeam: 1
+  hasNodes: 0

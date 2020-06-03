@@ -15,7 +15,6 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
-    Dictionary<Vector2Int, BoardCell> boardCellDictTemplate;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
@@ -37,12 +36,22 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void SetBoardCellDict(BoardState aBoardState) {
-        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>(this.boardCellDictTemplate);
+        foreach (KeyValuePair<Vector2Int, BoardCell> kvp in this.boardCellDict) {
+            BoardCell currentCell = kvp.Value;
+            currentCell.backEntityState = null;
+            currentCell.frontEntityState = null;
+        }
+
         foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
-            foreach(Vector2Int currentPos in Util.V2IInRect(kvp.Value.pos, kvp.Value.data.size)) {
-                BoardCell updatedCell = this.boardCellDict[currentPos];
-                updatedCell.entityState = kvp.Value;
-                this.boardCellDict[currentPos] = updatedCell;
+            EntityState foundEntity = kvp.Value;
+            foreach (Vector2Int currentPos in Util.V2IInRect(foundEntity.pos, foundEntity.data.size)) {
+                BoardCell currentCell = this.boardCellDict[currentPos];
+                if (foundEntity.data.isFront) {
+                    currentCell.frontEntityState = foundEntity;
+                }
+                else {
+                    currentCell.backEntityState = foundEntity;
+                }
             }
         }
     }
@@ -73,7 +82,7 @@ public class BoardManager : SerializedMonoBehaviour {
     
     public void MoveEntity(Vector2Int aPos, EntityState aEntityState) {
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
-        if (IsRectEmpty(aPos, aEntityState.data.size, ignoreSet)) {
+        if (IsRectEmpty(aPos, aEntityState.data.size, ignoreSet, aEntityState.data.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(aEntityState, aPos));
             aEntityState.entityBase.ResetTempView();
         } else {
@@ -127,7 +136,7 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public bool CanEditorPlaceSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
         // TODO: finish this
-        if (IsRectEmpty(aPos, aEntitySchema.size)) {
+        if (IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             return true;
         }
 
@@ -156,14 +165,28 @@ public class BoardManager : SerializedMonoBehaviour {
         throw new Exception("GetBoardGridSlice - rect not in board");
     }
 
-    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null) {
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
+        print("IsRectEmpty started aOrigin: " + aOrigin + "aSize: " + aSize + "aIsFront: " + aIsFront);
         if (IsRectInBoard(aOrigin, aSize)) {
             foreach (KeyValuePair<Vector2Int, BoardCell> kvp in GetBoardGridSlice(aOrigin, aSize)) {
-                if (kvp.Value.entityState != null) {
+                if (aIsFront && kvp.Value.frontEntityState != null) {
                     // if aIgnoreSet exists
                     if (aIgnoreSet != null) {
-                        // if found entity is inside aIgnoreSet
-                        if (aIgnoreSet.All(entityState => kvp.Value.entityState.Value.data.id != entityState.data.id) == true) {
+                        // if found front entity is inside aIgnoreSet
+                        if (aIgnoreSet.All(entityState => kvp.Value.frontEntityState.Value.data.id != entityState.data.id)) {
+                            // return false because an that id is blocking
+                            return false;
+                        }
+                    }
+                    else {
+                        // return false because something is blocking and theres no aIgnoreSet
+                        return false;
+                    }
+                }
+                else if (!aIsFront && kvp.Value.backEntityState != null) {
+                    if (aIgnoreSet != null) {
+                        // if found back entity is inside aIgnoreSet
+                        if (aIgnoreSet.All(entityState => kvp.Value.backEntityState.Value.data.id != entityState.data.id)) {
                             // return false because an that id is blocking
                             return false;
                         }
@@ -186,7 +209,7 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityState newEntity = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
         (BoardState newBoard, EntityState newEntityWithId) = BoardState.AddEntity(this.currentState, newEntity);
         UpdateBoardState(newBoard);
-        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.data.size);
+        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.data.size, newEntityWithId.data.isFront);
         if (!aEntitySchema.isFront) {
             newEntityPosition += new Vector3(0, 0, Constants.BGZOFFSET);
         }
@@ -207,12 +230,12 @@ public class BoardManager : SerializedMonoBehaviour {
     public void Init() {
         this.entityBaseDict = new Dictionary<int, EntityBase>();
         BoardState newBoard = BoardState.GenerateBlankBoard();
-        this.boardCellDictTemplate = new Dictionary<Vector2Int, BoardCell>();
+        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>();
         for (int x = 0; x < newBoard.size.x; x++) {
             for (int y = 0; y < newBoard.size.y; y++) {
                 Vector2Int currentPos = new Vector2Int(x, y);
                 BoardCell newCell = new BoardCell(currentPos);
-                this.boardCellDictTemplate[currentPos] = newCell;
+                this.boardCellDict[currentPos] = newCell;
             }
         }
         UpdateBoardState(newBoard);
@@ -233,11 +256,18 @@ public class BoardManager : SerializedMonoBehaviour {
         AddEntity(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
     }
 
-    public EntityState? GetEntityAtMousePos() {
+    public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
         Vector2Int mousePosV2 = GM.inputManager.mousePosV2;
         if (IsPosInBoard(mousePosV2)) {
-            EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].entityState;
-            return entityAtMousePos;
+            if (aIsFront) {
+                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].frontEntityState;
+                return entityAtMousePos;
+            }
+            else {
+                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].backEntityState;
+                return entityAtMousePos;
+            }
+            
         }
         else {
             return null;

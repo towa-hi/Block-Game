@@ -56,7 +56,7 @@ public class EntityBase : BoardStateListener {
 
     public void ResetTempView() {
         EntityState currentState = GM.boardManager.GetEntityById(this.data.id);
-        this.transform.position = Util.V2IOffsetV3(currentState.pos, this.data.size);
+        this.transform.position = Util.V2IOffsetV3(currentState.pos, this.data.size, this.data.isFront);
         this.isTempPos = false;
     }
     void OnDrawGizmos() {

@@ -22,8 +22,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   prefabPath: Mobs/Shufflebot/2x2 shufflebot
+  isFront: 1
   size: {x: 2, y: 2}
-  type: 0
+  entityType: 0
   touchDefense: 5
   fallDefense: 5
   defaultTeam: 2
+  hasNodes: 0

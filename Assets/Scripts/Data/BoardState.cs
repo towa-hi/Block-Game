@@ -19,7 +19,7 @@ public struct BoardState {
             creator = Config.USERNAME,
             par = 5,
             size = new Vector2Int(40, 24),
-            attempts = 0
+            attempts = 0,
         };
         return newBoard;
     }
@@ -32,7 +32,7 @@ public struct BoardState {
         int id = aBoardState.currentId;
         // id always set here
         aEntityState.data.id = id;
-        // never change currentId outside of here
+        // NEVER CHANGE CURRENTID OUTSIDE OF THIS FUNCTION!!!
         aBoardState.currentId += 1;
         aBoardState.entityDict[id] = aEntityState;
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);

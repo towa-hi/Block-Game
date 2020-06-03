@@ -21,10 +21,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  prefabPath: Assets/Resources/ScriptableObjects/Bg/2x2 bg panelinner.asset
+  prefabPath: BGs/2x2 bg panelinner
   isFront: 0
   size: {x: 2, y: 2}
   entityType: 0
   touchDefense: 0
   fallDefense: 0
   defaultTeam: 1
+  hasNodes: 0

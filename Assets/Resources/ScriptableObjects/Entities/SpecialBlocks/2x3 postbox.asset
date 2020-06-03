@@ -22,8 +22,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   prefabPath: SpecialBlocks/2x3 postbox
+  isFront: 1
   size: {x: 2, y: 3}
-  type: 1
+  entityType: 0
   touchDefense: 999
   fallDefense: 999
   defaultTeam: 1
+  hasNodes: 0

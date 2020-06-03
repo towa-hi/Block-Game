@@ -103,7 +103,7 @@ public class Cursor : EditorStateListener {
      }
 
      void CursorModeSelectingUpdate() {
-         EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos();
+         EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos(this.isFront);
 
          if (maybeAEntity.HasValue) {
              SetPos(maybeAEntity.Value.pos);

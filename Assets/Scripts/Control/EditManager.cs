@@ -95,7 +95,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void PlaceSelectedSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
-        if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size)) {
+        if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             GM.boardManager.AddEntity(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
@@ -116,7 +116,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
         if (!aEntityState.data.isBoundary) {
-            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState})) {
+            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState}, aEntityState.data.isFront)) {
 
                 return true;
             }
@@ -149,7 +149,7 @@ public class EditManager : SerializedMonoBehaviour {
                     case MouseStateEnum.DEFAULT:
                         break;
                     case MouseStateEnum.CLICKED:
-                        EntityState? clickedEntity = GM.boardManager.GetEntityAtMousePos();
+                        EntityState? clickedEntity = GM.boardManager.GetEntityAtMousePos(GM.editManager.currentState.isFront);
                         // if clickedEntityExists and is not a boundary
                         if (clickedEntity?.data.isBoundary == false) {
                             // select this entity in state and store the entityBase locally
@@ -203,7 +203,7 @@ public class EditManager : SerializedMonoBehaviour {
 
         public void Update() {
             if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
-                EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos();
+                EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos(GM.editManager.currentState.isFront);
                 if (maybeAEntity.HasValue) {
                     int id = maybeAEntity.Value.data.id;
                     GM.editManager.SetSelectedEntity(id);

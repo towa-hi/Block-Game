@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-public struct BoardCell {
+public class BoardCell {
     public Vector2Int pos;
-    public EntityState? entityState;
-
-    public BoardCell(Vector2Int aPos, EntityState? aEntityState = null) {
+    public EntityState? frontEntityState;
+    public EntityState? backEntityState;
+    
+    public BoardCell(Vector2Int aPos) {
         this.pos = aPos;
-        this.entityState = aEntityState;
+        this.frontEntityState = null;
+        this.backEntityState = null;
     }
 
     public void Reset() {
-        this.entityState = null;
+        this.frontEntityState = null;
     }
 }

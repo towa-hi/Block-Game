@@ -21,10 +21,11 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  prefabPath: Assets/Resources/ScriptableObjects/Bg/4x4 bg door.asset
+  prefabPath: BGs/4x4 bg door
   isFront: 0
   size: {x: 4, y: 4}
   entityType: 0
   touchDefense: 0
   fallDefense: 0
   defaultTeam: 1
+  hasNodes: 0
