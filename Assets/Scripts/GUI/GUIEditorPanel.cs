@@ -32,7 +32,7 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject filePicker;
 
     HashSet<GameObject> botPanels;
-    EditorState oldEditorState;
+    // EditorState oldEditorState;
     EditTabEnum activeTab;
     
     private void Awake()
@@ -50,7 +50,7 @@ public class GUIEditorPanel : EditorStateListener {
             this.isPickerItemsInitialized = true;
         }
         SetEditorStateVars(aNewEditorState);
-        this.oldEditorState = aNewEditorState;
+        // this.oldEditorState = aNewEditorState;
     }
 
     void CreatePickerItems(EditorState aEditorState) {
@@ -60,14 +60,19 @@ public class GUIEditorPanel : EditorStateListener {
             pickerItem.Init(entitySchema);
             this.pickerItemList.Add(pickerItem);
         }
+
+        foreach (EntitySchema entitySchema in aEditorState.backContentList) {
+            GameObject pickerItemGameObject = Instantiate(this.pickerItemMaster, this.pickerScrollRectContent.transform);
+            GUIPickerItem pickerItem = pickerItemGameObject.GetComponent<GUIPickerItem>();
+            pickerItem.Init(entitySchema);
+            this.pickerItemList.Add(pickerItem);
+        }
     }
     
     void SetPickerItems(EditorState aEditorState) {
-        if (aEditorState.isFront != this.oldEditorState.isFront) {
-            print("refreshing picker items");
-            foreach (GUIPickerItem pickerItem in this.pickerItemList) {
-                pickerItem.gameObject.SetActive(pickerItem.entitySchema.isFront == aEditorState.isFront);
-            }
+        print("refreshing picker items");
+        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
+            pickerItem.gameObject.SetActive(pickerItem.entitySchema.isFront == aEditorState.isFront);
         }
     }
 
@@ -126,7 +131,7 @@ public class GUIEditorPanel : EditorStateListener {
             this.previewStudio.SetTarget(selectedEntity);
             this.editModeNameText.text = selectedEntity.entityBase.name;
             this.editModeIsFixedToggle.SetIsOnWithoutNotify(selectedEntity.isFixed);
-            this.editModeIsFixedToggle.interactable = !selectedEntity.isBoundary;
+            this.editModeIsFixedToggle.interactable = !selectedEntity.data.isBoundary;
             
         }
         

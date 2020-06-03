@@ -31,7 +31,7 @@ public struct BoardState {
     public static Tuple<BoardState, EntityState> AddEntity(BoardState aBoardState, EntityState aEntityState) {
         int id = aBoardState.currentId;
         // id always set here
-        aEntityState.id = id;
+        aEntityState.data.id = id;
         // never change currentId outside of here
         aBoardState.currentId += 1;
         aBoardState.entityDict[id] = aEntityState;
@@ -54,7 +54,7 @@ public struct BoardState {
     }
     
     public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
-        aBoardState.entityDict[aEntityState.id] = aEntityState;
+        aBoardState.entityDict[aEntityState.data.id] = aEntityState;
         return aBoardState;
     }
     // public static BoardState SetPar(BoardState aBoardState, int aPar) {

@@ -12,25 +12,20 @@ public struct EditorState {
     public EntitySchema selectedSchema;
     public bool hasSelectedEntity;
     public int selectedEntityId;
-    // public EntityData selectedEntityData;
-    // public BgData selectedBgData;
-    // public bool isPlacing {
-    //     get {
-    //         return (this.selectedEntityData != null || this.selectedBgData != null);
-    //     }
-    // }
 
     [SuppressMessage("ReSharper", "ReturnValueOfPureMethodIsNotUsed")]
     public static EditorState CreateEditorState() {
         EditorState newEditorState = new EditorState {
             isFront = true,
             frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
-            backContentList = Resources.LoadAll("ScriptableObjects/Bg", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
+            backContentList = Resources.LoadAll("ScriptableObjects/BGs", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
             selectedSchema = null,
         };
         // TODO: this probably wont even work
         newEditorState.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
-        // newEditorState.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
+        newEditorState.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
+        newEditorState.hasSelectedEntity = false;
+        newEditorState.selectedEntityId = -42069;
         return newEditorState;
     }
 
@@ -44,32 +39,31 @@ public struct EditorState {
         return aEditorState;
     }
 
-    public static EditorState SetSelectedEntityId(EditorState aEditorState, bool aHasSelectedEntity, int aId = -1) {
-        aEditorState.hasSelectedEntity = aHasSelectedEntity;
+    public static EditorState SetSelectedEntityId(EditorState aEditorState, int aId) {
+        aEditorState.hasSelectedEntity = true;
         aEditorState.selectedEntityId = aId;
         return aEditorState;
     }
-    
-    public static EditorState ClearSelection(EditorState aEditorState) {
-        // aState.selectedEntityData = null;
-        // aState.selectedBgData = null;
+
+    public static EditorState ClearSelectedEntityId(EditorState aEditorState) {
+        aEditorState.hasSelectedEntity = false;
+        aEditorState.selectedEntityId = Constants.PLACEHOLDERINT;
         return aEditorState;
     }
-
+    
     public static EditorState SetIsFront(EditorState aEditorState, bool aIsFront) {
         aEditorState.isFront = aIsFront;
         aEditorState.selectedSchema = null;
-        // aState.selectedEntityData = null;
-        // aState.selectedBgData = null;
-        // aState.cursorMode = CursorModeEnum.SELECTING;
+        aEditorState.hasSelectedEntity = false;
+        aEditorState.selectedEntityId = -42069;
         return aEditorState;
     }
     
     public static EditorState SetActiveTab(EditorState aEditorState, EditTabEnum aEditTab) {
         aEditorState.activeTab = aEditTab;
         aEditorState.selectedSchema = null;
-        // aState.selectedEntityData = null;
-        // aState.selectedBgData = null;
+        aEditorState.hasSelectedEntity = false;
+        aEditorState.selectedEntityId = -42069;
         return aEditorState;
     }
 

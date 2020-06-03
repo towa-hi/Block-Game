@@ -73,7 +73,7 @@ public class Cursor : EditorStateListener {
                 else if (GM.editManager.currentState.hasSelectedEntity) {
                     EntityState selectedEntity = GM.editManager.GetSelectedEntity();
                     this.heldPos = selectedEntity.pos;
-                    this.heldSize = selectedEntity.size;
+                    this.heldSize = selectedEntity.data.size;
                     return CursorModeEnum.HOLDING;
                 }
                 else {
@@ -107,7 +107,7 @@ public class Cursor : EditorStateListener {
 
          if (maybeAEntity.HasValue) {
              SetPos(maybeAEntity.Value.pos);
-             SetSize(maybeAEntity.Value.size);
+             SetSize(maybeAEntity.Value.data.size);
          }
          else {
              SetPos(GM.inputManager.mousePosV2);

@@ -5,6 +5,8 @@ using Sirenix.OdinInspector;
 
 // static class for global constants... wow.
 public static class Constants {
+    public const int PLACEHOLDERINT = -42069;
+    public const float BGZOFFSET = -2f;
     public static readonly float BLOCKHEIGHT = 1.25f;
     public static readonly Vector3 BLOCKTHICCNESS = new Vector3(0, 0, 2.0f);
     public static readonly float DRAGTHRESHOLD = 0.2f;

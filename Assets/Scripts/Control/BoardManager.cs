@@ -39,7 +39,7 @@ public class BoardManager : SerializedMonoBehaviour {
     public void SetBoardCellDict(BoardState aBoardState) {
         this.boardCellDict = new Dictionary<Vector2Int, BoardCell>(this.boardCellDictTemplate);
         foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
-            foreach(Vector2Int currentPos in Util.V2IInRect(kvp.Value.pos, kvp.Value.size)) {
+            foreach(Vector2Int currentPos in Util.V2IInRect(kvp.Value.pos, kvp.Value.data.size)) {
                 BoardCell updatedCell = this.boardCellDict[currentPos];
                 updatedCell.entityState = kvp.Value;
                 this.boardCellDict[currentPos] = updatedCell;
@@ -73,7 +73,7 @@ public class BoardManager : SerializedMonoBehaviour {
     
     public void MoveEntity(Vector2Int aPos, EntityState aEntityState) {
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {aEntityState};
-        if (IsRectEmpty(aPos, aEntityState.size, ignoreSet)) {
+        if (IsRectEmpty(aPos, aEntityState.data.size, ignoreSet)) {
             UpdateEntityAndBoardState(EntityState.SetPos(aEntityState, aPos));
             aEntityState.entityBase.ResetTempView();
         } else {
@@ -160,31 +160,40 @@ public class BoardManager : SerializedMonoBehaviour {
         if (IsRectInBoard(aOrigin, aSize)) {
             foreach (KeyValuePair<Vector2Int, BoardCell> kvp in GetBoardGridSlice(aOrigin, aSize)) {
                 if (kvp.Value.entityState != null) {
-                    if (aIgnoreSet.All(entityState => kvp.Value.entityState.Value.id != entityState.id)) {
+                    // if aIgnoreSet exists
+                    if (aIgnoreSet != null) {
+                        // if found entity is inside aIgnoreSet
+                        if (aIgnoreSet.All(entityState => kvp.Value.entityState.Value.data.id != entityState.data.id) == true) {
+                            // return false because an that id is blocking
+                            return false;
+                        }
+                    }
+                    else {
+                        // return false because something is blocking and theres no aIgnoreSet
                         return false;
                     }
                 }
             }
+            // return true because all cells were empty or had ignored entities
             return true;
         }
+        Debug.Log("IsRectEmpty - returned false because tried to evaluate out of bounds");
+        // return false because rect isnt even in grid
         return false;
     }
 
     public void AddEntity(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
-        // create the new entity without the id 
         EntityState newEntity = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
         (BoardState newBoard, EntityState newEntityWithId) = BoardState.AddEntity(this.currentState, newEntity);
-        // addEntity in boardstate will add id to the new version of that entity inside the tuple as nweEntityWithId
-        // 
         UpdateBoardState(newBoard);
-        // make the entity base
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityWithId.prefabPath), Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.size), Quaternion.identity,  this.transform); 
+        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityWithId.pos, newEntityWithId.data.size);
+        if (!aEntitySchema.isFront) {
+            newEntityPosition += new Vector3(0, 0, Constants.BGZOFFSET);
+        }
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityWithId.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-        this.entityBaseDict[newEntityWithId.id] = entityBase;
+        this.entityBaseDict[newEntityWithId.data.id] = entityBase;
         entityBase.Init(newEntityWithId);
-        // put the entitybase inside a dict with the id so we can get it later
-        // update board 
-        // UpdateBoardState(newBoard);
     }
 
     public void RemoveEntity(int aId) {

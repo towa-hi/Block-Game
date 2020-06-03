@@ -6,15 +6,16 @@ using Sirenix.OdinInspector;
 public class Util {
 
     // convert a Vector2Int point to Vector3 point with 0 as z 
-    public static Vector3 V2IToV3(Vector2Int aPos) {
-        return new Vector3(aPos.x, aPos.y * (float)Constants.BLOCKHEIGHT, 0f);
+    public static Vector3 V2IToV3(Vector2Int aPos, bool aIsFront = true) {
+        return new Vector3(aPos.x, aPos.y * (float)Constants.BLOCKHEIGHT, aIsFront ? 0 : Constants.BGZOFFSET);
     }
 
     // convert a Vector2Int position to corresponding Vector3 position with offset for block size
-    public static Vector3 V2IOffsetV3(Vector2Int aPos, Vector2Int aSize) {
+    public static Vector3 V2IOffsetV3(Vector2Int aPos, Vector2Int aSize, bool aIsFront = true) {
         float newX = (float)aPos.x + (float)aSize.x/2;
         float newY = ((float)aPos.y + (float)aSize.y/2) * (float)Constants.BLOCKHEIGHT;
-        return new Vector3(newX, newY, 0);
+        float newZ = aIsFront ? 0 : Constants.BGZOFFSET;
+        return new Vector3(newX, newY, newZ);
     }
 
     // convert a Vector3 to a Vector2Int ignoring z
@@ -78,7 +79,7 @@ public class Util {
         }
     }
     
-    public static List<Vector2Int> V2IInRect(Vector2Int aOrigin, Vector2Int aSize) {
+    public static IEnumerable<Vector2Int> V2IInRect(Vector2Int aOrigin, Vector2Int aSize) {
         List<Vector2Int> V2IList = new List<Vector2Int>();
         for (int x = aOrigin.x; x < aOrigin.x + aSize.x; x++) {
             for (int y = aOrigin.y; y < aOrigin.y + aSize.y; y++) {

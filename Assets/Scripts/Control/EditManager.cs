@@ -101,12 +101,12 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void SetSelectedEntity(int aId) {
-        EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, true, aId);
+        EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, aId);
         UpdateEditorState(newEditorState);
     }
 
     public void ResetSelectedEntity() {
-        EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, false);
+        EditorState newEditorState = EditorState.ClearSelectedEntityId(this.currentState);
         UpdateEditorState(newEditorState);
     }
     
@@ -115,8 +115,8 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
-        if (!aEntityState.isBoundary) {
-            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.size, new HashSet<EntityState> {aEntityState})) {
+        if (!aEntityState.data.isBoundary) {
+            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState})) {
 
                 return true;
             }
@@ -128,7 +128,7 @@ public class EditManager : SerializedMonoBehaviour {
         EntityBase selectedEntityBase;
         
         public void Enter() {
-            GM.editManager.ResetSelectedEntity();
+            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.PICKER);
         }
 
@@ -151,10 +151,10 @@ public class EditManager : SerializedMonoBehaviour {
                     case MouseStateEnum.CLICKED:
                         EntityState? clickedEntity = GM.boardManager.GetEntityAtMousePos();
                         // if clickedEntityExists and is not a boundary
-                        if (clickedEntity?.isBoundary == false) {
+                        if (clickedEntity?.data.isBoundary == false) {
                             // select this entity in state and store the entityBase locally
                             EntityState selectedEntity = clickedEntity.Value;
-                            GM.editManager.SetSelectedEntity(selectedEntity.id);
+                            GM.editManager.SetSelectedEntity(selectedEntity.data.id);
                             this.selectedEntityBase = selectedEntity.entityBase;
                         }
                         else {
@@ -197,7 +197,7 @@ public class EditManager : SerializedMonoBehaviour {
     class EditorEditModeInputState : StateMachineState {
 
         public void Enter() {
-            GM.editManager.ResetSelectedEntity();
+            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.EDIT);
         }
 
@@ -205,7 +205,7 @@ public class EditManager : SerializedMonoBehaviour {
             if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
                 EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos();
                 if (maybeAEntity.HasValue) {
-                    int id = maybeAEntity.Value.id;
+                    int id = maybeAEntity.Value.data.id;
                     GM.editManager.SetSelectedEntity(id);
                 }
                 else {
@@ -225,7 +225,7 @@ public class EditManager : SerializedMonoBehaviour {
     class EditorOptionsModeInputState : StateMachineState {
         
         public void Enter() {
-            GM.editManager.ResetSelectedEntity();
+            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.OPTIONS);
         }
 

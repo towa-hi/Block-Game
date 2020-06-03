@@ -15,11 +15,14 @@ public class EntitySchema : SerializedScriptableObject {
     public int touchDefense;
     public int fallDefense;
     public TeamEnum defaultTeam;
+    public bool hasNodes;
 
-    [ContextMenu("FileNameToNameField")]
-    public void FileNameToNameField() {
-        this.prefabPath = AssetDatabase.GetAssetPath(this.GetInstanceID());
+    [ContextMenu("BgFileNameToNameField")]
+    public void BgFileNameToNameField() {
+        string path = AssetDatabase.GetAssetPath(this.GetInstanceID());
+        this.prefabPath = "BGs/" + Path.GetFileNameWithoutExtension(path);
     }
+    
     [ContextMenu("BlockFileNameToNameField")]
     public void BlockFileNameToNameField() {
         string path = AssetDatabase.GetAssetPath(this.GetInstanceID());

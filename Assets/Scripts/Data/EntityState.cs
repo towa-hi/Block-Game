@@ -6,27 +6,31 @@ using UnityEditor;
 using Sirenix.OdinInspector;
 
 
-
-
-
-
-
-public struct EntityState {
+public struct EntityImmutableData {
     public int id;
-    // never change these
     public bool isFront;
     public string name;
     public Vector2Int size;
     public EntityTypeEnum entityType;
     public bool isBoundary;
     public string prefabPath;
+}
+
+
+
+
+public struct EntityState {
+    // public int id;
+    // never change this
+    public EntityImmutableData data;
 
     public Vector2Int pos;
     public Vector2Int facing;
     public Color defaultColor;
     public bool isFixed;
     public TeamEnum team;
-
+    public bool hasNodes;
+    
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
 
@@ -35,7 +39,7 @@ public struct EntityState {
 
     public EntityBase entityBase {
         get {
-            return GM.boardManager.GetEntityBaseById(this.id);
+            return GM.boardManager.GetEntityBaseById(this.data.id);
         }
     }
 
@@ -46,21 +50,23 @@ public struct EntityState {
         }
         
         if (
-            this.id == aOther.id &&
-            this.name == aOther.name &&
-            this.size == aOther.size &&
-            this.entityType == aOther.entityType &&
-            this.isBoundary == aOther.isBoundary &&
-            this.prefabPath == aOther.prefabPath &&
+            this.data.id == aOther.data.id &&
+            this.data.isFront == aOther.data.isFront &&
+            this.data.name == aOther.data.name &&
+            this.data.size == aOther.data.size &&
+            this.data.entityType == aOther.data.entityType &&
+            this.data.isBoundary == aOther.data.isBoundary &&
+            this.data.prefabPath == aOther.data.prefabPath &&
             this.pos == aOther.pos &&
             this.facing == aOther.facing &&
             this.defaultColor == aOther.defaultColor &&
             this.isFixed == aOther.isFixed &&
             this.team == aOther.team &&
+            this.hasNodes == aOther.hasNodes &&
             this.upNodes == aOther.upNodes &&
             this.downNodes == aOther.downNodes &&
             this.touchDefense == aOther.touchDefense &&
-            this.fallDefense == aOther.fallDefense
+            this.fallDefense == aOther.fallDefense 
         ) {
             return true;
         } else {
@@ -70,38 +76,41 @@ public struct EntityState {
 
     public static EntityState CreateEntityState(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         EntityState newEntityState = new EntityState();
-        // set vals from EntitySchema
-        newEntityState.prefabPath = aEntitySchema.prefabPath;
-        newEntityState.isFront = aEntitySchema.isFront;
-        newEntityState.size = aEntitySchema.size;
-        newEntityState.entityType = aEntitySchema.entityType;
-        newEntityState.touchDefense = aEntitySchema.touchDefense;
-        newEntityState.fallDefense = aEntitySchema.fallDefense;
-        newEntityState.team = aEntitySchema.defaultTeam;
-        
-        // set vals from params
+        // set immutable values
+        newEntityState.data = new EntityImmutableData {
+            id = Constants.PLACEHOLDERINT,
+            isFront = aEntitySchema.isFront,
+            name = GenerateName(),
+            size = aEntitySchema.size,
+            entityType = aEntitySchema.entityType,
+            isBoundary = aIsBoundary,
+            prefabPath = aEntitySchema.prefabPath,
+        };
         newEntityState.pos = aPos;
         newEntityState.facing = aFacing;
         newEntityState.defaultColor = aDefaultColor;
         newEntityState.isFixed = aIsFixed;
-        newEntityState.isBoundary = aIsBoundary;
+        newEntityState.team = aEntitySchema.defaultTeam;
+        newEntityState.hasNodes = aEntitySchema.hasNodes;
         // initialize some vals
         newEntityState.upNodes = new HashSet<Vector2Int>();
         newEntityState.downNodes = new HashSet<Vector2Int>();
-        newEntityState.name = GenerateName();
+        
+        newEntityState.touchDefense = aEntitySchema.touchDefense;
+        newEntityState.fallDefense = aEntitySchema.fallDefense;
 
         return newEntityState;
 
         string GenerateName() {
             string nameString = aEntitySchema.name + " ";
             nameString += newEntityState.GetHashCode();
-            if (newEntityState.isBoundary) {
+            if (aIsBoundary) {
                 nameString += " (boundary) ";
             }
             return nameString;
         }
     }
-
+    
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
         aEntityState.pos = aPos;
         return aEntityState;
