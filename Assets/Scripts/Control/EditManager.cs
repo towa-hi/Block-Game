@@ -111,7 +111,12 @@ public class EditManager : SerializedMonoBehaviour {
     }
     
     public EntityState GetSelectedEntity() {
-        return GM.boardManager.GetEntityById(this.currentState.selectedEntityId);
+        if (this.currentState.selectedEntityId != Constants.PLACEHOLDERINT) {
+            return GM.boardManager.GetEntityById(this.currentState.selectedEntityId);
+        }
+        else {
+            throw new Exception("GetSelectedEntity - no entity selected");
+        }
     }
 
     public bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
@@ -123,7 +128,18 @@ public class EditManager : SerializedMonoBehaviour {
         }
         return false;
     }
-    
+
+    public void OnDeleteButtonClicked() {
+        if (this.currentState.hasSelectedEntity) {
+            GM.boardManager.RemoveEntity(this.currentState.selectedEntityId);
+            ResetSelectedEntity();
+        }
+        
+    }
+
+    public void OnFlipButtonClicked() {
+        
+    }
     class EditorPickerModeInputState : StateMachineState {
         EntityBase selectedEntityBase;
         

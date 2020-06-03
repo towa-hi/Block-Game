@@ -225,7 +225,7 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityBase entityBase = this.entityBaseDict[aId];
         BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
         this.entityBaseDict.Remove(aId);
-        Destroy(entityBase);
+        Destroy(entityBase.gameObject);
         UpdateBoardState(newBoard);
     }
 
