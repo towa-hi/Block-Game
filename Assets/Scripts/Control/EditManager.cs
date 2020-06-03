@@ -203,11 +203,12 @@ public class EditManager : SerializedMonoBehaviour {
                         break;
                     case MouseStateEnum.CLICKED:
                         EntityState? clickedEntity = GM.boardManager.GetEntityAtMousePos();
-                        if (clickedEntity.HasValue) {
+                        // if clickedEntityExists and is not a boundary
+                        if (clickedEntity?.isBoundary == false) {
+                            // select this entity in state and store the entityBase locally
                             EntityState selectedEntity = clickedEntity.Value;
                             GM.editManager.SetSelectedEntity(selectedEntity.id);
                             this.selectedEntityBase = selectedEntity.entityBase;
-                            print(this.selectedEntityBase.name);
                         }
                         else {
                             GM.editManager.ResetSelectedEntity();
@@ -223,7 +224,9 @@ public class EditManager : SerializedMonoBehaviour {
                         if (GM.editManager.currentState.hasSelectedEntity) {
                             EntityState selectedEntity = GM.editManager.GetSelectedEntity();
                             Vector2Int newPos = selectedEntity.pos + GM.inputManager.dragOffsetV2;
+                            // if entity can move
                             if (GM.editManager.CanMoveTo(newPos, selectedEntity)) {
+                                // move this entity
                                 GM.boardManager.MoveEntity(newPos, selectedEntity);
                             }
                             else {
@@ -286,105 +289,3 @@ public class EditManager : SerializedMonoBehaviour {
         }
     }
 }
-
-
-
-// public class EditorPickerState2 : GameState {
-//     // TODO: make clickposoffset work
-//     public EditorPickerState2() {
-
-//     }
-
-//     public void Enter() {
-        
-//     }
-
-//     public void Update() {
-//         // EditorState currentState = GM2.editManager3.GetState();
-//         // if (currentState.selectedSchema != null) {
-//         //     switch (GM2.inputManager2.mouseState) {
-//         //         case MouseStateEnum.CLICKED:
-//         //             GM2.editManager2.TryPlaceSchema(GM.inputManager.mousePosV2, currentState.selectedSchema);
-                    
-//         //             break;
-//         //     }
-//         //     if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
-//         //         // clear placement selection
-//         //         GM.editManager2.UpdateState(EditorState.ClearSchema(currentState));
-//         //     }
-//         // } else {
-//         //     switch (GM.inputManager.mouseState) {
-//         //         case MouseStateEnum.CLICKED:
-//         //             EditorState newClickedState = EditorState.SetSelectionToMousePos(currentState);
-//         //             GM.editManager2.UpdateState(newClickedState);
-//         //             break;
-//         //         case MouseStateEnum.HELD:
-//         //             if (currentState.selectedEntityData != null) {
-//         //                 currentState.selectedEntityData.entityBase.SetViewPosition(currentState.selectedEntityData.pos + GM.inputManager.dragOffsetV2);
-//         //             } else if (currentState.selectedBgData != null) {
-//         //                 currentState.selectedBgData.bgBase.SetViewPosition(currentState.selectedBgData.pos + GM.inputManager.dragOffsetV2);
-//         //             }
-//         //             break;
-//         //         case MouseStateEnum.RELEASED:
-//         //             if (currentState.selectedEntityData != null) {
-//         //                 GM.editManager2.TryMoveEntity(currentState.selectedEntityData.pos + GM.inputManager.dragOffsetV2, currentState.selectedEntityData);
-//         //                 currentState.selectedEntityData.entityBase.ResetViewPosition();
-//         //             } else if (currentState.selectedBgData != null) {
-//         //                 GM.editManager2.TryMoveBg(currentState.selectedBgData.pos + GM.inputManager.dragOffsetV2, currentState.selectedBgData);
-//         //                 currentState.selectedBgData.bgBase.ResetViewPosition();
-//         //             }
-//         //             EditorState newReleasedState = EditorState.ClearSelection(currentState);
-//         //             GM.editManager2.UpdateState(newReleasedState);
-//         //             break;
-//         //     }
-//         // }
-//     }
-    
-//     void CursorUpdate() {
-        
-//     }
-    
-//     public void Exit() {
-
-//     }
-// }
-
-// public class EditorEditState2 : GameState {
-
-//     public void Enter() {
-
-//     }
-
-//     public void Update() {
-//         // EditorState currentState = GM.editManager2.GetState();
-//         // switch (GM.inputManager.mouseState) {
-//         //     case MouseStateEnum.CLICKED:
-//         //         EditorState newClickedState = EditorState.SetSelectionToMousePos(currentState);
-//         //         GM.editManager2.UpdateState(newClickedState);
-//         //         break;
-//         // }
-//         // if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
-//         //     EditorState newRightClickedState = EditorState.ClearSelection(currentState);
-//         //     GM.editManager2.UpdateState(newRightClickedState);
-//         // }
-//     }
-
-//     public void Exit() {
-
-//     }
-// }
-
-// public class EditorOptionsState2 : GameState {
-
-//     public void Enter() {
-
-//     }
-
-//     public void Update() {
-
-//     }
-
-//     public void Exit() {
-
-//     }
-// }
