@@ -88,7 +88,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6727608731791734752}
-  - component: {fileID: 6042197577170672340}
+  - component: {fileID: -8455303593427363523}
   m_Layer: 0
   m_Name: 3x1 block
   m_TagString: Untagged
@@ -111,7 +111,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6042197577170672340
+--- !u!114 &-8455303593427363523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5956430231947734351}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa371781659d26d49844351b4e2ecb38, type: 3}
+  m_Script: {fileID: 11500000, guid: 452728aaa067c904995af5b1f3dfc371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -138,6 +138,9 @@ MonoBehaviour:
     - Name: id
       Entry: 3
       Data: 0
+    - Name: isFront
+      Entry: 5
+      Data: false
     - Name: name
       Entry: 6
       Data: 
@@ -226,6 +229,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   id: 0
+  isTempPos: 0
   model: {fileID: 0}
   modelRenderer: {fileID: 0}
   childRenderers: []

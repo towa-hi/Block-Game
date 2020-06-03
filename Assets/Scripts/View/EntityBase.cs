@@ -1,122 +1,69 @@
-﻿// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// using Sirenix.OdinInspector;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Sirenix.OdinInspector;
 
-// // all entities have this as the base component. holds important gameplay data and entity state
-// // but doesn't hold graphics data or graphics state
-// [SelectionBase]
-// public class EntityBase : SerializedMonoBehaviour {
-//     private HashSet<IComponent> iComponentSet;
-//     public EntityView entityView;
-//     public EntityData entityData;
-//     public bool isInTempPos;
-//     public bool isDying;
-//     DeathType deathType;
-//     public Animator animator;
-//     float t;
-//     public float originalHeight;
 
-//     // we want to initialize entityBase, all the iComponents and entityView with entityData
-//     public void Init(EntityData aEntityData) {
-//         this.entityData = aEntityData;
-//         this.entityView = this.transform.GetChild(0).GetComponent<EntityView>();
-//         this.name = this.entityData.name;
-//         this.iComponentSet = new HashSet<IComponent>();
-//         this.entityView.Init(this.entityData);
-//         ResetViewPosition();
-//         foreach (IComponent iComponent in GetComponents(typeof(IComponent))) {
-//             iComponentSet.Add(iComponent);
-//             iComponent.Init();
-//         }
-//         this.entityData.componentsAreInitialized = true;
-//         this.isDying = false;
-//     }
+public class EntityBase : BoardStateListener {
+    // temp
+    public int id;
+    [SerializeField] bool isTempPos;
+    public EntityState oldEntityState;
+    public GameObject model;
+    public Renderer modelRenderer;
+    public Renderer[] childRenderers;
 
-//     public IComponent GetCachedIComponent<T>() {
-//         foreach (IComponent iComponent in this.iComponentSet) {
-//             if (iComponent.GetType() == typeof(T)) {
-//                 return iComponent;
-//             }
-//         }
-//         return null;
-//     }
+    void Awake() {
+        this.id = -42069;
+        this.model = this.transform.GetChild(0).gameObject;
+        this.modelRenderer = this.model.GetComponent<Renderer>();
+        this.childRenderers = this.model.GetComponentsInChildren<Renderer>();
+    }
 
-//     public void DoFrame() {
-//         if (this.isDying) {
-//             if (this.t < 1) {
-//                 t += Time.deltaTime / Constants.DEATHSTATETIME;
-//                 this.entityView.myRenderer.material.color = Color.Lerp(this.entityData.defaultColor, Color.black, t);
-//             } else {
-//                 print("dying for real now");
-//                 GM.playManager.FinishEntityDeath(this.entityData);
-//             }
-//         } else {
-//             foreach (IComponent component in iComponentSet) {
-//             component.DoFrame();
-//         }
-//         }
-        
-//     }
+    public void Init(EntityState aEntityState) {
+        this.id = aEntityState.id;
+        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size);
+        SetColor(aEntityState.defaultColor);
+        this.oldEntityState = aEntityState;
+        this.name = aEntityState.name + " Id: " + aEntityState.id;
+    }
 
-//     public void Die(DeathType aDeathType) {
-//         this.isDying = true;
-//         this.deathType = aDeathType;
-//         switch (this.deathType) {
-//             case DeathType.BUMP:   
-//                 break;
-//             case DeathType.FIRE:
-//                 break;
-//             case DeathType.BISECTED:
-//                 break;
-//             case DeathType.SQUISHED:
-//                 print("squished");
-//                 animator.SetTrigger("Squish");
-//                 break;
-//         }
-//     }
+    protected override void OnUpdateBoardState(BoardState aBoardState) {
+        // when id is -1, this wont recieve any boardupdates because it hasn't been
+        // assigned an ID yet by BoardManager.CreateView
+        if (this.id == -42069) {
+            return;
+        }
+        EntityState newEntityState = aBoardState.entityDict[this.id];
+        if (!this.oldEntityState.CustomEquals(newEntityState)) {
+            // print(id + " updated entity state");
+            this.transform.position = Util.V2IOffsetV3(newEntityState.pos, newEntityState.size);
+            SetColor(newEntityState.defaultColor);
+            this.oldEntityState = newEntityState;
+        }
+    }
 
-//     void DeathUpdate() {
-//         switch (this.deathType) {
-//             case DeathType.BUMP:
-//                 if (this.t < 1) {
-//                     t += Time.deltaTime / Constants.DEATHSTATETIME;
-//                     this.entityView.myRenderer.material.color = Color.Lerp(this.entityData.defaultColor, Color.black, t);
-//                 }
-//                 break;
-//             case DeathType.FIRE:
-//                 if (this.t < 1) {
-//                     t += Time.deltaTime / Constants.DEATHSTATETIME;
-//                 }
-//                 break;
-//             case DeathType.BISECTED:
-//                 if (this.t < 1) {
-//                     t += Time.deltaTime / Constants.DEATHSTATETIME;
-//                 }
-//                 break;
-//             case DeathType.SQUISHED:
-//                 if (this.t < 1) {
-//                     t += Time.deltaTime / Constants.DEATHSTATETIME;
+    public void SetColor(Color aColor) {
+        this.modelRenderer.material.color = aColor;
+        foreach (Renderer childRenderer in this.childRenderers) {
+            childRenderer.material.color = aColor;
+        }
+    }
 
-//                 }
-//                 break;
-//         }
-//     }
+    public void SetTempViewPosition(Vector2Int aPos) {
+        this.transform.position = Util.V2IOffsetV3(aPos, GM.boardManager.GetEntityById(this.id).size);
+        this.isTempPos = true;
+    }
 
-//     public void SetViewPosition(Vector2Int aPos) {
-//         this.transform.position = Util.V2IOffsetV3(aPos, this.entityData.size);
-//         this.isInTempPos = true;
-//     }
-
-//     public void ResetViewPosition() {
-//         this.transform.position = Util.V2IOffsetV3(this.entityData.pos, this.entityData.size);
-//         this.isInTempPos = false;
-//         if (this.entityData.facing == Vector2Int.right) {
-//             this.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-//         } else if (this.entityData.facing == Vector2Int.left) {
-//             this.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-//         }
-//     }
-//     // TODO: have a reset that lerps quickly back to pos
-// }
-
+    public void ResetTempView() {
+        EntityState currentState = GM.boardManager.GetEntityById(this.id);
+        this.transform.position = Util.V2IOffsetV3(currentState.pos, currentState.size);
+        this.isTempPos = false;
+    }
+    void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Vector2Int size = this.oldEntityState.size;
+        Vector3 sizeV3 = new Vector3(size.x, size.y * Constants.BLOCKHEIGHT, 2f);
+        Gizmos.DrawWireCube(this.transform.position, sizeV3);
+    }
+}

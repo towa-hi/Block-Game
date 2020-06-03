@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class lineScript : SerializedMonoBehaviour {
+public class LineScript : SerializedMonoBehaviour {
     // Start is called before the first frame update
     float age;
     void Start()

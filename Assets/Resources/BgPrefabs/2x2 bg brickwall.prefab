@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8209002909691020955}
-  - component: {fileID: -6977915021582549781}
+  - component: {fileID: 3216206094723413296}
   m_Layer: 0
   m_Name: 2x2 bg brickwall
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6977915021582549781
+--- !u!114 &3216206094723413296
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7373998939738982928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a597a41bd6b2942bdc8904139a8c6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 452728aaa067c904995af5b1f3dfc371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -53,10 +53,107 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: bgData
+    - Name: oldEntityState
+      Entry: 7
+      Data: EntityState, Assembly-CSharp
+    - Name: id
+      Entry: 3
+      Data: 0
+    - Name: isFront
+      Entry: 5
+      Data: false
+    - Name: name
       Entry: 6
       Data: 
-  isInTempPos: 0
+    - Name: size
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: entityType
+      Entry: 3
+      Data: 0
+    - Name: isBoundary
+      Entry: 5
+      Data: false
+    - Name: prefabPath
+      Entry: 6
+      Data: 
+    - Name: pos
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: facing
+      Entry: 7
+      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: defaultColor
+      Entry: 7
+      Data: UnityEngine.Color, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: isFixed
+      Entry: 5
+      Data: false
+    - Name: team
+      Entry: 3
+      Data: 0
+    - Name: upNodes
+      Entry: 6
+      Data: 
+    - Name: downNodes
+      Entry: 6
+      Data: 
+    - Name: touchDefense
+      Entry: 3
+      Data: 0
+    - Name: fallDefense
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+  id: 0
+  isTempPos: 0
+  model: {fileID: 0}
+  modelRenderer: {fileID: 0}
+  childRenderers: []
 --- !u!1 &8588955248664803326
 GameObject:
   m_ObjectHideFlags: 0
