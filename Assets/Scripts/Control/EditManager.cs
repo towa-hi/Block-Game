@@ -106,7 +106,6 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void ResetSelectedEntity() {
-        
         EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, false);
         UpdateEditorState(newEditorState);
     }
@@ -124,59 +123,7 @@ public class EditManager : SerializedMonoBehaviour {
         }
         return false;
     }
-
-
-    // public void TryPlaceSchema(Vector2Int aPos, Object aSchema) {
-    //     // Debug.Assert((aSchema is EntitySchema || aSchema is BgSchema));
-    //     // if (aSchema is EntitySchema) {
-    //     //     EntitySchema entitySchema = aSchema as EntitySchema;
-    //     //     if (GM.boardData.CanEditorPlaceEntitySchema(aPos, entitySchema)) {
-    //     //         EntityData newEntityData = new EntityData(entitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
-    //     //         GM.boardManager.CreateEntityFromData(newEntityData);
-    //     //     }
-    //     // } else if (aSchema is BgSchema) {
-    //     //     BgSchema bgSchema = aSchema as BgSchema;
-    //     //     if (GM.boardData.backgroundData.CanEditorPlaceBgSchema(aPos, bgSchema)) {
-    //     //         BgData newBgData = new BgData(bgSchema, aPos, Constants.DEFAULTCOLOR);
-    //     //         GM.boardManager.CreateBgFromData(newBgData);
-    //     //     }
-    //     // }
-    // }
-
     
-    // public void TryMoveEntity(Vector2Int aPos, EntityData aEntityData) {
-    //     // if (CanMoveEntityInEditor(aEntityData)) {
-    //     //     if (GM.boardData.IsRectEmpty(aPos, aEntityData.size, aEntityData)) {
-    //     //         GM.boardManager.MoveEntityAndView(aPos, aEntityData);
-    //     //     }
-    //     // }
-    // }
-
-    // public void TryMoveBg(Vector2Int aPos, BgData aBgData) {
-    //     // if (GM.boardData.backgroundData.IsRectEmpty(aPos, aBgData.size, aBgData)) {
-    //     //     GM.boardManager.MoveBgAndView(aPos, aBgData);
-    //     // }
-    // }
-
-    // static bool CanMoveEntityInEditor(EntityData aEntityData) {
-    //     if (aEntityData.isBoundary) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // static GameState GetEditorGameState(EditorState aEditorState) {
-    //     switch (aEditorState.activeTab) {
-    //         case EditTabEnum.PICKER:
-    //             return new EditorPickerState2();
-    //         case EditTabEnum.EDIT:
-    //             return new EditorEditState2();
-    //         case EditTabEnum.OPTIONS:
-    //             return new EditorOptionsState2();
-    //     }
-    //     throw new System.Exception("unrecognized EditTabEnum");
-    // }
-
     class EditorPickerModeInputState : StateMachineState {
         EntityBase selectedEntityBase;
         
