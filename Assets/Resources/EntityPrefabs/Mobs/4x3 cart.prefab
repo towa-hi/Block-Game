@@ -89,6 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 329892366433472156}
   - component: {fileID: 6802058057353121299}
+  - component: {fileID: 4610500487559700565}
   m_Layer: 0
   m_Name: 4x3 cart
   m_TagString: Untagged
@@ -134,6 +135,31 @@ MonoBehaviour:
     SerializationNodes: []
   isTempPos: 0
   model: {fileID: 0}
+--- !u!114 &4610500487559700565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6932952021507497975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ed02cea59a62f4a9b1c03f3f44a7b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: stateMachine
+      Entry: 6
+      Data: 
+  needsNewState: 0
 --- !u!43 &-4619554832309304917
 Mesh:
   m_ObjectHideFlags: 0

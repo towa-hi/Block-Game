@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8821408420897672514}
   - component: {fileID: 6968970567592863175}
   - component: {fileID: 480492657202205085}
+  - component: {fileID: 3321339688300021798}
   m_Layer: 0
   m_Name: 2x3 player
   m_TagString: Untagged
@@ -75,6 +76,31 @@ MonoBehaviour:
     SerializationNodes: []
   isTempPos: 0
   model: {fileID: 0}
+--- !u!114 &3321339688300021798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792630420253673571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ed02cea59a62f4a9b1c03f3f44a7b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: stateMachine
+      Entry: 6
+      Data: 
+  needsNewState: 0
 --- !u!1 &5659184103243050085
 GameObject:
   m_ObjectHideFlags: 0

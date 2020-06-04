@@ -8,6 +8,7 @@ using Sirenix.Utilities;
 public class EntityBase : BoardStateListener {
     [SerializeField] bool isTempPos;
     public GameObject model;
+    public MobBase mobBase;
     Renderer modelRenderer;
     HashSet<Renderer> childRenderers;
     EntityImmutableData data;
@@ -22,8 +23,15 @@ public class EntityBase : BoardStateListener {
         this.model = this.transform.GetChild(0).gameObject;
         this.modelRenderer = this.model.GetComponent<Renderer>();
         this.childRenderers = this.model.GetComponentsInChildren<Renderer>().ToHashSet();
+        this.mobBase = GetComponent<MobBase>();
     }
 
+    public void DoFrame() {
+        if (this.data.entityType == EntityTypeEnum.MOB) {
+            this.mobBase.DoFrame();
+        }
+    }
+    
     public void Init(EntityState aEntityState) {
         this.data = aEntityState.data;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, this.data.size, this.data.isFront);

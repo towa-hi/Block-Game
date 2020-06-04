@@ -17,10 +17,10 @@ public class GM : SerializedMonoBehaviour {
     public static EditManager editManager;
     public static PlayManager playManager;
     public static Cursor cursor;
-    [SerializeField] GameState currentState;
-    public GameState gameState {
+    [SerializeField] GameState gameState;
+    public GameState currentState {
         get {
-            return this.currentState;
+            return this.gameState;
         }
     }
     public event OnUpdateGameStateHandler OnUpdateGameState;
@@ -60,8 +60,8 @@ public class GM : SerializedMonoBehaviour {
         else {
             print("GM - Updating GameState for no delegates");
         }
-        this.currentState = aGameState;
-        this.OnUpdateGameState?.Invoke(this.gameState);
+        this.gameState = aGameState;
+        this.OnUpdateGameState?.Invoke(this.currentState);
     }
 
     // TODO: handle pauses and propagate gameState

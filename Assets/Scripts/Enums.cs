@@ -39,16 +39,6 @@ public enum EntityTypeEnum {
     PLAYER,
 }
 
-
-public enum EntityPrefabEnum {
-    BLOCKPREFAB,
-    PLAYERPREFAB,
-    SHUFFLEBOTPREFAB,
-    PUSHABLEPREFAB,
-    FANPREFAB,
-    TESTBLOCKPREFAB,
-    BIGGERTESTBLOCKPREFAB,
-}
 public enum GameModeEnum {
     PLAYING,
     EDITING,
@@ -72,6 +62,15 @@ public enum MouseStateEnum {
     CLICKED,
     HELD,
     RELEASED,
+}
+
+public enum PlayStateEnum {
+    INITIALIZATION,
+    DIALOGUE,
+    PLAYING,
+    LOST,
+    WON,
+    MENU,
 }
 
 public enum PlacementStateEnum {

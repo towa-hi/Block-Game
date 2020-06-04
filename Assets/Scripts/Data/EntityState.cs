@@ -16,6 +16,20 @@ public struct EntityImmutableData {
     public string prefabPath;
 }
 
+public struct MobData {
+    public int id;
+    public bool canMove;
+    public bool canHop;
+    public int walkSpeed;
+    public bool hasWeight;
+    public bool canKillOnTouch;
+    public int touchPower;
+    public bool canKillOnFall;
+    public int fallPower;
+    public bool canPush;
+    public bool canBePushed;
+    public bool canBeLifted;
+}
 public struct EntityState {
     public EntityImmutableData data;
 
