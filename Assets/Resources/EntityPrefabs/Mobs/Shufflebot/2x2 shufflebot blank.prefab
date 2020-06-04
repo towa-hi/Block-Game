@@ -88,7 +88,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4360680195190262308}
-  - component: {fileID: -8225917771086870470}
   m_Layer: 0
   m_Name: 2x2 shufflebot blank
   m_TagString: Untagged
@@ -111,35 +110,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8225917771086870470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4850220123458306733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa371781659d26d49844351b4e2ecb38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: entityData
-      Entry: 6
-      Data: 
-  entityView: {fileID: 0}
-  isInTempPos: 0
-  isDying: 0
-  animator: {fileID: 0}
-  originalHeight: 0
 --- !u!21 &-1154926879241765475
 Material:
   serializedVersion: 6

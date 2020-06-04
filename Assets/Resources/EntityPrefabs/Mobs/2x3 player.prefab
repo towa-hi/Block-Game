@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8821408420897672514}
-  - component: {fileID: -6342429790528559650}
   - component: {fileID: 6968970567592863175}
-  - component: {fileID: 2718221634878372911}
+  - component: {fileID: 480492657202205085}
   m_Layer: 0
   m_Name: 2x3 player
   m_TagString: Untagged
@@ -34,32 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6342429790528559650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1792630420253673571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa371781659d26d49844351b4e2ecb38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010a00000065006e0074006900740079004400610074006100
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  entityView: {fileID: 0}
-  isInTempPos: 0
-  isDying: 0
-  animator: {fileID: 6968970567592863175}
-  originalHeight: 0
 --- !u!95 &6968970567592863175
 Animator:
   serializedVersion: 3
@@ -79,7 +52,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2718221634878372911
+--- !u!114 &480492657202205085
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,62 +61,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1792630420253673571}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba6d2338e4ebd7d4e9d54d3cffd03f9b, type: 3}
+  m_Script: {fileID: 11500000, guid: 452728aaa067c904995af5b1f3dfc371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010c000000730074006100740065004d0061006300680069006e006500
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  canKillOnTouch: 0
-  touchDamage: 0
-  canKillOnFall: 0
-  fallDamage: 0
-  turningMoveSpeed: 0.5
-  canWalk: 1
-  walkingMoveSpeed: 0.5
-  canHop: 1
-  hoppingMoveSpeed: 0.5
-  hoppingCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -2
-      outSlope: -2
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  canPush: 1
-  canBeLifted: 1
+  isTempPos: 0
+  model: {fileID: 0}
 --- !u!1 &5659184103243050085
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,7 +86,6 @@ GameObject:
   - component: {fileID: 9029803829557239710}
   - component: {fileID: 3538547488464672179}
   - component: {fileID: 2959740655421072034}
-  - component: {fileID: 6310419987896743226}
   m_Layer: 0
   m_Name: Model 0
   m_TagString: Untagged
@@ -224,31 +154,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5659184103243050085}
   m_Mesh: {fileID: 5752623591061318543}
---- !u!114 &6310419987896743226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5659184103243050085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c110c5f10d390ea4a8994917232c847e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010a00000065006e0074006900740079004400610074006100
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  myRenderer: {fileID: 0}
-  childRenderers: []
-  entityBase: {fileID: 0}
-  isGhost: 0
 --- !u!28 &3869424280334956822
 Texture2D:
   m_ObjectHideFlags: 0

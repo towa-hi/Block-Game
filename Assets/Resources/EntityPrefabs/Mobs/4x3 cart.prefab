@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2560540633279906359}
   - component: {fileID: 3727952587664657662}
   - component: {fileID: 1935629695873375845}
-  - component: {fileID: 1463961934726001457}
   m_Layer: 0
   m_Name: Model 0
   m_TagString: Untagged
@@ -80,34 +79,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5267160159216120650}
   m_Mesh: {fileID: -4619554832309304917}
---- !u!114 &1463961934726001457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5267160159216120650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c110c5f10d390ea4a8994917232c847e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: entityData
-      Entry: 6
-      Data: 
-  myRenderer: {fileID: 0}
-  childRenderers: []
-  entityBase: {fileID: 0}
-  isGhost: 0
 --- !u!1 &6932952021507497975
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,8 +88,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 329892366433472156}
-  - component: {fileID: 585714814296319655}
-  - component: {fileID: 7844325577083090000}
+  - component: {fileID: 6802058057353121299}
   m_Layer: 0
   m_Name: 4x3 cart
   m_TagString: Untagged
@@ -141,7 +111,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &585714814296319655
+--- !u!114 &6802058057353121299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6932952021507497975}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa371781659d26d49844351b4e2ecb38, type: 3}
+  m_Script: {fileID: 11500000, guid: 452728aaa067c904995af5b1f3dfc371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -161,41 +131,9 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: entityData
-      Entry: 6
-      Data: 
-  entityView: {fileID: 0}
-  isInTempPos: 0
-  isDying: 0
-  animator: {fileID: 0}
-  originalHeight: 0
---- !u!114 &7844325577083090000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6932952021507497975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 499e541b0e538f149ac8c29b243c5b80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: stateMachine
-      Entry: 6
-      Data: 
-  canKillOnFall: 1
-  fallDamage: 10
+    SerializationNodes: []
+  isTempPos: 0
+  model: {fileID: 0}
 --- !u!43 &-4619554832309304917
 Mesh:
   m_ObjectHideFlags: 0

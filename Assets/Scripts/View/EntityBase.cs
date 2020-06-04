@@ -27,7 +27,6 @@ public class EntityBase : BoardStateListener {
     public void Init(EntityState aEntityState) {
         this.data = aEntityState.data;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, this.data.size, this.data.isFront);
-        SetColor(aEntityState.defaultColor);
         this.name = this.data.name + " Id: " + this.data.id;
         if (aEntityState.hasNodes) {
             foreach (Vector2Int upNode in aEntityState.upNodes) {
