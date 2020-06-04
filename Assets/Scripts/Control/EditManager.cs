@@ -133,6 +133,12 @@ public class EditManager : SerializedMonoBehaviour {
             GM.boardManager.SetEntityIsFixed(this.currentState.selectedEntityId, aIsFixed);
         }
     }
+
+    public void OnColorSubmit(Color aColor) {
+        if (this.currentState.hasSelectedEntity) {
+            GM.boardManager.SetEntityDefaultColor(this.currentState.selectedEntityId, aColor);
+        }
+    }
     
     public void OnDeleteButtonClicked() {
         if (this.currentState.hasSelectedEntity) {

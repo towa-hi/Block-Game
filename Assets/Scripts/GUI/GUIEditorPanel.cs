@@ -28,6 +28,8 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject editModeNullTextContainer;
     public Text editModeNameText;
     public Toggle editModeIsFixedToggle;
+    public GUIColorPicker editModeColorPicker;
+    public GUINodeEditor editModeNodeEditor;
     public Button editModeFlipButton;
     public Button editModeDeleteButton;
     [Header("Options Panel")]
@@ -95,17 +97,7 @@ public class GUIEditorPanel : EditorStateListener {
             pickerItem.GetComponent<RectTransform>().SetAsFirstSibling();
         }
     }
-    
-    public void SetSearchString(string aString) {
-        this.searchString = aString;
-        SetPickerItems(GM.editManager.currentState.isFront);
-        if (this.selectedItem != null) {
-            GM.editManager.ClearSelectedSchema();
-            this.selectedItem.SetSelection(false);
-            this.selectedItem = null;
-        }
-    }
-    
+
     void SetParPickerText(int aPar) {
         this.parPickerText.text = aPar.ToString();
     }
@@ -145,7 +137,17 @@ public class GUIEditorPanel : EditorStateListener {
                 throw new ArgumentOutOfRangeException();
         }
     }
-
+    
+    public void SetSearchString(string aString) {
+        this.searchString = aString;
+        SetPickerItems(GM.editManager.currentState.isFront);
+        if (this.selectedItem != null) {
+            GM.editManager.ClearSelectedSchema();
+            this.selectedItem.SetSelection(false);
+            this.selectedItem = null;
+        }
+    }
+    
     public void OnTitleFieldSet(string aInput) {
         GM.boardManager.SetTitle(aInput);
     }
@@ -161,6 +163,13 @@ public class GUIEditorPanel : EditorStateListener {
             this.editModeNameText.text = selectedEntity.entityBase.name;
             this.editModeIsFixedToggle.SetIsOnWithoutNotify(selectedEntity.isFixed);
             this.editModeIsFixedToggle.interactable = !selectedEntity.data.isBoundary;
+            this.editModeColorPicker.SetStartingColor(selectedEntity.defaultColor);
+            this.editModeNodeEditor.gameObject.SetActive(selectedEntity.hasNodes);
+            if (selectedEntity.hasNodes) {
+                this.editModeNodeEditor.SetEntity(selectedEntity);
+            }
+            this.editModeDeleteButton.interactable = !selectedEntity.data.isBoundary;
+            this.editModeFlipButton.interactable = !selectedEntity.data.isBoundary;
             
         }
     }

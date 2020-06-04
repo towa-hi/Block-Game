@@ -26,6 +26,7 @@ public class GM : SerializedMonoBehaviour {
     public event OnUpdateGameStateHandler OnUpdateGameState;
     public GameObject coreGameObject;
     public GameObject canvasGameObject;
+    public GameObject studPrefab;
     GUIFilePicker filePicker;
     GameObject playPanel;
     GameObject editorPanel;

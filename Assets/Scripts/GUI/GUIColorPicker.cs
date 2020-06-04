@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.UI;
 
 public class GUIColorPicker : SerializedMonoBehaviour {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public ColorPicker colorPicker;
+    public Button submitButton;
+    
+
+    public void SetStartingColor(Color aColor) {
+        this.colorPicker = GetComponentInChildren<ColorPicker>();
+        this.colorPicker.CurrentColor = aColor;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void OnSubmitButtonClick() {
+        GM.editManager.OnColorSubmit(this.colorPicker.CurrentColor);
     }
 }

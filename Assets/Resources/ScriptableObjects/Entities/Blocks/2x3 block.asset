@@ -28,3 +28,4 @@ MonoBehaviour:
   touchDefense: 99
   fallDefense: 99
   defaultTeam: 1
+  hasNodes: 1

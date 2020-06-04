@@ -38,7 +38,7 @@ public struct EntityState {
         }
     }
 
-    public bool CustomEquals(EntityState aOther) {        
+    public bool CustomEquals(EntityState aOther) {
         if (GetType() != aOther.GetType())
         {
             return false;
@@ -87,10 +87,41 @@ public struct EntityState {
         newEntityState.isFixed = aIsFixed;
         newEntityState.team = aEntitySchema.defaultTeam;
         newEntityState.hasNodes = aEntitySchema.hasNodes;
-        // initialize some vals
-        newEntityState.upNodes = new HashSet<Vector2Int>();
-        newEntityState.downNodes = new HashSet<Vector2Int>();
-        
+        // generate some nodes
+        if (aEntitySchema.hasNodes) {
+            HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
+            HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
+            bool hasUpNodes = true;
+            bool hasDownNodes = true;
+            if (aIsBoundary) {
+                if (aPos.y + aEntitySchema.size.y == GM.boardManager.currentState.size.y) {
+                    hasUpNodes = false;
+                }
+
+                if (aPos.y == 0) {
+                    hasDownNodes = false;
+                }
+            }
+
+            for (int x = 0; x < aEntitySchema.size.x; x++) {
+                if (hasUpNodes) {
+                    Vector2Int topPos = new Vector2Int(x, aEntitySchema.size.y - 1);
+                    newUpNodes.Add(topPos);
+                }
+
+                if (hasDownNodes) {
+                    Vector2Int botPos = new Vector2Int(x, 0);
+                    newDownNodes.Add(botPos);
+                }
+            }
+
+            newEntityState.upNodes = newUpNodes;
+            newEntityState.downNodes = newDownNodes;
+        }
+        else {
+            newEntityState.upNodes = new HashSet<Vector2Int>();
+            newEntityState.downNodes = new HashSet<Vector2Int>();
+        }
         newEntityState.touchDefense = aEntitySchema.touchDefense;
         newEntityState.fallDefense = aEntitySchema.fallDefense;
 
