@@ -17,11 +17,9 @@ public struct EntityImmutableData {
 }
 
 public struct MobData {
-    public int id;
-    public bool canMove;
+    public MoveTypeEnum movementType;
     public bool canHop;
-    public int walkSpeed;
-    public bool hasWeight;
+    public float moveSpeed;
     public bool canKillOnTouch;
     public int touchPower;
     public bool canKillOnFall;
@@ -30,9 +28,11 @@ public struct MobData {
     public bool canBePushed;
     public bool canBeLifted;
 }
+
 public struct EntityState {
     public EntityImmutableData data;
-
+    public MobData? mobData;
+    
     public Vector2Int pos;
     public Vector2Int facing;
     public Color defaultColor;
@@ -53,11 +53,6 @@ public struct EntityState {
     }
 
     public bool CustomEquals(EntityState aOther) {
-        if (GetType() != aOther.GetType())
-        {
-            return false;
-        }
-        
         if (
             this.data.id == aOther.data.id &&
             this.data.isFront == aOther.data.isFront &&
@@ -77,8 +72,10 @@ public struct EntityState {
             this.touchDefense == aOther.touchDefense &&
             this.fallDefense == aOther.fallDefense 
         ) {
+            Debug.Log(this.data.id + " is " + aOther.data.id);
             return true;
         } else {
+            Debug.Log(this.data.id + "is not " + aOther.data.id);
             return false;
         }
     }
@@ -95,6 +92,24 @@ public struct EntityState {
             isBoundary = aIsBoundary,
             prefabPath = aEntitySchema.prefabPath,
         };
+        if (aEntitySchema.entityType == EntityTypeEnum.MOB) {
+            newEntityState.mobData = new MobData() {
+                movementType = aEntitySchema.movementType,
+                canHop = aEntitySchema.canHop,
+                moveSpeed = aEntitySchema.moveSpeed,
+                canKillOnTouch = aEntitySchema.canKillOnTouch,
+                touchPower = aEntitySchema.touchPower,
+                canKillOnFall = aEntitySchema.canKillOnFall,
+                fallPower = aEntitySchema.fallPower,
+                canPush = aEntitySchema.canPush,
+                canBePushed = aEntitySchema.canBePushed,
+                canBeLifted = aEntitySchema.canBeLifted,
+            };
+        }
+        else {
+            newEntityState.mobData = null;
+        }
+        
         newEntityState.pos = aPos;
         newEntityState.facing = aFacing;
         newEntityState.defaultColor = aDefaultColor;

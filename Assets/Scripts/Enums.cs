@@ -64,6 +64,14 @@ public enum MouseStateEnum {
     RELEASED,
 }
 
+public enum MoveTypeEnum {
+    INANIMATE,
+    PATROL,
+    FLY,
+    PATHPATROL,
+    PATHFLY,
+}
+
 public enum PlayStateEnum {
     INITIALIZATION,
     DIALOGUE,

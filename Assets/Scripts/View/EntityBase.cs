@@ -13,6 +13,7 @@ public class EntityBase : BoardStateListener {
     HashSet<Renderer> childRenderers;
     EntityImmutableData data;
     EntityState oldEntityState;
+    bool needsFirstUpdate;
     [ShowInInspector] EntityState entityState {
         get {
             return GM.boardManager.GetEntityById(this.data.id);
@@ -24,6 +25,7 @@ public class EntityBase : BoardStateListener {
         this.modelRenderer = this.model.GetComponent<Renderer>();
         this.childRenderers = this.model.GetComponentsInChildren<Renderer>().ToHashSet();
         this.mobBase = GetComponent<MobBase>();
+        this.needsFirstUpdate = true;
     }
 
     public void DoFrame() {
@@ -48,22 +50,37 @@ public class EntityBase : BoardStateListener {
                 studRenderer.material.color = aEntityState.defaultColor;
                 this.childRenderers.Add(studRenderer);
             }
-            print("completed drawing nodes");
         }
+
+        if (aEntityState.mobData != null) {
+            this.mobBase.Init(aEntityState);
+        }
+        this.oldEntityState = aEntityState;
     }
 
     protected override void OnUpdateBoardState(BoardState aBoardState) {
         // when id is -42069, this wont recieve any boardupdates because it hasn't been
         // assigned an ID yet by BoardManager.CreateView
+        
         if (this.data.id == Constants.PLACEHOLDERINT) {
             return;
         }
+        
         EntityState newEntityState = aBoardState.entityDict[this.data.id];
-        if (!this.oldEntityState.CustomEquals(newEntityState)) {
-            // print(id + " updated entity state");
+        
+        if (this.needsFirstUpdate) {
+            this.oldEntityState = newEntityState;
+            this.needsFirstUpdate = false;
+        }
+        
+        if (!this.oldEntityState.Equals(newEntityState)) {
+            // print(newEntityState.data.id + " - i should update");
             this.transform.position = Util.V2IOffsetV3(newEntityState.pos, newEntityState.data.size, this.data.isFront);
             SetColor(newEntityState.defaultColor);
             this.oldEntityState = newEntityState;
+        }
+        else {
+            // print(this.data.id + " - i dont care");
         }
     }
 
