@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using FilePicker;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
@@ -12,7 +15,9 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject pickerModePanel;
     public GameObject pickerItemMaster;
     public GameObject pickerScrollRectContent;
+    [SerializeField] GUIPickerItem selectedItem;
     bool isPickerItemsInitialized;
+    string searchString;
     [SerializeField] private List<GUIPickerItem> pickerItemList;
     HashSet<EntitySchema> fullSchemaList;
     [Header("Edit Panel")]
@@ -31,17 +36,13 @@ public class GUIEditorPanel : EditorStateListener {
     public Text parPickerText;
     public GameObject filePicker;
 
-    HashSet<GameObject> botPanels;
-    // EditorState oldEditorState;
-    EditTabEnum activeTab;
-    
-    private void Awake()
+    EditorState oldEditorState;
+    void Awake()
     {
         this.pickerItemList = new List<GUIPickerItem>();
         this.fullSchemaList = new HashSet<EntitySchema>();
-        HashSet<GameObject> newBotPanels = new HashSet<GameObject> {pickerModePanel, editModePanel, optionsModePanel};
-        this.botPanels = newBotPanels;
         this.isPickerItemsInitialized = false;
+        this.searchString = "";
     }
 
     protected override void OnUpdateEditorState(EditorState aNewEditorState) {
@@ -50,32 +51,61 @@ public class GUIEditorPanel : EditorStateListener {
             this.isPickerItemsInitialized = true;
         }
         SetEditorStateVars(aNewEditorState);
-        // this.oldEditorState = aNewEditorState;
+        this.oldEditorState = aNewEditorState;
     }
 
     void CreatePickerItems(EditorState aEditorState) {
         foreach (EntitySchema entitySchema in aEditorState.frontContentList) {
             GameObject pickerItemGameObject = Instantiate(this.pickerItemMaster, this.pickerScrollRectContent.transform);
             GUIPickerItem pickerItem = pickerItemGameObject.GetComponent<GUIPickerItem>();
-            pickerItem.Init(entitySchema);
+            pickerItem.Init(entitySchema, OnPickerItemClick);
             this.pickerItemList.Add(pickerItem);
         }
 
         foreach (EntitySchema entitySchema in aEditorState.backContentList) {
             GameObject pickerItemGameObject = Instantiate(this.pickerItemMaster, this.pickerScrollRectContent.transform);
             GUIPickerItem pickerItem = pickerItemGameObject.GetComponent<GUIPickerItem>();
-            pickerItem.Init(entitySchema);
+            pickerItem.Init(entitySchema, OnPickerItemClick);
             this.pickerItemList.Add(pickerItem);
+        }
+        SetPickerItems(aEditorState.isFront);
+    }
+    
+    void SetPickerItems(bool aIsFront) {
+        List<GUIPickerItem> newPickerList = this.pickerItemList
+            .Where(item => item.entitySchema.isFront == aIsFront)
+            .OrderBy(item => item.entitySchema.name)
+            .ToList();
+
+        if (this.searchString.Length > 0) {
+            List<GUIPickerItem> sortedPickerList = newPickerList
+                .Where(item => item.entitySchema.name.Contains(this.searchString))
+                .OrderBy(item => item.entitySchema.name.StartsWith(this.searchString)
+                    ? (item.entitySchema.name == this.searchString ? 0 : 1)
+                    : 2)
+                .ToList();
+            newPickerList = sortedPickerList;
+        }
+        
+        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
+            pickerItem.gameObject.SetActive(newPickerList.Contains(pickerItem));
+        }
+
+        foreach (GUIPickerItem pickerItem in newPickerList) {
+            pickerItem.GetComponent<RectTransform>().SetAsFirstSibling();
         }
     }
     
-    void SetPickerItems(EditorState aEditorState) {
-        print("refreshing picker items");
-        foreach (GUIPickerItem pickerItem in this.pickerItemList) {
-            pickerItem.gameObject.SetActive(pickerItem.entitySchema.isFront == aEditorState.isFront);
+    public void SetSearchString(string aString) {
+        this.searchString = aString;
+        SetPickerItems(GM.editManager.currentState.isFront);
+        if (this.selectedItem != null) {
+            GM.editManager.ClearSelectedSchema();
+            this.selectedItem.SetSelection(false);
+            this.selectedItem = null;
         }
     }
-
+    
     void SetParPickerText(int aPar) {
         this.parPickerText.text = aPar.ToString();
     }
@@ -85,7 +115,6 @@ public class GUIEditorPanel : EditorStateListener {
     }
 
     void SetEditorStateVars(EditorState aEditorState) {
-        this.activeTab = aEditorState.activeTab;
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
                 if (!this.pickerModePanel.activeInHierarchy) {
@@ -93,7 +122,7 @@ public class GUIEditorPanel : EditorStateListener {
                     this.editModePanel.SetActive(false);
                     this.optionsModePanel.SetActive(false);
                 }
-                SetPickerItems(aEditorState);
+                SetPickerItems(aEditorState.isFront);
                 break;
             case EditTabEnum.EDIT:
                 if (!this.editModePanel.activeInHierarchy) {
@@ -104,7 +133,7 @@ public class GUIEditorPanel : EditorStateListener {
                 EditModePanelSetup(aEditorState);
                 break;
             case EditTabEnum.OPTIONS:
-                if (!this.editModePanel.activeInHierarchy) {
+                if (!this.optionsModePanel.activeInHierarchy) {
                     this.pickerModePanel.SetActive(false);
                     this.editModePanel.SetActive(false);
                     this.optionsModePanel.SetActive(true);
@@ -134,7 +163,15 @@ public class GUIEditorPanel : EditorStateListener {
             this.editModeIsFixedToggle.interactable = !selectedEntity.data.isBoundary;
             
         }
-        
+    }
+
+    public void OnPickerItemClick(GUIPickerItem aPickerItem) {
+        if (this.selectedItem != null) {
+            this.selectedItem.SetSelection(false);
+        }
+        this.selectedItem = aPickerItem;
+        GM.editManager.SetSelectedSchema(aPickerItem.entitySchema);
+        aPickerItem.SetSelection(true);
     }
 }
 

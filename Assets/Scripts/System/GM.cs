@@ -1,21 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using FilePicker;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 
 public delegate void OnUpdateGameStateHandler(GameState aGameState);
 
 // ReSharper disable once InconsistentNaming
 public class GM : SerializedMonoBehaviour {
-
+    public static GM instance;
     public static InputManager inputManager;
     public static BoardManager boardManager;
     public static EditManager editManager;
     public static PlayManager playManager;
     public static Cursor cursor;
-    
-    [SerializeField]
-    GameState currentState;
+    [SerializeField] GameState currentState;
     public GameState gameState {
         get {
             return this.currentState;
@@ -23,9 +25,19 @@ public class GM : SerializedMonoBehaviour {
     }
     public event OnUpdateGameStateHandler OnUpdateGameState;
     public GameObject coreGameObject;
+    public GameObject canvasGameObject;
+    GUIFilePicker filePicker;
+    GameObject playPanel;
+    GameObject editorPanel;
+    GameObject pausePanel;
     
     void Awake() {
+        GM.instance = this;
         this.OnUpdateGameState = null;
+        this.filePicker = this.canvasGameObject.transform.Find("FilePicker").GetComponent<GUIFilePicker>();
+        this.playPanel = this.canvasGameObject.transform.Find("PlayPanel").gameObject;
+        this.editorPanel = this.canvasGameObject.transform.Find("EditorPanel").gameObject;
+        this.pausePanel = this.canvasGameObject.transform.Find("PausePanel").gameObject;
         GM.inputManager = this.coreGameObject.GetComponent<InputManager>();
         GM.boardManager = this.coreGameObject.GetComponent<BoardManager>();
         GM.editManager = this.coreGameObject.GetComponent<EditManager>();
@@ -37,9 +49,10 @@ public class GM : SerializedMonoBehaviour {
         this.OnUpdateGameState += GM.playManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.cursor.OnUpdateGameState;
         UpdateGameState(GameState.CreateGameState(GameModeEnum.EDITING));
+        GM.boardManager.InitializeStartingBoard();
     }
 
-    public void UpdateGameState(GameState aGameState) {
+    void UpdateGameState(GameState aGameState) {
         if (this.OnUpdateGameState != null) {
             print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
         }
@@ -50,11 +63,32 @@ public class GM : SerializedMonoBehaviour {
         this.OnUpdateGameState?.Invoke(this.gameState);
     }
 
+    // TODO: handle pauses and propagate gameState
+    
+    public void SetFilePickerActive(bool aIsActive) {
+        this.pausePanel.SetActive(aIsActive);
+        this.filePicker.gameObject.SetActive(aIsActive);
+    }
+    
     public static GameObject LoadEntityPrefabByFilename(string aFilename) {
         return Resources.Load("EntityPrefabs/" + aFilename) as GameObject;
     }
 
-    public static GameObject LoadBgPrefabByFilename(string aFilename) {
-        return Resources.Load("BgPrefabs/" + aFilename) as GameObject;
+    public static void SaveBoardState(BoardState aBoardState, bool aIsPlaytestTemp = false) {
+        string saveFilename = aIsPlaytestTemp ? "PlayTestTemp.board" : aBoardState.title + ".board";
+        Debug.Log("SaveBoard - attempting to save " + saveFilename);
+        byte[] bytes = SerializationUtility.SerializeValue<BoardState>(aBoardState, DataFormat.Binary);
+        File.WriteAllBytes(Config.PATHTOBOARDS + saveFilename, bytes);
+    }
+
+    public static BoardState LoadBoardState(string aFilename) {
+        if (File.Exists(Config.PATHTOBOARDS + aFilename)) {
+            byte[] bytes = File.ReadAllBytes(Config.PATHTOBOARDS + aFilename);
+            BoardState loadedBoardState = SerializationUtility.DeserializeValue<BoardState>(bytes, DataFormat.Binary);
+            return loadedBoardState;
+        }
+        else {
+            throw new Exception("SaveLoad - .board file with name " + aFilename + " not found!");
+        }
     }
 }

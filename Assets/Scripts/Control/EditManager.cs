@@ -10,6 +10,7 @@ public delegate void OnUpdateEditorStateHandler(EditorState aEditorState);
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
+    
     [SerializeField] EditorState editorState;
     public EditorState currentState {
         get {
@@ -18,7 +19,6 @@ public class EditManager : SerializedMonoBehaviour {
     }
     public event OnUpdateEditorStateHandler OnUpdateEditorState;
     [SerializeField] StateMachine inputStateMachine = new StateMachine();
-    EditorState oldState;
     
     void Awake() {
         UpdateEditorState(EditorState.CreateEditorState());
@@ -30,9 +30,8 @@ public class EditManager : SerializedMonoBehaviour {
         this.inputStateMachine.Update();
     }
     
-    public void UpdateEditorState(EditorState aEditorState) {
+    void UpdateEditorState(EditorState aEditorState) {
         print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
-        this.oldState = this.editorState;
         this.editorState = aEditorState;
         this.OnUpdateEditorState?.Invoke(this.currentState);
     }
@@ -46,7 +45,7 @@ public class EditManager : SerializedMonoBehaviour {
     
     public void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
         if (GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
-            GM.boardManager.AddEntity(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
+            GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
 
@@ -96,7 +95,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void PlaceSelectedSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
         if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
-            GM.boardManager.AddEntity(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
+            GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
 
@@ -158,6 +157,22 @@ public class EditManager : SerializedMonoBehaviour {
                 }
             }
         }
+    }
+
+    public void OnSaveButtonClicked() {
+        GM.boardManager.SaveBoardState();
+    }
+
+    public void OnLoadButtonClicked() {
+        GM.instance.SetFilePickerActive(true);
+    }
+    
+    public void OnPlaytestButtonClicked() {
+        
+    }
+
+    public void OnFilePickerLoadButtonClicked(string aFilename) {
+        GM.boardManager.LoadBoardStateFromFile(aFilename);
     }
     
     class EditorPickerModeInputState : StateMachineState {

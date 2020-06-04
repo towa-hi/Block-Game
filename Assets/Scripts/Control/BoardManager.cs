@@ -9,20 +9,15 @@ public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
 
 public class BoardManager : SerializedMonoBehaviour {
     
-    [SerializeField] private BoardState boardState;
+    [SerializeField] BoardState boardState;
     public BoardState currentState {
         get { return this.boardState; }
     }
-
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
-    private void Awake() {
-        Init();
-    }
-
-    public void UpdateBoardState(BoardState aBoardState) {
+    void UpdateBoardState(BoardState aBoardState) {
         if (OnUpdateBoardState != null) {
             print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
@@ -33,8 +28,12 @@ public class BoardManager : SerializedMonoBehaviour {
         SetBoardCellDict(aBoardState);
         OnUpdateBoardState?.Invoke(this.currentState);
     }
-
-    public void SetBoardCellDict(BoardState aBoardState) {
+    void UpdateEntityAndBoardState(EntityState aEntityState) {
+        BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
+        UpdateBoardState(newBoardState);
+    }
+    
+    void SetBoardCellDict(BoardState aBoardState) {
         foreach (KeyValuePair<Vector2Int, BoardCell> kvp in this.boardCellDict) {
             BoardCell currentCell = kvp.Value;
             currentCell.backEntityState = null;
@@ -55,9 +54,77 @@ public class BoardManager : SerializedMonoBehaviour {
         }
     }
     
-    public void UpdateEntityAndBoardState(EntityState aEntityState) {
-        BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
+    void InitBoard(BoardState? aBoardState = null) {
+        if (this.entityBaseDict != null) {
+            foreach (KeyValuePair<int, EntityBase> kvp in this.entityBaseDict) {
+                Destroy(kvp.Value.gameObject);
+            }
+        }
+        this.entityBaseDict = new Dictionary<int, EntityBase>();
+        BoardState newBoardState = aBoardState ?? BoardState.GenerateBlankBoard();
+        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>();
+        foreach (Vector2Int currentPos in Util.V2IInRect(Vector2Int.zero, newBoardState.size)) {
+            BoardCell newCell = new BoardCell(currentPos);
+            this.boardCellDict[currentPos] = newCell;
+        }
+
+        foreach (KeyValuePair<int, EntityState> kvp in newBoardState.entityDict) {
+            CreateEntityBase(kvp.Value);
+        }
         UpdateBoardState(newBoardState);
+    }
+
+    void AddBoundaryEntities() {
+        // TODO: move this somewhere sensible
+        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
+        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
+        
+        AddEntityFromSchema(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        AddEntityFromSchema(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+
+        AddEntityFromSchema(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        AddEntityFromSchema(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+
+        AddEntityFromSchema(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        AddEntityFromSchema(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+
+        AddEntityFromSchema(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+        AddEntityFromSchema(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
+    }
+    
+    EntityBase CreateEntityBase(EntityState aEntityState) {
+        // set the new EntityPosition
+        Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
+        // instantiate a new gameObject entityPrefab from the schemas prefabPath
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
+        // get the entityBase
+        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
+        // add it to the entityBaseDict
+        this.entityBaseDict[aEntityState.data.id] = entityBase;
+        // initialize entityBase with the newest state
+        entityBase.Init(aEntityState);
+        return entityBase;
+    }
+    
+    // special function called by GM.OnUpdateGameState delegate
+    public void OnUpdateGameState(GameState aGameState) {
+        
+    }
+    
+    public void InitializeStartingBoard() {
+        InitBoard();
+        AddBoundaryEntities();
+    }
+    
+    public void SaveBoardState() {
+        GM.SaveBoardState(this.currentState, true);
+    }
+    
+    public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
+        print("attempting to load" + aFilename);
+        BoardState loadedBoardState = GM.LoadBoardState(aFilename);
+        InitBoard(loadedBoardState);
+        Debug.Log("loaded " + aFilename + " successfully... probably");
     }
 
     public void SetTitle(string aTitle) {
@@ -209,7 +276,7 @@ public class BoardManager : SerializedMonoBehaviour {
         return false;
     }
 
-    public void AddEntity(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+    public void AddEntityFromSchema(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         // if the area isn't clear, throw an exception
         if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             throw new Exception("AddEntity - Position is invalid");
@@ -220,16 +287,7 @@ public class BoardManager : SerializedMonoBehaviour {
         (BoardState newBoard, EntityState newEntityStateWithId) = BoardState.AddEntity(this.currentState, newEntityStateWithoutId);
         // update the boardState
         UpdateBoardState(newBoard);
-        // set the new EntityPosition
-        Vector3 newEntityPosition = Util.V2IOffsetV3(newEntityStateWithId.pos, newEntityStateWithId.data.size, newEntityStateWithId.data.isFront);
-        // instantiate a new gameObject entityPrefab from the schemas prefabPath
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(newEntityStateWithId.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
-        // get the entityBase
-        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-        // add it to the entityBaseDict
-        this.entityBaseDict[newEntityStateWithId.data.id] = entityBase;
-        // initialize entityBase with the newest state
-        entityBase.Init(newEntityStateWithId);
+        CreateEntityBase(newEntityStateWithId);
     }
 
     public void RemoveEntity(int aId) {
@@ -242,35 +300,6 @@ public class BoardManager : SerializedMonoBehaviour {
         BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
         // update the boardState
         UpdateBoardState(newBoard);
-    }
-
-    public void Init() {
-        this.entityBaseDict = new Dictionary<int, EntityBase>();
-        BoardState newBoard = BoardState.GenerateBlankBoard();
-        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>();
-        for (int x = 0; x < newBoard.size.x; x++) {
-            for (int y = 0; y < newBoard.size.y; y++) {
-                Vector2Int currentPos = new Vector2Int(x, y);
-                BoardCell newCell = new BoardCell(currentPos);
-                this.boardCellDict[currentPos] = newCell;
-            }
-        }
-        UpdateBoardState(newBoard);
-        // TODO: move this somewhere sensible
-        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
-        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
-        
-        AddEntity(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-        AddEntity(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-
-        AddEntity(longBoy, new Vector2Int(0, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-        AddEntity(longBoy, new Vector2Int(20, 23), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-
-        AddEntity(tallBoy, new Vector2Int(0, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-        AddEntity(tallBoy, new Vector2Int(0, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-
-        AddEntity(tallBoy, new Vector2Int(39, 1), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
-        AddEntity(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
     }
 
     public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
@@ -307,9 +336,5 @@ public class BoardManager : SerializedMonoBehaviour {
         else {
             throw new Exception("GetEntityBaseById - invalid id");
         }
-    }
-    // special function called by GM.OnUpdateGameState delegate
-    public void OnUpdateGameState(GameState aGameState) {
-        
     }
 }

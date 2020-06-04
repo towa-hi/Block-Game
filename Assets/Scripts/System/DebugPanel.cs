@@ -15,7 +15,7 @@ public class DebugPanel : SerializedMonoBehaviour {
                 "Assets/Resources/ScriptableObjects/Entities/Blocks/1x1 block.asset");
         for (int x = 1; x < boardManager.currentState.size.x - 1; x++) {
             for (int y = 1; y < boardManager.currentState.size.y - 1; y++) {
-                boardManager.AddEntity(smallBoy, new Vector2Int(x, y), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
+                boardManager.AddEntityFromSchema(smallBoy, new Vector2Int(x, y), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
                 
             }
         }
