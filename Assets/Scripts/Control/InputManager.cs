@@ -30,7 +30,7 @@ public class InputManager : SerializedMonoBehaviour {
 
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
-
+        // placeholder
     }
     
     public void OnClickDown(InputAction.CallbackContext context) {
