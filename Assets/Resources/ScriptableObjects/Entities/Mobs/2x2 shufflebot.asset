@@ -24,12 +24,13 @@ MonoBehaviour:
   prefabPath: Mobs/Shufflebot/2x2 shufflebot
   isFront: 1
   size: {x: 2, y: 2}
-  entityType: 0
+  entityType: 2
   defaultTeam: 2
   touchDefense: 5
   fallDefense: 5
   hasNodes: 0
   movementType: 1
+  canHop: 0
   moveSpeed: 1
   canKillOnTouch: 1
   touchPower: 5

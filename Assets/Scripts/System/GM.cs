@@ -53,6 +53,11 @@ public class GM : SerializedMonoBehaviour {
         GM.boardManager.InitializeStartingBoard();
     }
 
+    public void SetGameMode(GameModeEnum aGameMode) {
+        GameState newGameState = GameState.SetGameMode(this.gameState, aGameMode);
+        UpdateGameState(newGameState);
+    }
+    
     void UpdateGameState(GameState aGameState) {
         if (this.OnUpdateGameState != null) {
             print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
@@ -78,7 +83,7 @@ public class GM : SerializedMonoBehaviour {
     public static void SaveBoardState(BoardState aBoardState, bool aIsPlaytestTemp = false) {
         string saveFilename = aIsPlaytestTemp ? "PlayTestTemp.board" : aBoardState.title + ".board";
         Debug.Log("SaveBoard - attempting to save " + saveFilename);
-        byte[] bytes = SerializationUtility.SerializeValue<BoardState>(aBoardState, DataFormat.Binary);
+        byte[] bytes = SerializationUtility.SerializeValue(aBoardState, DataFormat.Binary);
         File.WriteAllBytes(Config.PATHTOBOARDS + saveFilename, bytes);
     }
 

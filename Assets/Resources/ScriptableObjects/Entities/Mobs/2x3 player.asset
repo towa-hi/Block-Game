@@ -24,12 +24,13 @@ MonoBehaviour:
   prefabPath: Mobs/2x3 player
   isFront: 1
   size: {x: 2, y: 3}
-  entityType: 0
+  entityType: 3
   defaultTeam: 0
   touchDefense: 5
   fallDefense: 5
   hasNodes: 0
-  movementType: 2
+  movementType: 1
+  canHop: 1
   moveSpeed: 1
   canKillOnTouch: 0
   touchPower: 0

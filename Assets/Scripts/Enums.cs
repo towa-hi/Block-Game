@@ -11,7 +11,7 @@ public enum CursorModeEnum {
     OFF,
 }
 
-public enum DeathType {
+public enum DeathTypeEnum {
     BUMP,
     BISECTED,
     FIRE,
@@ -34,9 +34,9 @@ public enum EditTabEnum {
 public enum EntityTypeEnum {
     BG,
     BLOCK,
+    PUSHABLE,
     MOB,
     SPECIALBLOCK,
-    PLAYER,
 }
 
 public enum GameModeEnum {

@@ -28,6 +28,7 @@ public class BoardManager : SerializedMonoBehaviour {
         SetBoardCellDict(aBoardState);
         OnUpdateBoardState?.Invoke(this.currentState);
     }
+    
     void UpdateEntityAndBoardState(EntityState aEntityState) {
         BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
         UpdateBoardState(newBoardState);
@@ -75,7 +76,6 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     void AddBoundaryEntities() {
-        // TODO: move this somewhere sensible
         EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
         EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
         
@@ -116,8 +116,8 @@ public class BoardManager : SerializedMonoBehaviour {
         AddBoundaryEntities();
     }
     
-    public void SaveBoardState() {
-        GM.SaveBoardState(this.currentState, true);
+    public void SaveBoardState(bool aIsPlaytestTemp) {
+        GM.SaveBoardState(this.currentState, aIsPlaytestTemp);
     }
     
     public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
@@ -151,7 +151,6 @@ public class BoardManager : SerializedMonoBehaviour {
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
         if (IsRectEmpty(aPos, entityState.data.size, ignoreSet, entityState.data.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos));
-            GetEntityBaseById(aId).ResetTempView();
         } else {
             throw new Exception("MoveEntity - invalid move");
         }
@@ -233,7 +232,7 @@ public class BoardManager : SerializedMonoBehaviour {
             return sliceDict;
         }
 
-        throw new Exception("GetBoardGridSlice - rect not in board");
+        throw new Exception("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
@@ -290,16 +289,22 @@ public class BoardManager : SerializedMonoBehaviour {
         CreateEntityBase(newEntityStateWithId);
     }
 
+    public void RemoveEntityAndBase(int aId) {
+        RemoveEntityBase(aId);
+        RemoveEntity(aId);
+    }
+    
     public void RemoveEntity(int aId) {
-        EntityBase entityBase = this.entityBaseDict[aId];
-        // remove the entityBase from the entityBaseDict
-        this.entityBaseDict.Remove(aId);
-        // destroy the entitys gameObject
-        Destroy(entityBase.gameObject);
         // remove entity from boardstate
         BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
         // update the boardState
         UpdateBoardState(newBoard);
+    }
+
+    public void RemoveEntityBase(int aId) {
+        EntityBase entityBase = this.entityBaseDict[aId];
+        this.entityBaseDict.Remove(aId);
+        Destroy(entityBase.gameObject);
     }
 
     public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
@@ -337,4 +342,5 @@ public class BoardManager : SerializedMonoBehaviour {
             throw new Exception("GetEntityBaseById - invalid id");
         }
     }
+    
 }

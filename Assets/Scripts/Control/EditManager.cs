@@ -10,7 +10,7 @@ public delegate void OnUpdateEditorStateHandler(EditorState aEditorState);
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-    
+    public GameObject editorPanel;
     [SerializeField] EditorState editorState;
     public EditorState currentState {
         get {
@@ -27,7 +27,9 @@ public class EditManager : SerializedMonoBehaviour {
     }
     
     void Update() {
-        this.inputStateMachine.Update();
+        if (!GM.instance.currentState.isFullPaused && GM.instance.currentState.gameMode == GameModeEnum.EDITING) {
+            this.inputStateMachine.Update();
+        }
     }
     
     void UpdateEditorState(EditorState aEditorState) {
@@ -39,8 +41,13 @@ public class EditManager : SerializedMonoBehaviour {
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
         if (aGameState.gameMode == GameModeEnum.EDITING) {
-            // turn self on
+            // move this shit to GM later
+            this.editorPanel.SetActive(true);
         }
+        else {
+            this.editorPanel.SetActive(false);
+        }
+        
     }
     
     public void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
@@ -142,7 +149,7 @@ public class EditManager : SerializedMonoBehaviour {
     
     public void OnDeleteButtonClicked() {
         if (this.currentState.hasSelectedEntity) {
-            GM.boardManager.RemoveEntity(this.currentState.selectedEntityId);
+            GM.boardManager.RemoveEntityAndBase(this.currentState.selectedEntityId);
             ResetSelectedEntity();
         }
         
@@ -166,7 +173,7 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     public void OnSaveButtonClicked() {
-        GM.boardManager.SaveBoardState();
+        GM.boardManager.SaveBoardState(false);
     }
 
     public void OnLoadButtonClicked() {
@@ -174,7 +181,8 @@ public class EditManager : SerializedMonoBehaviour {
     }
     
     public void OnPlaytestButtonClicked() {
-        
+        GM.boardManager.SaveBoardState(true);
+        GM.instance.SetGameMode(GameModeEnum.PLAYTESTING);
     }
 
     public void OnFilePickerLoadButtonClicked(string aFilename) {
@@ -233,9 +241,8 @@ public class EditManager : SerializedMonoBehaviour {
                                 // move this entity
                                 GM.boardManager.MoveEntity(selectedEntity.data.id, newPos);
                             }
-                            else {
-                                selectedEntity.entityBase.ResetTempView();
-                            }
+                            selectedEntity.entityBase.ResetView();
+                            
                         }
                         GM.editManager.ResetSelectedEntity();
                         this.selectedEntityBase = null;
