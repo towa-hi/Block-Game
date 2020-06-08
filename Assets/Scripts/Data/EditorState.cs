@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
 using UnityEngine;
 
 public struct EditorState {
@@ -67,8 +66,4 @@ public struct EditorState {
         return aEditorState;
     }
 
-    public static EditorState SetCursorSelect(EditorState aEditorState, CursorModeEnum aCursorMode) {
-        // aState.cursorMode = aCursorMode;
-        return aEditorState;
-    }
 }

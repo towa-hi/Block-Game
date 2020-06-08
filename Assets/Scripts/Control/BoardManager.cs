@@ -16,45 +16,21 @@ public class BoardManager : SerializedMonoBehaviour {
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
+    
+    #region Initialization
+    
+    public void InitializeStartingBoard() {
+        InitBoard();
+        AddBoundaryEntities();
+    }
+    
+    public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
+        print("attempting to load" + aFilename);
+        BoardState loadedBoardState = GM.LoadBoardState(aFilename);
+        InitBoard(loadedBoardState);
+        Debug.Log("loaded " + aFilename + " successfully... probably");
+    }
 
-    void UpdateBoardState(BoardState aBoardState) {
-        if (OnUpdateBoardState != null) {
-            print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
-        }
-        else {
-            print("BoardManager - Updating BoardState for no delegates");
-        }
-        this.boardState = aBoardState;
-        SetBoardCellDict(aBoardState);
-        OnUpdateBoardState?.Invoke(this.currentState);
-    }
-    
-    void UpdateEntityAndBoardState(EntityState aEntityState) {
-        BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
-        UpdateBoardState(newBoardState);
-    }
-    
-    void SetBoardCellDict(BoardState aBoardState) {
-        foreach (KeyValuePair<Vector2Int, BoardCell> kvp in this.boardCellDict) {
-            BoardCell currentCell = kvp.Value;
-            currentCell.backEntityState = null;
-            currentCell.frontEntityState = null;
-        }
-
-        foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
-            EntityState foundEntity = kvp.Value;
-            foreach (Vector2Int currentPos in Util.V2IInRect(foundEntity.pos, foundEntity.data.size)) {
-                BoardCell currentCell = this.boardCellDict[currentPos];
-                if (foundEntity.data.isFront) {
-                    currentCell.frontEntityState = foundEntity;
-                }
-                else {
-                    currentCell.backEntityState = foundEntity;
-                }
-            }
-        }
-    }
-    
     void InitBoard(BoardState? aBoardState = null) {
         if (this.entityBaseDict != null) {
             foreach (KeyValuePair<int, EntityBase> kvp in this.entityBaseDict) {
@@ -68,13 +44,12 @@ public class BoardManager : SerializedMonoBehaviour {
             BoardCell newCell = new BoardCell(currentPos);
             this.boardCellDict[currentPos] = newCell;
         }
-
         foreach (KeyValuePair<int, EntityState> kvp in newBoardState.entityDict) {
             CreateEntityBase(kvp.Value);
         }
         UpdateBoardState(newBoardState);
     }
-
+    
     void AddBoundaryEntities() {
         EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
         EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
@@ -92,39 +67,60 @@ public class BoardManager : SerializedMonoBehaviour {
         AddEntityFromSchema(tallBoy, new Vector2Int(39, 12), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
     }
     
-    EntityBase CreateEntityBase(EntityState aEntityState) {
-        // set the new EntityPosition
-        Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
-        // instantiate a new gameObject entityPrefab from the schemas prefabPath
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
-        // get the entityBase
-        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
-        // add it to the entityBaseDict
-        this.entityBaseDict[aEntityState.data.id] = entityBase;
-        // initialize entityBase with the newest state
-        entityBase.Init(aEntityState);
-        return entityBase;
-    }
-    
+    #endregion
+
+    #region Listeners
+
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
         
     }
+
+    #endregion
     
-    public void InitializeStartingBoard() {
-        InitBoard();
-        AddBoundaryEntities();
+    #region BoardState
+
+    void UpdateBoardState(BoardState aBoardState) {
+        if (Config.PRINTLISTENERUPDATES) {
+            if (OnUpdateBoardState != null) {
+                print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
+            }
+            else {
+                print("BoardManager - Updating BoardState for no delegates");
+            }
+        }
+        this.boardState = aBoardState;
+        SetBoardCellDict(aBoardState);
+        OnUpdateBoardState?.Invoke(this.currentState);
+    }
+    
+    void UpdateEntityAndBoardState(EntityState aEntityState) {
+        BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
+        UpdateBoardState(newBoardState);
+    }
+    
+    void SetBoardCellDict(BoardState aBoardState) {
+        foreach (KeyValuePair<Vector2Int, BoardCell> kvp in this.boardCellDict) {
+            BoardCell currentCell = kvp.Value;
+            currentCell.backEntityState = null;
+            currentCell.frontEntityState = null;
+        }
+        foreach (KeyValuePair<int, EntityState> kvp in aBoardState.entityDict) {
+            EntityState foundEntity = kvp.Value;
+            foreach (Vector2Int currentPos in Util.V2IInRect(foundEntity.pos, foundEntity.data.size)) {
+                BoardCell currentCell = this.boardCellDict[currentPos];
+                if (foundEntity.data.isFront) {
+                    currentCell.frontEntityState = foundEntity;
+                }
+                else {
+                    currentCell.backEntityState = foundEntity;
+                }
+            }
+        }
     }
     
     public void SaveBoardState(bool aIsPlaytestTemp) {
         GM.SaveBoardState(this.currentState, aIsPlaytestTemp);
-    }
-    
-    public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
-        print("attempting to load" + aFilename);
-        BoardState loadedBoardState = GM.LoadBoardState(aFilename);
-        InitBoard(loadedBoardState);
-        Debug.Log("loaded " + aFilename + " successfully... probably");
     }
 
     public void SetTitle(string aTitle) {
@@ -145,12 +141,64 @@ public class BoardManager : SerializedMonoBehaviour {
             UpdateBoardState(newBoardState);
         }
     }
+
+    #endregion
     
-    public void MoveEntity(int aId, Vector2Int aPos) {
+    #region Entity
+
+    public void AddEntityFromSchema(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
+        // if the area isn't clear, throw an exception
+        if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
+            throw new Exception("AddEntity - Position is invalid");
+        }
+        // generate a fresh entityState without an ID
+        EntityState newEntityStateWithoutId = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
+        // add it to the board and get the new boardState and entityState with ID back
+        (BoardState newBoard, EntityState newEntityStateWithId) = BoardState.AddEntity(this.currentState, newEntityStateWithoutId);
+        // update the boardState
+        UpdateBoardState(newBoard);
+        CreateEntityBase(newEntityStateWithId);
+    }
+    
+    void CreateEntityBase(EntityState aEntityState) {
+        // set the new EntityPosition
+        Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
+        // instantiate a new gameObject entityPrefab from the schemas prefabPath
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
+        // get the entityBase
+        EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
+        // add it to the entityBaseDict
+        this.entityBaseDict[aEntityState.data.id] = entityBase;
+        // initialize entityBase with the newest state
+        entityBase.Init(aEntityState);
+    }
+    
+    public void RemoveEntity(int aId, bool aRemoveEntityBase = false) {
+        if (aRemoveEntityBase) {
+            EntityBase entityBase = this.entityBaseDict[aId];
+            this.entityBaseDict.Remove(aId);
+            Destroy(entityBase.gameObject);
+        }
+        // remove entity from boardstate
+        BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
+        // update the boardState
+        UpdateBoardState(newBoard);
+    }
+
+    public void RemoveEntityBase(int aId) {
+        EntityBase entityBase = this.entityBaseDict[aId];
+        this.entityBaseDict.Remove(aId);
+        Destroy(entityBase.gameObject);
+    }
+    
+    public void MoveEntity(int aId, Vector2Int aPos, bool aMoveEntityBase = false) {
         EntityState entityState = GetEntityById(aId);
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
         if (IsRectEmpty(aPos, entityState.data.size, ignoreSet, entityState.data.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos));
+            if (aMoveEntityBase) {
+                entityState.entityBase.ResetView();
+            }
         } else {
             throw new Exception("MoveEntity - invalid move");
         }
@@ -181,7 +229,8 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityState entityState = GetEntityById(aId);
         if (aUpNodes != null && aDownNodes != null) {
             UpdateEntityAndBoardState(EntityState.SetNodes(entityState, aUpNodes, aDownNodes));
-        } else {
+        }
+        else {
             throw new Exception("SetEntityNodes - params can't be null");
         }
     }
@@ -190,7 +239,8 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityState entityState = GetEntityById(aId);
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
             UpdateEntityAndBoardState(EntityState.SetTouchDefense(entityState, aTouchDefense));
-        } else {
+        }
+        else {
             throw new Exception("SetEntityTouchDefense - invalid touchDefense");
         }
     }
@@ -199,17 +249,56 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityState entityState = GetEntityById(aId);
         if (0 <= aFallDefense && aFallDefense <= 999) {
             UpdateEntityAndBoardState(EntityState.SetFallDefense(entityState, aFallDefense));
-        } else {
+        }
+        else {
             throw new Exception("SetEntityFallDefense - invalid touchDefense");
         }
     }
 
+    #endregion
+
+    #region Utility
+    
+    public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
+        Vector2Int mousePosV2 = GM.inputManager.mousePosV2;
+        if (IsPosInBoard(mousePosV2)) {
+            if (aIsFront) {
+                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].frontEntityState;
+                return entityAtMousePos;
+            }
+            else {
+                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].backEntityState;
+                return entityAtMousePos;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    public EntityState GetEntityById(int aId) {
+        if (this.currentState.entityDict.ContainsKey(aId)) {
+            return this.currentState.entityDict[aId];
+        }
+        else {
+            throw new Exception("GetEntityById - invalid id");
+        }
+    }
+
+    public EntityBase GetEntityBaseById(int aId) {
+        if (this.entityBaseDict.ContainsKey(aId)) {
+            return this.entityBaseDict[aId];
+        }
+        else {
+            throw new Exception("GetEntityBaseById - invalid id");
+        }
+    }
+    
     public bool CanEditorPlaceSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
         // TODO: finish this
         if (IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             return true;
         }
-
         return false;
     }
 
@@ -231,7 +320,6 @@ public class BoardManager : SerializedMonoBehaviour {
             }
             return sliceDict;
         }
-
         throw new Exception("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
     }
 
@@ -275,72 +363,11 @@ public class BoardManager : SerializedMonoBehaviour {
         return false;
     }
 
-    public void AddEntityFromSchema(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
-        // if the area isn't clear, throw an exception
-        if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
-            throw new Exception("AddEntity - Position is invalid");
-        }
-        // generate a fresh entityState without an ID
-        EntityState newEntityStateWithoutId = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
-        // add it to the board and get the new boardState and entityState with ID back
-        (BoardState newBoard, EntityState newEntityStateWithId) = BoardState.AddEntity(this.currentState, newEntityStateWithoutId);
-        // update the boardState
-        UpdateBoardState(newBoard);
-        CreateEntityBase(newEntityStateWithId);
-    }
+    #endregion
 
-    public void RemoveEntityAndBase(int aId) {
-        RemoveEntityBase(aId);
-        RemoveEntity(aId);
-    }
     
-    public void RemoveEntity(int aId) {
-        // remove entity from boardstate
-        BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
-        // update the boardState
-        UpdateBoardState(newBoard);
-    }
+    
 
-    public void RemoveEntityBase(int aId) {
-        EntityBase entityBase = this.entityBaseDict[aId];
-        this.entityBaseDict.Remove(aId);
-        Destroy(entityBase.gameObject);
-    }
-
-    public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
-        Vector2Int mousePosV2 = GM.inputManager.mousePosV2;
-        if (IsPosInBoard(mousePosV2)) {
-            if (aIsFront) {
-                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].frontEntityState;
-                return entityAtMousePos;
-            }
-            else {
-                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].backEntityState;
-                return entityAtMousePos;
-            }
-            
-        }
-        else {
-            return null;
-        }
-    }
-
-    public EntityState GetEntityById(int aId) {
-        if (this.currentState.entityDict.ContainsKey(aId)) {
-            return this.currentState.entityDict[aId];
-        }
-        else {
-            throw new Exception("GetEntityById - invalid id");
-        }
-    }
-
-    public EntityBase GetEntityBaseById(int aId) {
-        if (this.entityBaseDict.ContainsKey(aId)) {
-            return this.entityBaseDict[aId];
-        }
-        else {
-            throw new Exception("GetEntityBaseById - invalid id");
-        }
-    }
+    
     
 }

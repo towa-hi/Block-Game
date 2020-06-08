@@ -21,12 +21,72 @@ public class InputManager : SerializedMonoBehaviour {
     bool mouseIsHeldDownOneFrame;
     bool mouseIsReleasedOneFrame;
     Camera mainCamera;
+
+    #region Lifecycle
+
     void Awake() {
         this.mainCamera = Camera.main;
         this.mouseState = MouseStateEnum.DEFAULT;
         this.mouseIsHeldDownOneFrame = false;
         this.mouseIsReleasedOneFrame = false;
     }
+
+    void Update() {
+        this.isCursorOverUI = EventSystem.current.IsPointerOverGameObject();
+        if (this.mouseIsHeldDownOneFrame) {
+            this.mouseIsHeldDownOneFrame = false;
+            this.mouseState = MouseStateEnum.HELD;
+        }
+        if (this.mouseIsReleasedOneFrame) {
+            this.mouseIsReleasedOneFrame = false;
+            this.mouseState = MouseStateEnum.DEFAULT;
+        }
+        // this Update() must run before anything else.
+        this.oldMousePos = this.mousePos;
+        this.oldMousePosV2 = this.mousePosV2; 
+        this.mousePos = GetMousePos();
+        this.mousePosV2 = Util.V3ToV2I(this.mousePos);
+
+        switch (this.mouseState) {
+            case MouseStateEnum.DEFAULT:
+                break;
+            case MouseStateEnum.CLICKED:
+                // runs once for one frame before mouseState changes to HELD
+                this.clickedPos = this.mousePos;
+                this.clickedPosV2 = Util.V3ToV2I(this.clickedPos);
+                // OnClickDown();
+                this.mouseIsHeldDownOneFrame = true;
+                break;
+            case MouseStateEnum.HELD:
+                // runs PER FRAME while mouse is held down
+                this.oldDragOffset = this.dragOffset;
+                this.dragOffset = this.mousePos - this.clickedPos;
+                this.dragOffsetV2 = this.mousePosV2 - this.clickedPosV2;
+                break;
+            case MouseStateEnum.RELEASED:
+                // runs once for one frame before mouseState changes to DEFAULT
+                this.dragOffset = Vector3.zero;
+                this.oldDragOffset = Vector3.zero;
+                this.clickedPos = Vector3.zero;
+                this.mouseIsReleasedOneFrame = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    Vector3 GetMousePos() {
+        Ray ray = this.mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) {
+            return new Vector3(hit.point.x, hit.point.y, hit.point.z);
+        } else {
+            return this.mousePos;
+        }
+    }
+    
+    #endregion
+
+    #region Listeners
 
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
@@ -72,57 +132,7 @@ public class InputManager : SerializedMonoBehaviour {
                 throw new ArgumentOutOfRangeException();
         }
     }
-
-    void Update() {
-        this.isCursorOverUI = EventSystem.current.IsPointerOverGameObject();
-        if (this.mouseIsHeldDownOneFrame) {
-            this.mouseIsHeldDownOneFrame = false;
-            this.mouseState = MouseStateEnum.HELD;
-        }
-        if (this.mouseIsReleasedOneFrame) {
-            this.mouseIsReleasedOneFrame = false;
-            this.mouseState = MouseStateEnum.DEFAULT;
-        }
-        // this Update() must run before anything else.
-        this.oldMousePos = this.mousePos;
-        this.oldMousePosV2 = this.mousePosV2; 
-        this.mousePos = GetMousePos();
-        this.mousePosV2 = Util.V3ToV2I(this.mousePos);
-
-        switch (this.mouseState) {
-            case MouseStateEnum.DEFAULT:
-                break;
-            case MouseStateEnum.CLICKED:
-                // runs once for one frame before mouseState changes to HELD
-                this.clickedPos = this.mousePos;
-                this.clickedPosV2 = Util.V3ToV2I(this.clickedPos);
-                // OnClickDown();
-                this.mouseIsHeldDownOneFrame = true;
-                break;
-            case MouseStateEnum.HELD:
-
-                this.oldDragOffset = this.dragOffset;
-                this.dragOffset = this.mousePos - this.clickedPos;
-                this.dragOffsetV2 = this.mousePosV2 - this.clickedPosV2;
-                break;
-            case MouseStateEnum.RELEASED:
-                // runs once for one frame before mouseState changes to DEFAULT
-                this.dragOffset = Vector3.zero;
-                this.oldDragOffset = Vector3.zero;
-                this.clickedPos = Vector3.zero;
-                this.mouseIsReleasedOneFrame = true;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    public Vector3 GetMousePos() {
-        Ray ray = this.mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) {
-            return new Vector3(hit.point.x, hit.point.y, hit.point.z);
-        } else {
-            return this.mousePos;
-        }
-    }
+    
+    #endregion
+    
 }

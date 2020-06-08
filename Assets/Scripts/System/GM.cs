@@ -28,9 +28,9 @@ public class GM : SerializedMonoBehaviour {
     public GameObject canvasGameObject;
     public GameObject studPrefab;
     GUIFilePicker filePicker;
-    GameObject playPanel;
-    GameObject editorPanel;
-    GameObject pausePanel;
+    public GameObject playPanel;
+    public GameObject editorPanel;
+    public GameObject pausePanel;
     
     void Awake() {
         GM.instance = this;
@@ -70,7 +70,6 @@ public class GM : SerializedMonoBehaviour {
     }
 
     // TODO: handle pauses and propagate gameState
-    
     public void SetFilePickerActive(bool aIsActive) {
         this.pausePanel.SetActive(aIsActive);
         this.filePicker.gameObject.SetActive(aIsActive);

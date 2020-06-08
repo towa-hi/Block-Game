@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using Sirenix.OdinInspector;
-
 
 public struct EntityImmutableData {
     public int id;
@@ -49,34 +44,6 @@ public struct EntityState {
     public EntityBase entityBase {
         get {
             return GM.boardManager.GetEntityBaseById(this.data.id);
-        }
-    }
-
-    public bool CustomEquals(EntityState aOther) {
-        if (
-            this.data.id == aOther.data.id &&
-            this.data.isFront == aOther.data.isFront &&
-            this.data.name == aOther.data.name &&
-            this.data.size == aOther.data.size &&
-            this.data.entityType == aOther.data.entityType &&
-            this.data.isBoundary == aOther.data.isBoundary &&
-            this.data.prefabPath == aOther.data.prefabPath &&
-            this.pos == aOther.pos &&
-            this.facing == aOther.facing &&
-            this.defaultColor == aOther.defaultColor &&
-            this.isFixed == aOther.isFixed &&
-            this.team == aOther.team &&
-            this.hasNodes == aOther.hasNodes &&
-            this.upNodes == aOther.upNodes &&
-            this.downNodes == aOther.downNodes &&
-            this.touchDefense == aOther.touchDefense &&
-            this.fallDefense == aOther.fallDefense 
-        ) {
-            Debug.Log(this.data.id + " is " + aOther.data.id);
-            return true;
-        } else {
-            Debug.Log(this.data.id + "is not " + aOther.data.id);
-            return false;
         }
     }
 

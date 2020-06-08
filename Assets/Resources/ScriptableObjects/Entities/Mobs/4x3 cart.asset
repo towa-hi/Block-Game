@@ -24,7 +24,7 @@ MonoBehaviour:
   prefabPath: Mobs/4x3 cart
   isFront: 1
   size: {x: 4, y: 3}
-  entityType: 2
+  entityType: 3
   defaultTeam: 1
   touchDefense: 50
   fallDefense: 50

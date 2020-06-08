@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using UnityEditor;
 
 public delegate void OnUpdateEditorStateHandler(EditorState aEditorState);
 
 [RequireComponent(typeof(BoardManager))]
 public class EditManager : SerializedMonoBehaviour {
-    public GameObject editorPanel;
     [SerializeField] EditorState editorState;
     public EditorState currentState {
         get {
@@ -19,7 +15,9 @@ public class EditManager : SerializedMonoBehaviour {
     }
     public event OnUpdateEditorStateHandler OnUpdateEditorState;
     [SerializeField] StateMachine inputStateMachine = new StateMachine();
-    
+
+    #region Lifecycle
+
     void Awake() {
         UpdateEditorState(EditorState.CreateEditorState());
         // initialize input state machine
@@ -31,30 +29,66 @@ public class EditManager : SerializedMonoBehaviour {
             this.inputStateMachine.Update();
         }
     }
+
+    #endregion
     
+    #region Listeners
+
+    // special function called by GM.OnUpdateGameState delegate
+    public void OnUpdateGameState(GameState aGameState) {
+        GM.instance.editorPanel.SetActive(aGameState.gameMode == GameModeEnum.EDITING);
+    }
+
+    #endregion
+
+    #region EditorState
+
     void UpdateEditorState(EditorState aEditorState) {
-        print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
+        if (Config.PRINTLISTENERUPDATES) {
+            print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
+        }
         this.editorState = aEditorState;
         this.OnUpdateEditorState?.Invoke(this.currentState);
     }
-    
-    // special function called by GM.OnUpdateGameState delegate
-    public void OnUpdateGameState(GameState aGameState) {
-        if (aGameState.gameMode == GameModeEnum.EDITING) {
-            // move this shit to GM later
-            this.editorPanel.SetActive(true);
-        }
-        else {
-            this.editorPanel.SetActive(false);
-        }
-        
-    }
-    
-    public void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+
+    #endregion
+
+    #region Protected
+
+    protected void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
         if (GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
             GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
+    
+    protected void PlaceSelectedSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+        if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
+            GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
+        }
+    }
+
+    protected void SetSelectedEntity(int aId) {
+        EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, aId);
+        UpdateEditorState(newEditorState);
+    }
+
+    protected void ClearSelectedEntity() {
+        EditorState newEditorState = EditorState.ClearSelectedEntityId(this.currentState);
+        UpdateEditorState(newEditorState);
+    }
+    
+    protected bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
+        if (!aEntityState.data.isBoundary) {
+            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState}, aEntityState.data.isFront)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    #endregion
+
+    #region External
 
     public void SetActiveTab(EditTabEnum aEditTabEnum) {
         print("SetActiveTab - changing tab");
@@ -89,7 +123,7 @@ public class EditManager : SerializedMonoBehaviour {
         }
         GM.boardManager.SetPar(par);
     }
-
+    
     public void SetSelectedSchema(EntitySchema aEntitySchema) {
         EditorState newEditorState = EditorState.SetSelectedSchema(this.currentState, aEntitySchema);
         UpdateEditorState(newEditorState);
@@ -97,22 +131,6 @@ public class EditManager : SerializedMonoBehaviour {
 
     public void ClearSelectedSchema() {
         EditorState newEditorState = EditorState.ClearSelectedSchema(this.currentState);
-        UpdateEditorState(newEditorState);
-    }
-
-    public void PlaceSelectedSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
-        if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
-            GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
-        }
-    }
-
-    public void SetSelectedEntity(int aId) {
-        EditorState newEditorState = EditorState.SetSelectedEntityId(this.currentState, aId);
-        UpdateEditorState(newEditorState);
-    }
-
-    public void ResetSelectedEntity() {
-        EditorState newEditorState = EditorState.ClearSelectedEntityId(this.currentState);
         UpdateEditorState(newEditorState);
     }
     
@@ -123,16 +141,6 @@ public class EditManager : SerializedMonoBehaviour {
         else {
             throw new Exception("GetSelectedEntity - no entity selected");
         }
-    }
-
-    public bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
-        if (!aEntityState.data.isBoundary) {
-            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState}, aEntityState.data.isFront)) {
-
-                return true;
-            }
-        }
-        return false;
     }
 
     public void OnIsFixedToggleValueChanged(bool aIsFixed) {
@@ -149,10 +157,9 @@ public class EditManager : SerializedMonoBehaviour {
     
     public void OnDeleteButtonClicked() {
         if (this.currentState.hasSelectedEntity) {
-            GM.boardManager.RemoveEntityAndBase(this.currentState.selectedEntityId);
-            ResetSelectedEntity();
+            GM.boardManager.RemoveEntity(this.currentState.selectedEntityId, true);
+            ClearSelectedEntity();
         }
-        
     }
 
     public void OnFlipButtonClicked() {
@@ -188,12 +195,15 @@ public class EditManager : SerializedMonoBehaviour {
     public void OnFilePickerLoadButtonClicked(string aFilename) {
         GM.boardManager.LoadBoardStateFromFile(aFilename);
     }
-    
+
+    #endregion
+
+    #region StateMachineStates
+
     class EditorPickerModeInputState : StateMachineState {
         EntityBase selectedEntityBase;
         
         public void Enter() {
-            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.PICKER);
         }
 
@@ -201,9 +211,7 @@ public class EditManager : SerializedMonoBehaviour {
             if (GM.editManager.currentState.selectedSchema != null) {
                 EntitySchema selectedSchema = GM.editManager.currentState.selectedSchema;
                 if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
-                    if (GM.boardManager.CanEditorPlaceSchema(GM.inputManager.mousePosV2, selectedSchema)) {
-                        GM.editManager.PlaceSelectedSchema(GM.inputManager.mousePosV2, selectedSchema);
-                    }
+                    GM.editManager.AddSchema(GM.inputManager.mousePosV2, selectedSchema);
                 }
                 if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
                     GM.editManager.ClearSelectedSchema();
@@ -223,7 +231,7 @@ public class EditManager : SerializedMonoBehaviour {
                             this.selectedEntityBase = selectedEntity.entityBase;
                         }
                         else {
-                            GM.editManager.ResetSelectedEntity();
+                            GM.editManager.ClearSelectedEntity();
                         }
                         break;
                     case MouseStateEnum.HELD:
@@ -239,12 +247,13 @@ public class EditManager : SerializedMonoBehaviour {
                             // if entity can move
                             if (GM.editManager.CanMoveTo(newPos, selectedEntity)) {
                                 // move this entity
-                                GM.boardManager.MoveEntity(selectedEntity.data.id, newPos);
+                                GM.boardManager.MoveEntity(selectedEntity.data.id, newPos, true);
                             }
-                            selectedEntity.entityBase.ResetView();
-                            
+                            else {
+                                selectedEntity.entityBase.ResetView();
+                            }
                         }
-                        GM.editManager.ResetSelectedEntity();
+                        GM.editManager.ClearSelectedEntity();
                         this.selectedEntityBase = null;
                         break;
                     default:
@@ -254,14 +263,12 @@ public class EditManager : SerializedMonoBehaviour {
         }
 
         public void Exit() {
-        
         }
     }
 
     class EditorEditModeInputState : StateMachineState {
 
         public void Enter() {
-            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.EDIT);
         }
 
@@ -273,12 +280,12 @@ public class EditManager : SerializedMonoBehaviour {
                     GM.editManager.SetSelectedEntity(id);
                 }
                 else {
-                    GM.editManager.ResetSelectedEntity();
+                    GM.editManager.ClearSelectedEntity();
                 }
             }
 
             if (GM.inputManager.rightMouseState == MouseStateEnum.CLICKED) {
-                GM.editManager.ResetSelectedEntity();
+                GM.editManager.ClearSelectedEntity();
             }
         }
 
@@ -289,7 +296,6 @@ public class EditManager : SerializedMonoBehaviour {
     class EditorOptionsModeInputState : StateMachineState {
         
         public void Enter() {
-            // GM.editManager.ResetSelectedEntity();
             Debug.Assert(GM.editManager.currentState.activeTab == EditTabEnum.OPTIONS);
         }
 
@@ -299,4 +305,6 @@ public class EditManager : SerializedMonoBehaviour {
         public void Exit() {
         }
     }
+
+    #endregion
 }

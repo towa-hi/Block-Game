@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -7,9 +6,8 @@ using Sirenix.Utilities;
 
 public class EntityBase : BoardStateListener {
     public int id;
-    [SerializeField] bool isTempPos;
+    public bool isTempPos;
     public GameObject model;
-    // public EntityImmutableData data;
     Renderer modelRenderer;
     HashSet<Renderer> childRenderers;
     EntityState oldEntityState;
@@ -23,6 +21,8 @@ public class EntityBase : BoardStateListener {
         }
     }
 
+    #region Lifecycle
+
     void Awake() {
         this.model = this.transform.GetChild(0).gameObject;
         this.modelRenderer = this.model.GetComponent<Renderer>();
@@ -32,71 +32,126 @@ public class EntityBase : BoardStateListener {
         this.needsNewState = true;
         this.isDying = false;
     }
-
+    
+    public void Init(EntityState aEntityState) {
+        this.id = aEntityState.data.id;
+        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
+        this.name = aEntityState.data.name + " Id: " + this.id;
+        if (aEntityState.hasNodes) {
+            foreach (Vector2Int upNode in aEntityState.upNodes) {
+                Vector2Int currentPos = aEntityState.pos + upNode;
+                Vector3 currentPosition = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
+                float studX = currentPosition.x;
+                float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
+                GameObject stud = Instantiate(GM.instance.studPrefab, new Vector3(studX, studY, 0), Quaternion.identity);
+                stud.transform.SetParent(this.model.transform, true);
+                Renderer studRenderer = stud.GetComponent<Renderer>();
+                studRenderer.material.color = aEntityState.defaultColor;
+                this.childRenderers.Add(studRenderer);
+            }
+        }
+        this.oldEntityState = aEntityState;
+    }
+    
     public void DoFrame() {
         if (this.needsNewState) {
             this.needsNewState = false;
-            EntityBaseStateMachineState newState = ChooseNextState();
-            print(this.id + " chose state " + newState.GetType());
-            EntityBaseStateMachineState newStateAfterDeathCheck = StateAfterDeathCheck(newState);
-            this.stateMachine.ChangeState(newStateAfterDeathCheck);
+            EntityBaseStateResults newStateResults = ChooseNextState();
+            EntityBaseStateMachineState finalState = ProcessStateResults(newStateResults);
+            this.stateMachine.ChangeState(finalState);
         }
         this.stateMachine.Update();
     }
 
-    EntityBaseStateMachineState StateAfterDeathCheck(EntityBaseStateMachineState aNewState) {
-        // TODO: write this
-        // if this new states position contains entities
-        // do a comparison of entities power
-        // if i win, kill entity
-        // if entity wins, return a new death state instead of aNewState
-        if (aNewState.GetBlockingEntityIdSet() == null) {
-            return aNewState;
+    #endregion
+    
+    #region Listeners
+
+    protected override void OnUpdateBoardState(BoardState aBoardState) {
+        // ignore when entity is dying
+        if (this.isDying) {
+            return;
         }
-        HashSet<int> blockingEntityIdSet = aNewState.GetBlockingEntityIdSet().ToHashSet();
-        // if im a mob
-        if (this.entityState.mobData.HasValue) {
-            // for each mob blocking me
-            foreach (int blockingEntityId in blockingEntityIdSet) {
-                EntityState blockingEntityState = GM.boardManager.GetEntityById(blockingEntityId);
-                Debug.Assert(blockingEntityState.mobData.HasValue);
-                if (this.entityState.mobData.Value.touchPower >= blockingEntityState.mobData.Value.touchPower) {
-                    print(this.id + " StateAfterDeathCheck - is killing " + blockingEntityId);
-                    blockingEntityState.entityBase.Die(DeathTypeEnum.BUMP);
-                }
-                else if (this.entityState.mobData.Value.touchPower < blockingEntityState.mobData.Value.touchPower) {
-                    print(this.id + " StateAfterDeathCheck - is being killed by " + blockingEntityId);
-                    return new DyingState(this.id);
-                }
+        // when id is -42069, this wont recieve any boardupdates because it hasn't been
+        // assigned an ID yet by BoardManager.CreateView
+        if (this.entityState.data.id == Constants.PLACEHOLDERINT) {
+            return;
+        }
+        EntityState newEntityState = aBoardState.entityDict[this.id];
+        // if first update
+        if (this.needsFirstUpdate) {
+            this.oldEntityState = newEntityState;
+            this.needsFirstUpdate = false;
+        }
+        // if any changes detected
+        if (!this.oldEntityState.Equals(newEntityState)) {
+            if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
+                SetColor(newEntityState.defaultColor);
             }
+            this.oldEntityState = newEntityState;
         }
-        return aNewState;
     }
+
+    #endregion
+
+    #region State Hijacker
 
     public void Die(DeathTypeEnum aDeathType) {
         this.stateMachine.ChangeState(new DyingState(this.id));
         print( this.id + " Die - set state to dying");
     }
     
-    EntityBaseStateMachineState ChooseNextState() {
+    public void Push(Vector2Int aDirection) {
+        print("entity has been pushed in " + aDirection);
+    }
+    
+
+    #endregion
+
+    #region StateMachine
+
+    protected void SetNeedsNewState() {
+        this.needsNewState = true;
+        // print("choosing state next frame");
+    }
+    
+    EntityBaseStateMachineState ProcessStateResults(EntityBaseStateResults aStateResults) {
+        Debug.Assert(aStateResults.isStateValid);
+        if (aStateResults.shouldEntityDie) {
+            return new DyingState(this.id);
+        }
+        if (aStateResults.entityKillSet != null) {
+            foreach (int killId in aStateResults.entityKillSet) {
+                GM.boardManager.GetEntityBaseById(killId).Die(DeathTypeEnum.BUMP);
+            }
+        }
+        if (aStateResults.entityPushSet != null) {
+            foreach (int pushId in aStateResults.entityPushSet) {
+                GM.boardManager.GetEntityBaseById(pushId).Push(aStateResults.stateMachineState.direction);
+            }
+        }
+        return aStateResults.stateMachineState;
+    }
+
+    EntityBaseStateResults ChooseNextState() {
+        // TODO: sometimes this makes a exception when the entity is dead but chooseNextState still happened
         switch (this.entityState.data.entityType) {
             case EntityTypeEnum.MOB:
                 return MobChooseNextState();
             case EntityTypeEnum.SPECIALBLOCK:
-                break;
+                return SpecialBlockChooseNextState();
             case EntityTypeEnum.BG:
-                break;
+                return DumbChooseNextState();
             case EntityTypeEnum.BLOCK:
-                break;
+                return DumbChooseNextState();
             case EntityTypeEnum.PUSHABLE:
-                break;
+                return DumbChooseNextState();
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        return new WaitingState();
     }
 
-    EntityBaseStateMachineState MobChooseNextState() {
+    EntityBaseStateResults MobChooseNextState() {
         switch (this.entityState.mobData?.movementType) {
             case MoveTypeEnum.INANIMATE:
                 return InanimateChooseNextState();
@@ -115,160 +170,70 @@ public class EntityBase : BoardStateListener {
         }
     }
 
-    EntityBaseStateMachineState InanimateChooseNextState() {
-        if (!DoesFloorExist(this.entityState.pos)) {
-            return new FallingState(this.id);
+    EntityBaseStateResults InanimateChooseNextState() {
+        FallingState fallingState = new FallingState(this.id);
+        EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
+        if (fallingStateResults.isStateValid) {
+            return fallingStateResults;
         }
         else {
-            return new WaitingState();
+            WaitingState waitingState = new WaitingState();
+            return waitingState.GetStateResults();
         }
     }
     
-    EntityBaseStateMachineState MobPatrolChooseNextState() {
-        // if there is no floor under me
-        if (!DoesFloorExist(this.entityState.pos)) {
-            return new FallingState(this.id);
-        }
-        
+    EntityBaseStateResults MobPatrolChooseNextState() {
+        FallingState fallingState = new FallingState(this.id);
+        EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
+        if (fallingStateResults.isStateValid) { return fallingStateResults; }
+
         Vector2Int facing = this.entityState.facing;
-        if (DoesFloorExist(this.entityState.pos + facing) && !IsMovementBlocked(this.entityState.pos + facing)) {
-            return new WalkingState(facing, this.id);
-        }
+        WalkingState walkingState = new WalkingState(facing, this.id);
+        EntityBaseStateResults walkingStateResults = walkingState.GetStateResults();
+        if (walkingStateResults.isStateValid) { return walkingStateResults; }
 
         if (this.entityState.mobData?.canHop == true) {
             Vector2Int facingUp = this.entityState.facing + Vector2Int.up;
-            if (DoesFloorExist(this.entityState.pos + facingUp) && !IsMovementBlocked(this.entityState.pos + facingUp)) {
-                return new HoppingState(facingUp, this.id);
-            }
+            HoppingState hoppingStateUp = new HoppingState(facingUp, this.id);
+            EntityBaseStateResults hoppingStateUpResults = hoppingStateUp.GetStateResults();
+            if (hoppingStateUpResults.isStateValid) { return hoppingStateUpResults; }
 
             Vector2Int facingDown = this.entityState.facing + Vector2Int.down;
-            if (DoesFloorExist(this.entityState.pos + facingDown) && !IsMovementBlocked(this.entityState.pos + facingDown)) {
-                return new HoppingState(facingDown, this.id);
-            }
+            HoppingState hoppingStateDown = new HoppingState(facingDown, this.id);
+            EntityBaseStateResults hoppingStateDownResults = hoppingStateDown.GetStateResults();
+            if (hoppingStateDownResults.isStateValid) { return hoppingStateDownResults; }
         }
         
-        return new TurningState(this.id);
-    }
-
-    IEnumerable<BoardCell> GetFloorSlice(Vector2Int aOrigin) {
-        Vector2Int floorOrigin = aOrigin + Vector2Int.down;
-        Vector2Int floorSize = new Vector2Int(this.entityState.data.size.x, 1);
-        return GM.boardManager.GetBoardGridSlice(floorOrigin, floorSize).Values;
-    }
-    // returns walking or hopping or turning
-    
-    bool DoesFloorExist(Vector2Int aPos) {
-        // for each floor cell
-        if (!GM.boardManager.IsPosInBoard(aPos + Vector2Int.down)) {
-            // this is just a convinient LIE. if you try to floorcheck on y = 0 it will say there's no floor
-            // a side effect of this is that if something is at 0, it will probably fall through the level
-            // and break everything
-            // print("FLOOR CHECKED A POS WHERE Y == 0");
-            return false;
-        }
-        // ReSharper disable once LoopCanBeConvertedToQuery
-        foreach (BoardCell boardCell in GetFloorSlice(aPos)) {
-            // if floor cell has entity is not null and it isnt a mob
-            if (boardCell.frontEntityState.HasValue && boardCell.frontEntityState?.data.entityType != EntityTypeEnum.MOB) {
-                return true;
-            }
-        }
-        return false;
+        TurningState turningState = new TurningState(this.id);
+        EntityBaseStateResults turningStateResults = turningState.GetStateResults();
+        return turningStateResults;
     }
     
-    bool IsMovementBlocked(Vector2Int aPos) {
-        // for each cell in the new position
-        foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(aPos, this.entityState.data.size).Values) {
-            // if cell has entity 
-            if (boardCell.frontEntityState.HasValue) {
-                // if entity isn't me
-                if (this.id != boardCell.frontEntityState.Value.data.id) {
-                    // if entity isn't a mob
-                    if (boardCell.frontEntityState?.data.entityType != EntityTypeEnum.MOB) {
-                        return true;
-                    }
-                    // if entity is on my team
-                    if (this.entityState.team == boardCell.frontEntityState?.team) {
-                        return true;
-                    }
-                }
-                
-            }
-        }
-        return false;
-    }
-    
-    EntityBaseStateMachineState MobFlyChooseNextState() {
+    EntityBaseStateResults MobFlyChooseNextState() {
         // TODO: write this
-        return new WaitingState();
-    }
-
-    EntityBaseStateMachineState MobPathChooseNextState() {
-        // TODO: write this
-        return new WaitingState();
-    }
-    EntityBaseStateMachineState SpecialBlockChooseNextState() {
-        // TODO: write this
-        return new WaitingState();
-    }
-
-    EntityBaseStateMachineState DumbChooseNextState() {
-        return new WaitingState();
-    }
-
-    public void SetNeedsNewState() {
-        this.needsNewState = true;
-        print("choosing state next frame");
+        WaitingState waitingState = new WaitingState();
+        return waitingState.GetStateResults();
     }
     
-    public void Init(EntityState aEntityState) {
-        // this.data = aEntityState.data;
-        this.id = aEntityState.data.id;
-        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
-        this.name = aEntityState.data.name + " Id: " + this.id;
-        if (aEntityState.hasNodes) {
-            foreach (Vector2Int upNode in aEntityState.upNodes) {
-                Vector2Int currentPos = aEntityState.pos + upNode;
-                Vector3 currentPosition = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
-                float studX = currentPosition.x;
-                float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
-                GameObject stud = Instantiate(GM.instance.studPrefab, new Vector3(studX, studY, 0), Quaternion.identity);
-                stud.transform.SetParent(this.model.transform, true);
-                Renderer studRenderer = stud.GetComponent<Renderer>();
-                studRenderer.material.color = aEntityState.defaultColor;
-                this.childRenderers.Add(studRenderer);
-            }
-        }
-        if (aEntityState.mobData != null) {
-            // this.mobBase.Init(aEntityState);
-        }
-        this.oldEntityState = aEntityState;
+    EntityBaseStateResults MobPathChooseNextState() {
+        // TODO: write this
+        WaitingState waitingState = new WaitingState();
+        return waitingState.GetStateResults();
+    }
+    EntityBaseStateResults SpecialBlockChooseNextState() {
+        // TODO: write this
+        WaitingState waitingState = new WaitingState();
+        return waitingState.GetStateResults();
+    }
+    
+    EntityBaseStateResults DumbChooseNextState() {
+        WaitingState waitingState = new WaitingState();
+        return waitingState.GetStateResults();
     }
 
-    protected override void OnUpdateBoardState(BoardState aBoardState) {
-        // when id is -42069, this wont recieve any boardupdates because it hasn't been
-        // assigned an ID yet by BoardManager.CreateView
-        if (this.isDying) {
-            return;
-        }
-        if (this.entityState.data.id == Constants.PLACEHOLDERINT) {
-            return;
-        }
-        EntityState newEntityState = aBoardState.entityDict[this.id];
-        if (this.needsFirstUpdate) {
-            this.oldEntityState = newEntityState;
-            this.needsFirstUpdate = false;
-        }
-        if (!this.oldEntityState.Equals(newEntityState)) {
-            // print(newEntityState.data.id + " - i should update");
-            this.transform.position = Util.V2IOffsetV3(newEntityState.pos, newEntityState.data.size, this.entityState.data.isFront);
-            SetColor(newEntityState.defaultColor);
-            this.oldEntityState = newEntityState;
-        }
-        else {
-            // print(this.data.id + " - i dont care");
-        }
-    }
+    #endregion
+    
+    #region View
 
     public void SetColor(Color aColor) {
         this.modelRenderer.material.color = aColor;
@@ -287,6 +252,34 @@ public class EntityBase : BoardStateListener {
         this.transform.position = Util.V2IOffsetV3(currentState.pos, this.entityState.data.size, this.entityState.data.isFront);
         this.isTempPos = false;
     }
+
+    #endregion
+
+    #region Utility
+
+    // true if this entity can be pushed
+    public bool PushableCheckIfPushable(Vector2Int aDirection) {
+        Debug.Assert(Util.IsDirection(aDirection));
+        // if this entity has mobData and canBePushed
+        if (this.entityState.mobData?.canBePushed == true) {
+            Vector2Int newPos = this.entityState.pos + aDirection;
+            // for each cell in the new pos
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(newPos, this.entityState.data.size).Values) {
+                // if entity exists and isn't me
+                if (boardCell.frontEntityState.HasValue && this.id != boardCell.frontEntityState.Value.data.id) {
+                    return false;
+                }
+            }
+            // return true because new pos is empty
+            return true;
+        }
+        else {
+            // return false because not a mob or cant be pushed
+            return false;
+        }
+    }
+
+    #endregion
     
     void OnDrawGizmos() {
         if (GM.boardManager != null && GM.boardManager.currentState.entityDict.ContainsKey(this.id)) {
@@ -314,8 +307,10 @@ public class EntityBase : BoardStateListener {
         }
     }
 
+    #region StateMachineStates
+
     abstract class EntityBaseStateMachineState : StateMachineState {
-        protected Vector2Int direction;
+        public Vector2Int direction;
         protected EntityBase entityBase;
         protected Vector2Int startPos;
         protected Vector3 startPosition;
@@ -327,7 +322,7 @@ public class EntityBase : BoardStateListener {
         public abstract void Enter();
         public abstract void Update();
         public abstract void Exit();
-        public abstract IEnumerable<int> GetBlockingEntityIdSet();
+        public abstract EntityBaseStateResults GetStateResults();
     }
     
     class WalkingState : EntityBaseStateMachineState {
@@ -364,19 +359,42 @@ public class EntityBase : BoardStateListener {
             this.entityBase.ResetView();
         }
 
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            Debug.Assert(this.endPos != null);
-            Debug.Assert(this.entityBase != null);
-            HashSet<int> blockingEntityIdSet = new HashSet<int>();
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, this.entityBase.entityState.data.size).Values) {
-                if (boardCell.frontEntityState.HasValue) {
-                    int blockingEntityId = boardCell.frontEntityState.Value.data.id;
-                    if (this.entityBase.id != blockingEntityId) {
-                        blockingEntityIdSet.Add(blockingEntityId);
-                    }
+        public override EntityBaseStateResults GetStateResults() {
+            bool shouldIDie = false;
+            HashSet<int> entityKillSet = new HashSet<int>();
+            
+            EntityState currentState = this.entityBase.entityState;
+            // if floor doesnt exist on new pos, return false and null
+            if (!PlayManager.DoesFloorExist(this.endPos, this.entityBase.id)) {
+                // return illegal state because no floor
+                return new EntityBaseStateResults(this, false);
+            }
+            
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+                if (!boardCell.frontEntityState.HasValue) {
+                    continue;
+                }
+                int blockingEntityId = boardCell.frontEntityState.Value.data.id;
+                // if the cell is occupied by me
+                if (currentState.data.id == blockingEntityId) {
+                    continue;
+                }
+                switch (PlayManager.DoesAttackerWinTouchFight(this.entityBase.id, blockingEntityId)) {
+                    case FightResultEnum.DEFENDERDIES:
+                        entityKillSet.Add(blockingEntityId);
+                        break;
+                    case FightResultEnum.ATTACKERDIES:
+                        shouldIDie = true;
+                        break;
+                    case FightResultEnum.TIE:
+                        // return illegal state because something is blocking me
+                        return new EntityBaseStateResults(this, false);
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
-            return blockingEntityIdSet;
+            // checked every cell in new pos, found none blocking and maybe added some to the kill set
+            return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
         }
     }
     
@@ -412,20 +430,43 @@ public class EntityBase : BoardStateListener {
         public override void Exit() {
             this.entityBase.ResetView();
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            Debug.Assert(this.endPos != null);
-            Debug.Assert(this.entityBase != null);
-            HashSet<int> blockingEntityIdSet = new HashSet<int>();
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, this.entityBase.entityState.data.size).Values) {
-                if (boardCell.frontEntityState.HasValue) {
-                    int blockingEntityId = boardCell.frontEntityState.Value.data.id;
-                    if (this.entityBase.id != blockingEntityId) {
-                        blockingEntityIdSet.Add(blockingEntityId);
-                    }
+
+        public override EntityBaseStateResults GetStateResults() {
+            bool shouldIDie = false;
+            HashSet<int> entityKillSet = new HashSet<int>();
+            
+            EntityState currentState = this.entityBase.entityState;
+            // if floor doesnt exist on new pos, return false and null
+            if (!PlayManager.DoesFloorExist(this.endPos, this.entityBase.id)) {
+                // return illegal state because no floor
+                return new EntityBaseStateResults(this, false);
+            }
+            
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+                if (!boardCell.frontEntityState.HasValue) {
+                    continue;
+                }
+                int blockingEntityId = boardCell.frontEntityState.Value.data.id;
+                // if the cell is occupied by me
+                if (currentState.data.id == blockingEntityId) {
+                    continue;
+                }
+                switch (PlayManager.DoesAttackerWinTouchFight(this.entityBase.id, blockingEntityId)) {
+                    case FightResultEnum.DEFENDERDIES:
+                        entityKillSet.Add(blockingEntityId);
+                        break;
+                    case FightResultEnum.ATTACKERDIES:
+                        shouldIDie = true;
+                        break;
+                    case FightResultEnum.TIE:
+                        // return illegal state because something is blocking me
+                        return new EntityBaseStateResults(this, false);
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
-            return blockingEntityIdSet;
+            // checked every cell in new pos, found none blocking and maybe added some to the kill set
+            return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
         }
     }
     
@@ -469,16 +510,17 @@ public class EntityBase : BoardStateListener {
         public override void Exit() {
             this.entityBase.ResetView();
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            return null;
+
+        public override EntityBaseStateResults GetStateResults() {
+            // returns always true because you shoudl always be able to turn
+            return new EntityBaseStateResults(this, true);
         }
     }
     
     class PushingState : EntityBaseStateMachineState {
     
         public PushingState(int aId, Vector2Int aDirection) {
-            this.direction = Vector2Int.down;
+            this.direction = aDirection;
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             this.startPos = this.entityBase.entityState.pos;
@@ -506,20 +548,44 @@ public class EntityBase : BoardStateListener {
         public override void Exit() {
             this.entityBase.ResetView();
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            Debug.Assert(this.endPos != null);
-            Debug.Assert(this.entityBase != null);
-            HashSet<int> blockingEntityIdSet = new HashSet<int>();
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, this.entityBase.entityState.data.size).Values) {
-                if (boardCell.frontEntityState.HasValue) {
-                    int blockingEntityId = boardCell.frontEntityState.Value.data.id;
-                    if (this.entityBase.id != blockingEntityId) {
-                        blockingEntityIdSet.Add(blockingEntityId);
-                    }
-                }
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
+        }
+    }
+
+    class PushedState : EntityBaseStateMachineState {
+        public PushedState(Vector2Int aDirection, int aId) {
+            Debug.Assert(Util.IsDirection(aDirection));
+            this.direction = aDirection;
+            this.entityBase = GM.boardManager.GetEntityBaseById(aId);
+            this.startPos = this.entityBase.entityState.pos;
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.endPos = this.entityBase.entityState.pos + this.direction;
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.moveSpeed = Constants.PUSHSPEED;
+            this.t = 0f;
+        }
+        public override void Enter() {
+            GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
+        }
+
+        public override void Update() {
+            if (this.t < 1) {
+                this.t += Time.deltaTime / this.moveSpeed;
+                this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
             }
-            return blockingEntityIdSet;
+            else {
+                this.entityBase.SetNeedsNewState();
+            }
+        }
+
+        public override void Exit() {
+            this.entityBase.ResetView();
+        }
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
         }
     }
     
@@ -532,9 +598,9 @@ public class EntityBase : BoardStateListener {
     
         public override void Exit() {
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            return null;
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
         }
     }
     
@@ -550,9 +616,9 @@ public class EntityBase : BoardStateListener {
         public override void Exit() {
             
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            return null;
+
+        public override EntityBaseStateResults GetStateResults() {
+            return new EntityBaseStateResults(this, true);
         }
     }
     
@@ -586,25 +652,46 @@ public class EntityBase : BoardStateListener {
         public override void Exit() {
             this.entityBase.ResetView();
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            Debug.Assert(this.endPos != null);
-            Debug.Assert(this.entityBase != null);
-            HashSet<int> blockingEntityIdSet = new HashSet<int>();
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, this.entityBase.entityState.data.size).Values) {
-                if (boardCell.frontEntityState.HasValue) {
-                    int blockingEntityId = boardCell.frontEntityState.Value.data.id;
-                    if (this.entityBase.id != blockingEntityId) {
-                        blockingEntityIdSet.Add(blockingEntityId);
+
+        public override EntityBaseStateResults GetStateResults() {
+            bool shouldIDie = false;
+            EntityState currentState = this.entityBase.entityState;
+            HashSet<int> entityKillSet = new HashSet<int>();
+            // if no floor under me
+            if (!PlayManager.DoesFloorExist(currentState.pos, currentState.data.id)) {
+                // foreach boardCell in newpos
+                foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+                    if (boardCell.frontEntityState.HasValue) {
+                        EntityState blockingEntity = boardCell.frontEntityState.Value;
+                        // if blockingEntity is me, skip
+                        if (blockingEntity.data.id == currentState.data.id) {
+                            continue;
+                        }
+                        switch (PlayManager.EntityFallOnEntityResult(currentState.data.id, blockingEntity.data.id)) {
+                            case FightResultEnum.DEFENDERDIES:
+                                entityKillSet.Add(blockingEntity.data.id);
+                                break;
+                            case FightResultEnum.ATTACKERDIES:
+                                shouldIDie = true;
+                                break;
+                            case FightResultEnum.TIE:
+                                return new EntityBaseStateResults(this, false);
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
+                return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
             }
-            return blockingEntityIdSet;
+            else {
+                // return invalid because floor already exists
+                return new EntityBaseStateResults(this, false);
+            }
         }
     }
     
     class DyingState : EntityBaseStateMachineState {
-        [SerializeField] readonly float timeToDie;
+        readonly float timeToDie;
         
         public DyingState(int aId) {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
@@ -629,9 +716,29 @@ public class EntityBase : BoardStateListener {
     
         public override void Exit() {
         }
-        
-        public override IEnumerable<int> GetBlockingEntityIdSet() {
-            return null;
+
+        public override EntityBaseStateResults GetStateResults() {
+            // always return valid 
+            return new EntityBaseStateResults(this, true);
         }
     }
+    
+    class EntityBaseStateResults {
+        public readonly EntityBaseStateMachineState stateMachineState;
+        public readonly bool isStateValid;
+        public readonly bool shouldEntityDie;
+        public readonly IEnumerable<int> entityKillSet;
+        public readonly IEnumerable<int> entityPushSet;
+
+        public EntityBaseStateResults (EntityBaseStateMachineState aStateMachineState, bool aIsStateValid, bool aShouldIDie = false, IEnumerable<int> aEntityKillSet = null, IEnumerable<int> aEntityPushSet = null) {
+            this.stateMachineState = aStateMachineState;
+            this.isStateValid = aIsStateValid;
+            this.shouldEntityDie = aShouldIDie;
+            this.entityKillSet = aEntityKillSet ?? new HashSet<int>();
+            this.entityPushSet = aEntityPushSet ?? new HashSet<int>();
+        }
+    }
+
+    #endregion
 }
+

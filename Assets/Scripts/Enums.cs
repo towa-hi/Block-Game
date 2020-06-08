@@ -39,6 +39,12 @@ public enum EntityTypeEnum {
     SPECIALBLOCK,
 }
 
+public enum FightResultEnum {
+    DEFENDERDIES,
+    ATTACKERDIES,
+    TIE,
+}
+
 public enum GameModeEnum {
     PLAYING,
     EDITING,
