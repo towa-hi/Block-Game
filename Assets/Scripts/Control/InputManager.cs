@@ -21,7 +21,7 @@ public class InputManager : SerializedMonoBehaviour {
     bool mouseIsHeldDownOneFrame;
     bool mouseIsReleasedOneFrame;
     Camera mainCamera;
-
+    
     #region Lifecycle
 
     void Awake() {
@@ -94,6 +94,7 @@ public class InputManager : SerializedMonoBehaviour {
     }
     
     public void OnClickDown(InputAction.CallbackContext context) {
+        print("clicked");
         switch (context.phase) {
             case InputActionPhase.Performed:
                 if (!this.isCursorOverUI) {

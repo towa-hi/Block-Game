@@ -36,6 +36,7 @@ public class EditManager : SerializedMonoBehaviour {
 
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
+        print(aGameState.gameMode);
         GM.instance.editorPanel.SetActive(aGameState.gameMode == GameModeEnum.EDITING);
     }
 

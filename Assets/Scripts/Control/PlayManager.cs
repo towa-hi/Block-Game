@@ -10,7 +10,6 @@ public class PlayManager : SerializedMonoBehaviour {
     public TimeStateEnum time;
     public PlayStateEnum play;
     [SerializeField] HashSet<int> entityIdsToKillThisFrame;
-
     #region Lifecycle
 
     void OnEnable() {
@@ -76,10 +75,10 @@ public class PlayManager : SerializedMonoBehaviour {
                 GM.instance.playPanel.gameObject.SetActive(true);
                 break;
             case GameModeEnum.EDITING:
-                GM.instance.gameObject.SetActive(false);
+                GM.instance.playPanel.gameObject.SetActive(false);
                 break;
             case GameModeEnum.PLAYTESTING:
-                GM.instance.gameObject.SetActive(true);
+                GM.instance.playPanel.gameObject.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
