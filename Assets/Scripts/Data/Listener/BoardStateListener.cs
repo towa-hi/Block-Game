@@ -6,7 +6,13 @@ using Sirenix.OdinInspector;
 public abstract class BoardStateListener : SerializedMonoBehaviour {
     public virtual void OnEnable() {
         GM.boardManager.OnUpdateBoardState += OnUpdateBoardState;
-        OnUpdateBoardState(GM.boardManager.currentState);
+        if (GM.boardManager.currentState.isInitialized) {
+            OnUpdateBoardState(GM.boardManager.currentState);
+        }
+        else {
+            print("BoardState was not initialized");
+        }
+        
     }
 
     public virtual void OnDisable() {

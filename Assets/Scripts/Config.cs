@@ -6,5 +6,5 @@ using Sirenix.OdinInspector;
 public static class Config {
     public static string USERNAME = "Player";
     public static string PATHTOBOARDS = Application.dataPath + "/Boards/";
-    public static bool PRINTLISTENERUPDATES = false;
+    public static bool PRINTLISTENERUPDATES = true;
 }

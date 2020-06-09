@@ -6,7 +6,12 @@ using Sirenix.OdinInspector;
 public abstract class EditorStateListener : SerializedMonoBehaviour {
     public virtual void OnEnable() {
         GM.editManager.OnUpdateEditorState += OnUpdateEditorState;
-        OnUpdateEditorState(GM.editManager.currentState);
+        if (GM.editManager.currentState.isInitialized) {
+            OnUpdateEditorState(GM.editManager.currentState);
+        }
+        else {
+            print("EditState was not initialized");
+        }
     }
 
     public virtual void OnDisable() {

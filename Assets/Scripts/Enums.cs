@@ -78,7 +78,7 @@ public enum MoveTypeEnum {
     PATHFLY,
 }
 
-public enum PlayStateEnum {
+public enum PlayModeEnum {
     INITIALIZATION,
     DIALOGUE,
     PLAYING,
@@ -107,7 +107,7 @@ public enum TeamEnum {
     ENEMY,
 }
 
-public enum TimeStateEnum {
+public enum TimeModeEnum {
     NORMAL,
     PAUSED,
     DOUBLE,

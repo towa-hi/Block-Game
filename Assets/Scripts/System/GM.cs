@@ -49,10 +49,12 @@ public class GM : SerializedMonoBehaviour {
         this.OnUpdateGameState += GM.editManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.playManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.cursor.OnUpdateGameState;
+    }
+
+    void Start() {
         SetGameMode(GameModeEnum.EDITING);
         GM.boardManager.InitializeStartingBoard();
     }
-
     public void SetGameMode(GameModeEnum aGameMode) {
         GameState newGameState = GameState.SetGameMode(this.gameState, aGameMode);
         UpdateGameState(newGameState);

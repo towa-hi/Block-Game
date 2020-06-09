@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
+public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
+
 [RequireComponent(typeof(BoardManager))]
 public class PlayManager : SerializedMonoBehaviour {
-    public TimeStateEnum time;
-    public PlayStateEnum play;
-    [SerializeField] HashSet<int> entityIdsToKillThisFrame;
-    #region Lifecycle
 
-    void OnEnable() {
-        this.play = PlayStateEnum.PLAYING;
+    [SerializeField] HashSet<int> entityIdsToKillThisFrame;
+    [SerializeField] PlayState playState;
+    public PlayState currentState {
+        get {
+            return this.playState;
+        }
     }
+    public event OnUpdatePlayStateHandler OnUpdatePlayState;
+    [SerializeField] StateMachine inputStateMachine = new StateMachine();
+    
+    #region Lifecycle
 
     void Update() {
         switch (GM.instance.currentState.gameMode) {
@@ -32,19 +39,20 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     void PlayingUpdate() {
-        switch (this.play) {
-            case PlayStateEnum.INITIALIZATION:
+        this.inputStateMachine.Update();
+        switch (this.currentState.playMode) {
+            case PlayModeEnum.INITIALIZATION:
                 break;
-            case PlayStateEnum.DIALOGUE:
+            case PlayModeEnum.DIALOGUE:
                 break;
-            case PlayStateEnum.PLAYING:
+            case PlayModeEnum.PLAYING:
                 DoAllEntityFrames();
                 break;
-            case PlayStateEnum.LOST:
+            case PlayModeEnum.LOST:
                 break;
-            case PlayStateEnum.WON:
+            case PlayModeEnum.WON:
                 break;
-            case PlayStateEnum.MENU:
+            case PlayModeEnum.MENU:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -64,6 +72,12 @@ public class PlayManager : SerializedMonoBehaviour {
             print(id + " DoAllEntityFrames - entityBase removed from game");
         }
     }
+
+    void Init() {
+        print("PlayManager - Init");
+        this.inputStateMachine.ChangeState(new PlayingState());
+        InitializePlayState();
+    }
     
     #endregion
     
@@ -72,13 +86,15 @@ public class PlayManager : SerializedMonoBehaviour {
     public void OnUpdateGameState(GameState aGameState) {
         switch (aGameState.gameMode) {
             case GameModeEnum.PLAYING:
-                GM.instance.playPanel.gameObject.SetActive(true);
+                GM.instance.playPanel.SetActive(true);
+                Init();
                 break;
             case GameModeEnum.EDITING:
-                GM.instance.playPanel.gameObject.SetActive(false);
+                GM.instance.playPanel.SetActive(false);
                 break;
             case GameModeEnum.PLAYTESTING:
-                GM.instance.playPanel.gameObject.SetActive(true);
+                GM.instance.playPanel.SetActive(true);
+                Init();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -87,6 +103,62 @@ public class PlayManager : SerializedMonoBehaviour {
 
     #endregion
 
+    #region PlayState
+    
+    void UpdatePlayState(PlayState aPlayState) {
+        this.playState = aPlayState;
+        switch (GM.instance.currentState.gameMode) {
+            case GameModeEnum.PLAYING:
+                if (Config.PRINTLISTENERUPDATES) {
+                    print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                }
+                this.OnUpdatePlayState?.Invoke(this.currentState);
+                break;
+            case GameModeEnum.EDITING:
+                break;
+            case GameModeEnum.PLAYTESTING:
+                if (Config.PRINTLISTENERUPDATES) {
+                    print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                }
+                this.OnUpdatePlayState?.Invoke(this.currentState);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    void InitializePlayState() {
+        PlayState initialPlayState = PlayState.CreatePlayState();
+        UpdatePlayState(initialPlayState);
+    }
+    
+    public void SetHeldEntity(int? aHeldEntityId) {
+        PlayState newPlayState = PlayState.SetHeldEntity(this.currentState, aHeldEntityId);
+        UpdatePlayState(newPlayState);
+    }
+
+    public void SetSelectedEntityIdSet([CanBeNull] HashSet<int> aSelectedEntityIdSet) {
+        PlayState newPlayState = PlayState.SetSelectedEntityIdSet(this.currentState, aSelectedEntityIdSet);
+        UpdatePlayState(newPlayState);
+    }
+
+    public void SetPlayMode(PlayModeEnum aPlayMode) {
+        PlayState newPlayState = PlayState.SetPlayMode(this.currentState, aPlayMode);
+        UpdatePlayState(newPlayState);
+    }
+
+    public void SetTimeMode(TimeModeEnum aTimeMode) {
+        PlayState newPlayState = PlayState.SetTimeMode(this.currentState, aTimeMode);
+        UpdatePlayState(newPlayState);
+    }
+
+    public void IncrementMoves() {
+        PlayState newPlayState = PlayState.SetMoves(this.currentState, this.currentState.moves + 1);
+        UpdatePlayState(newPlayState);
+    }
+    
+    #endregion
+    
     #region Entity
 
     // called when DyingState starts
@@ -195,4 +267,22 @@ public class PlayManager : SerializedMonoBehaviour {
 
     #endregion
 
+    #region StateMachineStates
+
+    class PlayingState : StateMachineState {
+
+        public void Enter() {
+            
+        }
+
+        public void Update() {
+            
+        }
+
+        public void Exit() {
+            
+        }
+    }
+
+    #endregion
 }

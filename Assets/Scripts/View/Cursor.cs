@@ -1,7 +1,8 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
-
-public class Cursor : EditorStateListener {
+// TODO: decouple cursor from editor state
+public class Cursor : SerializedMonoBehaviour {
     [SerializeField] Vector2Int pos;
     [SerializeField] Vector2Int size;
     [SerializeField] CursorModeEnum cursorMode;
@@ -25,10 +26,17 @@ public class Cursor : EditorStateListener {
         this.myRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public override void OnEnable() {
+    void OnEnable() {
         this.cursorMode = CursorModeEnum.POINTING;
-        base.OnEnable();
+        GM.editManager.OnUpdateEditorState += OnUpdateEditorState;
+        GM.playManager.OnUpdatePlayState += OnUpdatePlayState;
     }
+
+    void OnDisable() {
+        GM.editManager.OnUpdateEditorState -= OnUpdateEditorState;
+        GM.playManager.OnUpdatePlayState -= OnUpdatePlayState;
+    }
+    
     public void Update() {
         this.myRenderer.enabled = !GM.inputManager.isCursorOverUI;
         switch (this.cursorMode) {
@@ -54,17 +62,63 @@ public class Cursor : EditorStateListener {
         }
     }
     
-    protected override void OnUpdateEditorState(EditorState aNewEditorState) {
-        this.isFront = aNewEditorState.isFront;
-        this.selectedSchema = aNewEditorState.selectedSchema;
-        this.cursorMode = ChooseMode(aNewEditorState);
+    void OnUpdateEditorState(EditorState aNewEditorState) {
+        switch (GM.instance.currentState.gameMode) {
+            case GameModeEnum.PLAYING:
+                throw new Exception("received OnUpdateEditorState but GameState.gameMode = PLAYING");
+            case GameModeEnum.EDITING:
+                this.isFront = aNewEditorState.isFront;
+                this.selectedSchema = aNewEditorState.selectedSchema;
+                this.cursorMode = EditModeChooseMode(aNewEditorState);
+                break;
+            case GameModeEnum.PLAYTESTING:
+                throw new Exception("received OnUpdateEditorState updated but GameState.gameMode = PLAYING");
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
+    void OnUpdatePlayState(PlayState aNewPlayState) {
+        switch (GM.instance.currentState.gameMode) {
+            case GameModeEnum.PLAYING:
+                print("cursor OnUpdatePlayState");
+                this.isFront = true;
+                this.selectedSchema = null;
+                this.cursorMode = PlayModeChooseMode(aNewPlayState);
+                break;
+            case GameModeEnum.EDITING:
+                throw new Exception("received OnUpdatePlayState but GameState.gameMode = PLAYING");
+            case GameModeEnum.PLAYTESTING:
+                this.isFront = true;
+                this.selectedSchema = null;
+                this.cursorMode = PlayModeChooseMode(aNewPlayState);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
     public void OnUpdateGameState(GameState aNewGameState) {
-        
+    //     switch (aNewGameState.gameMode) {
+    //         case GameModeEnum.PLAYING:
+    //             this.cursorMode = PlayModeChooseMode();
+    //             break;
+    //         case GameModeEnum.EDITING:
+    //             break;
+    //         case GameModeEnum.PLAYTESTING:
+    //             this.cursorMode = PlayModeChooseMode();
+    //             break;
+    //         default:
+    //             throw new ArgumentOutOfRangeException();
+    //     }
     }
 
-    public CursorModeEnum ChooseMode(EditorState aEditorState) {
+    public CursorModeEnum PlayModeChooseMode(PlayState aPlayState) {
+        print("got playstate update picking cursor mode");
+        return CursorModeEnum.POINTING;
+    }
+    
+    public CursorModeEnum EditModeChooseMode(EditorState aEditorState) {
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
                 if (aEditorState.selectedSchema != null) {

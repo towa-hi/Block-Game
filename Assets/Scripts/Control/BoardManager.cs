@@ -82,12 +82,7 @@ public class BoardManager : SerializedMonoBehaviour {
 
     void UpdateBoardState(BoardState aBoardState) {
         if (Config.PRINTLISTENERUPDATES) {
-            if (OnUpdateBoardState != null) {
-                print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
-            }
-            else {
-                print("BoardManager - Updating BoardState for no delegates");
-            }
+            print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
         this.boardState = aBoardState;
         SetBoardCellDict(aBoardState);

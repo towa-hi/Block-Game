@@ -36,7 +36,6 @@ public class EditManager : SerializedMonoBehaviour {
 
     // special function called by GM.OnUpdateGameState delegate
     public void OnUpdateGameState(GameState aGameState) {
-        print(aGameState.gameMode);
         GM.instance.editorPanel.SetActive(aGameState.gameMode == GameModeEnum.EDITING);
     }
 
@@ -45,11 +44,22 @@ public class EditManager : SerializedMonoBehaviour {
     #region EditorState
 
     void UpdateEditorState(EditorState aEditorState) {
-        if (Config.PRINTLISTENERUPDATES) {
-            print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
-        }
         this.editorState = aEditorState;
-        this.OnUpdateEditorState?.Invoke(this.currentState);
+        switch (GM.instance.currentState.gameMode) {
+            case GameModeEnum.PLAYING:
+                break;
+            case GameModeEnum.EDITING:
+                if (Config.PRINTLISTENERUPDATES) {
+                    print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
+                }
+                this.editorState = aEditorState;
+                this.OnUpdateEditorState?.Invoke(this.currentState);
+                break;
+            case GameModeEnum.PLAYTESTING:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     #endregion

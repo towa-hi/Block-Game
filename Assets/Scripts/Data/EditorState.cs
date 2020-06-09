@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 public struct EditorState {
+    public bool isInitialized;
     public bool isFront;
     public EditTabEnum activeTab;
     public List<EntitySchema> frontContentList;
@@ -15,6 +16,7 @@ public struct EditorState {
     [SuppressMessage("ReSharper", "ReturnValueOfPureMethodIsNotUsed")]
     public static EditorState CreateEditorState() {
         EditorState newEditorState = new EditorState {
+            isInitialized = true,
             isFront = true,
             frontContentList = Resources.LoadAll("ScriptableObjects/Entities", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
             backContentList = Resources.LoadAll("ScriptableObjects/BGs", typeof(EntitySchema)).Cast<EntitySchema>().ToList(),
@@ -24,7 +26,7 @@ public struct EditorState {
         newEditorState.frontContentList.OrderBy(entitySchema => entitySchema.name.ToLower());
         newEditorState.backContentList.OrderBy(bgSchema => bgSchema.name.ToLower());
         newEditorState.hasSelectedEntity = false;
-        newEditorState.selectedEntityId = -42069;
+        newEditorState.selectedEntityId = Constants.PLACEHOLDERINT;
         return newEditorState;
     }
 

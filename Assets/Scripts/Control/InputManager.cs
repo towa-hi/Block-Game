@@ -94,7 +94,6 @@ public class InputManager : SerializedMonoBehaviour {
     }
     
     public void OnClickDown(InputAction.CallbackContext context) {
-        print("clicked");
         switch (context.phase) {
             case InputActionPhase.Performed:
                 if (!this.isCursorOverUI) {

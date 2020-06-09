@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public struct BoardState {
+    public bool isInitialized;
     public Dictionary<int, EntityState> entityDict;
     public string title;
     public string creator;
@@ -14,6 +15,7 @@ public struct BoardState {
 
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {
+            isInitialized = true,
             entityDict = new Dictionary<int, EntityState>(),
             title = "Uninitialized Board",
             creator = Config.USERNAME,

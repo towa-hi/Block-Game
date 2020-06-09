@@ -171,39 +171,43 @@ public class EntityBase : BoardStateListener {
     }
 
     EntityBaseStateResults InanimateChooseNextState() {
+        // try falling
         FallingState fallingState = new FallingState(this.id);
         EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
         if (fallingStateResults.isStateValid) {
             return fallingStateResults;
         }
         else {
+            // wait
             WaitingState waitingState = new WaitingState();
             return waitingState.GetStateResults();
         }
     }
     
     EntityBaseStateResults MobPatrolChooseNextState() {
+        // try falling
         FallingState fallingState = new FallingState(this.id);
         EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
         if (fallingStateResults.isStateValid) { return fallingStateResults; }
-
+        // try walking in facing direction
         Vector2Int facing = this.entityState.facing;
         WalkingState walkingState = new WalkingState(facing, this.id);
         EntityBaseStateResults walkingStateResults = walkingState.GetStateResults();
         if (walkingStateResults.isStateValid) { return walkingStateResults; }
 
         if (this.entityState.mobData?.canHop == true) {
+            // try hop up
             Vector2Int facingUp = this.entityState.facing + Vector2Int.up;
             HoppingState hoppingStateUp = new HoppingState(facingUp, this.id);
             EntityBaseStateResults hoppingStateUpResults = hoppingStateUp.GetStateResults();
             if (hoppingStateUpResults.isStateValid) { return hoppingStateUpResults; }
-
+            // try hop down
             Vector2Int facingDown = this.entityState.facing + Vector2Int.down;
             HoppingState hoppingStateDown = new HoppingState(facingDown, this.id);
             EntityBaseStateResults hoppingStateDownResults = hoppingStateDown.GetStateResults();
             if (hoppingStateDownResults.isStateValid) { return hoppingStateDownResults; }
         }
-        
+        // turn around
         TurningState turningState = new TurningState(this.id);
         EntityBaseStateResults turningStateResults = turningState.GetStateResults();
         return turningStateResults;
@@ -282,6 +286,7 @@ public class EntityBase : BoardStateListener {
     #endregion
     
     void OnDrawGizmos() {
+        // TODO: figure out why this doesnt draw gizmos for id == 0 for some reason
         if (GM.boardManager != null && GM.boardManager.currentState.entityDict.ContainsKey(this.id)) {
             Gizmos.color = Color.red;
             Vector2Int size = this.entityState.data.size;
