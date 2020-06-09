@@ -5,12 +5,14 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using UnityEngine.Rendering;
 
 public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
 
 [RequireComponent(typeof(BoardManager))]
 public class PlayManager : SerializedMonoBehaviour {
-
+    public Volume v;
+    UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
     [SerializeField] HashSet<int> entityIdsToKillThisFrame;
     [SerializeField] PlayState playState;
     public PlayState currentState {
@@ -20,7 +22,6 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     public event OnUpdatePlayStateHandler OnUpdatePlayState;
     [SerializeField] StateMachine inputStateMachine = new StateMachine();
-    
     #region Lifecycle
 
     void Update() {
@@ -36,6 +37,8 @@ public class PlayManager : SerializedMonoBehaviour {
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
+        
     }
     
     void PlayingUpdate() {
@@ -46,7 +49,18 @@ public class PlayManager : SerializedMonoBehaviour {
             case PlayModeEnum.DIALOGUE:
                 break;
             case PlayModeEnum.PLAYING:
-                DoAllEntityFrames();
+                switch (this.currentState.timeMode) {
+                    case TimeModeEnum.NORMAL:
+                        DoAllEntityFrames();
+                        break;
+                    case TimeModeEnum.PAUSED:
+                        break;
+                    case TimeModeEnum.DOUBLE:
+                        DoAllEntityFrames();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
                 break;
             case PlayModeEnum.LOST:
                 break;
@@ -129,6 +143,9 @@ public class PlayManager : SerializedMonoBehaviour {
 
     void InitializePlayState() {
         PlayState initialPlayState = PlayState.CreatePlayState();
+        // TODO: this sets timeMode and playMode to start the game
+        initialPlayState = PlayState.SetTimeMode(initialPlayState, TimeModeEnum.NORMAL);
+        initialPlayState = PlayState.SetPlayMode(initialPlayState, PlayModeEnum.PLAYING);
         UpdatePlayState(initialPlayState);
     }
     
@@ -150,6 +167,21 @@ public class PlayManager : SerializedMonoBehaviour {
     public void SetTimeMode(TimeModeEnum aTimeMode) {
         PlayState newPlayState = PlayState.SetTimeMode(this.currentState, aTimeMode);
         UpdatePlayState(newPlayState);
+        UnityEngine.Rendering.VolumeProfile volumeProfile = this.v.profile;
+        if(!volumeProfile) throw new System.NullReferenceException(nameof(UnityEngine.Rendering.VolumeProfile));
+        if(!volumeProfile.TryGet(out this.colorAdjustments)) throw new System.NullReferenceException(nameof(this.colorAdjustments));
+        switch (aTimeMode) {
+            case TimeModeEnum.NORMAL:
+                this.colorAdjustments.saturation.Override(0f);
+                break;
+            case TimeModeEnum.PAUSED:
+                this.colorAdjustments.saturation.Override(-100f);
+                break;
+            case TimeModeEnum.DOUBLE:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(aTimeMode), aTimeMode, null);
+        }
     }
 
     public void IncrementMoves() {
@@ -178,6 +210,7 @@ public class PlayManager : SerializedMonoBehaviour {
     #region External
 
     public void OnBackToEditorButtonClick() {
+        SetTimeMode(TimeModeEnum.NORMAL);
         GM.boardManager.LoadBoardStateFromFile();
         GM.instance.SetGameMode(GameModeEnum.EDITING);
     }
@@ -265,18 +298,114 @@ public class PlayManager : SerializedMonoBehaviour {
         }
     }
 
+    public bool IsEntitySelectable(int aId, bool aIsUp) {
+        EntityState entityState = GM.boardManager.GetEntityById(aId);
+        if (entityState.data.isBoundary) {
+            return false;
+        }
+        if (entityState.isFixed) {
+            return false;
+        }
+        if (entityState.data.entityType == EntityTypeEnum.MOB) {
+            return false;
+        }
+        if (!entityState.hasNodes) {
+            return false;
+        }
+        // TODO: write this
+        return true;
+    }
+
+    public void SelectEntity(int aId, bool aIsUp) {
+        Debug.Assert(IsEntitySelectable(aId, aIsUp));
+        SetSelectedEntityIdSet(GetSelectedEntityIdSet(aId, aIsUp));
+    }
+
+    public HashSet<int> GetSelectedEntityIdSet(int aRootId, bool aIsUp) {
+        return new HashSet<int> {aRootId};
+    }
+
+    public bool CanPlaceSelection(Vector2Int aOffset) {
+        return true;
+    }
+
+    public bool CanPlaceEntity(int aId, Vector2Int aOffset) {
+        // TODO: make this think about studs
+        EntityState entityState = GM.boardManager.GetEntityById(aId);
+        if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, new HashSet<EntityState> {entityState})) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
     #endregion
 
     #region StateMachineStates
 
     class PlayingState : StateMachineState {
-
+        int? clickedEntityId;
         public void Enter() {
-            
+            this.clickedEntityId = null;
         }
 
         public void Update() {
-            
+            switch (GM.inputManager.mouseState) {
+                case MouseStateEnum.DEFAULT:
+                    break;
+                case MouseStateEnum.CLICKED:
+                    EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos();
+                    if (maybeAEntity.HasValue) {
+                        this.clickedEntityId = maybeAEntity.Value.data.id;
+                    }
+                    break;
+                case MouseStateEnum.HELD:
+                    if (this.clickedEntityId.HasValue) {
+                        if (GM.inputManager.dragOffset.y > Constants.DRAGTHRESHOLD) {
+                            if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, true)) {
+                                GM.playManager.SelectEntity(this.clickedEntityId.Value, true);
+                                this.clickedEntityId = null;
+                                GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                            }
+                        } else if (GM.inputManager.dragOffset.y < Constants.DRAGTHRESHOLD * -1) {
+                            if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, false)) {
+                                GM.playManager.SelectEntity(this.clickedEntityId.Value, false);
+                                this.clickedEntityId = null;
+                                GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                            }
+                        }
+                    }
+                    if (GM.playManager.currentState.selectedEntityIdSet != null) {
+                        foreach (int id in GM.playManager.currentState.selectedEntityIdSet) {
+                            EntityState draggedEntity = GM.boardManager.GetEntityById(id);
+                            draggedEntity.entityBase.SetTempViewPosition(draggedEntity.pos + GM.inputManager.dragOffsetV2);
+                        }
+                    }
+                    break;
+                case MouseStateEnum.RELEASED:
+                    this.clickedEntityId = null;
+                    HashSet<int> selectedEntityIdSet = GM.playManager.currentState.selectedEntityIdSet;
+                    if (selectedEntityIdSet != null) {
+                        // TODO: this might not work because dragOffsetV2 could be null
+                        if (GM.playManager.CanPlaceSelection(GM.inputManager.dragOffsetV2)) {
+                            foreach (int id in selectedEntityIdSet) {
+                                EntityState entityState = GM.boardManager.GetEntityById(id);
+                                GM.boardManager.MoveEntity(id, entityState.pos + GM.inputManager.dragOffsetV2, true);
+                            }
+                        }
+                        else {
+                            foreach (int id in selectedEntityIdSet) {
+                                GM.boardManager.GetEntityBaseById(id).ResetView();
+                            }
+                        }
+                    }
+                    GM.playManager.SetSelectedEntityIdSet(null);
+                    GM.playManager.SetTimeMode(TimeModeEnum.NORMAL);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void Exit() {
