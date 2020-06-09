@@ -195,10 +195,24 @@ public class BoardManager : SerializedMonoBehaviour {
                 entityState.entityBase.ResetView();
             }
         } else {
-            throw new Exception("MoveEntity - invalid move");
+            throw new Exception("MoveEntity - invalid move id: " + aId + " to pos: " + aPos);
         }
     }
 
+    public void MoveEntityBatch(HashSet<int> aEntityIdSet, Vector2Int aOffset, bool aMoveEntityBase = false) {
+        BoardState boardState = this.currentState;
+        foreach (int id in aEntityIdSet) {
+            EntityState movingEntity = GetEntityById(id);
+            EntityState movedEntity = EntityState.SetPos(movingEntity, movingEntity.pos + aOffset);
+            boardState = BoardState.UpdateEntity(boardState, movedEntity);
+        }
+        UpdateBoardState(boardState);
+        if (aMoveEntityBase) {
+            foreach (int id in aEntityIdSet) {
+                GetEntityBaseById(id).ResetView();
+            }
+        }
+    }
     public void SetEntityFacing(int aId, Vector2Int aFacing) {
         EntityState entityState = GetEntityById(aId);
         if (Util.IsDirection(aFacing)) {
@@ -254,21 +268,30 @@ public class BoardManager : SerializedMonoBehaviour {
 
     #region Utility
     
-    public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
-        Vector2Int mousePosV2 = GM.inputManager.mousePosV2;
-        if (IsPosInBoard(mousePosV2)) {
-            if (aIsFront) {
-                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].frontEntityState;
-                return entityAtMousePos;
-            }
-            else {
-                EntityState? entityAtMousePos = this.boardCellDict[GM.inputManager.mousePosV2].backEntityState;
-                return entityAtMousePos;
-            }
+    public HashSet<EntityState> ConvertIdSetToEntityStateSet(HashSet<int> aIdSet) {
+        HashSet<EntityState> entityStateSet = new HashSet<EntityState>();
+        foreach (int id in aIdSet) {
+            entityStateSet.Add(GM.boardManager.GetEntityById(id));
         }
-        else {
+        return entityStateSet;
+    }
+    
+    public EntityState? GetEntityAtPos(Vector2Int aPos, bool aIsFront = true) {
+        if (!IsPosInBoard(aPos)) {
             return null;
         }
+        if (aIsFront) {
+            EntityState? entityState = this.boardCellDict[aPos].frontEntityState;
+            return entityState;
+        }
+        else {
+            EntityState? entityState = this.boardCellDict[aPos].backEntityState;
+            return entityState;
+        }
+    }
+    
+    public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
+        return GetEntityAtPos(GM.inputManager.mousePosV2);
     }
 
     public EntityState GetEntityById(int aId) {
@@ -358,11 +381,62 @@ public class BoardManager : SerializedMonoBehaviour {
         return false;
     }
 
+    public EntityState? GetReciprocalEntity(Vector2Int aNodeOrigin, bool aIsUp) {
+        // print("GetReciprocalEntity root id: " + aEntityState.data.id + " node:" + aNode + "isUp: " + aIsUp);
+        Vector2Int absoluteNodePos = aNodeOrigin + Util.UpOrDown(aIsUp);
+        // SetMarker(absoluteNodePos, Color.green, 5f);
+        // print("absoluteNodePos: " + absoluteNodePos);
+        EntityState? maybeReciprocalEntity = GetEntityAtPos(absoluteNodePos);
+        if (maybeReciprocalEntity.HasValue) {
+            EntityState reciprocalEntity = maybeReciprocalEntity.Value;
+            foreach (Vector2Int reciprocalAbsoluteNodePos in reciprocalEntity.GetAbsoluteNodePosSet(!aIsUp)) {
+                Vector2Int currentPos = reciprocalAbsoluteNodePos;
+                // print("checking currentPos" + currentPos);
+                if (currentPos == absoluteNodePos) {
+                    // print("GetReciprocalEntity root id: " + aEntityState.data.id + " returning entity with id: " + reciprocalEntity.data.id);
+                    return reciprocalEntity;
+                }
+            }
+        }
+        // print("GetReciprocalEntity root id:" + aEntityState.data.id + " returning null");
+        return null;
+    }
+
+    
+    
     #endregion
+    
+    [SerializeField] List<MarkerInfo> activeMarkerList = new List<MarkerInfo>();
+    
+    public void SetMarker(Vector2Int aPos, Color aColor, float aDuration) {
+        this.activeMarkerList.Add(new MarkerInfo(aPos, aColor, aDuration));
+    }
 
+    class MarkerInfo {
+        public Vector2Int pos;
+        public Color color;
+        public float duration;
+        public float t = 0;
+        
+        public MarkerInfo(Vector2Int aPos, Color aColor, float aDuration) {
+            this.pos = aPos;
+            this.color = aColor;
+            this.duration = aDuration;
+        }
+    }
     
-    
-
-    
-    
+    void OnDrawGizmos() {
+        List<MarkerInfo> markerTrashList = new List<MarkerInfo>();
+        foreach (MarkerInfo marker in this.activeMarkerList) {
+            Gizmos.color = marker.color;
+            Gizmos.DrawSphere(Util.V2IOffsetV3(marker.pos, Vector2Int.one) + new Vector3(0, 0, -1f), 0.2f);
+            marker.t += Time.deltaTime / marker.duration;
+            if (marker.t > 1) {
+                markerTrashList.Add(marker);
+            }
+        }
+        foreach (MarkerInfo markerTrash in markerTrashList) {
+            this.activeMarkerList.Remove(markerTrash);
+        }
+    }
 }

@@ -17,6 +17,7 @@ public class EntityBase : BoardStateListener {
     [SerializeField] bool needsNewState;
     [ShowInInspector] EntityState entityState {
         get {
+            // TODO: make this not throw errors on inspection with Application.isPlaying
             return GM.boardManager.GetEntityById(this.id);
         }
     }

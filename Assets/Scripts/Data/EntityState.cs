@@ -185,6 +185,22 @@ public struct EntityState {
             throw new System.Exception("tried to set invalid fallDefense");
         }
     }
+
+    public HashSet<Vector2Int> GetRelativeNodePosSet(bool aIsUp) {
+        Debug.Assert(this.hasNodes);
+        return aIsUp ? this.upNodes : this.downNodes;
+    }
+    
+    public HashSet<Vector2Int> GetAbsoluteNodePosSet(bool aIsUp) {
+        Debug.Assert(this.hasNodes);
+        HashSet<Vector2Int> absoluteNodePosSet = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> relativeNodePosSet = GetRelativeNodePosSet(aIsUp);
+        foreach (Vector2Int relativeNodePos in relativeNodePosSet) {
+            Vector2Int absoluteNodePos = this.pos + relativeNodePos;
+            absoluteNodePosSet.Add(absoluteNodePos);
+        }
+        return absoluteNodePosSet;
+    }
 }
 
 

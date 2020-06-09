@@ -114,7 +114,6 @@ public class Cursor : SerializedMonoBehaviour {
     }
 
     public CursorModeEnum PlayModeChooseMode(PlayState aPlayState) {
-        print("got playstate update picking cursor mode");
         return CursorModeEnum.POINTING;
     }
     
