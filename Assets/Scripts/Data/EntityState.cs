@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 
 public struct EntityImmutableData {
@@ -26,7 +28,66 @@ public struct MobData {
     public bool canBeLifted;
 }
 
+public readonly struct Node {
+    public readonly bool isUp;
+    public readonly int id;
+    public readonly Vector2Int relativePos;
+    public EntityState entityState {
+        get {
+            return GM.boardManager.GetEntityById(this.id);
+        }
+    }
+    public Vector2Int absolutePos {
+        get {
+            return this.entityState.pos + this.relativePos;
+        }
+    }
+    public Vector2Int oppositeNodePos {
+        get {
+            return this.absolutePos + Util.UpOrDown(this.isUp);
+        }
+    }
+    public Node? oppositeNode {
+        get {
+            EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos);
+            if (oppositeEntity.HasValue && oppositeEntity.Value.hasNodes) {
+                return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos);
+            }
+            return null;
+        }
+    }
+
+    public Node(bool aIsUp, int aId, Vector2Int aRelativePos) {
+        this.relativePos = aRelativePos;
+        this.id = aId;
+        this.isUp = aIsUp;
+    }
+    
+    public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList = null) {
+        Debug.Log("node for id: " + this.id + " with relative pos:" + this.relativePos + "GetOppositeNode at:" + (this.oppositeNodePos + aOffset));
+        EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos + aOffset);
+        if (oppositeEntity.HasValue && oppositeEntity.Value.hasNodes) {
+            Debug.Log("found node");
+            if (aIgnoreList != null) {
+                if (!aIgnoreList.Contains(oppositeEntity.Value)) {
+                    Debug.Log("returning node with id: " + oppositeEntity.Value.data.id);
+                    return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+                }
+                else {
+                    Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.data.id);
+                }
+            }
+            else {
+                return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+            }
+        }
+        Debug.Log("did not find node");
+        return null;
+    }
+}
+
 public struct EntityState {
+    public bool isInitialized;
     public EntityImmutableData data;
     public MobData? mobData;
     
@@ -39,7 +100,9 @@ public struct EntityState {
     
     public HashSet<Vector2Int> upNodes;
     public HashSet<Vector2Int> downNodes;
-
+    // TODO: convert all this shit to use node structs
+    public HashSet<Node> nodeSet;
+    
     public int touchDefense;
     public int fallDefense;
 
@@ -62,7 +125,7 @@ public struct EntityState {
             prefabPath = aEntitySchema.prefabPath,
         };
         if (aEntitySchema.entityType == EntityTypeEnum.MOB) {
-            newEntityState.mobData = new MobData() {
+            newEntityState.mobData = new MobData {
                 movementType = aEntitySchema.movementType,
                 canHop = aEntitySchema.canHop,
                 moveSpeed = aEntitySchema.moveSpeed,
@@ -79,52 +142,69 @@ public struct EntityState {
         else {
             newEntityState.mobData = null;
         }
-        
         newEntityState.pos = aPos;
         newEntityState.facing = aFacing;
         newEntityState.defaultColor = aDefaultColor;
         newEntityState.isFixed = aIsFixed;
         newEntityState.team = aEntitySchema.defaultTeam;
         newEntityState.hasNodes = aEntitySchema.hasNodes;
-        // generate some nodes
-        if (aEntitySchema.hasNodes) {
+        
+        newEntityState.nodeSet = new HashSet<Node>();
+        newEntityState.upNodes = new HashSet<Vector2Int>();
+        newEntityState.downNodes = new HashSet<Vector2Int>();
+        newEntityState.touchDefense = aEntitySchema.touchDefense;
+        newEntityState.fallDefense = aEntitySchema.fallDefense;
+
+        return newEntityState;
+    }
+
+    // called only by BoardState.AddEntity
+    public void Init(int aId) {
+        Debug.Assert(!this.isInitialized);
+        this.isInitialized = true;
+        this.data.id = aId;
+        this.data.name = GenerateName(this.data.name, this.data.isBoundary);
+        
+        string GenerateName(string aEntitySchemaName, bool aIsBoundary) {
+            string nameString = aEntitySchemaName + " ";
+            if (aIsBoundary) {
+                nameString += "(boundary) ";
+            }
+            nameString += "id: " + aId;
+            return nameString;
+        }
+        
+        var newNodeSet = new HashSet<Node>();
+        if (this.hasNodes) {
             HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
             HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
             bool hasUpNodes = true;
             bool hasDownNodes = true;
-            if (aIsBoundary) {
-                if (aPos.y + aEntitySchema.size.y == GM.boardManager.currentState.size.y) {
+            if (this.data.isBoundary) {
+                if (this.pos.y + this.data.size.y == GM.boardManager.currentState.size.y) {
                     hasUpNodes = false;
                 }
-
-                if (aPos.y == 0) {
+                if (this.pos.y == 0) {
                     hasDownNodes = false;
                 }
             }
-
-            for (int x = 0; x < aEntitySchema.size.x; x++) {
+            for (int x = 0; x < this.data.size.x; x++) {
                 if (hasUpNodes) {
-                    Vector2Int topPos = new Vector2Int(x, aEntitySchema.size.y - 1);
+                    Vector2Int topPos = new Vector2Int(x, this.data.size.y - 1);
                     newUpNodes.Add(topPos);
+                    newNodeSet.Add(new Node(true, this.data.id, topPos));
                 }
 
                 if (hasDownNodes) {
                     Vector2Int botPos = new Vector2Int(x, 0);
                     newDownNodes.Add(botPos);
+                    newNodeSet.Add(new Node(false, this.data.id, botPos));
                 }
             }
-
-            newEntityState.upNodes = newUpNodes;
-            newEntityState.downNodes = newDownNodes;
+            this.nodeSet = newNodeSet;
+            this.upNodes = newUpNodes;
+            this.downNodes = newDownNodes;
         }
-        else {
-            newEntityState.upNodes = new HashSet<Vector2Int>();
-            newEntityState.downNodes = new HashSet<Vector2Int>();
-        }
-        newEntityState.touchDefense = aEntitySchema.touchDefense;
-        newEntityState.fallDefense = aEntitySchema.fallDefense;
-
-        return newEntityState;
     }
     
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
@@ -194,6 +274,19 @@ public struct EntityState {
             absoluteNodePosSet.Add(absoluteNodePos);
         }
         return absoluteNodePosSet;
+    }
+
+    public Node GetNodeByAbsPos(bool aIsUp, Vector2Int aAbsPos) {
+        foreach (Node node in this.nodeSet) {
+            if (node.isUp == aIsUp && node.absolutePos == aAbsPos) {
+                return node;
+            }
+        }
+        throw new Exception("invalid absPos");
+    }
+
+    public HashSet<Node> GetNodes(bool aIsUp) {
+        return this.nodeSet.Where(node => node.isUp == aIsUp).ToHashSet();
     }
 }
 

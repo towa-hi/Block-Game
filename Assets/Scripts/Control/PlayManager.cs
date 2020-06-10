@@ -469,48 +469,65 @@ public class PlayManager : SerializedMonoBehaviour {
         }
         return isEntityConnectedToFixed;
     }
+    
     public bool CanPlaceSelection(Vector2Int aOffset) {
         Debug.Assert(this.currentState.selectedEntityIdSet != null);
         HashSet<EntityState> selectedEntitySet = GM.boardManager.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
-        
-        foreach (int id in this.currentState.selectedEntityIdSet) {
-            if (!CanPlaceEntity(id, aOffset, selectedEntitySet)) {
-                return false;
-            }
-
-        }
-        HashSet<Vector2Int> absUpNodes = new HashSet<Vector2Int>();
-        HashSet<Vector2Int> absDownNodes = new HashSet<Vector2Int>();
-        HashSet<Vector2Int> checkPosSet = new HashSet<Vector2Int>();
-        foreach (EntityState selectedEntity in selectedEntitySet) {
-            Debug.Assert(selectedEntity.hasNodes);
-            foreach (Vector2Int upAbsNode in selectedEntity.GetAbsoluteNodePosSet(true)) {
-                checkPosSet.Add(upAbsNode + Vector2Int.up + aOffset);
-                absUpNodes.Add(upAbsNode + Vector2Int.up + aOffset);
-            }
-            foreach (Vector2Int downAbsPos in selectedEntity.GetAbsoluteNodePosSet(false)) {
-                checkPosSet.Add(downAbsPos + Vector2Int.down + aOffset);
-                absDownNodes.Add(downAbsPos + Vector2Int.down + aOffset);
-            }
-        }
         bool touchingUp = false;
         bool touchingDown = false;
-        foreach (Vector2Int currentUpNode in absUpNodes) {
-            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentUpNode);
-            if (maybeAEntity.HasValue && 
-                !selectedEntitySet.Contains(maybeAEntity.Value) &&
-                maybeAEntity.Value.hasNodes) {
-                touchingUp = true;
+        foreach (EntityState selectedEntity in selectedEntitySet) {
+            Debug.Assert(selectedEntity.hasNodes);
+            if (!CanPlaceEntity(selectedEntity.data.id, aOffset, selectedEntitySet)) {
+                print("CanPlaceSelection - false because entity is blocked");
+                return false;
+            }
+            foreach (Node node in selectedEntity.nodeSet) {
+                EntityState? maybeAEntity = node.GetOppositeNode(aOffset, selectedEntitySet)?.entityState;
+                if (maybeAEntity.HasValue && 
+                    !selectedEntitySet.Contains(maybeAEntity.Value) &&
+                    maybeAEntity.Value.hasNodes) {
+                    if (node.isUp) {
+                        touchingUp = true;
+                    }
+                    else {
+                        touchingDown = true;
+                    }
+                    if (touchingUp && touchingDown) {
+                        print("CanPlaceSelection - false because touching both ways");
+                        return false;
+                    }
+                }
             }
         }
-        foreach (Vector2Int currentDownNode in absDownNodes) {
-            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentDownNode);
-            if (maybeAEntity.HasValue && 
-                !selectedEntitySet.Contains(maybeAEntity.Value) &&
-                maybeAEntity.Value.hasNodes) {
-                touchingDown = true;
-            }
-        }
+        //
+        //
+        //
+        //
+        //
+        // foreach (EntityState selectedEntity in selectedEntitySet) {
+        //     
+        //     foreach (Vector2Int upAbsNode in selectedEntity.GetAbsoluteNodePosSet(true)) {
+        //         Vector2Int currentPos = upAbsNode + Vector2Int.up + aOffset;
+        //         EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
+        //         if (maybeAEntity.HasValue && 
+        //             !selectedEntitySet.Contains(maybeAEntity.Value) &&
+        //             maybeAEntity.Value.hasNodes) {
+        //             touchingUp = true;
+        //             break;
+        //         }
+        //     }
+        //     foreach (Vector2Int downAbsNode in selectedEntity.GetAbsoluteNodePosSet(false)) {
+        //         Vector2Int currentPos = downAbsNode + Vector2Int.down + aOffset;
+        //         EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
+        //         if (maybeAEntity.HasValue && 
+        //             !selectedEntitySet.Contains(maybeAEntity.Value) &&
+        //             maybeAEntity.Value.hasNodes) {
+        //             touchingDown = true;
+        //             break;
+        //         }
+        //     }
+        // }
+        // this is fine. return touchingUp ^ touchingDown works too
         if (touchingUp && touchingDown) {
             print("CanPlaceSelection - false because touching both ways");
             return false;
@@ -523,19 +540,6 @@ public class PlayManager : SerializedMonoBehaviour {
             print("CanPlaceSelection - false because touching no ways");
             return false;
         }
-        // foreach (Vector2Int currentPos in checkPosSet) {
-        //     EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
-        //     if (maybeAEntity.HasValue && !selectedEntitySet.Contains(maybeAEntity.Value)) {
-        //         if (maybeAEntity.Value.hasNodes) {
-        //             // check if theres any entities being pinched
-        //             if (absUpNodes.Contains(currentPos) && absDownNodes.Contains(currentPos)) {
-        //                 return false;
-        //             }
-        //             return true;
-        //         }
-        //     }
-        // }
-        
     }
 
     public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<EntityState> aEntityIdIgnoreSet = null) {

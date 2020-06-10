@@ -11,7 +11,7 @@ public struct BoardState {
     public int par;
     public Vector2Int size;
     public int attempts;
-    public int currentId;
+    int currentId;
 
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {
@@ -33,21 +33,11 @@ public struct BoardState {
     public static Tuple<BoardState, EntityState> AddEntity(BoardState aBoardState, EntityState aEntityState) {
         int id = aBoardState.currentId;
         // id always set here
-        aEntityState.data.id = id;
-        aEntityState.data.name = GenerateName(aEntityState.data.name);
+        aEntityState.Init(id);
         // NEVER CHANGE CURRENTID OUTSIDE OF THIS FUNCTION!!!
         aBoardState.currentId += 1;
         aBoardState.entityDict[id] = aEntityState;
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);
-
-        string GenerateName(string aEntitySchemaName) {
-            string nameString = aEntitySchemaName + " ";
-            if (aEntityState.data.isBoundary) {
-                nameString += "(boundary) ";
-            }
-            nameString += "id: " + id;
-            return nameString;
-        }
     }
     
     public static BoardState RemoveEntity(BoardState aBoardState, int aId) {
