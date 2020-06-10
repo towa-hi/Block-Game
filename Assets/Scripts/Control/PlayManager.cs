@@ -126,7 +126,9 @@ public class PlayManager : SerializedMonoBehaviour {
         switch (GM.instance.currentState.gameMode) {
             case GameModeEnum.PLAYING:
                 if (Config.PRINTLISTENERUPDATES) {
-                    print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                    if (this.OnUpdatePlayState != null) {
+                        print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                    }
                 }
                 this.OnUpdatePlayState?.Invoke(this.currentState);
                 break;
@@ -134,7 +136,9 @@ public class PlayManager : SerializedMonoBehaviour {
                 break;
             case GameModeEnum.PLAYTESTING:
                 if (Config.PRINTLISTENERUPDATES) {
-                    print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                    if (this.OnUpdatePlayState != null) {
+                        print("PlayManager - Updating PlayState for " + this.OnUpdatePlayState?.GetInvocationList().Length + " delegates");
+                    }
                 }
                 this.OnUpdatePlayState?.Invoke(this.currentState);
                 break;
@@ -373,12 +377,8 @@ public class PlayManager : SerializedMonoBehaviour {
                     }
                     selectSet.UnionWith(hangerConnectedSet);
                 }
-                else {
-                    print(hanger.data.name + " and " + hangerConnectedSet.Count + " descendants were not added");
-                }
             }
         }
-        print("selectSet count: " + selectSet.Count);
         return GM.boardManager.ConvertEntityStateSetToIdSet(selectSet);
     }
 
@@ -472,37 +472,76 @@ public class PlayManager : SerializedMonoBehaviour {
     public bool CanPlaceSelection(Vector2Int aOffset) {
         Debug.Assert(this.currentState.selectedEntityIdSet != null);
         HashSet<EntityState> selectedEntitySet = GM.boardManager.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
+        
         foreach (int id in this.currentState.selectedEntityIdSet) {
             if (!CanPlaceEntity(id, aOffset, selectedEntitySet)) {
                 return false;
             }
+
         }
+        HashSet<Vector2Int> absUpNodes = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> absDownNodes = new HashSet<Vector2Int>();
         HashSet<Vector2Int> checkPosSet = new HashSet<Vector2Int>();
         foreach (EntityState selectedEntity in selectedEntitySet) {
             Debug.Assert(selectedEntity.hasNodes);
             foreach (Vector2Int upAbsNode in selectedEntity.GetAbsoluteNodePosSet(true)) {
                 checkPosSet.Add(upAbsNode + Vector2Int.up + aOffset);
+                absUpNodes.Add(upAbsNode + Vector2Int.up + aOffset);
             }
             foreach (Vector2Int downAbsPos in selectedEntity.GetAbsoluteNodePosSet(false)) {
                 checkPosSet.Add(downAbsPos + Vector2Int.down + aOffset);
+                absDownNodes.Add(downAbsPos + Vector2Int.down + aOffset);
             }
         }
-        foreach (Vector2Int currentPos in checkPosSet) {
-            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
-            if (maybeAEntity.HasValue && !selectedEntitySet.Contains(maybeAEntity.Value)) {
-                if (maybeAEntity.Value.hasNodes) {
-                    return true;
-                }
+        bool touchingUp = false;
+        bool touchingDown = false;
+        foreach (Vector2Int currentUpNode in absUpNodes) {
+            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentUpNode);
+            if (maybeAEntity.HasValue && 
+                !selectedEntitySet.Contains(maybeAEntity.Value) &&
+                maybeAEntity.Value.hasNodes) {
+                touchingUp = true;
             }
         }
+        foreach (Vector2Int currentDownNode in absDownNodes) {
+            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentDownNode);
+            if (maybeAEntity.HasValue && 
+                !selectedEntitySet.Contains(maybeAEntity.Value) &&
+                maybeAEntity.Value.hasNodes) {
+                touchingDown = true;
+            }
+        }
+        if (touchingUp && touchingDown) {
+            print("CanPlaceSelection - false because touching both ways");
+            return false;
+        }
+        else if (touchingUp ^ touchingDown) {
+            print("CanPlaceSelection - true because touching one way");
+            return true;
+        }
+        else {
+            print("CanPlaceSelection - false because touching no ways");
+            return false;
+        }
+        // foreach (Vector2Int currentPos in checkPosSet) {
+        //     EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
+        //     if (maybeAEntity.HasValue && !selectedEntitySet.Contains(maybeAEntity.Value)) {
+        //         if (maybeAEntity.Value.hasNodes) {
+        //             // check if theres any entities being pinched
+        //             if (absUpNodes.Contains(currentPos) && absDownNodes.Contains(currentPos)) {
+        //                 return false;
+        //             }
+        //             return true;
+        //         }
+        //     }
+        // }
         
-        return false;
     }
 
     public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<EntityState> aEntityIdIgnoreSet = null) {
         // TODO: make this think about studs
         EntityState entityState = GM.boardManager.GetEntityById(aId);
-        HashSet<EntityState> entityIdIgnoreSet = (aEntityIdIgnoreSet == null) ? new HashSet<EntityState> {entityState} : aEntityIdIgnoreSet;
+        HashSet<EntityState> entityIdIgnoreSet = aEntityIdIgnoreSet ?? new HashSet<EntityState> {entityState};
         if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, entityIdIgnoreSet)) {
             return true;
         }

@@ -50,7 +50,9 @@ public class EditManager : SerializedMonoBehaviour {
                 break;
             case GameModeEnum.EDITING:
                 if (Config.PRINTLISTENERUPDATES) {
-                    print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
+                    if (this.OnUpdateEditorState != null) {
+                        print("EditManager - Updating EditorState for " + this.OnUpdateEditorState?.GetInvocationList().Length + " delegates");
+                    }
                 }
                 this.editorState = aEditorState;
                 this.OnUpdateEditorState?.Invoke(this.currentState);
@@ -102,7 +104,6 @@ public class EditManager : SerializedMonoBehaviour {
     #region External
 
     public void SetActiveTab(EditTabEnum aEditTabEnum) {
-        print("SetActiveTab - changing tab");
         EditorState newEditorState = EditorState.SetActiveTab(this.currentState, aEditTabEnum);
         UpdateEditorState(newEditorState);
         switch (aEditTabEnum) {

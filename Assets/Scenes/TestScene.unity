@@ -619,19 +619,6 @@ MonoBehaviour:
     - Name: entityBaseDict
       Entry: 6
       Data: 
-    - Name: activeMarkerList
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[BoardManager+MarkerInfo, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
 --- !u!114 &484835695
 MonoBehaviour:
   m_ObjectHideFlags: 0

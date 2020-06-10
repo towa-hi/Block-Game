@@ -4,6 +4,23 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
+public struct Node {
+    readonly Vector2Int relativePos;
+    readonly int id;
+    readonly bool isUp;
+    EntityState entityState {
+        get {
+            return GM.boardManager.GetEntityById(this.id);
+        }
+    }
+
+    public Node(Vector2Int aRelativePos, int aId, bool aIsUp) {
+        this.relativePos = aRelativePos;
+        this.id = aId;
+        this.isUp = aIsUp;
+    }
+}
+
 public class EntityBase : BoardStateListener {
     public int id;
     public bool isTempPos;

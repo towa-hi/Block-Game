@@ -34,6 +34,7 @@ MonoBehaviour:
   moveSpeed: 0
   canKillOnTouch: 0
   touchPower: 0
+  canFall: 1
   canKillOnFall: 1
   fallPower: 49
   canPush: 0

@@ -12,7 +12,6 @@ public class GUIPlayPanel : SerializedMonoBehaviour {
     public Text parText;
     
     void OnEnable() {
-        print("GUIPlayPanel enabled");
         GM.boardManager.OnUpdateBoardState += OnUpdateBoardState;
         GM.playManager.OnUpdatePlayState += OnUpdatePlayState;
         SetPlayStateGUI(GM.playManager.currentState);

@@ -63,11 +63,10 @@ public class GM : SerializedMonoBehaviour {
     }
     
     void UpdateGameState(GameState aGameState) {
-        if (this.OnUpdateGameState != null) {
-            print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
-        }
-        else {
-            print("GM - Updating GameState for no delegates");
+        if (Config.PRINTLISTENERUPDATES) {
+            if (this.OnUpdateGameState != null) {
+                print("GM - Updating GameState for " + this.OnUpdateGameState.GetInvocationList().Length + " delegates");
+            }
         }
         this.gameState = aGameState;
         this.OnUpdateGameState?.Invoke(this.currentState);
