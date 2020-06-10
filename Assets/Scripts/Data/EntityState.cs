@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct EntityImmutableData {
@@ -17,6 +18,7 @@ public struct MobData {
     public float moveSpeed;
     public bool canKillOnTouch;
     public int touchPower;
+    public bool canFall;
     public bool canKillOnFall;
     public int fallPower;
     public bool canPush;
@@ -53,7 +55,7 @@ public struct EntityState {
         newEntityState.data = new EntityImmutableData {
             id = Constants.PLACEHOLDERINT,
             isFront = aEntitySchema.isFront,
-            name = GenerateName(),
+            name = aEntitySchema.name,
             size = aEntitySchema.size,
             entityType = aEntitySchema.entityType,
             isBoundary = aIsBoundary,
@@ -66,6 +68,7 @@ public struct EntityState {
                 moveSpeed = aEntitySchema.moveSpeed,
                 canKillOnTouch = aEntitySchema.canKillOnTouch,
                 touchPower = aEntitySchema.touchPower,
+                canFall = aEntitySchema.canFall,
                 canKillOnFall = aEntitySchema.canKillOnFall,
                 fallPower = aEntitySchema.fallPower,
                 canPush = aEntitySchema.canPush,
@@ -122,15 +125,6 @@ public struct EntityState {
         newEntityState.fallDefense = aEntitySchema.fallDefense;
 
         return newEntityState;
-
-        string GenerateName() {
-            string nameString = aEntitySchema.name + " ";
-            nameString += newEntityState.GetHashCode();
-            if (aIsBoundary) {
-                nameString += " (boundary) ";
-            }
-            return nameString;
-        }
     }
     
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {

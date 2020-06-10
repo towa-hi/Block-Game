@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
 
@@ -16,6 +17,10 @@ public class BoardManager : SerializedMonoBehaviour {
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
+
+    void Update() {
+        
+    }
     
     #region Initialization
     
@@ -200,13 +205,13 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void MoveEntityBatch(HashSet<int> aEntityIdSet, Vector2Int aOffset, bool aMoveEntityBase = false) {
-        BoardState boardState = this.currentState;
+        BoardState newBoardState = this.currentState;
         foreach (int id in aEntityIdSet) {
             EntityState movingEntity = GetEntityById(id);
             EntityState movedEntity = EntityState.SetPos(movingEntity, movingEntity.pos + aOffset);
-            boardState = BoardState.UpdateEntity(boardState, movedEntity);
+            newBoardState = BoardState.UpdateEntity(newBoardState, movedEntity);
         }
-        UpdateBoardState(boardState);
+        UpdateBoardState(newBoardState);
         if (aMoveEntityBase) {
             foreach (int id in aEntityIdSet) {
                 GetEntityBaseById(id).ResetView();
@@ -230,6 +235,16 @@ public class BoardManager : SerializedMonoBehaviour {
         UpdateEntityAndBoardState(EntityState.SetIsFixed(GetEntityById(aId), aIsFixed));
     }
 
+    public void SetEntityIsFixedBatch(IEnumerable<int> aIdSet, bool aIsFixed) {
+        BoardState newBoardState = this.currentState;
+        foreach (int id in aIdSet) {
+            EntityState entityState = GetEntityById(id);
+            entityState.isFixed = aIsFixed;
+            newBoardState.entityDict[id] = entityState;
+        }
+        UpdateBoardState(newBoardState);
+    }
+    
     public void SetEntityTeam(int aId, TeamEnum aTeam) {
         UpdateEntityAndBoardState(EntityState.SetTeam(GetEntityById(aId), aTeam));
     }
@@ -274,6 +289,14 @@ public class BoardManager : SerializedMonoBehaviour {
             entityStateSet.Add(GM.boardManager.GetEntityById(id));
         }
         return entityStateSet;
+    }
+
+    public HashSet<int> ConvertEntityStateSetToIdSet(HashSet<EntityState> aEntitySet) {
+        HashSet<int> entityIdSet = new HashSet<int>();
+        foreach (EntityState entityState in aEntitySet) {
+            entityIdSet.Add(entityState.data.id);
+        }
+        return entityIdSet;
     }
     
     public EntityState? GetEntityAtPos(Vector2Int aPos, bool aIsFront = true) {
@@ -387,7 +410,7 @@ public class BoardManager : SerializedMonoBehaviour {
         // SetMarker(absoluteNodePos, Color.green, 5f);
         // print("absoluteNodePos: " + absoluteNodePos);
         EntityState? maybeReciprocalEntity = GetEntityAtPos(absoluteNodePos);
-        if (maybeReciprocalEntity.HasValue) {
+        if (maybeReciprocalEntity.HasValue && maybeReciprocalEntity.Value.hasNodes) {
             EntityState reciprocalEntity = maybeReciprocalEntity.Value;
             foreach (Vector2Int reciprocalAbsoluteNodePos in reciprocalEntity.GetAbsoluteNodePosSet(!aIsUp)) {
                 Vector2Int currentPos = reciprocalAbsoluteNodePos;
@@ -405,38 +428,4 @@ public class BoardManager : SerializedMonoBehaviour {
     
     
     #endregion
-    
-    [SerializeField] List<MarkerInfo> activeMarkerList = new List<MarkerInfo>();
-    
-    public void SetMarker(Vector2Int aPos, Color aColor, float aDuration) {
-        this.activeMarkerList.Add(new MarkerInfo(aPos, aColor, aDuration));
-    }
-
-    class MarkerInfo {
-        public Vector2Int pos;
-        public Color color;
-        public float duration;
-        public float t = 0;
-        
-        public MarkerInfo(Vector2Int aPos, Color aColor, float aDuration) {
-            this.pos = aPos;
-            this.color = aColor;
-            this.duration = aDuration;
-        }
-    }
-    
-    void OnDrawGizmos() {
-        List<MarkerInfo> markerTrashList = new List<MarkerInfo>();
-        foreach (MarkerInfo marker in this.activeMarkerList) {
-            Gizmos.color = marker.color;
-            Gizmos.DrawSphere(Util.V2IOffsetV3(marker.pos, Vector2Int.one) + new Vector3(0, 0, -1f), 0.2f);
-            marker.t += Time.deltaTime / marker.duration;
-            if (marker.t > 1) {
-                markerTrashList.Add(marker);
-            }
-        }
-        foreach (MarkerInfo markerTrash in markerTrashList) {
-            this.activeMarkerList.Remove(markerTrash);
-        }
-    }
 }

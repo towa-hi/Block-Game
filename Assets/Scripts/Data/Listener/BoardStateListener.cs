@@ -12,7 +12,6 @@ public abstract class BoardStateListener : SerializedMonoBehaviour {
         else {
             print("BoardState was not initialized");
         }
-        
     }
 
     public virtual void OnDisable() {

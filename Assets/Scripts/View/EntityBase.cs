@@ -22,6 +22,7 @@ public class EntityBase : BoardStateListener {
         }
     }
 
+    public bool isMarked;
     #region Lifecycle
 
     void Awake() {
@@ -32,12 +33,22 @@ public class EntityBase : BoardStateListener {
         this.needsFirstUpdate = true;
         this.needsNewState = true;
         this.isDying = false;
+        this.isMarked = false;
     }
-    
+
+    void Update() {
+        if (this.isMarked) {
+            this.markerT += Time.deltaTime / 2.0f;
+            if (this.markerT > 1) {
+                this.isMarked = false;
+                this.markerT = 0f;
+            }
+        }
+    }
     public void Init(EntityState aEntityState) {
         this.id = aEntityState.data.id;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
-        this.name = aEntityState.data.name + " Id: " + this.id;
+        this.name = aEntityState.data.name;
         if (aEntityState.hasNodes) {
             foreach (Vector2Int upNode in aEntityState.upNodes) {
                 Vector2Int currentPos = aEntityState.pos + upNode;
@@ -51,6 +62,7 @@ public class EntityBase : BoardStateListener {
                 this.childRenderers.Add(studRenderer);
             }
         }
+        SetColor(aEntityState.defaultColor);
         this.oldEntityState = aEntityState;
     }
     
@@ -173,23 +185,23 @@ public class EntityBase : BoardStateListener {
 
     EntityBaseStateResults InanimateChooseNextState() {
         // try falling
-        FallingState fallingState = new FallingState(this.id);
-        EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
-        if (fallingStateResults.isStateValid) {
-            return fallingStateResults;
+        if (this.entityState.mobData?.canFall == true) {
+            FallingState fallingState = new FallingState(this.id);
+            EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
+            if (fallingStateResults.isStateValid) { return fallingStateResults; }
         }
-        else {
-            // wait
-            WaitingState waitingState = new WaitingState();
-            return waitingState.GetStateResults();
-        }
+        // wait
+        WaitingState waitingState = new WaitingState();
+        return waitingState.GetStateResults();
     }
     
     EntityBaseStateResults MobPatrolChooseNextState() {
         // try falling
-        FallingState fallingState = new FallingState(this.id);
-        EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
-        if (fallingStateResults.isStateValid) { return fallingStateResults; }
+        if (this.entityState.mobData?.canFall == true) {
+            FallingState fallingState = new FallingState(this.id);
+            EntityBaseStateResults fallingStateResults = fallingState.GetStateResults();
+            if (fallingStateResults.isStateValid) { return fallingStateResults; }
+        }
         // try walking in facing direction
         Vector2Int facing = this.entityState.facing;
         WalkingState walkingState = new WalkingState(facing, this.id);
@@ -285,11 +297,19 @@ public class EntityBase : BoardStateListener {
     }
 
     #endregion
+
+    float markerT = 0f;
+    Color markerColor = Color.white;
+    public void SetMarker(Color aColor) {
+        this.isMarked = true;
+        this.markerColor = aColor;
+
+    }
     
     void OnDrawGizmos() {
         // TODO: figure out why this doesnt draw gizmos for id == 0 for some reason
         if (GM.boardManager != null && GM.boardManager.currentState.entityDict.ContainsKey(this.id)) {
-            Gizmos.color = Color.red;
+            Gizmos.color = this.isMarked ? this.markerColor : Color.white;
             Vector2Int size = this.entityState.data.size;
             Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size);
             Vector3 sizeV3 = new Vector3(size.x, size.y * Constants.BLOCKHEIGHT, 2f);

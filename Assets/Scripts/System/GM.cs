@@ -16,6 +16,7 @@ public class GM : SerializedMonoBehaviour {
     public static BoardManager boardManager;
     public static EditManager editManager;
     public static PlayManager playManager;
+    public static DebugDrawer debugDrawer;
     public static Cursor cursor;
     [SerializeField] GameState gameState;
     public GameState currentState {
@@ -43,6 +44,7 @@ public class GM : SerializedMonoBehaviour {
         GM.boardManager = this.coreGameObject.GetComponent<BoardManager>();
         GM.editManager = this.coreGameObject.GetComponent<EditManager>();
         GM.playManager = this.coreGameObject.GetComponent<PlayManager>();
+        GM.debugDrawer = this.coreGameObject.GetComponent<DebugDrawer>();
         GM.cursor = this.coreGameObject.GetComponentInChildren<Cursor>();
         this.OnUpdateGameState += GM.boardManager.OnUpdateGameState;
         this.OnUpdateGameState += GM.inputManager.OnUpdateGameState;

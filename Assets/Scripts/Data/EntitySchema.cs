@@ -23,6 +23,7 @@ public class EntitySchema : SerializedScriptableObject {
     public float moveSpeed;
     public bool canKillOnTouch;
     public int touchPower;
+    public bool canFall;
     public bool canKillOnFall;
     public int fallPower;
     public bool canPush;

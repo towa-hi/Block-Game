@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
 public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
@@ -299,6 +301,18 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     public bool IsEntitySelectable(int aId, bool aIsUp) {
+        bool isEntityConnectedToFixed = false;
+        EntityState root = GM.boardManager.GetEntityById(aId);
+        HashSet<EntityState> connectedTree = GetConnectedTree(root, aIsUp, new HashSet<EntityState>());
+        foreach (EntityState connectedEntity in connectedTree) {
+            if (!IsEntityMovable(connectedEntity.data.id)) {
+                isEntityConnectedToFixed = true;
+            }
+        }
+        return !isEntityConnectedToFixed;
+    }
+
+    public bool IsEntityMovable(int aId) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
         if (entityState.data.isBoundary) {
             return false;
@@ -312,10 +326,23 @@ public class PlayManager : SerializedMonoBehaviour {
         if (!entityState.hasNodes) {
             return false;
         }
+        
         // TODO: write this
         return true;
     }
 
+    public bool DoesEntitySupportAMob(int aId) {
+        EntityState entityState = GM.boardManager.GetEntityById(aId);
+        for (int x = entityState.pos.x; x < entityState.pos.x + entityState.data.size.x; x++) {
+            Vector2Int currentPos = new Vector2Int(x, entityState.pos.y + entityState.data.size.y + 1);
+            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
+            if (maybeAEntity.HasValue && maybeAEntity.Value.mobData?.canFall == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void SelectEntity(int aId, bool aIsUp) {
         Debug.Assert(IsEntitySelectable(aId, aIsUp));
         EntityState rootEntity = GM.boardManager.GetEntityById(aId);
@@ -324,44 +351,53 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     public HashSet<int> GetSelectedEntityIdSet(EntityState aRoot, bool aIsUp) {
-        HashSet<EntityState> selectSet = new HashSet<EntityState>();
         HashSet<EntityState> mainTree = GetConnectedTree(aRoot, aIsUp);
-        HashSet<EntityState> connectedTree = new HashSet<EntityState>();
-        print(mainTree.Count);
-
-
-
-
-
-
-
-        selectSet.UnionWith(mainTree);
-        
-        HashSet<int> selectIdSet = new HashSet<int>();
-        foreach (EntityState selectedEntity in mainTree) {
-            foreach (Vector2Int pos in Util.V2IInRect(selectedEntity.pos, selectedEntity.data.size)) {
-                GM.boardManager.SetMarker(pos, Color.magenta, 2f);
+        HashSet<EntityState> selectSet = new HashSet<EntityState>(mainTree);
+        foreach (EntityState currentEntity in mainTree) {
+            MarkEntity(currentEntity, Color.green);
+            foreach (EntityState hanger in GetConnected(currentEntity, !aIsUp, mainTree)) {
+                bool addHangerToConnectedTree = true;
+                HashSet<EntityState> hangerConnectedSet = GetAllConnected(hanger, mainTree);
+                foreach (EntityState hangerConnected in GetAllConnected(hanger, mainTree)) {
+                    if (addHangerToConnectedTree) {
+                        if (!IsEntityMovable(hangerConnected.data.id)) {
+                            addHangerToConnectedTree = false;
+                        }
+                    }
+                }
+                if (addHangerToConnectedTree) {
+                    foreach (EntityState hangerConnected in hangerConnectedSet) {
+                        if (!hangerConnected.entityBase.isMarked) {
+                            MarkEntity(hangerConnected, IsEntityMovable(hangerConnected.data.id) ? Color.cyan : Color.red);
+                        }
+                    }
+                    selectSet.UnionWith(hangerConnectedSet);
+                }
+                else {
+                    print(hanger.data.name + " and " + hangerConnectedSet.Count + " descendants were not added");
+                }
             }
-            selectIdSet.Add(selectedEntity.data.id);
         }
-        return selectIdSet;
+        print("selectSet count: " + selectSet.Count);
+        return GM.boardManager.ConvertEntityStateSetToIdSet(selectSet);
     }
 
     // ReSharper disable once ReturnTypeCanBeEnumerable.Local
     HashSet<EntityState> GetConnectedTree(EntityState aRoot, bool aIsUp, HashSet<EntityState> aConnectedTreeSet = null) {
         Debug.Assert(aRoot.hasNodes);
-        MarkEntity(aRoot);
         if (aConnectedTreeSet == null) {
             aConnectedTreeSet = new HashSet<EntityState> {aRoot};
         }
         else {
             aConnectedTreeSet.Add(aRoot);
         }
-        // HashSet<EntityState> connectedToRoot
-        HashSet<EntityState> connectedToRoot = GetConnected(aRoot, aIsUp);
-        foreach (EntityState connectedEntity in connectedToRoot) {
-            if (!aConnectedTreeSet.Contains(connectedEntity) && IsEntitySelectable(connectedEntity.data.id, aIsUp)) {
-                GetConnectedTree(connectedEntity, aIsUp, aConnectedTreeSet);
+        
+        if (IsEntityMovable(aRoot.data.id)) {
+            HashSet<EntityState> connectedToRoot = GetConnected(aRoot, aIsUp);
+            foreach (EntityState connectedEntity in connectedToRoot) {
+                if (!aConnectedTreeSet.Contains(connectedEntity)) {
+                    GetConnectedTree(connectedEntity, aIsUp, aConnectedTreeSet);
+                }
             }
         }
         return aConnectedTreeSet;
@@ -377,7 +413,6 @@ public class PlayManager : SerializedMonoBehaviour {
                 if (aIgnoreSet != null) {
                     if (!aIgnoreSet.Contains(maybeReciprocalEntity.Value)) {
                         connectedEntitySet.Add(maybeReciprocalEntity.Value);
-                        
                     }
                 }
                 else {
@@ -388,40 +423,93 @@ public class PlayManager : SerializedMonoBehaviour {
         return connectedEntitySet;
     }
 
+    public HashSet<EntityState> GetAllConnected(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
+        if (aIgnoreSet == null) {
+            aIgnoreSet = new HashSet<EntityState>();
+        }
+        HashSet<EntityState> visitedSet = new HashSet<EntityState>(aIgnoreSet);
+        HashSet<EntityState> allConnectedSet = new HashSet<EntityState>();
+        GetAllConnectedRecursive(aRoot);
+        return allConnectedSet;
+
+        void GetAllConnectedRecursive(EntityState rRoot) {
+            visitedSet.Add(rRoot);
+            allConnectedSet.Add(rRoot);
+            (HashSet<EntityState> upSet, HashSet<EntityState> downSet) = GetConnectedBothSides(rRoot, visitedSet);
+            var connectedSet = upSet.Union(downSet);
+            foreach (EntityState connectedEntity in connectedSet) {
+                if (visitedSet.All(ignoredEntity => ignoredEntity.data.id != connectedEntity.data.id)) {
+                    GetAllConnectedRecursive(connectedEntity);
+                }
+            }
+        }
+    }
+
     (HashSet<EntityState>, HashSet<EntityState>) GetConnectedBothSides(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
         HashSet<EntityState> upSet = GetConnected(aRoot, true, aIgnoreSet);
         HashSet<EntityState> downSet = GetConnected(aRoot, false, aIgnoreSet);
         return (upSet, downSet);
     }
 
-    void MarkEntity(EntityState aEntityState) {
-        foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.data.size)) {
-            GM.boardManager.SetMarker(pos, Color.magenta, 2f);
-        }
+    void MarkEntity(EntityState aEntityState, Color aColor) {
+        // foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.data.size)) {
+        //     GM.debugDrawer.SetMarker(pos, aColor, 2f);
+        // }
+        aEntityState.entityBase.SetMarker(aColor);
     }
-    
+
+    public bool IsEntityConnectedToFixed(int aId, bool aIsUp, HashSet<EntityState> aIgnoreSet = null) {
+        bool isEntityConnectedToFixed = false;
+        EntityState root = GM.boardManager.GetEntityById(aId);
+        HashSet<EntityState> connectedTree = GetConnectedTree(root, aIsUp, new HashSet<EntityState>());
+        foreach (EntityState connectedEntity in connectedTree) {
+            if (!IsEntityMovable(connectedEntity.data.id)) {
+                isEntityConnectedToFixed = true;
+            }
+        }
+        return isEntityConnectedToFixed;
+    }
     public bool CanPlaceSelection(Vector2Int aOffset) {
         Debug.Assert(this.currentState.selectedEntityIdSet != null);
-        HashSet<EntityState> ignoreEntityStateSet = GM.boardManager.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
+        HashSet<EntityState> selectedEntitySet = GM.boardManager.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
         foreach (int id in this.currentState.selectedEntityIdSet) {
-            if (!CanPlaceEntity(id, aOffset, ignoreEntityStateSet)) {
+            if (!CanPlaceEntity(id, aOffset, selectedEntitySet)) {
                 return false;
             }
         }
-        return true;
+        HashSet<Vector2Int> checkPosSet = new HashSet<Vector2Int>();
+        foreach (EntityState selectedEntity in selectedEntitySet) {
+            Debug.Assert(selectedEntity.hasNodes);
+            foreach (Vector2Int upAbsNode in selectedEntity.GetAbsoluteNodePosSet(true)) {
+                checkPosSet.Add(upAbsNode + Vector2Int.up + aOffset);
+            }
+            foreach (Vector2Int downAbsPos in selectedEntity.GetAbsoluteNodePosSet(false)) {
+                checkPosSet.Add(downAbsPos + Vector2Int.down + aOffset);
+            }
+        }
+        foreach (Vector2Int currentPos in checkPosSet) {
+            EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
+            if (maybeAEntity.HasValue && !selectedEntitySet.Contains(maybeAEntity.Value)) {
+                if (maybeAEntity.Value.hasNodes) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<EntityState> aEntityIdIgnoreSet = null) {
         // TODO: make this think about studs
         EntityState entityState = GM.boardManager.GetEntityById(aId);
-        if (aEntityIdIgnoreSet == null) {
-            return GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, new HashSet<EntityState> {entityState});
+        HashSet<EntityState> entityIdIgnoreSet = (aEntityIdIgnoreSet == null) ? new HashSet<EntityState> {entityState} : aEntityIdIgnoreSet;
+        if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, entityIdIgnoreSet)) {
+            return true;
         }
         else {
-            return GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, aEntityIdIgnoreSet);
+            return false;
         }
     }
-
     
     #endregion
 
@@ -473,6 +561,7 @@ public class PlayManager : SerializedMonoBehaviour {
                         // TODO: this might not work because dragOffsetV2 could be null
                         if (GM.playManager.CanPlaceSelection(GM.inputManager.dragOffsetV2)) {
                             GM.boardManager.MoveEntityBatch(selectedEntityIdSet, GM.inputManager.dragOffsetV2, true);
+                            GM.playManager.IncrementMoves();
                         }
                         else {
                             foreach (int id in selectedEntityIdSet) {

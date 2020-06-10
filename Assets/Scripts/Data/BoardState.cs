@@ -34,10 +34,20 @@ public struct BoardState {
         int id = aBoardState.currentId;
         // id always set here
         aEntityState.data.id = id;
+        aEntityState.data.name = GenerateName(aEntityState.data.name);
         // NEVER CHANGE CURRENTID OUTSIDE OF THIS FUNCTION!!!
         aBoardState.currentId += 1;
         aBoardState.entityDict[id] = aEntityState;
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);
+
+        string GenerateName(string aEntitySchemaName) {
+            string nameString = aEntitySchemaName + " ";
+            if (aEntityState.data.isBoundary) {
+                nameString += "(boundary) ";
+            }
+            nameString += "id: " + id;
+            return nameString;
+        }
     }
     
     public static BoardState RemoveEntity(BoardState aBoardState, int aId) {
