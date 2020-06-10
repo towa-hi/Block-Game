@@ -50,9 +50,8 @@ public class EntityBase : BoardStateListener {
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
         this.name = aEntityState.data.name;
         if (aEntityState.hasNodes) {
-            foreach (Vector2Int upNode in aEntityState.upNodes) {
-                Vector2Int currentPos = aEntityState.pos + upNode;
-                Vector3 currentPosition = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1));
+            foreach (Node upNode in aEntityState.GetNodes(true)) {
+                Vector3 currentPosition = Util.V2IOffsetV3(upNode.absolutePos, new Vector2Int(1, 1));
                 float studX = currentPosition.x;
                 float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
                 GameObject stud = Instantiate(GM.instance.studPrefab, new Vector3(studX, studY, 0), Quaternion.identity);
@@ -316,18 +315,11 @@ public class EntityBase : BoardStateListener {
             Gizmos.DrawWireCube(position, sizeV3);
             if (this.entityState.hasNodes) {
                 Vector3 zOffset = new Vector3(0, 0, -1.01f);
-                Gizmos.color = Color.red;
-                foreach (Vector2Int upNode in this.entityState.upNodes) {
-                    Vector2Int currentPos = this.entityState.pos + upNode;
-                    Vector3 arrowOrigin = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1)) + zOffset;
-                    DrawArrow.I.ForGizmo(arrowOrigin, new Vector3(0, 0.5f, 0));
-                }
-        
-                Gizmos.color = Color.blue;
-                foreach (Vector2Int downNode in this.entityState.downNodes) {
-                    Vector2Int currentPos = this.entityState.pos + downNode;
-                    Vector3 arrowOrigin = Util.V2IOffsetV3(currentPos, new Vector2Int(1, 1)) + zOffset;
-                    DrawArrow.I.ForGizmo(arrowOrigin, new Vector3(0, -0.5f, 0));
+                foreach (Node node in this.entityState.GetNodes()) {
+                    Vector3 arrowOrigin = Util.V2IOffsetV3(node.absolutePos, new Vector2Int(1, 1)) + zOffset;
+                    Gizmos.color = node.isUp ? Color.red : Color.blue;
+                    Vector3 direction = node.isUp ? new Vector3(0, 0.5f, 0) : new Vector3(0, -0.5f, 0);
+                    DrawArrow.I.ForGizmo(arrowOrigin, direction);
                 }
             }
         }

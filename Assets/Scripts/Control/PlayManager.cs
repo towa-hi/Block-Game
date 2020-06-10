@@ -348,7 +348,6 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     public void SelectEntity(int aId, bool aIsUp) {
-        Debug.Assert(IsEntitySelectable(aId, aIsUp));
         EntityState rootEntity = GM.boardManager.GetEntityById(aId);
         Debug.Assert(rootEntity.hasNodes);
         SetSelectedEntityIdSet(GetSelectedEntityIdSet(rootEntity, aIsUp));
@@ -393,8 +392,7 @@ public class PlayManager : SerializedMonoBehaviour {
         }
         
         if (IsEntityMovable(aRoot.data.id)) {
-            HashSet<EntityState> connectedToRoot = GetConnected(aRoot, aIsUp);
-            foreach (EntityState connectedEntity in connectedToRoot) {
+            foreach (EntityState connectedEntity in GetConnected(aRoot, aIsUp)) {
                 if (!aConnectedTreeSet.Contains(connectedEntity)) {
                     GetConnectedTree(connectedEntity, aIsUp, aConnectedTreeSet);
                 }
@@ -407,17 +405,22 @@ public class PlayManager : SerializedMonoBehaviour {
         Debug.Assert(aRoot.hasNodes);
         HashSet<EntityState> connectedEntitySet = new HashSet<EntityState>();
         // get the absolute pos of where to check above/below root
-        foreach (Vector2Int absoluteNodePos in aRoot.GetAbsoluteNodePosSet(aIsUp)) {
-            EntityState? maybeReciprocalEntity = GM.boardManager.GetReciprocalEntity(absoluteNodePos, aIsUp);
-            if (maybeReciprocalEntity.HasValue) {
-                if (aIgnoreSet != null) {
-                    if (!aIgnoreSet.Contains(maybeReciprocalEntity.Value)) {
-                        connectedEntitySet.Add(maybeReciprocalEntity.Value);
-                    }
-                }
-                else {
-                    connectedEntitySet.Add(maybeReciprocalEntity.Value);
-                }
+        foreach (Node node in aRoot.GetNodes(aIsUp)) {
+            Node? oppositeNode = node.GetOppositeNode(Vector2Int.zero, aIgnoreSet);
+            if (oppositeNode.HasValue) {
+                connectedEntitySet.Add(oppositeNode.Value.entityState);
+            }
+        }
+        return connectedEntitySet;
+    }
+
+    HashSet<EntityState> GetConnected(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
+        HashSet<EntityState> connectedEntitySet = new HashSet<EntityState>();
+        // get the absolute pos of where to check above/below root
+        foreach (Node node in aRoot.GetNodes()) {
+            Node? oppositeNode = node.GetOppositeNode(Vector2Int.zero, aIgnoreSet);
+            if (oppositeNode.HasValue) {
+                connectedEntitySet.Add(oppositeNode.Value.entityState);
             }
         }
         return connectedEntitySet;
@@ -435,20 +438,13 @@ public class PlayManager : SerializedMonoBehaviour {
         void GetAllConnectedRecursive(EntityState rRoot) {
             visitedSet.Add(rRoot);
             allConnectedSet.Add(rRoot);
-            (HashSet<EntityState> upSet, HashSet<EntityState> downSet) = GetConnectedBothSides(rRoot, visitedSet);
-            var connectedSet = upSet.Union(downSet);
+            HashSet<EntityState> connectedSet = GetConnected(rRoot, visitedSet);
             foreach (EntityState connectedEntity in connectedSet) {
-                if (visitedSet.All(ignoredEntity => ignoredEntity.data.id != connectedEntity.data.id)) {
+                if (!visitedSet.Contains(connectedEntity)) {
                     GetAllConnectedRecursive(connectedEntity);
                 }
             }
         }
-    }
-
-    (HashSet<EntityState>, HashSet<EntityState>) GetConnectedBothSides(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
-        HashSet<EntityState> upSet = GetConnected(aRoot, true, aIgnoreSet);
-        HashSet<EntityState> downSet = GetConnected(aRoot, false, aIgnoreSet);
-        return (upSet, downSet);
     }
 
     void MarkEntity(EntityState aEntityState, Color aColor) {
@@ -499,40 +495,7 @@ public class PlayManager : SerializedMonoBehaviour {
                 }
             }
         }
-        //
-        //
-        //
-        //
-        //
-        // foreach (EntityState selectedEntity in selectedEntitySet) {
-        //     
-        //     foreach (Vector2Int upAbsNode in selectedEntity.GetAbsoluteNodePosSet(true)) {
-        //         Vector2Int currentPos = upAbsNode + Vector2Int.up + aOffset;
-        //         EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
-        //         if (maybeAEntity.HasValue && 
-        //             !selectedEntitySet.Contains(maybeAEntity.Value) &&
-        //             maybeAEntity.Value.hasNodes) {
-        //             touchingUp = true;
-        //             break;
-        //         }
-        //     }
-        //     foreach (Vector2Int downAbsNode in selectedEntity.GetAbsoluteNodePosSet(false)) {
-        //         Vector2Int currentPos = downAbsNode + Vector2Int.down + aOffset;
-        //         EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
-        //         if (maybeAEntity.HasValue && 
-        //             !selectedEntitySet.Contains(maybeAEntity.Value) &&
-        //             maybeAEntity.Value.hasNodes) {
-        //             touchingDown = true;
-        //             break;
-        //         }
-        //     }
-        // }
-        // this is fine. return touchingUp ^ touchingDown works too
-        if (touchingUp && touchingDown) {
-            print("CanPlaceSelection - false because touching both ways");
-            return false;
-        }
-        else if (touchingUp ^ touchingDown) {
+        if (touchingUp ^ touchingDown) {
             print("CanPlaceSelection - true because touching one way");
             return true;
         }

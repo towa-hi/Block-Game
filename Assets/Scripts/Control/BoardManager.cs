@@ -249,16 +249,6 @@ public class BoardManager : SerializedMonoBehaviour {
         UpdateEntityAndBoardState(EntityState.SetTeam(GetEntityById(aId), aTeam));
     }
 
-    public void SetEntityNodes(int aId, HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
-        EntityState entityState = GetEntityById(aId);
-        if (aUpNodes != null && aDownNodes != null) {
-            UpdateEntityAndBoardState(EntityState.SetNodes(entityState, aUpNodes, aDownNodes));
-        }
-        else {
-            throw new Exception("SetEntityNodes - params can't be null");
-        }
-    }
-
     public void SetEntityTouchDefense(int aId, int aTouchDefense) {
         EntityState entityState = GetEntityById(aId);
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
@@ -404,26 +394,7 @@ public class BoardManager : SerializedMonoBehaviour {
         return false;
     }
 
-    public EntityState? GetReciprocalEntity(Vector2Int aNodeOrigin, bool aIsUp) {
-        // print("GetReciprocalEntity root id: " + aEntityState.data.id + " node:" + aNode + "isUp: " + aIsUp);
-        Vector2Int absoluteNodePos = aNodeOrigin + Util.UpOrDown(aIsUp);
-        // SetMarker(absoluteNodePos, Color.green, 5f);
-        // print("absoluteNodePos: " + absoluteNodePos);
-        EntityState? maybeReciprocalEntity = GetEntityAtPos(absoluteNodePos);
-        if (maybeReciprocalEntity.HasValue && maybeReciprocalEntity.Value.hasNodes) {
-            EntityState reciprocalEntity = maybeReciprocalEntity.Value;
-            foreach (Vector2Int reciprocalAbsoluteNodePos in reciprocalEntity.GetAbsoluteNodePosSet(!aIsUp)) {
-                Vector2Int currentPos = reciprocalAbsoluteNodePos;
-                // print("checking currentPos" + currentPos);
-                if (currentPos == absoluteNodePos) {
-                    // print("GetReciprocalEntity root id: " + aEntityState.data.id + " returning entity with id: " + reciprocalEntity.data.id);
-                    return reciprocalEntity;
-                }
-            }
-        }
-        // print("GetReciprocalEntity root id:" + aEntityState.data.id + " returning null");
-        return null;
-    }
+
 
     
     

@@ -64,24 +64,24 @@ public readonly struct Node {
     }
     
     public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList = null) {
-        Debug.Log("node for id: " + this.id + " with relative pos:" + this.relativePos + "GetOppositeNode at:" + (this.oppositeNodePos + aOffset));
+        // Debug.Log("node for id: " + this.id + " with relative pos:" + this.relativePos + "GetOppositeNode at:" + (this.oppositeNodePos + aOffset));
         EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos + aOffset);
         if (oppositeEntity.HasValue && oppositeEntity.Value.hasNodes) {
-            Debug.Log("found node");
+            // Debug.Log("found node");
             if (aIgnoreList != null) {
                 if (!aIgnoreList.Contains(oppositeEntity.Value)) {
-                    Debug.Log("returning node with id: " + oppositeEntity.Value.data.id);
+                    // Debug.Log("returning node with id: " + oppositeEntity.Value.data.id);
                     return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
                 }
                 else {
-                    Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.data.id);
+                    // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.data.id);
                 }
             }
             else {
                 return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
             }
         }
-        Debug.Log("did not find node");
+        // Debug.Log("did not find node");
         return null;
     }
 }
@@ -98,8 +98,6 @@ public struct EntityState {
     public TeamEnum team;
     public bool hasNodes;
     
-    public HashSet<Vector2Int> upNodes;
-    public HashSet<Vector2Int> downNodes;
     // TODO: convert all this shit to use node structs
     public HashSet<Node> nodeSet;
     
@@ -150,8 +148,6 @@ public struct EntityState {
         newEntityState.hasNodes = aEntitySchema.hasNodes;
         
         newEntityState.nodeSet = new HashSet<Node>();
-        newEntityState.upNodes = new HashSet<Vector2Int>();
-        newEntityState.downNodes = new HashSet<Vector2Int>();
         newEntityState.touchDefense = aEntitySchema.touchDefense;
         newEntityState.fallDefense = aEntitySchema.fallDefense;
 
@@ -202,8 +198,6 @@ public struct EntityState {
                 }
             }
             this.nodeSet = newNodeSet;
-            this.upNodes = newUpNodes;
-            this.downNodes = newDownNodes;
         }
     }
     
@@ -234,14 +228,6 @@ public struct EntityState {
         return aEntityState;
     }
 
-    public static EntityState SetNodes(EntityState aEntityState, HashSet<Vector2Int> aUpNodes, HashSet<Vector2Int> aDownNodes) {
-        Debug.Assert(aUpNodes != null);
-        Debug.Assert(aDownNodes != null);
-        aEntityState.upNodes = aUpNodes;
-        aEntityState.downNodes = aDownNodes;
-        return aEntityState;
-    }
-
     public static EntityState SetTouchDefense(EntityState aEntityState, int aTouchDefense) {
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
             aEntityState.touchDefense = aTouchDefense;
@@ -259,26 +245,10 @@ public struct EntityState {
             throw new System.Exception("tried to set invalid fallDefense");
         }
     }
-
-    public HashSet<Vector2Int> GetRelativeNodePosSet(bool aIsUp) {
-        Debug.Assert(this.hasNodes);
-        return aIsUp ? this.upNodes : this.downNodes;
-    }
     
-    public HashSet<Vector2Int> GetAbsoluteNodePosSet(bool aIsUp) {
-        Debug.Assert(this.hasNodes);
-        HashSet<Vector2Int> absoluteNodePosSet = new HashSet<Vector2Int>();
-        HashSet<Vector2Int> relativeNodePosSet = GetRelativeNodePosSet(aIsUp);
-        foreach (Vector2Int relativeNodePos in relativeNodePosSet) {
-            Vector2Int absoluteNodePos = this.pos + relativeNodePos;
-            absoluteNodePosSet.Add(absoluteNodePos);
-        }
-        return absoluteNodePosSet;
-    }
-
     public Node GetNodeByAbsPos(bool aIsUp, Vector2Int aAbsPos) {
         foreach (Node node in this.nodeSet) {
-            if (node.isUp == aIsUp && node.absolutePos == aAbsPos) {
+            if (node.isUp == aIsUp && node.relativePos + this.pos == aAbsPos) {
                 return node;
             }
         }
@@ -287,6 +257,10 @@ public struct EntityState {
 
     public HashSet<Node> GetNodes(bool aIsUp) {
         return this.nodeSet.Where(node => node.isUp == aIsUp).ToHashSet();
+    }
+
+    public HashSet<Node> GetNodes() {
+        return this.nodeSet;
     }
 }
 
