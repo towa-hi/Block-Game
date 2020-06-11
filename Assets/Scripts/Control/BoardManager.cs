@@ -37,6 +37,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     void InitBoard(BoardState? aBoardState = null) {
+        
         if (this.entityBaseDict != null) {
             foreach (KeyValuePair<int, EntityBase> kvp in this.entityBaseDict) {
                 Destroy(kvp.Value.gameObject);
@@ -45,14 +46,13 @@ public class BoardManager : SerializedMonoBehaviour {
         this.entityBaseDict = new Dictionary<int, EntityBase>();
         BoardState newBoardState = aBoardState ?? BoardState.GenerateBlankBoard();
         this.boardCellDict = new Dictionary<Vector2Int, BoardCell>();
-        foreach (Vector2Int currentPos in Util.V2IInRect(Vector2Int.zero, newBoardState.size)) {
-            BoardCell newCell = new BoardCell(currentPos);
-            this.boardCellDict[currentPos] = newCell;
+        foreach (Vector2Int pos in Util.V2IInRect(Vector2Int.zero, newBoardState.size)) {
+            this.boardCellDict[pos] = new BoardCell(pos);
         }
+        UpdateBoardState(newBoardState);
         foreach (KeyValuePair<int, EntityState> kvp in newBoardState.entityDict) {
             CreateEntityBase(kvp.Value);
         }
-        UpdateBoardState(newBoardState);
     }
     
     void AddBoundaryEntities() {
@@ -100,6 +100,10 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     void SetBoardCellDict(BoardState aBoardState) {
+        this.boardCellDict = new Dictionary<Vector2Int, BoardCell>();
+        foreach (Vector2Int pos in Util.V2IInRect(Vector2Int.zero, aBoardState.size)) {
+            this.boardCellDict[pos] = new BoardCell(pos);
+        }
         foreach (KeyValuePair<Vector2Int, BoardCell> kvp in this.boardCellDict) {
             BoardCell currentCell = kvp.Value;
             currentCell.backEntityState = null;
