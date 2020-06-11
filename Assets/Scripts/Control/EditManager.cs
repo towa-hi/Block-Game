@@ -68,13 +68,13 @@ public class EditManager : SerializedMonoBehaviour {
 
     #region Protected
 
-    protected void AddSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+    protected void AddSchema(Vector2Int aPos, Schema.EntitySchema aEntitySchema) {
         if (GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
             GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
     
-    protected void PlaceSelectedSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
+    protected void PlaceSelectedSchema(Vector2Int aPos, Schema.EntitySchema aEntitySchema) {
         if (GM.boardManager.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
             GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
@@ -136,7 +136,7 @@ public class EditManager : SerializedMonoBehaviour {
         GM.boardManager.SetPar(par);
     }
     
-    public void SetSelectedSchema(EntitySchema aEntitySchema) {
+    public void SetSelectedSchema(Schema.EntitySchema aEntitySchema) {
         EditorState newEditorState = EditorState.SetSelectedSchema(this.currentState, aEntitySchema);
         UpdateEditorState(newEditorState);
     }
@@ -221,7 +221,7 @@ public class EditManager : SerializedMonoBehaviour {
 
         public void Update() {
             if (GM.editManager.currentState.selectedSchema != null) {
-                EntitySchema selectedSchema = GM.editManager.currentState.selectedSchema;
+                Schema.EntitySchema selectedSchema = GM.editManager.currentState.selectedSchema;
                 if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
                     GM.editManager.AddSchema(GM.inputManager.mousePosV2, selectedSchema);
                 }

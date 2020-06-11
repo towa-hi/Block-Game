@@ -1,4 +1,5 @@
 ﻿using System;
+using Schema;
 using Sirenix.OdinInspector;
 using UnityEngine;
 // TODO: decouple cursor from editor state

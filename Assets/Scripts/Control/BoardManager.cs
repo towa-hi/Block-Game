@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Schema;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -24,23 +25,24 @@ public class BoardManager : SerializedMonoBehaviour {
     
     #region Initialization
     
+    // called by GM start
     public void InitializeStartingBoard() {
         InitBoard();
         AddBoundaryEntities();
     }
     
+    // called by editManager or when coming back from playtest 
     public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
         print("attempting to load" + aFilename);
         BoardState loadedBoardState = GM.LoadBoardState(aFilename);
         InitBoard(loadedBoardState);
-        Debug.Log("loaded " + aFilename + " successfully... probably");
+        Debug.Log("loaded " + aFilename + " successfully");
     }
 
     void InitBoard(BoardState? aBoardState = null) {
-        
         if (this.entityBaseDict != null) {
-            foreach (KeyValuePair<int, EntityBase> kvp in this.entityBaseDict) {
-                Destroy(kvp.Value.gameObject);
+            foreach (EntityBase entityBase in this.entityBaseDict.Values) {
+                Destroy(entityBase.gameObject);
             }
         }
         this.entityBaseDict = new Dictionary<int, EntityBase>();
@@ -50,8 +52,8 @@ public class BoardManager : SerializedMonoBehaviour {
             this.boardCellDict[pos] = new BoardCell(pos);
         }
         UpdateBoardState(newBoardState);
-        foreach (KeyValuePair<int, EntityState> kvp in newBoardState.entityDict) {
-            CreateEntityBase(kvp.Value);
+        foreach (EntityState entityState in newBoardState.entityDict.Values) {
+            CreateEntityBase(entityState);
         }
     }
     
@@ -359,48 +361,28 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
-        // print("IsRectEmpty started aOrigin: " + aOrigin + "aSize: " + aSize + "aIsFront: " + aIsFront);
-        if (IsRectInBoard(aOrigin, aSize)) {
-            foreach (KeyValuePair<Vector2Int, BoardCell> kvp in GetBoardGridSlice(aOrigin, aSize)) {
-                if (aIsFront && kvp.Value.frontEntityState != null) {
-                    // if aIgnoreSet exists
-                    if (aIgnoreSet != null) {
-                        // if found front entity is inside aIgnoreSet
-                        if (aIgnoreSet.All(entityState => kvp.Value.frontEntityState.Value.data.id != entityState.data.id)) {
-                            // return false because an that id is blocking
-                            return false;
-                        }
-                    }
-                    else {
-                        // return false because something is blocking and theres no aIgnoreSet
-                        return false;
-                    }
-                }
-                else if (!aIsFront && kvp.Value.backEntityState != null) {
-                    if (aIgnoreSet != null) {
-                        // if found back entity is inside aIgnoreSet
-                        if (aIgnoreSet.All(entityState => kvp.Value.backEntityState.Value.data.id != entityState.data.id)) {
-                            // return false because an that id is blocking
-                            return false;
-                        }
-                    }
-                    else {
-                        // return false because something is blocking and theres no aIgnoreSet
-                        return false;
-                    }
+        foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
+            EntityState? entityState = null;
+            switch (aIsFront) {
+                case true when boardCell.frontEntityState.HasValue:
+                    entityState = boardCell.frontEntityState;
+                    break;
+                case false when boardCell.backEntityState.HasValue:
+                    entityState = boardCell.backEntityState;
+                    break;
+            }
+            print(entityState.HasValue);
+            if (entityState.HasValue) {
+                if (aIgnoreSet == null) {
+                    return false;
+                } 
+                if (!aIgnoreSet.Contains(entityState.Value)) {
+                    return false;
                 }
             }
-            // return true because all cells were empty or had ignored entities
-            return true;
         }
-        Debug.Log("IsRectEmpty - returned false because tried to evaluate out of bounds");
-        // return false because rect isnt even in grid
-        return false;
+        return true;
     }
 
-
-
-    
-    
     #endregion
 }

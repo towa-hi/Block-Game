@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Schema;
 using UnityEngine;
 
 public struct EditorState {
