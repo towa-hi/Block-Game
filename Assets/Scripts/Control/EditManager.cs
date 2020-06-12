@@ -86,8 +86,10 @@ public class EditManager : SerializedMonoBehaviour {
     }
 
     protected void ClearSelectedEntity() {
-        EditorState newEditorState = EditorState.ClearSelectedEntityId(this.currentState);
-        UpdateEditorState(newEditorState);
+        if (this.currentState.hasSelectedEntity) {
+            EditorState newEditorState = EditorState.ClearSelectedEntityId(this.currentState);
+            UpdateEditorState(newEditorState);
+        }
     }
     
     protected bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
@@ -243,7 +245,9 @@ public class EditManager : SerializedMonoBehaviour {
                             this.selectedEntityBase = selectedEntity.entityBase;
                         }
                         else {
-                            GM.editManager.ClearSelectedEntity();
+                            if (GM.editManager.currentState.hasSelectedEntity) {
+                                GM.editManager.ClearSelectedEntity();
+                            }
                         }
                         break;
                     case MouseStateEnum.HELD:
@@ -265,7 +269,10 @@ public class EditManager : SerializedMonoBehaviour {
                                 selectedEntity.entityBase.ResetView();
                             }
                         }
-                        GM.editManager.ClearSelectedEntity();
+                        if (GM.editManager.currentState.hasSelectedEntity) {
+                            GM.editManager.ClearSelectedEntity();
+                        }
+
                         this.selectedEntityBase = null;
                         break;
                     default:

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Schema;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
 
 public class BoardManager : SerializedMonoBehaviour {
-    static BoardManager i;
     [SerializeField] BoardState boardState;
     public BoardState currentState {
         get { return this.boardState; }
@@ -20,10 +17,6 @@ public class BoardManager : SerializedMonoBehaviour {
     public Dictionary<int, EntityBase> entityBaseDict;
 
     #region Initialization
-
-    void Awake() {
-        i = this;
-    }
 
     // called by GM start
     public void InitializeStartingBoard() {

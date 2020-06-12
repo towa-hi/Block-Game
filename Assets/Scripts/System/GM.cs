@@ -32,7 +32,9 @@ public class GM : SerializedMonoBehaviour {
     public GameObject playPanel;
     public GameObject editorPanel;
     public GameObject pausePanel;
-    
+
+    public Shader ditheringShader;
+
     void Awake() {
         GM.instance = this;
         this.OnUpdateGameState = null;

@@ -16,6 +16,9 @@ public class EntityBase : BoardStateListener {
     bool isPlayer;
     [SerializeField] StateMachine stateMachine;
     [SerializeField] bool needsNewState;
+
+    Shader originalShader;
+
     [ShowInInspector] EntityState entityState {
         get {
             // TODO: make this not throw errors on inspection with Application.isPlaying
@@ -35,6 +38,7 @@ public class EntityBase : BoardStateListener {
         this.needsNewState = true;
         this.isDying = false;
         this.isMarked = false;
+        this.originalShader = this.modelRenderer.material.shader;
     }
 
     void Update() {
@@ -273,6 +277,29 @@ public class EntityBase : BoardStateListener {
     
     #region View
 
+    public void SetDithering(bool aIsDithering) {
+        print("setting dithering");
+        if (aIsDithering) {
+            Shader ditheringShader = GM.instance.ditheringShader;
+            foreach (Renderer childRenderer in this.childRenderers) {
+                var material = childRenderer.material;
+                material.shader = ditheringShader;
+                material.SetFloat("_Opacity", 0.5f);
+                material.SetFloat("_DitherSize", 2f);
+                material.SetColor("_AlbedoColor", this.entityState.defaultColor);
+                material.color = this.entityState.defaultColor;
+            }
+        }
+        else {
+            foreach (Renderer childRenderer in this.childRenderers) {
+                var material = childRenderer.material;
+                material.shader = this.originalShader;
+                material.color = this.entityState.defaultColor;
+
+            }
+        }
+    }
+
     public void SetColor(Color aColor) {
         this.modelRenderer.material.color = aColor;
         foreach (Renderer childRenderer in this.childRenderers) {
@@ -282,13 +309,20 @@ public class EntityBase : BoardStateListener {
 
     public void SetTempViewPosition(Vector2Int aPos) {
         this.transform.position = Util.V2IOffsetV3(aPos, this.entityState.data.size, this.entityState.data.isFront);
+        if (!this.isTempPos) {
+            SetDithering(true);
+        }
         this.isTempPos = true;
     }
 
     public void ResetView() {
         EntityState currentState = GM.boardManager.GetEntityById(this.id);
         this.transform.position = Util.V2IOffsetV3(currentState.pos, this.entityState.data.size, this.entityState.data.isFront);
+        if (this.isTempPos) {
+            SetDithering(false);
+        }
         this.isTempPos = false;
+
     }
 
     #endregion

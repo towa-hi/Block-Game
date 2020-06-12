@@ -36,8 +36,6 @@ public class GUIEditorPanel : EditorStateListener {
 
     new void OnEnable() {
         base.OnEnable();
-        this.pickerItemList = new List<GUIPickerItem>();
-        this.isPickerItemsInitialized = false;
         this.searchString = "";
     }
 
@@ -50,6 +48,7 @@ public class GUIEditorPanel : EditorStateListener {
     }
 
     void CreatePickerItems(EditorState aEditorState) {
+        this.pickerItemList = new List<GUIPickerItem>();
         foreach (EntitySchema entitySchema in aEditorState.frontContentList) {
             GameObject pickerItemGameObject = Instantiate(this.pickerItemMaster, this.pickerScrollRectContent.transform);
             GUIPickerItem pickerItem = pickerItemGameObject.GetComponent<GUIPickerItem>();
@@ -63,7 +62,7 @@ public class GUIEditorPanel : EditorStateListener {
             pickerItem.Init(entitySchema, OnPickerItemClick);
             this.pickerItemList.Add(pickerItem);
         }
-        SetPickerItems(aEditorState.isFront);
+        // SetPickerItems(aEditorState.isFront);
     }
     
     void SetPickerItems(bool aIsFront) {
@@ -103,13 +102,12 @@ public class GUIEditorPanel : EditorStateListener {
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
                 if (!this.pickerModePanel.activeInHierarchy) {
-                    if (aEditorState.selectedSchema == null) {
-                        this.selectedItem.SetSelection(false);
-                        this.selectedItem = null;
-                    }
                     this.pickerModePanel.SetActive(true);
                     this.editModePanel.SetActive(false);
                     this.optionsModePanel.SetActive(false);
+                }
+                if (aEditorState.selectedSchema == null && this.selectedItem != null) {
+                    ClearSelectedItem();
                 }
                 SetPickerItems(aEditorState.isFront);
                 break;
@@ -136,15 +134,21 @@ public class GUIEditorPanel : EditorStateListener {
     }
     
     public void SetSearchString(string aString) {
+        if (this.searchString == aString) {
+            return;
+        }
         this.searchString = aString;
         SetPickerItems(GM.editManager.currentState.isFront);
         if (this.selectedItem != null) {
             GM.editManager.ClearSelectedSchema();
-            this.selectedItem.SetSelection(false);
-            this.selectedItem = null;
         }
     }
-    
+
+    void ClearSelectedItem() {
+        this.selectedItem.SetSelection(false);
+        this.selectedItem = null;
+    }
+
     public void OnTitleFieldSet(string aInput) {
         GM.boardManager.SetTitle(aInput);
     }
@@ -173,7 +177,7 @@ public class GUIEditorPanel : EditorStateListener {
 
     public void OnPickerItemClick(GUIPickerItem aPickerItem) {
         if (this.selectedItem != null) {
-            this.selectedItem.SetSelection(false);
+            ClearSelectedItem();
         }
         this.selectedItem = aPickerItem;
         GM.editManager.SetSelectedSchema(aPickerItem.entitySchema);
