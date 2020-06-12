@@ -13,6 +13,7 @@ public class EntityBase : BoardStateListener {
     EntityState oldEntityState;
     bool needsFirstUpdate;
     bool isDying;
+    bool isPlayer;
     [SerializeField] StateMachine stateMachine;
     [SerializeField] bool needsNewState;
     [ShowInInspector] EntityState entityState {
@@ -63,14 +64,23 @@ public class EntityBase : BoardStateListener {
         }
         SetColor(aEntityState.defaultColor);
         this.oldEntityState = aEntityState;
+        if (aEntityState.team == TeamEnum.PLAYER) {
+            this.isPlayer = true;
+        }
     }
     
     public void DoFrame() {
         if (this.needsNewState) {
             this.needsNewState = false;
-            EntityBaseStateResults newStateResults = ChooseNextState();
-            EntityBaseStateMachineState finalState = ProcessStateResults(newStateResults);
-            this.stateMachine.ChangeState(finalState);
+            EntityBaseStateMachineState effectState = ApplyEffects();
+            if (effectState != null) {
+                this.stateMachine.ChangeState(effectState);
+            }
+            else {
+                EntityBaseStateResults newStateResults = ChooseNextState();
+                EntityBaseStateMachineState finalState = ProcessStateResults(newStateResults);
+                this.stateMachine.ChangeState(finalState);
+            }
         }
         this.stateMachine.Update();
     }
@@ -126,7 +136,19 @@ public class EntityBase : BoardStateListener {
         this.needsNewState = true;
         // print("choosing state next frame");
     }
-    
+
+    EntityBaseStateMachineState ApplyEffects() {
+        // apply win result
+        if (this.isPlayer) {
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.entityState.pos, this.entityState.data.size).Values) {
+                if (boardCell.IsExit()) {
+                    return new ExitingState(this.id);
+                }
+            }
+        }
+        return null;
+    }
+
     EntityBaseStateMachineState ProcessStateResults(EntityBaseStateResults aStateResults) {
         Debug.Assert(aStateResults.isStateValid);
         if (aStateResults.shouldEntityDie) {
@@ -298,24 +320,35 @@ public class EntityBase : BoardStateListener {
     #endregion
 
     float markerT = 0f;
+    float markerDuration = 1f;
     Color markerColor = Color.white;
-    public void SetMarker(Color aColor) {
+    public void SetMarker(Color aColor, float aDuration) {
         this.isMarked = true;
+        this.markerDuration = aDuration;
         this.markerColor = aColor;
 
     }
     
     void OnDrawGizmos() {
         // TODO: figure out why this doesnt draw gizmos for id == 0 for some reason
+
         if (GM.boardManager != null && GM.boardManager.currentState.entityDict.ContainsKey(this.id)) {
+            EntityState currentEntityState = this.entityState;
+            if (this.isMarked) {
+                this.markerT += Time.deltaTime / this.markerDuration;
+            }
+            if (this.markerT > 1) {
+                this.isMarked = false;
+                this.markerT = 0;
+            }
             Gizmos.color = this.isMarked ? this.markerColor : Color.white;
             Vector2Int size = this.entityState.data.size;
-            Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size);
+            Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size, currentEntityState.data.isFront);
             Vector3 sizeV3 = new Vector3(size.x, size.y * Constants.BLOCKHEIGHT, 2f);
             Gizmos.DrawWireCube(position, sizeV3);
-            if (this.entityState.hasNodes) {
+            if (currentEntityState.hasNodes) {
                 Vector3 zOffset = new Vector3(0, 0, -1.01f);
-                foreach (Node node in this.entityState.GetNodes()) {
+                foreach (Node node in currentEntityState.GetNodes()) {
                     Vector3 arrowOrigin = Util.V2IOffsetV3(node.absolutePos, new Vector2Int(1, 1)) + zOffset;
                     Gizmos.color = node.isUp ? Color.red : Color.blue;
                     Vector3 direction = node.isUp ? new Vector3(0, 0.5f, 0) : new Vector3(0, -0.5f, 0);
@@ -342,7 +375,106 @@ public class EntityBase : BoardStateListener {
         public abstract void Exit();
         public abstract EntityBaseStateResults GetStateResults();
     }
-    
+
+    class PostBoxState : EntityBaseStateMachineState {
+        public PostBoxState(int aId) {
+            this.entityBase = GM.boardManager.GetEntityBaseById(aId);
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+            this.entityBase.SetMarker(Color.yellow, Constants.SPAWNTIME);
+        }
+
+        public override void Update() {
+            if (this.t < 1) {
+                this.t += Time.deltaTime / Constants.SPAWNTIME;
+                this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
+            }
+            else {
+                GM.playManager.WinBoard();
+                this.entityBase.SetNeedsNewState();
+            }
+        }
+
+        public override void Exit() {
+            throw new NotImplementedException();
+        }
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
+        }
+    }
+
+    class ExitingState : EntityBaseStateMachineState {
+        public ExitingState(int aId) {
+            this.entityBase = GM.boardManager.GetEntityBaseById(aId);
+            Vector3 zOffset = new Vector3(0, 0, 1f);
+            this.startPos = this.entityBase.entityState.pos;
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.endPos = this.startPos;
+            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size) + zOffset;
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+        }
+
+        public override void Update() {
+            if (this.t < 1) {
+                this.t += Time.deltaTime / Constants.SPAWNTIME;
+                this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
+            }
+            else {
+                GM.playManager.WinBoard();
+                this.entityBase.SetNeedsNewState();
+            }
+        }
+
+        public override void Exit() {
+            this.entityBase.ResetView();
+        }
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
+        }
+    }
+
+    // TODO: make a spawning thing later
+    class SpawningState : EntityBaseStateMachineState {
+        public SpawningState(int aId) {
+            this.entityBase = GM.boardManager.GetEntityBaseById(aId);
+            Vector3 zOffset = new Vector3(0, 0, 1f);
+            this.startPos = this.entityBase.entityState.pos;
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size) + zOffset;
+            this.endPos = this.startPos;
+            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.t = 0f;
+        }
+
+        public override void Enter() {
+
+        }
+
+        public override void Update() {
+            if (this.t < 1) {
+                this.t += Time.deltaTime / Constants.SPAWNTIME;
+                this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
+            }
+            else {
+                this.entityBase.SetNeedsNewState();
+            }
+        }
+
+        public override void Exit() {
+            this.entityBase.ResetView();
+        }
+
+        public override EntityBaseStateResults GetStateResults() {
+            throw new NotImplementedException();
+        }
+    }
+
     class WalkingState : EntityBaseStateMachineState {
 
         public WalkingState(Vector2Int aDirection, int aId) {
@@ -725,10 +857,11 @@ public class EntityBase : BoardStateListener {
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.timeToDie;
+                this.entityBase.transform.localScale = Vector3.Lerp(this.entityBase.transform.localScale, Vector3.zero, this.t);
             }
             else {
                 print(this.entityBase.id + " DyingState - completed animation");
-                GM.playManager.FinishEntityDeath(this.entityBase.id);
+                GM.playManager.FinishEntityDeath(this.entityBase.id, true);
             }
         }
     

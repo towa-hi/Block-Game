@@ -31,6 +31,15 @@ public enum EditTabEnum {
     OPTIONS,
 }
 
+public enum EffectTypeEnum {
+    NONE,
+    FIRE,
+    LASER,
+    WIND,
+    EXIT,
+    SPAWN,
+}
+
 public enum EntityTypeEnum {
     BG,
     BLOCK,

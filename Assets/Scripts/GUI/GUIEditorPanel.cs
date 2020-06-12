@@ -2,13 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using FilePicker;
 using Schema;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
-using Object = UnityEngine.Object;
 
 public class GUIEditorPanel : EditorStateListener {
     [Header("Set In Editor")]
@@ -17,10 +14,9 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject pickerItemMaster;
     public GameObject pickerScrollRectContent;
     [SerializeField] GUIPickerItem selectedItem;
-    bool isPickerItemsInitialized;
-    string searchString;
-    [SerializeField] private List<GUIPickerItem> pickerItemList;
-    HashSet<EntitySchema> fullSchemaList;
+    [SerializeField] bool isPickerItemsInitialized;
+    [SerializeField] string searchString;
+    [SerializeField] List<GUIPickerItem> pickerItemList;
     [Header("Edit Panel")]
     public GameObject editModePanel;
     public GUIPreviewStudio previewStudio;
@@ -37,13 +33,10 @@ public class GUIEditorPanel : EditorStateListener {
     public GameObject optionsModePanel;
     public InputField titleInputField;
     public Text parPickerText;
-    public GameObject filePicker;
 
-    EditorState oldEditorState;
-    void Awake()
-    {
+    new void OnEnable() {
+        base.OnEnable();
         this.pickerItemList = new List<GUIPickerItem>();
-        this.fullSchemaList = new HashSet<EntitySchema>();
         this.isPickerItemsInitialized = false;
         this.searchString = "";
     }
@@ -54,7 +47,6 @@ public class GUIEditorPanel : EditorStateListener {
             this.isPickerItemsInitialized = true;
         }
         SetEditorStateVars(aNewEditorState);
-        this.oldEditorState = aNewEditorState;
     }
 
     void CreatePickerItems(EditorState aEditorState) {
@@ -111,6 +103,10 @@ public class GUIEditorPanel : EditorStateListener {
         switch (aEditorState.activeTab) {
             case EditTabEnum.PICKER:
                 if (!this.pickerModePanel.activeInHierarchy) {
+                    if (aEditorState.selectedSchema == null) {
+                        this.selectedItem.SetSelection(false);
+                        this.selectedItem = null;
+                    }
                     this.pickerModePanel.SetActive(true);
                     this.editModePanel.SetActive(false);
                     this.optionsModePanel.SetActive(false);

@@ -17,4 +17,6 @@ public static class Constants {
     public static readonly int MAXTITLELENGTH = 36;
     public static readonly float PUSHSPEED = 1.25f;
     public static readonly float DEATHSTATETIME = 2f;
+    // temp
+    public static readonly float SPAWNTIME = 1f;
 }

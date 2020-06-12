@@ -13,6 +13,7 @@ public struct EntityImmutableData {
     public EntityTypeEnum entityType;
     public bool isBoundary;
     public string prefabPath;
+    public bool isExit;
 }
 
 public struct MobData {
@@ -122,6 +123,7 @@ public struct EntityState {
             entityType = aEntitySchema.entityType,
             isBoundary = aIsBoundary,
             prefabPath = aEntitySchema.prefabPath,
+            isExit = aEntitySchema.isExit,
         };
         if (aEntitySchema.entityType == EntityTypeEnum.MOB) {
             newEntityState.mobData = new MobData {

@@ -11,7 +11,7 @@ public struct BoardState {
     public int par;
     public Vector2Int size;
     public int attempts;
-    int currentId;
+    [SerializeField] int currentId;
 
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {

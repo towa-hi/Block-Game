@@ -18,8 +18,10 @@ public struct GameState {
     }
 
     public static GameState CreateGameState(GameModeEnum aGameMode) {
-        GameState gameState = new GameState();
-        gameState.gameMode = aGameMode;
+        GameState gameState = new GameState {
+            gameMode = aGameMode,
+            isFullPaused = false,
+        };
         return gameState;
     }
 }

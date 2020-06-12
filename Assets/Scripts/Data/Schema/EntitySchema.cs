@@ -28,6 +28,8 @@ namespace Schema {
         public bool canPush;
         public bool canBePushed;
         public bool canBeLifted;
+        [Header("BG")]
+        public bool isExit;
     
         [ContextMenu("BgFileNameToNameField")]
         public void BgFileNameToNameField() {

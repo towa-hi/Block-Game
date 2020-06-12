@@ -14,6 +14,8 @@ public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
 [RequireComponent(typeof(BoardManager))]
 public class PlayManager : SerializedMonoBehaviour {
     public Volume v;
+    public GUIPopup popup;
+
     UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
     [SerializeField] HashSet<int> entityIdsToKillThisFrame;
     [SerializeField] PlayState playState;
@@ -206,9 +208,12 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     // called when DyingState finishes
-    public void FinishEntityDeath(int aId) {
+    public void FinishEntityDeath(int aId, bool aIsPlayer = false) {
         this.entityIdsToKillThisFrame.Add(aId);
         print(aId + " FinishEntityDeath - entity marked for removal next frame");
+        if (aIsPlayer) {
+            LoseBoard();
+        }
     }
 
     #endregion
@@ -221,6 +226,17 @@ public class PlayManager : SerializedMonoBehaviour {
         GM.instance.SetGameMode(GameModeEnum.EDITING);
     }
 
+    public void WinBoard() {
+        SetTimeMode(TimeModeEnum.PAUSED);
+        SetPlayMode(PlayModeEnum.WON);
+        this.popup.Init(true, GM.boardManager.currentState.par, this.currentState.moves);
+    }
+
+    public void LoseBoard() {
+        SetTimeMode(TimeModeEnum.PAUSED);
+        SetPlayMode(PlayModeEnum.LOST);
+        this.popup.Init(false, GM.boardManager.currentState.par, this.currentState.moves);
+    }
     #endregion
     
     #region Utility
@@ -378,7 +394,7 @@ public class PlayManager : SerializedMonoBehaviour {
                 }
             }
         }
-        return GM.boardManager.ConvertEntityStateSetToIdSet(selectSet);
+        return Util.ConvertEntityStateSetToIdSet(selectSet);
     }
 
     // ReSharper disable once ReturnTypeCanBeEnumerable.Local
@@ -451,7 +467,7 @@ public class PlayManager : SerializedMonoBehaviour {
         // foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.data.size)) {
         //     GM.debugDrawer.SetMarker(pos, aColor, 2f);
         // }
-        aEntityState.entityBase.SetMarker(aColor);
+        aEntityState.entityBase.SetMarker(aColor, 2f);
     }
 
     public bool IsEntityConnectedToFixed(int aId, bool aIsUp, HashSet<EntityState> aIgnoreSet = null) {
@@ -468,7 +484,7 @@ public class PlayManager : SerializedMonoBehaviour {
     
     public bool CanPlaceSelection(Vector2Int aOffset) {
         Debug.Assert(this.currentState.selectedEntityIdSet != null);
-        HashSet<EntityState> selectedEntitySet = GM.boardManager.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
+        HashSet<EntityState> selectedEntitySet = Util.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
         bool touchingUp = false;
         bool touchingDown = false;
         foreach (EntityState selectedEntity in selectedEntitySet) {

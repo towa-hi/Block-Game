@@ -10,7 +10,7 @@ using UnityEngine.Analytics;
 public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
 
 public class BoardManager : SerializedMonoBehaviour {
-    
+    static BoardManager i;
     [SerializeField] BoardState boardState;
     public BoardState currentState {
         get { return this.boardState; }
@@ -19,12 +19,12 @@ public class BoardManager : SerializedMonoBehaviour {
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
-    void Update() {
-        
-    }
-    
     #region Initialization
-    
+
+    void Awake() {
+        i = this;
+    }
+
     // called by GM start
     public void InitializeStartingBoard() {
         InitBoard();
@@ -60,7 +60,6 @@ public class BoardManager : SerializedMonoBehaviour {
     void AddBoundaryEntities() {
         EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
         EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
-        
         AddEntityFromSchema(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
         AddEntityFromSchema(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
 
@@ -167,6 +166,9 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     void CreateEntityBase(EntityState aEntityState) {
+        if (this.entityBaseDict.ContainsKey(aEntityState.data.id)) {
+            throw new Exception("TRIED TO OVERWRITE EXISTING ENTITYSTATE");
+        }
         // set the new EntityPosition
         Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
         // instantiate a new gameObject entityPrefab from the schemas prefabPath
@@ -174,6 +176,7 @@ public class BoardManager : SerializedMonoBehaviour {
         // get the entityBase
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
         // add it to the entityBaseDict
+
         this.entityBaseDict[aEntityState.data.id] = entityBase;
         // initialize entityBase with the newest state
         entityBase.Init(aEntityState);
@@ -278,23 +281,7 @@ public class BoardManager : SerializedMonoBehaviour {
     #endregion
 
     #region Utility
-    
-    public HashSet<EntityState> ConvertIdSetToEntityStateSet(HashSet<int> aIdSet) {
-        HashSet<EntityState> entityStateSet = new HashSet<EntityState>();
-        foreach (int id in aIdSet) {
-            entityStateSet.Add(GM.boardManager.GetEntityById(id));
-        }
-        return entityStateSet;
-    }
 
-    public HashSet<int> ConvertEntityStateSetToIdSet(HashSet<EntityState> aEntitySet) {
-        HashSet<int> entityIdSet = new HashSet<int>();
-        foreach (EntityState entityState in aEntitySet) {
-            entityIdSet.Add(entityState.data.id);
-        }
-        return entityIdSet;
-    }
-    
     public EntityState? GetEntityAtPos(Vector2Int aPos, bool aIsFront = true) {
         if (!IsPosInBoard(aPos)) {
             return null;
@@ -310,25 +297,16 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     public EntityState? GetEntityAtMousePos(bool aIsFront = true) {
-        return GetEntityAtPos(GM.inputManager.mousePosV2);
+        return GetEntityAtPos(GM.inputManager.mousePosV2, aIsFront);
     }
 
     public EntityState GetEntityById(int aId) {
-        if (this.currentState.entityDict.ContainsKey(aId)) {
-            return this.currentState.entityDict[aId];
-        }
-        else {
-            throw new Exception("GetEntityById - invalid id");
-        }
+        return this.currentState.entityDict[aId];
+
     }
 
     public EntityBase GetEntityBaseById(int aId) {
-        if (this.entityBaseDict.ContainsKey(aId)) {
-            return this.entityBaseDict[aId];
-        }
-        else {
-            throw new Exception("GetEntityBaseById - invalid id");
-        }
+        return this.entityBaseDict[aId];
     }
     
     public bool CanEditorPlaceSchema(Vector2Int aPos, EntitySchema aEntitySchema) {
@@ -357,31 +335,35 @@ public class BoardManager : SerializedMonoBehaviour {
             }
             return sliceDict;
         }
-        throw new Exception("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
+        throw new ArgumentOutOfRangeException("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
-        foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
-            EntityState? entityState = null;
-            switch (aIsFront) {
-                case true when boardCell.frontEntityState.HasValue:
-                    entityState = boardCell.frontEntityState;
-                    break;
-                case false when boardCell.backEntityState.HasValue:
-                    entityState = boardCell.backEntityState;
-                    break;
-            }
-            print(entityState.HasValue);
-            if (entityState.HasValue) {
-                if (aIgnoreSet == null) {
-                    return false;
-                } 
-                if (!aIgnoreSet.Contains(entityState.Value)) {
-                    return false;
+        try {
+            foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
+                EntityState? entityState = null;
+                switch (aIsFront) {
+                    case true when boardCell.frontEntityState.HasValue:
+                        entityState = boardCell.frontEntityState;
+                        break;
+                    case false when boardCell.backEntityState.HasValue:
+                        entityState = boardCell.backEntityState;
+                        break;
+                }
+                if (entityState.HasValue) {
+                    if (aIgnoreSet == null) {
+                        return false;
+                    }
+                    if (!aIgnoreSet.Contains(entityState.Value)) {
+                        return false;
+                    }
                 }
             }
+            return true;
         }
-        return true;
+        catch (ArgumentOutOfRangeException) {
+            return false;
+        }
     }
 
     #endregion

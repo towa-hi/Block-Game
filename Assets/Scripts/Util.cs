@@ -99,14 +99,21 @@ public class Util {
         return false;
     }
 
-    // public static void DebugAreaPulse(Vector2Int aOrigin, Vector2Int aSize, Color aColor) {
-    //     foreach (Vector2Int pos in V2IInRect(aOrigin, aSize)) {
-    //         if (GM.boardData.IsPosInBoard(pos)) {
-    //             GM.boardData.GetGameGrid().GetCell(pos).cellViewBase.TempHighlight(aColor);
-    //         }
-    //     }
-    // }
+    public static HashSet<EntityState> ConvertIdSetToEntityStateSet(HashSet<int> aIdSet) {
+        HashSet<EntityState> entityStateSet = new HashSet<EntityState>();
+        foreach (int id in aIdSet) {
+            entityStateSet.Add(GM.boardManager.GetEntityById(id));
+        }
+        return entityStateSet;
+    }
 
+    public static HashSet<int> ConvertEntityStateSetToIdSet(HashSet<EntityState> aEntitySet) {
+        HashSet<int> entityIdSet = new HashSet<int>();
+        foreach (EntityState entityState in aEntitySet) {
+            entityIdSet.Add(entityState.data.id);
+        }
+        return entityIdSet;
+    }
 
     // public static Quaternion FacingToQuaternion(Vector2Int aFacing) {
     //     Debug.Assert(IsDirection(aFacing));

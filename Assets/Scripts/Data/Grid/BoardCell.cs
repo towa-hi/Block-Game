@@ -16,4 +16,13 @@ public class BoardCell {
     public void Reset() {
         this.frontEntityState = null;
     }
+
+    public bool IsExit() {
+        if (this.backEntityState.HasValue) {
+            if (this.backEntityState.Value.data.isExit) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

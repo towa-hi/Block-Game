@@ -25,7 +25,19 @@ MonoBehaviour:
   isFront: 0
   size: {x: 4, y: 4}
   entityType: 0
+  defaultTeam: 1
   touchDefense: 0
   fallDefense: 0
-  defaultTeam: 1
   hasNodes: 0
+  movementType: 0
+  canHop: 0
+  moveSpeed: 0
+  canKillOnTouch: 0
+  touchPower: 0
+  canFall: 0
+  canKillOnFall: 0
+  fallPower: 0
+  canPush: 0
+  canBePushed: 0
+  canBeLifted: 0
+  isExit: 1
