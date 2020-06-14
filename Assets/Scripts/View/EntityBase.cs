@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
-public class EntityBase : BoardStateListener {
+public class EntityBase : MonoBehaviour {
     public int id;
     public bool isTempPos;
     public GameObject model;
@@ -41,6 +41,17 @@ public class EntityBase : BoardStateListener {
         this.originalShader = this.modelRenderer.material.shader;
     }
 
+    void OnEnable() {
+        GM.boardManager.OnUpdateBoardState += OnUpdateBoardState;
+        if (GM.boardManager.currentState.isInitialized) {
+            OnUpdateBoardState(GM.boardManager.currentState);
+        }
+    }
+
+    void OnDisable() {
+        GM.boardManager.OnUpdateBoardState -= OnUpdateBoardState;
+    }
+
     void Update() {
         if (this.isMarked) {
             this.markerT += Time.deltaTime / 2.0f;
@@ -71,6 +82,10 @@ public class EntityBase : BoardStateListener {
         if (aEntityState.team == TeamEnum.PLAYER) {
             this.isPlayer = true;
         }
+        // if (!aEntityState.data.isFront) {
+        //     GM.boardManager.OnUpdateBoardState -= OnUpdateBoardState;
+        //     GM.boardManager.OnUpdateBoardStateBG += OnUpdateBoardState;
+        // }
     }
     
     public void DoFrame() {
@@ -93,7 +108,7 @@ public class EntityBase : BoardStateListener {
     
     #region Listeners
 
-    protected override void OnUpdateBoardState(BoardState aBoardState) {
+    protected void OnUpdateBoardState(BoardState aBoardState) {
         // ignore when entity is dying
         if (this.isDying) {
             return;
@@ -106,16 +121,19 @@ public class EntityBase : BoardStateListener {
         EntityState newEntityState = aBoardState.entityDict[this.id];
         // if first update
         if (this.needsFirstUpdate) {
-            this.oldEntityState = newEntityState;
+            // this.oldEntityState = newEntityState;
             this.needsFirstUpdate = false;
         }
-        // if any changes detected
-        if (!this.oldEntityState.Equals(newEntityState)) {
-            if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
-                SetColor(newEntityState.defaultColor);
-            }
-            this.oldEntityState = newEntityState;
+        if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
+            SetColor(newEntityState.defaultColor);
         }
+        // if any changes detected
+        // if (!this.oldEntityState.Equals(newEntityState)) {
+        //     if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
+        //         SetColor(newEntityState.defaultColor);
+        //     }
+        //     this.oldEntityState = newEntityState;
+        // }
     }
 
     #endregion
@@ -143,12 +161,14 @@ public class EntityBase : BoardStateListener {
 
     EntityBaseStateMachineState ApplyEffects() {
         // apply win result
+
         if (this.isPlayer) {
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.entityState.pos, this.entityState.data.size).Values) {
-                if (boardCell.IsExit()) {
-                    return new ExitingState(this.id);
+                if (!boardCell.IsExit()) {
+                    return null;
                 }
             }
+            return new ExitingState(this.id);
         }
         return null;
     }
@@ -278,7 +298,6 @@ public class EntityBase : BoardStateListener {
     #region View
 
     public void SetDithering(bool aIsDithering) {
-        print("setting dithering");
         if (aIsDithering) {
             Shader ditheringShader = GM.instance.ditheringShader;
             foreach (Renderer childRenderer in this.childRenderers) {
@@ -441,9 +460,10 @@ public class EntityBase : BoardStateListener {
     }
 
     class ExitingState : EntityBaseStateMachineState {
+
         public ExitingState(int aId) {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-            Vector3 zOffset = new Vector3(0, 0, 1f);
+            Vector3 zOffset = new Vector3(0, 0, 3.1f);
             this.startPos = this.entityBase.entityState.pos;
             this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
             this.endPos = this.startPos;
@@ -452,6 +472,12 @@ public class EntityBase : BoardStateListener {
         }
 
         public override void Enter() {
+            if (this.entityBase.entityState.facing == Vector2Int.left) {
+                this.entityBase.transform.rotation = Quaternion.AngleAxis(90, Vector3.up) * this.entityBase.transform.rotation;
+            }
+            else if (this.entityBase.entityState.facing == Vector2Int.right) {
+                this.entityBase.transform.rotation = Quaternion.AngleAxis(-90, Vector3.up) * this.entityBase.transform.rotation;
+            }
         }
 
         public override void Update() {
@@ -876,11 +902,13 @@ public class EntityBase : BoardStateListener {
     
     class DyingState : EntityBaseStateMachineState {
         readonly float timeToDie;
-        
+        bool isPlayer;
+
         public DyingState(int aId) {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             this.timeToDie = 0.5f;
             this.t = 0f;
+            this.isPlayer = this.entityBase.entityState.team == TeamEnum.PLAYER;
         }
         public override void Enter() {
             this.entityBase.isDying = true;
@@ -895,7 +923,7 @@ public class EntityBase : BoardStateListener {
             }
             else {
                 print(this.entityBase.id + " DyingState - completed animation");
-                GM.playManager.FinishEntityDeath(this.entityBase.id, true);
+                GM.playManager.FinishEntityDeath(this.entityBase.id, this.isPlayer);
             }
         }
     

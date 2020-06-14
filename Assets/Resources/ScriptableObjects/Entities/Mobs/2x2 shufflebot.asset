@@ -31,7 +31,7 @@ MonoBehaviour:
   hasNodes: 0
   movementType: 1
   canHop: 0
-  moveSpeed: 1
+  moveSpeed: 0.4
   canKillOnTouch: 1
   touchPower: 10
   canFall: 1
@@ -40,3 +40,4 @@ MonoBehaviour:
   canPush: 0
   canBePushed: 0
   canBeLifted: 1
+  isExit: 0

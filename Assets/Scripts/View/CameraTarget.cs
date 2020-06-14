@@ -12,7 +12,7 @@ public class CameraTarget : SerializedMonoBehaviour {
     void Update() {
         //GM.boardManager.IsPosInBoard(GM.inputManager.mousePosV2)
         if (true) {
-            Vector3 offset = this.cursor.transform.position - this.centerOfScreen;
+            Vector3 offset = GM.inputManager.mousePos - this.centerOfScreen;
             offset.z = 0;
             offset *= this.offsetMultiply;
             Vector3 desiredPos = this.centerOfScreen + new Vector3(5,0,0) + offset;

@@ -19,4 +19,5 @@ public static class Constants {
     public static readonly float DEATHSTATETIME = 2f;
     // temp
     public static readonly float SPAWNTIME = 1f;
+    public static readonly Vector2Int MAXBOARDSIZE = new Vector2Int(40, 24);
 }
