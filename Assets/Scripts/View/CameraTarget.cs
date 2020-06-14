@@ -11,7 +11,7 @@ public class CameraTarget : SerializedMonoBehaviour {
     // Start is called before the first frame update
     void Update() {
         //GM.boardManager.IsPosInBoard(GM.inputManager.mousePosV2)
-        if (GM.boardManager.IsPosInBoard(GM.inputManager.mousePosV2)) {
+        if (true) {
             Vector3 offset = this.cursor.transform.position - this.centerOfScreen;
             offset.z = 0;
             offset *= this.offsetMultiply;

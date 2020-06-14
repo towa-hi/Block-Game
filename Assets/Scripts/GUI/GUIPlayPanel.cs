@@ -8,9 +8,9 @@ using UnityEngine.UI;
 public class GUIPlayPanel : SerializedMonoBehaviour {
     public Text titleText;
     public GameObject playtestPanel;
-    public Text movesText;
-    public Text parText;
-    
+    // public Text movesText;
+    // public Text parText;
+
     void OnEnable() {
         GM.boardManager.OnUpdateBoardState += OnUpdateBoardState;
         GM.playManager.OnUpdatePlayState += OnUpdatePlayState;
@@ -32,11 +32,12 @@ public class GUIPlayPanel : SerializedMonoBehaviour {
     }
 
     void SetPlayStateGUI(PlayState aPlayState) {
-        this.movesText.text = "Moves: " + aPlayState.moves;
+        // this.movesText.text = "Moves: " + aPlayState.moves;
     }
 
     void SetBoardStateGUI(BoardState aBoardState) {
         this.titleText.text = aBoardState.title;
-        this.parText.text = "Par: " + aBoardState.par;
+        // this.parText.text = "Par: " + aBoardState.par;
+
     }
 }
