@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 
 public class InputManager : SerializedMonoBehaviour {
     [Header("Mouse Pos")]
-    [System.NonSerialized] public Vector3 mousePos;
+    public Vector3 mousePos;
     public Vector2Int mousePosV2;
     [System.NonSerialized] public Vector3 oldMousePos;
     public bool isCursorOverUI;

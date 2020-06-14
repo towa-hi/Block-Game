@@ -156,14 +156,10 @@ public class PlayManager : SerializedMonoBehaviour {
         initialPlayState = PlayState.SetPlayMode(initialPlayState, PlayModeEnum.PLAYING);
         UpdatePlayState(initialPlayState);
     }
-    
-    public void SetHeldEntity(int? aHeldEntityId) {
-        PlayState newPlayState = PlayState.SetHeldEntity(this.currentState, aHeldEntityId);
-        UpdatePlayState(newPlayState);
-    }
 
-    public void SetSelectedEntityIdSet([CanBeNull] HashSet<int> aSelectedEntityIdSet) {
+    public void SetSelectedEntityIdSet(int? aHeldEntityId, [CanBeNull] HashSet<int> aSelectedEntityIdSet) {
         PlayState newPlayState = PlayState.SetSelectedEntityIdSet(this.currentState, aSelectedEntityIdSet);
+        newPlayState = PlayState.SetHeldEntity(newPlayState, aHeldEntityId);
         UpdatePlayState(newPlayState);
     }
 
@@ -366,7 +362,7 @@ public class PlayManager : SerializedMonoBehaviour {
     public void SelectEntity(int aId, bool aIsUp) {
         EntityState rootEntity = GM.boardManager.GetEntityById(aId);
         Debug.Assert(rootEntity.hasNodes);
-        SetSelectedEntityIdSet(GetSelectedEntityIdSet(rootEntity, aIsUp));
+        SetSelectedEntityIdSet(aId, GetSelectedEntityIdSet(rootEntity, aIsUp));
     }
 
     public HashSet<int> GetSelectedEntityIdSet(EntityState aRoot, bool aIsUp) {
@@ -591,7 +587,7 @@ public class PlayManager : SerializedMonoBehaviour {
                             }
                         }
                     }
-                    GM.playManager.SetSelectedEntityIdSet(null);
+                    GM.playManager.SetSelectedEntityIdSet(null, null);
                     GM.playManager.SetTimeMode(TimeModeEnum.NORMAL);
                     break;
                 default:

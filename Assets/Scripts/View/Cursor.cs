@@ -100,21 +100,27 @@ public class Cursor : SerializedMonoBehaviour {
     }
     
     public void OnUpdateGameState(GameState aNewGameState) {
-    //     switch (aNewGameState.gameMode) {
-    //         case GameModeEnum.PLAYING:
-    //             this.cursorMode = PlayModeChooseMode();
-    //             break;
-    //         case GameModeEnum.EDITING:
-    //             break;
-    //         case GameModeEnum.PLAYTESTING:
-    //             this.cursorMode = PlayModeChooseMode();
-    //             break;
-    //         default:
-    //             throw new ArgumentOutOfRangeException();
-    //     }
+        switch (aNewGameState.gameMode) {
+            case GameModeEnum.PLAYING:
+                this.cursorMode = PlayModeChooseMode(GM.playManager.currentState);
+                break;
+            case GameModeEnum.EDITING:
+                break;
+            case GameModeEnum.PLAYTESTING:
+                this.cursorMode = PlayModeChooseMode(GM.playManager.currentState);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     public CursorModeEnum PlayModeChooseMode(PlayState aPlayState) {
+        if (aPlayState.heldEntityId.HasValue && aPlayState.heldEntityId != -42069) {
+            EntityState heldEntity = GM.boardManager.GetEntityById(aPlayState.heldEntityId.Value);
+            this.heldSize = heldEntity.data.size;
+            this.heldPos = heldEntity.pos;
+            return CursorModeEnum.HOLDING;
+        }
         return CursorModeEnum.POINTING;
     }
     
