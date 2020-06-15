@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
@@ -142,6 +143,7 @@ public class EntityBase : MonoBehaviour {
 
     public void Die(DeathTypeEnum aDeathType) {
         this.stateMachine.ChangeState(new DyingState(this.id));
+        this.needsNewState = false;
         print( this.id + " Die - set state to dying");
     }
     
@@ -180,6 +182,7 @@ public class EntityBase : MonoBehaviour {
         }
         if (aStateResults.entityKillSet != null) {
             foreach (int killId in aStateResults.entityKillSet) {
+                print(this.id + " killed " + killId);
                 GM.boardManager.GetEntityBaseById(killId).Die(DeathTypeEnum.BUMP);
             }
         }
@@ -398,7 +401,10 @@ public class EntityBase : MonoBehaviour {
             Vector2Int size = this.entityState.data.size;
             Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size, currentEntityState.data.isFront);
             Vector3 sizeV3 = new Vector3(size.x, size.y * Constants.BLOCKHEIGHT, 2f);
-            Gizmos.DrawWireCube(position, sizeV3);
+            if (currentEntityState.data.isFront) {
+                Gizmos.DrawWireCube(position, sizeV3);
+            }
+
             if (currentEntityState.hasNodes) {
                 Vector3 zOffset = new Vector3(0, 0, -1.01f);
                 foreach (Node node in currentEntityState.GetNodes()) {

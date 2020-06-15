@@ -847,6 +847,7 @@ GameObject:
   - component: {fileID: 484835694}
   - component: {fileID: 484835696}
   - component: {fileID: 484835698}
+  - component: {fileID: 484835697}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -933,6 +934,9 @@ MonoBehaviour:
       Entry: 6
       Data: 
     - Name: entityBaseDict
+      Entry: 6
+      Data: 
+    - Name: entitiesToUpdate
       Entry: 6
       Data: 
 --- !u!114 &484835695
@@ -1024,6 +1028,28 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+--- !u!114 &484835697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484835692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43037da38f4919a46b0cd55d2d6af822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  drawGizmos: 0
 --- !u!114 &484835698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2129,11 +2155,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22499384, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 22499384, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 224930228632997228, guid: 916ee089a0d7b63419075f91e1c657ec,
         type: 3}
@@ -5270,8 +5296,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnCancelButtonClick
+      - m_Target: {fileID: 1922563757056264161}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

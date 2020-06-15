@@ -31,16 +31,16 @@ namespace Schema {
         [Header("BG")]
         public bool isExit;
     
-        [ContextMenu("BgFileNameToNameField")]
-        public void BgFileNameToNameField() {
-            string path = AssetDatabase.GetAssetPath(this.GetInstanceID());
-            this.prefabPath = "BGs/" + Path.GetFileNameWithoutExtension(path);
-        }
-    
-        [ContextMenu("BlockFileNameToNameField")]
-        public void BlockFileNameToNameField() {
-            string path = AssetDatabase.GetAssetPath(this.GetInstanceID());
-            this.prefabPath = "Blocks/" + Path.GetFileNameWithoutExtension(path);
-        }
+        // [ContextMenu("BgFileNameToNameField")]
+        // public void BgFileNameToNameField() {
+        //     string path = AssetDatabase.GetAssetPath(this.GetInstanceID());
+        //     this.prefabPath = "BGs/" + Path.GetFileNameWithoutExtension(path);
+        // }
+        //
+        // [ContextMenu("BlockFileNameToNameField")]
+        // public void BlockFileNameToNameField() {
+        //     string path = AssetDatabase.GetAssetPath(this.GetInstanceID());
+        //     this.prefabPath = "Blocks/" + Path.GetFileNameWithoutExtension(path);
+        // }
     }
 }

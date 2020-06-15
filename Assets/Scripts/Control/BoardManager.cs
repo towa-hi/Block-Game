@@ -62,8 +62,8 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     void AddBoundaryEntities() {
-        EntitySchema tallBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/1x11 block.asset");
-        EntitySchema longBoy = AssetDatabase.LoadAssetAtPath<EntitySchema>("Assets/Resources/ScriptableObjects/Entities/Blocks/20x1 block.asset");
+        EntitySchema tallBoy = Resources.Load<EntitySchema>("ScriptableObjects/Entities/Blocks/1x11 block");
+        EntitySchema longBoy = Resources.Load<EntitySchema>("ScriptableObjects/Entities/Blocks/20x1 block");
         AddEntityFromSchema(longBoy, new Vector2Int(0, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
         AddEntityFromSchema(longBoy, new Vector2Int(20, 0), Constants.DEFAULTFACING, Constants.DEFAULTCOLOR, true, true);
 
@@ -115,50 +115,66 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     void SetBoardCellDict(BoardState aBoardState, MovementInfoStruct? aMovementInfo) {
-        if (aMovementInfo != null) {
-            MovementInfoStruct movementInfo = aMovementInfo.Value;
-            foreach (int id in movementInfo.idList) {
-                EntityState currentEntity = GetEntityById(id);
-                Vector2Int oldPos = currentEntity.pos;
-                Vector2Int newPos = currentEntity.pos + movementInfo.offset;
-                foreach (Vector2Int currentPos in Util.V2IInRect(oldPos, currentEntity.data.size)) {
-                    BoardCell currentCell = this.boardCellDict[currentPos];
-                    if (currentEntity.data.isFront) {
-                        currentCell.frontEntityState = null;
-                    }
-                    else {
-                        currentCell.backEntityState = null;
-                    }
-                }
-                foreach (Vector2Int currentPos in Util.V2IInRect(newPos, currentEntity.data.size)) {
-                    BoardCell currentCell = this.boardCellDict[currentPos];
-                    if (currentEntity.data.isFront) {
-                        currentCell.frontEntityState = currentEntity;
-                    }
-                    else {
-                        currentCell.backEntityState = currentEntity;
-                    }
-                }
-            }
+        foreach (var currentCell in this.boardCellDict.Values) {
+            currentCell.frontEntityState = null;
+            currentCell.backEntityState = null;
         }
-        else {
-            foreach (var currentCell in this.boardCellDict.Values) {
-                currentCell.frontEntityState = null;
-                currentCell.backEntityState = null;
-            }
 
-            foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
-                foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.data.size)) {
-                    BoardCell currentCell = this.boardCellDict[currentPos];
-                    if (currentEntity.data.isFront) {
-                        currentCell.frontEntityState = currentEntity;
-                    }
-                    else {
-                        currentCell.backEntityState = currentEntity;
-                    }
+        foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
+            foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.data.size)) {
+                BoardCell currentCell = this.boardCellDict[currentPos];
+                if (currentEntity.data.isFront) {
+                    currentCell.frontEntityState = currentEntity;
+                }
+                else {
+                    currentCell.backEntityState = currentEntity;
                 }
             }
         }
+        // if (aMovementInfo != null) {
+        //     MovementInfoStruct movementInfo = aMovementInfo.Value;
+        //     foreach (int id in movementInfo.idList) {
+        //         EntityState currentEntity = GetEntityById(id);
+        //         Vector2Int oldPos = currentEntity.pos;
+        //         Vector2Int newPos = currentEntity.pos + movementInfo.offset;
+        //         foreach (Vector2Int currentPos in Util.V2IInRect(oldPos, currentEntity.data.size)) {
+        //             BoardCell currentCell = this.boardCellDict[currentPos];
+        //             if (currentEntity.data.isFront) {
+        //                 currentCell.frontEntityState = null;
+        //             }
+        //             else {
+        //                 currentCell.backEntityState = null;
+        //             }
+        //         }
+        //         foreach (Vector2Int currentPos in Util.V2IInRect(newPos, currentEntity.data.size)) {
+        //             BoardCell currentCell = this.boardCellDict[currentPos];
+        //             if (currentEntity.data.isFront) {
+        //                 currentCell.frontEntityState = currentEntity;
+        //             }
+        //             else {
+        //                 currentCell.backEntityState = currentEntity;
+        //             }
+        //         }
+        //     }
+        // }
+        // else {
+        //     foreach (var currentCell in this.boardCellDict.Values) {
+        //         currentCell.frontEntityState = null;
+        //         currentCell.backEntityState = null;
+        //     }
+        //
+        //     foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
+        //         foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.data.size)) {
+        //             BoardCell currentCell = this.boardCellDict[currentPos];
+        //             if (currentEntity.data.isFront) {
+        //                 currentCell.frontEntityState = currentEntity;
+        //             }
+        //             else {
+        //                 currentCell.backEntityState = currentEntity;
+        //             }
+        //         }
+        //     }
+        // }
     }
     
     public void SaveBoardState(bool aIsPlaytestTemp) {
