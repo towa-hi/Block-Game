@@ -25,4 +25,13 @@ public class BoardCell {
         }
         return false;
     }
+
+    public EntityState? GetEntityState(bool aIsFront) {
+        if (aIsFront) {
+            return this.frontEntityState;
+        }
+        else {
+            return this.backEntityState;
+        }
+    }
 }

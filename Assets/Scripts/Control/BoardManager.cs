@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Schema;
 using Sirenix.OdinInspector;
-using UnityEditor;
+using Sirenix.Utilities;
 using UnityEngine;
 
 public delegate void OnUpdateBoardStateHandler(BoardState aBoardState);
@@ -16,13 +16,9 @@ public class BoardManager : SerializedMonoBehaviour {
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     // public event OnUpdateBoardStateHandler OnUpdateBoardStateBG;
     public Dictionary<int, EntityBase> entityBaseDict;
+
     #region Initialization
 
-    public HashSet<int> entitiesToUpdate;
-
-    void Awake() {
-
-    }
     // called by GM start
     public void InitializeStartingBoard() {
         InitBoard();
@@ -55,7 +51,7 @@ public class BoardManager : SerializedMonoBehaviour {
         foreach (Vector2Int pos in Util.V2IInRect(Vector2Int.zero, newBoardState.size)) {
             this.boardCellDict[pos] = new BoardCell(pos);
         }
-        UpdateBoardState(newBoardState, true);
+        UpdateBoardState(newBoardState);
         foreach (EntityState entityState in newBoardState.entityDict.Values) {
             CreateEntityBase(entityState);
         }
@@ -90,31 +86,58 @@ public class BoardManager : SerializedMonoBehaviour {
     
     #region BoardState
 
-    void UpdateBoardState(BoardState aBoardState, bool aRebuildDict = false, MovementInfoStruct? aMovementInfo = null) {
+    void UpdateBoardState(BoardState aBoardState, HashSet<int> aEntitiesToUpdate = null) {
         if (Config.PRINTLISTENERUPDATES) {
             print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
-        this.boardState = aBoardState;
-        // if (aRebuildDict) {
-        //     SetBoardCellDict(aBoardState);
-        // }
-        SetBoardCellDict(aBoardState, aMovementInfo);
-        OnUpdateBoardState?.Invoke(this.currentState);
-        // if (GM.instance.currentState.gameMode == GameModeEnum.EDITING) {
-        //     OnUpdateBoardStateBG?.Invoke(this.currentState);
-        // }
+        if (aEntitiesToUpdate != null) {
+            print("entitiesToUpdate not null");
+            BoardState oldBoardState = this.boardState;
+            foreach (int id in aEntitiesToUpdate) {
+                EntityState oldEntityState = EntityState.GetClone(oldBoardState.entityDict[id]);
+                HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.data.size).ToHashSet();
+                foreach (Vector2Int pos in oldPosSet) {
+                    print("erasing pos: " + pos);
+                    if (oldEntityState.data.isFront) {
+                        this.boardCellDict[pos].frontEntityState = null;
+                    }
+                    else {
+                        this.boardCellDict[pos].backEntityState = null;
+                    }
+                }
+                EntityState newEntityState = aBoardState.entityDict[id];
+                HashSet<Vector2Int> newPosSet = Util.V2IInRect(newEntityState.pos, newEntityState.data.size).ToHashSet();
+                foreach (Vector2Int pos in newPosSet) {
+                    print("adding pos: " + pos);
+                    if (newEntityState.data.isFront) {
+                        this.boardCellDict[pos].frontEntityState = newEntityState;
+                    }
+                    else {
+                        this.boardCellDict[pos].backEntityState = newEntityState;
+                    }
+                }
+            }
+            print("set updates");
+            this.boardState = aBoardState;
+            foreach (int id in aEntitiesToUpdate) {
+                GetEntityBaseById(id).OnUpdateBoardState(this.currentState);
+            }
+        }
+        else {
+            print("entitiesToUpdate is null");
+            this.boardState = aBoardState;
+            print("setting board cell dict");
+            SetBoardCellDict(aBoardState);
+            OnUpdateBoardState?.Invoke(this.currentState);
+        }
     }
     
-    void UpdateEntityAndBoardState(EntityState aEntityState, bool aRebuildDict = false, MovementInfoStruct? aMovementInfo = null) {
+    void UpdateEntityAndBoardState(EntityState aEntityState, HashSet<int> aEntitiesToUpdate = null) {
         BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
-        UpdateBoardState(newBoardState, aRebuildDict, aMovementInfo);
+        UpdateBoardState(newBoardState, aEntitiesToUpdate);
     }
 
-    void SetBoardCellDictForEntity(BoardState aBoardState, int aEntityId) {
-
-    }
-
-    void SetBoardCellDict(BoardState aBoardState, MovementInfoStruct? aMovementInfo) {
+    void SetBoardCellDict(BoardState aBoardState) {
         foreach (var currentCell in this.boardCellDict.Values) {
             currentCell.frontEntityState = null;
             currentCell.backEntityState = null;
@@ -131,50 +154,6 @@ public class BoardManager : SerializedMonoBehaviour {
                 }
             }
         }
-        // if (aMovementInfo != null) {
-        //     MovementInfoStruct movementInfo = aMovementInfo.Value;
-        //     foreach (int id in movementInfo.idList) {
-        //         EntityState currentEntity = GetEntityById(id);
-        //         Vector2Int oldPos = currentEntity.pos;
-        //         Vector2Int newPos = currentEntity.pos + movementInfo.offset;
-        //         foreach (Vector2Int currentPos in Util.V2IInRect(oldPos, currentEntity.data.size)) {
-        //             BoardCell currentCell = this.boardCellDict[currentPos];
-        //             if (currentEntity.data.isFront) {
-        //                 currentCell.frontEntityState = null;
-        //             }
-        //             else {
-        //                 currentCell.backEntityState = null;
-        //             }
-        //         }
-        //         foreach (Vector2Int currentPos in Util.V2IInRect(newPos, currentEntity.data.size)) {
-        //             BoardCell currentCell = this.boardCellDict[currentPos];
-        //             if (currentEntity.data.isFront) {
-        //                 currentCell.frontEntityState = currentEntity;
-        //             }
-        //             else {
-        //                 currentCell.backEntityState = currentEntity;
-        //             }
-        //         }
-        //     }
-        // }
-        // else {
-        //     foreach (var currentCell in this.boardCellDict.Values) {
-        //         currentCell.frontEntityState = null;
-        //         currentCell.backEntityState = null;
-        //     }
-        //
-        //     foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
-        //         foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.data.size)) {
-        //             BoardCell currentCell = this.boardCellDict[currentPos];
-        //             if (currentEntity.data.isFront) {
-        //                 currentCell.frontEntityState = currentEntity;
-        //             }
-        //             else {
-        //                 currentCell.backEntityState = currentEntity;
-        //             }
-        //         }
-        //     }
-        // }
     }
     
     public void SaveBoardState(bool aIsPlaytestTemp) {
@@ -214,7 +193,7 @@ public class BoardManager : SerializedMonoBehaviour {
         // add it to the board and get the new boardState and entityState with ID back
         (BoardState newBoard, EntityState newEntityStateWithId) = BoardState.AddEntity(this.currentState, newEntityStateWithoutId);
         // update the boardState
-        UpdateBoardState(newBoard, true);
+        UpdateBoardState(newBoard);
         CreateEntityBase(newEntityStateWithId);
     }
     
@@ -244,7 +223,7 @@ public class BoardManager : SerializedMonoBehaviour {
         // remove entity from boardstate
         BoardState newBoard = BoardState.RemoveEntity(this.currentState, aId);
         // update the boardState
-        UpdateBoardState(newBoard, true);
+        UpdateBoardState(newBoard);
     }
 
     public void RemoveEntityBase(int aId) {
@@ -254,11 +233,12 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     public void MoveEntity(int aId, Vector2Int aPos, bool aMoveEntityBase = false) {
+        print("moving entity:" + aId);
         EntityState entityState = GetEntityById(aId);
+        print("original pos:" + entityState.pos);
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
         if (IsRectEmpty(aPos, entityState.data.size, ignoreSet, entityState.data.isFront)) {
-            MovementInfoStruct movementInfo = new MovementInfoStruct(new List<int>(aId), aPos - entityState.pos);
-            UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos), true, movementInfo);
+            UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos), new HashSet<int>{aId});
             if (aMoveEntityBase) {
                 entityState.entityBase.ResetView();
             }
@@ -268,34 +248,56 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void MoveEntityBatch(HashSet<int> aEntityIdSet, Vector2Int aOffset, bool aMoveEntityBase = false) {
-        BoardState newBoardState = this.currentState;
+        BoardState newBoardState = BoardState.GetClone(this.currentState);
+        print("moving entity set with size of :" + aEntityIdSet.Count);
         foreach (int id in aEntityIdSet) {
-            EntityState movingEntity = GetEntityById(id);
+
+            // movingEntity ought to be a value somewhere
+            EntityState movingEntity = this.currentState.entityDict[id];
+
+            // this prints the original pos before moving
+            print("entity " + id + " starting pos: " + movingEntity.pos);
+
+            // now create a new entityState but with a different pos
             EntityState movedEntity = EntityState.SetPos(movingEntity, movingEntity.pos + aOffset);
+
+            EntityState testCurrentEntity = this.currentState.entityDict[id];
+            print("current EntityState with id " + id + " after movedEntity made pos: " + testCurrentEntity.pos);
+            // now create a new boardState with the old EntityState (movingEntity) replaced with the new EntityState (movedEntity)
             newBoardState = BoardState.UpdateEntity(newBoardState, movedEntity);
+            // WTF BoardState.UpdateEntity seems to change the entityDict of currentState
+
+            // print the destination
+            print("new entity " + id + " starting pos: " + movedEntity.pos);
+            testCurrentEntity = this.currentState.entityDict[id];
+            // nothing should update so testEntity should be the old version
+            // but it returns the destination for some reason even though state shouldnt get updated
+            print("testEntity pos:" + testCurrentEntity.pos);
         }
-        UpdateBoardState(newBoardState, true);
+        // this is where currentState ought to be updated
+        UpdateBoardState(newBoardState, aEntityIdSet);
         if (aMoveEntityBase) {
             foreach (int id in aEntityIdSet) {
                 GetEntityBaseById(id).ResetView();
             }
         }
     }
+
     public void SetEntityFacing(int aId, Vector2Int aFacing) {
         EntityState entityState = GetEntityById(aId);
         if (Util.IsDirection(aFacing)) {
-            UpdateEntityAndBoardState(EntityState.SetFacing(entityState, aFacing));
+            UpdateEntityAndBoardState(EntityState.SetFacing(entityState, aFacing), new HashSet<int>{aId});
         } else {
             throw new Exception("SetEntityFacing - invalid facing direction");
         }
     }
 
     public void SetEntityDefaultColor(int aId, Color aColor) {
-        UpdateEntityAndBoardState(EntityState.SetDefaultColor(GetEntityById(aId), aColor));
+        UpdateEntityAndBoardState(EntityState.SetDefaultColor(GetEntityById(aId), aColor), new HashSet<int>{aId});
     }
 
     public void SetEntityIsFixed(int aId, bool aIsFixed) {
-        UpdateEntityAndBoardState(EntityState.SetIsFixed(GetEntityById(aId), aIsFixed));
+        UpdateEntityAndBoardState(EntityState.SetIsFixed(GetEntityById(aId), aIsFixed), new HashSet<int>{aId});
     }
 
     public void SetEntityIsFixedBatch(IEnumerable<int> aIdSet, bool aIsFixed) {
@@ -309,13 +311,13 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     public void SetEntityTeam(int aId, TeamEnum aTeam) {
-        UpdateEntityAndBoardState(EntityState.SetTeam(GetEntityById(aId), aTeam));
+        UpdateEntityAndBoardState(EntityState.SetTeam(GetEntityById(aId), aTeam), new HashSet<int>{aId});
     }
 
     public void SetEntityTouchDefense(int aId, int aTouchDefense) {
         EntityState entityState = GetEntityById(aId);
         if (0 <= aTouchDefense && aTouchDefense <= 999) {
-            UpdateEntityAndBoardState(EntityState.SetTouchDefense(entityState, aTouchDefense));
+            UpdateEntityAndBoardState(EntityState.SetTouchDefense(entityState, aTouchDefense), new HashSet<int>{aId});
         }
         else {
             throw new Exception("SetEntityTouchDefense - invalid touchDefense");
@@ -325,7 +327,7 @@ public class BoardManager : SerializedMonoBehaviour {
     public void SetEntityFallDefense(int aId, int aFallDefense) {
         EntityState entityState = GetEntityById(aId);
         if (0 <= aFallDefense && aFallDefense <= 999) {
-            UpdateEntityAndBoardState(EntityState.SetFallDefense(entityState, aFallDefense));
+            UpdateEntityAndBoardState(EntityState.SetFallDefense(entityState, aFallDefense), new HashSet<int>{aId});
         }
         else {
             throw new Exception("SetEntityFallDefense - invalid touchDefense");
@@ -355,8 +357,8 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public EntityState GetEntityById(int aId) {
-        return this.currentState.entityDict[aId];
-
+        EntityState entityState = EntityState.GetClone(this.currentState.entityDict[aId]);
+        return entityState;
     }
 
     public EntityBase GetEntityBaseById(int aId) {
@@ -421,14 +423,4 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     #endregion
-}
-
-public struct MovementInfoStruct {
-    public List<int> idList;
-    public Vector2Int offset;
-
-    public MovementInfoStruct(List<int> aIdList, Vector2Int aOffset) {
-        this.idList = aIdList;
-        this.offset = aOffset;
-    }
 }

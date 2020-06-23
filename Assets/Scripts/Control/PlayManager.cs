@@ -486,7 +486,7 @@ public class PlayManager : SerializedMonoBehaviour {
         foreach (EntityState selectedEntity in selectedEntitySet) {
             Debug.Assert(selectedEntity.hasNodes);
             if (!CanPlaceEntity(selectedEntity.data.id, aOffset, selectedEntitySet)) {
-                print("CanPlaceSelection - false because entity is blocked");
+                // print("CanPlaceSelection - false because entity is blocked");
                 return false;
             }
             foreach (Node node in selectedEntity.nodeSet) {
@@ -501,18 +501,18 @@ public class PlayManager : SerializedMonoBehaviour {
                         touchingDown = true;
                     }
                     if (touchingUp && touchingDown) {
-                        print("CanPlaceSelection - false because touching both ways");
+                        // print("CanPlaceSelection - false because touching both ways");
                         return false;
                     }
                 }
             }
         }
         if (touchingUp ^ touchingDown) {
-            print("CanPlaceSelection - true because touching one way");
+            // print("CanPlaceSelection - true because touching one way");
             return true;
         }
         else {
-            print("CanPlaceSelection - false because touching no ways");
+            // print("CanPlaceSelection - false because touching no ways");
             return false;
         }
     }

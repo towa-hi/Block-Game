@@ -1,7 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using System.Collections.Immutable;
 
 public struct BoardState {
     public bool isInitialized;
@@ -26,6 +28,11 @@ public struct BoardState {
         return newBoard;
     }
 
+    public static BoardState GetClone(BoardState aBoardState) {
+
+        return aBoardState;
+    }
+
     public bool CanMoveEntity(EntityState aEntityState, Vector2Int aPos) {
         return true;
     }
@@ -36,7 +43,9 @@ public struct BoardState {
         aEntityState.Init(id);
         // NEVER CHANGE CURRENTID OUTSIDE OF THIS FUNCTION!!!
         aBoardState.currentId += 1;
-        aBoardState.entityDict[id] = aEntityState;
+        aBoardState.entityDict[id] = EntityState.GetClone(aEntityState);
+
+
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);
     }
     

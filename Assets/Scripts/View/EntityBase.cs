@@ -6,10 +6,13 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
 public class EntityBase : MonoBehaviour {
+    public bool recievesUpdates;
     public int id;
     public bool isTempPos;
     public GameObject model;
     Renderer modelRenderer;
+    Material originalMaterial;
+    Material ditheringMaterial;
     HashSet<Renderer> childRenderers;
     EntityState oldEntityState;
     bool needsFirstUpdate;
@@ -17,8 +20,7 @@ public class EntityBase : MonoBehaviour {
     bool isPlayer;
     [SerializeField] StateMachine stateMachine;
     [SerializeField] bool needsNewState;
-
-    Shader originalShader;
+    static readonly int AlbedoColor = Shader.PropertyToID("_AlbedoColor");
 
     [ShowInInspector] EntityState entityState {
         get {
@@ -31,6 +33,8 @@ public class EntityBase : MonoBehaviour {
     #region Lifecycle
 
     void Awake() {
+        this.recievesUpdates = false;
+        this.id = Constants.PLACEHOLDERINT;
         this.model = this.transform.GetChild(0).gameObject;
         this.modelRenderer = this.model.GetComponent<Renderer>();
         this.childRenderers = this.model.GetComponentsInChildren<Renderer>().ToHashSet();
@@ -39,7 +43,8 @@ public class EntityBase : MonoBehaviour {
         this.needsNewState = true;
         this.isDying = false;
         this.isMarked = false;
-        this.originalShader = this.modelRenderer.material.shader;
+        this.originalMaterial = this.modelRenderer.material;
+        this.ditheringMaterial = Resources.Load<Material>("Materials/Dithering");
     }
 
     void OnEnable() {
@@ -83,10 +88,7 @@ public class EntityBase : MonoBehaviour {
         if (aEntityState.team == TeamEnum.PLAYER) {
             this.isPlayer = true;
         }
-        // if (!aEntityState.data.isFront) {
-        //     GM.boardManager.OnUpdateBoardState -= OnUpdateBoardState;
-        //     GM.boardManager.OnUpdateBoardStateBG += OnUpdateBoardState;
-        // }
+        this.recievesUpdates = true;
     }
     
     public void DoFrame() {
@@ -109,32 +111,28 @@ public class EntityBase : MonoBehaviour {
     
     #region Listeners
 
-    protected void OnUpdateBoardState(BoardState aBoardState) {
+    public void OnUpdateBoardState(BoardState aBoardState) {
+        if (!this.recievesUpdates) {
+            return;
+        }
         // ignore when entity is dying
         if (this.isDying) {
             return;
         }
         // when id is -42069, this wont recieve any boardupdates because it hasn't been
         // assigned an ID yet by BoardManager.CreateView
-        if (this.entityState.data.id == Constants.PLACEHOLDERINT) {
+        if (this.id == Constants.PLACEHOLDERINT) {
             return;
         }
-        EntityState newEntityState = aBoardState.entityDict[this.id];
         // if first update
         if (this.needsFirstUpdate) {
             // this.oldEntityState = newEntityState;
             this.needsFirstUpdate = false;
         }
+        EntityState newEntityState = aBoardState.entityDict[this.id];
         if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
             SetColor(newEntityState.defaultColor);
         }
-        // if any changes detected
-        // if (!this.oldEntityState.Equals(newEntityState)) {
-        //     if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
-        //         SetColor(newEntityState.defaultColor);
-        //     }
-        //     this.oldEntityState = newEntityState;
-        // }
     }
 
     #endregion
@@ -302,21 +300,30 @@ public class EntityBase : MonoBehaviour {
 
     public void SetDithering(bool aIsDithering) {
         if (aIsDithering) {
-            Shader ditheringShader = GM.instance.ditheringShader;
             foreach (Renderer childRenderer in this.childRenderers) {
-                var material = childRenderer.material;
-                material.shader = ditheringShader;
-                material.SetFloat("_Opacity", 0.5f);
-                material.SetFloat("_DitherSize", 2f);
-                material.SetColor("_AlbedoColor", this.entityState.defaultColor);
-                material.color = this.entityState.defaultColor;
+                childRenderer.material = this.ditheringMaterial;
+                childRenderer.material.SetColor(AlbedoColor, this.entityState.defaultColor);
+
             }
+
+
+
+            // Shader ditheringShader = GM.instance.ditheringShader;
+            // foreach (Renderer childRenderer in this.childRenderers) {
+            //     var material = childRenderer.material;
+            //     material.shader = ditheringShader;
+            //     material.SetFloat("_Opacity", 0.5f);
+            //     material.SetFloat("_DitherSize", 2f);
+            //     material.SetColor("_AlbedoColor", this.entityState.defaultColor);
+            //     material.color = this.entityState.defaultColor;
+            // }
         }
         else {
             foreach (Renderer childRenderer in this.childRenderers) {
-                var material = childRenderer.material;
-                material.shader = this.originalShader;
-                material.color = this.entityState.defaultColor;
+                childRenderer.material = this.originalMaterial;
+                // var material = childRenderer.material;
+                // material.shader = this.originalShader;
+                // material.color = this.entityState.defaultColor;
 
             }
         }
@@ -378,6 +385,7 @@ public class EntityBase : MonoBehaviour {
     float markerT = 0f;
     float markerDuration = 1f;
     Color markerColor = Color.white;
+
     public void SetMarker(Color aColor, float aDuration) {
         this.isMarked = true;
         this.markerDuration = aDuration;
@@ -918,6 +926,7 @@ public class EntityBase : MonoBehaviour {
         }
         public override void Enter() {
             this.entityBase.isDying = true;
+            this.entityBase.recievesUpdates = false;
             print("entered death state");
             GM.playManager.StartEntityForDeath(this.entityBase.id);
         }

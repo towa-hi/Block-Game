@@ -112,6 +112,11 @@ public struct EntityState {
         }
     }
 
+    public static EntityState GetClone(EntityState aEntityState) {
+        EntityState newEntityState = aEntityState;
+        return newEntityState;
+    }
+
     public static EntityState CreateEntityState(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         EntityState newEntityState = new EntityState();
         // set immutable values
