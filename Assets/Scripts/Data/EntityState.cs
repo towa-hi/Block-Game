@@ -56,22 +56,51 @@ public readonly struct Node {
         this.isUp = aIsUp;
     }
     
-    public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList = null) {
+    public Node? GetOppositeNode(Vector2Int aOffset, HashSet<int> aIgnoreList = null) {
         // Debug.Log("node for id: " + this.id + " with relative pos:" + this.relativePos + "GetOppositeNode at:" + (this.oppositeNodePos + aOffset));
-        EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos + aOffset);
-        if (oppositeEntity.HasValue && oppositeEntity.Value.hasNodes) {
-            // Debug.Log("found node");
-            if (aIgnoreList != null) {
-                if (!aIgnoreList.Contains(oppositeEntity.Value)) {
-                    // Debug.Log("returning node with id: " + oppositeEntity.Value.id);
-                    return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+        // EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos + aOffset);
+        int? oppositeId = GM.boardManager.boardCellDict[this.oppositeNodePos + aOffset].frontEntityId;
+        if (oppositeId.HasValue) {
+            EntityState oppositeEntity = GM.boardManager.GetEntityById(oppositeId.Value);
+            if (oppositeEntity.hasNodes) {
+                // Debug.Log("found node");
+                if (aIgnoreList != null) {
+                    if (!aIgnoreList.Contains(oppositeId.Value)) {
+                        // Debug.Log("returning node with id: " + oppositeId.Value);
+                        return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+                    }
+                    else {
+                        // Debug.Log("node is part of ignore list with id: " + oppositeId.Value);
+                    }
                 }
                 else {
-                    // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.id);
+                    return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
                 }
             }
-            else {
-                return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+
+        }
+        // Debug.Log("did not find node");
+        return null;
+    }
+
+    public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList) {
+        int? oppositeId = GM.boardManager.boardCellDict[this.oppositeNodePos + aOffset].frontEntityId;
+        if (oppositeId.HasValue) {
+            EntityState oppositeEntity = GM.boardManager.GetEntityById(oppositeId.Value);
+            if (oppositeEntity.hasNodes) {
+                // Debug.Log("found node");
+                if (aIgnoreList != null) {
+                    if (!aIgnoreList.Contains(oppositeEntity)) {
+                        // Debug.Log("returning node with id: " + oppositeEntity.Value.id);
+                        return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+                    }
+                    else {
+                        // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.id);
+                    }
+                }
+                else {
+                    return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
+                }
             }
         }
         // Debug.Log("did not find node");

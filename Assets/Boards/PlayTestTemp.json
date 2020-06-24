@@ -14,7 +14,7 @@
         24
     },
     "attempts": 0,
-    "currentId": 24,
+    "currentId": 14,
     "serializedEntityDict": {
         "$id": 1,
         "$type": "3|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], mscorlib",
@@ -22,7 +22,7 @@
             "$id": 2,
             "$type": "4|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
         },
-        "$rlength": 24,
+        "$rlength": 14,
         "$rcontent": [
             {
                 "$k": 0,
@@ -1318,15 +1318,15 @@
                     "$type": 5,
                     "id": 8,
                     "isFront": true,
-                    "name": "4x2 block id: 8",
+                    "name": "5x1 block id: 8",
                     "size": {
                         "$type": 2,
-                        4,
-                        2
+                        5,
+                        1
                     },
                     "entityType": 1,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Blocks/5x1 block",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
@@ -1335,7 +1335,7 @@
                     },
                     "pos": {
                         "$type": 2,
-                        23,
+                        21,
                         1
                     },
                     "facing": {
@@ -1355,7 +1355,7 @@
                     "nodeSet": {
                         "$id": 11,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 10,
                         "$rcontent": [
                             {
                                 "$type": 9,
@@ -1364,7 +1364,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     0,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1384,7 +1384,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     1,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1404,7 +1404,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     2,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1424,7 +1424,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1434,6 +1434,26 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": true,
+                                "id": 8,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": false,
+                                "id": 8,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
                                     0
                                 }
                             }
@@ -1449,15 +1469,15 @@
                     "$type": 5,
                     "id": 9,
                     "isFront": true,
-                    "name": "4x2 block id: 9",
+                    "name": "5x1 block id: 9",
                     "size": {
                         "$type": 2,
-                        4,
-                        2
+                        5,
+                        1
                     },
                     "entityType": 1,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Blocks/5x1 block",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
@@ -1467,7 +1487,7 @@
                     "pos": {
                         "$type": 2,
                         22,
-                        3
+                        2
                     },
                     "facing": {
                         "$type": 2,
@@ -1486,7 +1506,7 @@
                     "nodeSet": {
                         "$id": 12,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 10,
                         "$rcontent": [
                             {
                                 "$type": 9,
@@ -1495,7 +1515,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     0,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1515,7 +1535,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     1,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1535,7 +1555,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     2,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1555,7 +1575,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1565,6 +1585,26 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": true,
+                                "id": 9,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": false,
+                                "id": 9,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
                                     0
                                 }
                             }
@@ -1580,15 +1620,15 @@
                     "$type": 5,
                     "id": 10,
                     "isFront": true,
-                    "name": "4x2 block id: 10",
+                    "name": "5x1 block id: 10",
                     "size": {
                         "$type": 2,
-                        4,
-                        2
+                        5,
+                        1
                     },
                     "entityType": 1,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Blocks/5x1 block",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
@@ -1598,7 +1638,7 @@
                     "pos": {
                         "$type": 2,
                         22,
-                        5
+                        3
                     },
                     "facing": {
                         "$type": 2,
@@ -1617,7 +1657,7 @@
                     "nodeSet": {
                         "$id": 13,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 10,
                         "$rcontent": [
                             {
                                 "$type": 9,
@@ -1626,7 +1666,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     0,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1646,7 +1686,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     1,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1666,7 +1706,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     2,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1686,7 +1726,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1696,6 +1736,26 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": true,
+                                "id": 10,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": false,
+                                "id": 10,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
                                     0
                                 }
                             }
@@ -1711,15 +1771,15 @@
                     "$type": 5,
                     "id": 11,
                     "isFront": true,
-                    "name": "4x2 block id: 11",
+                    "name": "5x1 block id: 11",
                     "size": {
                         "$type": 2,
-                        4,
-                        2
+                        5,
+                        1
                     },
                     "entityType": 1,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Blocks/5x1 block",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
@@ -1728,8 +1788,8 @@
                     },
                     "pos": {
                         "$type": 2,
-                        19,
-                        1
+                        22,
+                        4
                     },
                     "facing": {
                         "$type": 2,
@@ -1748,7 +1808,7 @@
                     "nodeSet": {
                         "$id": 14,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 10,
                         "$rcontent": [
                             {
                                 "$type": 9,
@@ -1757,7 +1817,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     0,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1777,7 +1837,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     1,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1797,7 +1857,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     2,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1817,7 +1877,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1827,6 +1887,26 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": true,
+                                "id": 11,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": false,
+                                "id": 11,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
                                     0
                                 }
                             }
@@ -1842,15 +1922,15 @@
                     "$type": 5,
                     "id": 12,
                     "isFront": true,
-                    "name": "4x2 block id: 12",
+                    "name": "5x1 block id: 12",
                     "size": {
                         "$type": 2,
-                        4,
-                        2
+                        5,
+                        1
                     },
                     "entityType": 1,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Blocks/5x1 block",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
@@ -1859,8 +1939,8 @@
                     },
                     "pos": {
                         "$type": 2,
-                        18,
-                        3
+                        26,
+                        5
                     },
                     "facing": {
                         "$type": 2,
@@ -1879,7 +1959,7 @@
                     "nodeSet": {
                         "$id": 15,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 10,
                         "$rcontent": [
                             {
                                 "$type": 9,
@@ -1888,7 +1968,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     0,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1908,7 +1988,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     1,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1928,7 +2008,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     2,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1948,7 +2028,7 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
-                                    1
+                                    0
                                 }
                             },
                             {
@@ -1958,6 +2038,26 @@
                                 "relativePos": {
                                     "$type": 2,
                                     3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": true,
+                                "id": 12,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 9,
+                                "isUp": false,
+                                "id": 12,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
                                     0
                                 }
                             }
@@ -1973,25 +2073,38 @@
                     "$type": 5,
                     "id": 13,
                     "isFront": true,
-                    "name": "4x2 block id: 13",
+                    "name": "2x2 shufflebot id: 13",
                     "size": {
                         "$type": 2,
-                        4,
+                        2,
                         2
                     },
-                    "entityType": 1,
+                    "entityType": 3,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
+                    "prefabPath": "Mobs/Shufflebot/2x2 shufflebot",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
                         "$type": 6,
-                        null
+                        {
+                            "$type": "10|MobData, Assembly-CSharp",
+                            "movementType": 1,
+                            "canHop": false,
+                            "moveSpeed": 0.4,
+                            "canKillOnTouch": true,
+                            "touchPower": 10,
+                            "canFall": true,
+                            "canKillOnFall": false,
+                            "fallPower": 5,
+                            "canPush": false,
+                            "canBePushed": false,
+                            "canBeLifted": true
+                        }
                     },
                     "pos": {
                         "$type": 2,
-                        25,
-                        7
+                        30,
+                        6
                     },
                     "facing": {
                         "$type": 2,
@@ -2006,1346 +2119,16 @@
                         1
                     },
                     "isFixed": false,
-                    "team": 1,
+                    "team": 2,
                     "nodeSet": {
                         "$id": 16,
                         "$type": 8,
-                        "$rlength": 8,
+                        "$rlength": 0,
                         "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 13,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
                         ]
                     },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 14,
-                "$v": {
-                    "$type": 5,
-                    "id": 14,
-                    "isFront": true,
-                    "name": "4x2 block id: 14",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        2
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        28,
-                        10
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 17,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 14,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 15,
-                "$v": {
-                    "$type": 5,
-                    "id": 15,
-                    "isFront": true,
-                    "name": "4x2 block id: 15",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        2
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        29,
-                        8
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 18,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 15,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 16,
-                "$v": {
-                    "$type": 5,
-                    "id": 16,
-                    "isFront": true,
-                    "name": "4x2 block id: 16",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        2
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x2 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        31,
-                        6
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 19,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    1
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 16,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 17,
-                "$v": {
-                    "$type": 5,
-                    "id": 17,
-                    "isFront": true,
-                    "name": "4x1 block id: 17",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        1
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x1 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        25,
-                        9
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 20,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 17,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 18,
-                "$v": {
-                    "$type": 5,
-                    "id": 18,
-                    "isFront": true,
-                    "name": "4x1 block id: 18",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        1
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x1 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        28,
-                        5
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 21,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 18,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 19,
-                "$v": {
-                    "$type": 5,
-                    "id": 19,
-                    "isFront": true,
-                    "name": "1x1 block id: 19",
-                    "size": {
-                        "$type": 2,
-                        1,
-                        1
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/1x1 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        28,
-                        6
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 22,
-                        "$type": 8,
-                        "$rlength": 2,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 19,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 19,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 20,
-                "$v": {
-                    "$type": 5,
-                    "id": 20,
-                    "isFront": true,
-                    "name": "4x4 block id: 20",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        4
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x4 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        28,
-                        12
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 23,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 20,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 21,
-                "$v": {
-                    "$type": 5,
-                    "id": 21,
-                    "isFront": true,
-                    "name": "4x4 block id: 21",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        4
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x4 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        28,
-                        16
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 24,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 21,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 22,
-                "$v": {
-                    "$type": 5,
-                    "id": 22,
-                    "isFront": true,
-                    "name": "4x4 block id: 22",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        4
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x4 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        24,
-                        19
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 25,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    3
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 22,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 23,
-                "$v": {
-                    "$type": 5,
-                    "id": 23,
-                    "isFront": true,
-                    "name": "4x3 block id: 23",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        3
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/4x3 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        33,
-                        20
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 26,
-                        "$type": 8,
-                        "$rlength": 8,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 23,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
+                    "touchDefense": 5,
+                    "fallDefense": 5
                 }
             }
         ]

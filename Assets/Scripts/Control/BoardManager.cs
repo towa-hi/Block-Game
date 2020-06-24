@@ -99,10 +99,12 @@ public class BoardManager : SerializedMonoBehaviour {
                 HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.size).ToHashSet();
                 foreach (Vector2Int pos in oldPosSet) {
                     if (oldEntityState.isFront) {
-                        this.boardCellDict[pos].frontEntityState = null;
+                        // this.boardCellDict[pos].frontEntityState = null;
+                        this.boardCellDict[pos].frontEntityId = null;
                     }
                     else {
-                        this.boardCellDict[pos].backEntityState = null;
+                        // this.boardCellDict[pos].backEntityState = null;
+                        this.boardCellDict[pos].backEntityId = null;
                     }
                 }
             }
@@ -111,10 +113,10 @@ public class BoardManager : SerializedMonoBehaviour {
                 HashSet<Vector2Int> newPosSet = Util.V2IInRect(newEntityState.pos, newEntityState.size).ToHashSet();
                 foreach (Vector2Int pos in newPosSet) {
                     if (newEntityState.isFront) {
-                        this.boardCellDict[pos].frontEntityState = newEntityState;
+                        this.boardCellDict[pos].frontEntityId = id;
                     }
                     else {
-                        this.boardCellDict[pos].backEntityState = newEntityState;
+                        this.boardCellDict[pos].backEntityId = id;
                     }
                 }
             }
@@ -138,18 +140,18 @@ public class BoardManager : SerializedMonoBehaviour {
     void SetBoardCellDict(BoardState aBoardState) {
         print("resetting boardCellDict");
         foreach (var currentCell in this.boardCellDict.Values) {
-            currentCell.frontEntityState = null;
-            currentCell.backEntityState = null;
+            currentCell.frontEntityId = null;
+            currentCell.backEntityId = null;
         }
 
         foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
             foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.size)) {
                 BoardCell currentCell = this.boardCellDict[currentPos];
                 if (currentEntity.isFront) {
-                    currentCell.frontEntityState = currentEntity;
+                    currentCell.frontEntityId = currentEntity.id;
                 }
                 else {
-                    currentCell.backEntityState = currentEntity;
+                    currentCell.backEntityId = currentEntity.id;
                 }
             }
         }
@@ -160,12 +162,18 @@ public class BoardManager : SerializedMonoBehaviour {
         GM.SaveBoardStateJson(this.currentState, aIsPlaytestTemp);
     }
 
-    public void SetTitle(string aTitle) {
+    public bool SetTitle(string aTitle) {
         if (0 < aTitle.Length && aTitle.Length <= Constants.MAXTITLELENGTH) {
             // TODO: validate titles so they can be valid filenames here and make input less hardass
-            if (aTitle.IndexOfAny(Path.GetInvalidFileNameChars()) != -1) {
+            if (aTitle.IndexOfAny(Path.GetInvalidFileNameChars()) == -1) {
+                print("updating title");
                 BoardState newBoardState = BoardState.SetTitle(this.currentState, aTitle);
                 UpdateBoardState(newBoardState);
+                return true;
+            }
+            else {
+                print("ignoring update");
+                return false;
             }
         }
         else {
@@ -237,7 +245,7 @@ public class BoardManager : SerializedMonoBehaviour {
         print("moving entity:" + aId);
         EntityState entityState = GetEntityById(aId);
         print("original pos:" + entityState.pos);
-        HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
+        HashSet<int> ignoreSet = new HashSet<int> {aId};
         if (IsRectEmpty(aPos, entityState.size, ignoreSet, entityState.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos), new HashSet<int>{aId});
             if (aMoveEntityBase) {
@@ -249,13 +257,15 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public void MoveEntityBatch(HashSet<int> aEntityIdSet, Vector2Int aOffset, bool aMoveEntityBase = false) {
-        BoardState newBoardState = BoardState.GetClone(this.currentState);
+        // BoardState newBoardState = BoardState.GetClone(this.currentState);
+        Dictionary<int, EntityState> entityStateDict = new Dictionary<int, EntityState>();
         foreach (int id in aEntityIdSet) {
             EntityState movingEntity = this.currentState.entityDict[id];
             EntityState movedEntity = EntityState.SetPos(movingEntity, movingEntity.pos + aOffset);
-            newBoardState = BoardState.UpdateEntity(newBoardState, movedEntity);
+            // newBoardState = BoardState.UpdateEntity(newBoardState, movedEntity);
+            entityStateDict[id] = movedEntity;
         }
-        UpdateBoardState(newBoardState, aEntityIdSet);
+        UpdateBoardState(BoardState.UpdateEntityBatch(this.currentState, entityStateDict), aEntityIdSet);
         if (aMoveEntityBase) {
             foreach (int id in aEntityIdSet) {
                 GetEntityBaseById(id).ResetView();
@@ -323,13 +333,24 @@ public class BoardManager : SerializedMonoBehaviour {
         if (!IsPosInBoard(aPos)) {
             return null;
         }
+        BoardCell posCell = this.boardCellDict[aPos];
         if (aIsFront) {
-            EntityState? entityState = this.boardCellDict[aPos].frontEntityState;
-            return entityState;
+            if (posCell.frontEntityId != null) {
+                EntityState? entityState = GetEntityById(posCell.frontEntityId.Value);
+                return entityState;
+            }
+            else {
+                return null;
+            }
         }
         else {
-            EntityState? entityState = this.boardCellDict[aPos].backEntityState;
-            return entityState;
+            if (posCell.backEntityId != null) {
+                EntityState? entityState = GetEntityById(posCell.backEntityId.Value);
+                return entityState;
+            }
+            else {
+                return null;
+            }
         }
     }
     
@@ -338,8 +359,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public EntityState GetEntityById(int aId) {
-        EntityState entityState = EntityState.GetClone(this.currentState.entityDict[aId]);
-        return entityState;
+        return this.currentState.entityDict[aId];;
     }
 
     public EntityBase GetEntityBaseById(int aId) {
@@ -375,26 +395,35 @@ public class BoardManager : SerializedMonoBehaviour {
         throw new ArgumentOutOfRangeException("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
     }
 
-    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<EntityState> aIgnoreSet = null, bool aIsFront = true) {
+    public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<int> aIgnoreSet = null, bool aIsFront = true) {
         try {
             foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
-                EntityState? entityState = null;
-                switch (aIsFront) {
-                    case true when boardCell.frontEntityState.HasValue:
-                        entityState = boardCell.frontEntityState;
-                        break;
-                    case false when boardCell.backEntityState.HasValue:
-                        entityState = boardCell.backEntityState;
-                        break;
-                }
-                if (entityState.HasValue) {
+                // EntityState? entityState = null;
+                int? id = aIsFront ? boardCell.frontEntityId : boardCell.backEntityId;
+                if (id.HasValue) {
                     if (aIgnoreSet == null) {
                         return false;
                     }
-                    if (!aIgnoreSet.Contains(entityState.Value)) {
+                    if (!aIgnoreSet.Contains(id.Value)) {
                         return false;
                     }
                 }
+                // switch (aIsFront) {
+                //     case true when boardCell.frontEntityId.HasValue:
+                //         entityState = boardCell.frontEntityState;
+                //         break;
+                //     case false when boardCell.backEntityState.HasValue:
+                //         entityState = boardCell.backEntityState;
+                //         break;
+                // }
+                // if (entityState.HasValue) {
+                //     if (aIgnoreSet == null) {
+                //         return false;
+                //     }
+                //     if (!aIgnoreSet.Contains(entityState.Value)) {
+                //         return false;
+                //     }
+                // }
             }
             return true;
         }

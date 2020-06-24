@@ -94,7 +94,7 @@ public class EditManager : SerializedMonoBehaviour {
     
     protected bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
         if (!aEntityState.isBoundary) {
-            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.size, new HashSet<EntityState> {aEntityState}, aEntityState.isFront)) {
+            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.size, new HashSet<int> {aEntityState.id}, aEntityState.isFront)) {
                 return true;
             }
         }

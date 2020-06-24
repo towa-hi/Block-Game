@@ -69,7 +69,8 @@ public struct BoardState {
     }
     
     public static BoardState RemoveEntity(BoardState aBoardState, int aId) {
-        aBoardState.entityDict.Remove(aId);
+        aBoardState.entityDict = aBoardState.entityDict.Remove(aId);
+        Debug.Log("removed Entity");
         return aBoardState;
     }
     
@@ -85,7 +86,11 @@ public struct BoardState {
     
     public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
         aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.id, aEntityState);
-        // aBoardState.entityDict[aEntityState.id] = aEntityState;
+        return aBoardState;
+    }
+
+    public static BoardState UpdateEntityBatch(BoardState aBoardState, Dictionary<int, EntityState> aEntityStateDict) {
+        aBoardState.entityDict = aBoardState.entityDict.SetItems(aEntityStateDict);
         return aBoardState;
     }
     // public static BoardState SetPar(BoardState aBoardState, int aPar) {

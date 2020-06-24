@@ -195,7 +195,7 @@ public class PlayManager : SerializedMonoBehaviour {
     #region Entity
 
     // called when DyingState starts
-    public void StartEntityForDeath(int aId) {
+    public void StartEntityDeath(int aId) {
         GM.boardManager.RemoveEntity(aId);
         print(aId + " StartEntityForDeath - removed from board");
     }
@@ -243,13 +243,13 @@ public class PlayManager : SerializedMonoBehaviour {
         }
         HashSet<BoardCell> floorSlice = GM.boardManager.GetBoardGridSlice(floorOrigin, floorSize).Values.ToHashSet();
         foreach (BoardCell floorCell in floorSlice) {
-            if (floorCell.frontEntityState.HasValue) {
-                EntityState floorEntity = floorCell.frontEntityState.Value;
+            if (floorCell.frontEntityId.HasValue) {
+                // EntityState floorEntity = floorCell.frontEntityId.Value;
                 // if floorEntity is me, skip
-                if (floorEntity.id == entityState.id) {
+                if (floorCell.frontEntityId.Value == entityState.id) {
                     continue;
                 }
-                if (EntityFallOnEntityResult(entityState.id, floorEntity.id) == FightResultEnum.TIE) {
+                if (EntityFallOnEntityResult(entityState.id, floorCell.frontEntityId.Value) == FightResultEnum.TIE) {
                     return true;
                 }
             }
@@ -312,6 +312,11 @@ public class PlayManager : SerializedMonoBehaviour {
                 throw new ArgumentOutOfRangeException();
         }
     }
+    // TODO: optimize block selection to not do GetConnectedTree twice just to check
+    // public bool TrySelectEntity(int aId, bool aIsUp) {
+    //     HashSet<int> newSelectedEntityIdSet = GetSelectedEntityIdSet(aId, aIsUp);
+    //
+    // }
 
     public bool IsEntitySelectable(int aId, bool aIsUp) {
         if (!IsEntityMovable(aId)) {
@@ -358,13 +363,13 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     public void SelectEntity(int aId, bool aIsUp) {
-        EntityState rootEntity = GM.boardManager.GetEntityById(aId);
-        Debug.Assert(rootEntity.hasNodes);
-        SetSelectedEntityIdSet(aId, GetSelectedEntityIdSet(rootEntity, aIsUp));
+        SetSelectedEntityIdSet(aId, GetSelectedEntityIdSet(aId, aIsUp));
     }
 
-    public HashSet<int> GetSelectedEntityIdSet(EntityState aRoot, bool aIsUp) {
-        HashSet<EntityState> mainTree = GetConnectedTree(aRoot, aIsUp);
+    public HashSet<int> GetSelectedEntityIdSet(int aId, bool aIsUp) {
+        EntityState rootEntity = GM.boardManager.GetEntityById(aId);
+        Debug.Assert(rootEntity.hasNodes);
+        HashSet<EntityState> mainTree = GetConnectedTree(rootEntity, aIsUp);
         HashSet<EntityState> selectSet = new HashSet<EntityState>(mainTree);
         foreach (EntityState currentEntity in mainTree) {
             MarkEntity(currentEntity, Color.green);
@@ -436,7 +441,7 @@ public class PlayManager : SerializedMonoBehaviour {
         return connectedEntitySet;
     }
 
-    public HashSet<EntityState> GetAllConnected(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
+    HashSet<EntityState> GetAllConnected(EntityState aRoot, HashSet<EntityState> aIgnoreSet = null) {
         if (aIgnoreSet == null) {
             aIgnoreSet = new HashSet<EntityState>();
         }
@@ -478,20 +483,20 @@ public class PlayManager : SerializedMonoBehaviour {
     
     public bool CanPlaceSelection(Vector2Int aOffset) {
         Debug.Assert(this.currentState.selectedEntityIdSet != null);
-        HashSet<EntityState> selectedEntitySet = Util.ConvertIdSetToEntityStateSet(this.currentState.selectedEntityIdSet);
         bool touchingUp = false;
         bool touchingDown = false;
-        foreach (EntityState selectedEntity in selectedEntitySet) {
+        HashSet<int> ignoreSet = this.currentState.selectedEntityIdSet;
+        foreach (int selectedEntityId in ignoreSet) {
+            EntityState selectedEntity = GM.boardManager.GetEntityById(selectedEntityId);
             Debug.Assert(selectedEntity.hasNodes);
-            if (!CanPlaceEntity(selectedEntity.id, aOffset, selectedEntitySet)) {
-                // print("CanPlaceSelection - false because entity is blocked");
+            if (!CanPlaceEntity(selectedEntityId, aOffset, ignoreSet)) {
+                print("CanPlaceSelection - false because entity is blocked");
                 return false;
             }
             foreach (Node node in selectedEntity.nodeSet) {
-                EntityState? maybeAEntity = node.GetOppositeNode(aOffset, selectedEntitySet)?.entityState;
-                if (maybeAEntity.HasValue &&
-                    !selectedEntitySet.Contains(maybeAEntity.Value) &&
-                    maybeAEntity.Value.hasNodes) {
+                // EntityState? maybeAEntity = node.GetOppositeNode(aOffset, ignoreSet)?.entityState;
+                Node? oppositeNode = node.GetOppositeNode(aOffset, ignoreSet);
+                if (oppositeNode.HasValue && !ignoreSet.Contains(oppositeNode.Value.id)) {
                     if (node.isUp) {
                         touchingUp = true;
                     }
@@ -499,26 +504,40 @@ public class PlayManager : SerializedMonoBehaviour {
                         touchingDown = true;
                     }
                     if (touchingUp && touchingDown) {
-                        // print("CanPlaceSelection - false because touching both ways");
                         return false;
                     }
                 }
+
+                // if (maybeAEntity.HasValue &&
+                //     !this.currentState.selectedEntityIdSet.Contains(maybeAEntity.Value) &&
+                //     maybeAEntity.Value.hasNodes) {
+                //     if (node.isUp) {
+                //         touchingUp = true;
+                //     }
+                //     else {
+                //         touchingDown = true;
+                //     }
+                //     if (touchingUp && touchingDown) {
+                //         // print("CanPlaceSelection - false because touching both ways");
+                //         return false;
+                //     }
+                // }
             }
         }
         if (touchingUp ^ touchingDown) {
-            // print("CanPlaceSelection - true because touching one way");
+            print("CanPlaceSelection - true because touching one way");
             return true;
         }
         else {
-            // print("CanPlaceSelection - false because touching no ways");
+            print("CanPlaceSelection - false because touching no ways");
             return false;
         }
     }
 
-    public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<EntityState> aEntityIdIgnoreSet = null) {
+    public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<int> aEntityIdIgnoreSet = null) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
         Debug.Assert(entityState.hasNodes);
-        HashSet<EntityState> entityIdIgnoreSet = aEntityIdIgnoreSet ?? new HashSet<EntityState> {entityState};
+        HashSet<int> entityIdIgnoreSet = aEntityIdIgnoreSet ?? new HashSet<int> {aId};
         if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.size, entityIdIgnoreSet)) {
             return true;
         }

@@ -367,7 +367,7 @@ public class EntityBase : MonoBehaviour {
             // for each cell in the new pos
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(newPos, this.entityState.size).Values) {
                 // if entity exists and isn't me
-                if (boardCell.frontEntityState.HasValue && this.id != boardCell.frontEntityState.Value.id) {
+                if (boardCell.frontEntityId.HasValue && this.id != boardCell.frontEntityId.Value) {
                     return false;
                 }
             }
@@ -594,10 +594,10 @@ public class EntityBase : MonoBehaviour {
             }
             
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
-                if (!boardCell.frontEntityState.HasValue) {
+                if (!boardCell.frontEntityId.HasValue) {
                     continue;
                 }
-                int blockingEntityId = boardCell.frontEntityState.Value.id;
+                int blockingEntityId = boardCell.frontEntityId.Value;
                 // if the cell is occupied by me
                 if (currentState.id == blockingEntityId) {
                     continue;
@@ -666,10 +666,10 @@ public class EntityBase : MonoBehaviour {
             }
             
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
-                if (!boardCell.frontEntityState.HasValue) {
+                if (!boardCell.frontEntityId.HasValue) {
                     continue;
                 }
-                int blockingEntityId = boardCell.frontEntityState.Value.id;
+                int blockingEntityId = boardCell.frontEntityId.Value;
                 // if the cell is occupied by me
                 if (currentState.id == blockingEntityId) {
                     continue;
@@ -884,15 +884,15 @@ public class EntityBase : MonoBehaviour {
             if (!PlayManager.DoesFloorExist(currentState.pos, currentState.id)) {
                 // foreach boardCell in newpos
                 foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
-                    if (boardCell.frontEntityState.HasValue) {
-                        EntityState blockingEntity = boardCell.frontEntityState.Value;
+                    if (boardCell.frontEntityId.HasValue) {
+                        int blockingId = boardCell.frontEntityId.Value;
                         // if blockingEntity is me, skip
-                        if (blockingEntity.id == currentState.id) {
+                        if (blockingId == currentState.id) {
                             continue;
                         }
-                        switch (PlayManager.EntityFallOnEntityResult(currentState.id, blockingEntity.id)) {
+                        switch (PlayManager.EntityFallOnEntityResult(currentState.id, blockingId)) {
                             case FightResultEnum.DEFENDERDIES:
-                                entityKillSet.Add(blockingEntity.id);
+                                entityKillSet.Add(blockingId);
                                 break;
                             case FightResultEnum.ATTACKERDIES:
                                 shouldIDie = true;
@@ -923,11 +923,12 @@ public class EntityBase : MonoBehaviour {
             this.t = 0f;
             this.isPlayer = this.entityBase.entityState.team == TeamEnum.PLAYER;
         }
+
         public override void Enter() {
             this.entityBase.isDying = true;
             this.entityBase.recievesUpdates = false;
             print("entered death state");
-            GM.playManager.StartEntityForDeath(this.entityBase.id);
+            GM.playManager.StartEntityDeath(this.entityBase.id);
         }
     
         public override void Update() {

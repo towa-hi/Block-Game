@@ -150,7 +150,12 @@ public class GUIEditorPanel : EditorStateListener {
     }
 
     public void OnTitleFieldSet(string aInput) {
-        GM.boardManager.SetTitle(aInput);
+        if (GM.boardManager.SetTitle(aInput)) {
+
+        }
+        else {
+            SetTitleField(GM.boardManager.currentState.title);
+        }
     }
 
     public void EditModePanelSetup(EditorState aEditorState) {
