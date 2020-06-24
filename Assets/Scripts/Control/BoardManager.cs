@@ -91,13 +91,11 @@ public class BoardManager : SerializedMonoBehaviour {
             print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
         if (aEntitiesToUpdate != null) {
-            print("entitiesToUpdate not null");
             BoardState oldBoardState = this.boardState;
             foreach (int id in aEntitiesToUpdate) {
                 EntityState oldEntityState = EntityState.GetClone(oldBoardState.entityDict[id]);
                 HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.data.size).ToHashSet();
                 foreach (Vector2Int pos in oldPosSet) {
-                    print("erasing pos: " + pos);
                     if (oldEntityState.data.isFront) {
                         this.boardCellDict[pos].frontEntityState = null;
                     }
@@ -108,7 +106,6 @@ public class BoardManager : SerializedMonoBehaviour {
                 EntityState newEntityState = aBoardState.entityDict[id];
                 HashSet<Vector2Int> newPosSet = Util.V2IInRect(newEntityState.pos, newEntityState.data.size).ToHashSet();
                 foreach (Vector2Int pos in newPosSet) {
-                    print("adding pos: " + pos);
                     if (newEntityState.data.isFront) {
                         this.boardCellDict[pos].frontEntityState = newEntityState;
                     }
@@ -117,16 +114,13 @@ public class BoardManager : SerializedMonoBehaviour {
                     }
                 }
             }
-            print("set updates");
             this.boardState = aBoardState;
             foreach (int id in aEntitiesToUpdate) {
                 GetEntityBaseById(id).OnUpdateBoardState(this.currentState);
             }
         }
         else {
-            print("entitiesToUpdate is null");
             this.boardState = aBoardState;
-            print("setting board cell dict");
             SetBoardCellDict(aBoardState);
             OnUpdateBoardState?.Invoke(this.currentState);
         }
@@ -249,32 +243,11 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void MoveEntityBatch(HashSet<int> aEntityIdSet, Vector2Int aOffset, bool aMoveEntityBase = false) {
         BoardState newBoardState = BoardState.GetClone(this.currentState);
-        print("moving entity set with size of :" + aEntityIdSet.Count);
         foreach (int id in aEntityIdSet) {
-
-            // movingEntity ought to be a value somewhere
             EntityState movingEntity = this.currentState.entityDict[id];
-
-            // this prints the original pos before moving
-            print("entity " + id + " starting pos: " + movingEntity.pos);
-
-            // now create a new entityState but with a different pos
             EntityState movedEntity = EntityState.SetPos(movingEntity, movingEntity.pos + aOffset);
-
-            EntityState testCurrentEntity = this.currentState.entityDict[id];
-            print("current EntityState with id " + id + " after movedEntity made pos: " + testCurrentEntity.pos);
-            // now create a new boardState with the old EntityState (movingEntity) replaced with the new EntityState (movedEntity)
             newBoardState = BoardState.UpdateEntity(newBoardState, movedEntity);
-            // WTF BoardState.UpdateEntity seems to change the entityDict of currentState
-
-            // print the destination
-            print("new entity " + id + " starting pos: " + movedEntity.pos);
-            testCurrentEntity = this.currentState.entityDict[id];
-            // nothing should update so testEntity should be the old version
-            // but it returns the destination for some reason even though state shouldnt get updated
-            print("testEntity pos:" + testCurrentEntity.pos);
         }
-        // this is where currentState ought to be updated
         UpdateBoardState(newBoardState, aEntityIdSet);
         if (aMoveEntityBase) {
             foreach (int id in aEntityIdSet) {
@@ -305,7 +278,8 @@ public class BoardManager : SerializedMonoBehaviour {
         foreach (int id in aIdSet) {
             EntityState entityState = GetEntityById(id);
             entityState.isFixed = aIsFixed;
-            newBoardState.entityDict[id] = entityState;
+            newBoardState.entityDict = newBoardState.entityDict.SetItem(id, entityState);
+            // newBoardState.entityDict[id] = entityState;
         }
         UpdateBoardState(newBoardState);
     }

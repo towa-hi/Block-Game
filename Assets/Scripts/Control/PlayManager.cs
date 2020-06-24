@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
 public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);

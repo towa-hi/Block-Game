@@ -1,13 +1,11 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using System.Collections.Immutable;
 
 public struct BoardState {
     public bool isInitialized;
-    public Dictionary<int, EntityState> entityDict;
+    public ImmutableDictionary<int, EntityState> entityDict;
     public string title;
     public string creator;
     public int par;
@@ -18,7 +16,7 @@ public struct BoardState {
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {
             isInitialized = true,
-            entityDict = new Dictionary<int, EntityState>(),
+            entityDict = ImmutableDictionary.Create<int, EntityState>(),
             title = "Uninitialized Board",
             creator = Config.USERNAME,
             par = 5,
@@ -43,7 +41,8 @@ public struct BoardState {
         aEntityState.Init(id);
         // NEVER CHANGE CURRENTID OUTSIDE OF THIS FUNCTION!!!
         aBoardState.currentId += 1;
-        aBoardState.entityDict[id] = EntityState.GetClone(aEntityState);
+        aBoardState.entityDict = aBoardState.entityDict.SetItem(id, aEntityState);
+        // aBoardState.entityDict[id] = aEntityState;
 
 
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);
@@ -65,7 +64,8 @@ public struct BoardState {
     }
     
     public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
-        aBoardState.entityDict[aEntityState.data.id] = aEntityState;
+        aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.data.id, aEntityState);
+        // aBoardState.entityDict[aEntityState.data.id] = aEntityState;
         return aBoardState;
     }
     // public static BoardState SetPar(BoardState aBoardState, int aPar) {

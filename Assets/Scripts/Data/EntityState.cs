@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Schema;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -264,7 +263,13 @@ public struct EntityState {
     }
 
     public HashSet<Node> GetNodes(bool aIsUp) {
-        return this.nodeSet.Where(node => node.isUp == aIsUp).ToHashSet();
+        HashSet<Node> filteredNodeSet = new HashSet<Node>();
+        foreach (Node currentNode in this.nodeSet) {
+            if (currentNode.isUp == aIsUp) {
+                filteredNodeSet.Add(currentNode);
+            }
+        }
+        return filteredNodeSet;
     }
 
     public HashSet<Node> GetNodes() {
