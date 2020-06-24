@@ -4,17 +4,6 @@ using Schema;
 using Sirenix.Utilities;
 using UnityEngine;
 
-public struct EntityImmutableData {
-    public int id;
-    public bool isFront;
-    public string name;
-    public Vector2Int size;
-    public EntityTypeEnum entityType;
-    public bool isBoundary;
-    public string prefabPath;
-    public bool isExit;
-}
-
 public struct MobData {
     public MoveTypeEnum movementType;
     public bool canHop;
@@ -38,16 +27,19 @@ public readonly struct Node {
             return GM.boardManager.GetEntityById(this.id);
         }
     }
+
     public Vector2Int absolutePos {
         get {
             return this.entityState.pos + this.relativePos;
         }
     }
+
     public Vector2Int oppositeNodePos {
         get {
             return this.absolutePos + Util.UpOrDown(this.isUp);
         }
     }
+
     public Node? oppositeNode {
         get {
             EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos);
@@ -71,11 +63,11 @@ public readonly struct Node {
             // Debug.Log("found node");
             if (aIgnoreList != null) {
                 if (!aIgnoreList.Contains(oppositeEntity.Value)) {
-                    // Debug.Log("returning node with id: " + oppositeEntity.Value.data.id);
+                    // Debug.Log("returning node with id: " + oppositeEntity.Value.id);
                     return oppositeEntity.Value.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
                 }
                 else {
-                    // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.data.id);
+                    // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.id);
                 }
             }
             else {
@@ -88,8 +80,17 @@ public readonly struct Node {
 }
 
 public struct EntityState {
+    public int id;
+    public bool isFront;
+    public string name;
+    public Vector2Int size;
+    public EntityTypeEnum entityType;
+    public bool isBoundary;
+    public string prefabPath;
+    public bool isExit;
+
     public bool isInitialized;
-    public EntityImmutableData data;
+    // public EntityImmutableData data;
     public MobData? mobData;
     
     public Vector2Int pos;
@@ -110,7 +111,7 @@ public struct EntityState {
 
     public EntityBase entityBase {
         get {
-            return GM.boardManager.GetEntityBaseById(this.data.id);
+            return GM.boardManager.GetEntityBaseById(this.id);
         }
     }
 
@@ -121,19 +122,10 @@ public struct EntityState {
 
     public static EntityState CreateEntityState(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         EntityState newEntityState = new EntityState();
-        // set immutable values
-        newEntityState.data = new EntityImmutableData {
-            id = Constants.PLACEHOLDERINT,
-            isFront = aEntitySchema.isFront,
-            name = aEntitySchema.name,
-            size = aEntitySchema.size,
-            entityType = aEntitySchema.entityType,
-            isBoundary = aIsBoundary,
-            prefabPath = aEntitySchema.prefabPath,
-            isExit = aEntitySchema.isExit,
-        };
+
         if (aEntitySchema.entityType == EntityTypeEnum.MOB) {
             newEntityState.mobData = new MobData {
+
                 movementType = aEntitySchema.movementType,
                 canHop = aEntitySchema.canHop,
                 moveSpeed = aEntitySchema.moveSpeed,
@@ -149,7 +141,16 @@ public struct EntityState {
         }
         else {
             newEntityState.mobData = null;
+
         }
+        newEntityState.id = Constants.PLACEHOLDERINT;
+        newEntityState.isFront = aEntitySchema.isFront;
+        newEntityState.name = aEntitySchema.name;
+        newEntityState.size = aEntitySchema.size;
+        newEntityState.entityType = aEntitySchema.entityType;
+        newEntityState.isBoundary = aIsBoundary;
+        newEntityState.prefabPath = aEntitySchema.prefabPath;
+        newEntityState.isExit = aEntitySchema.isExit;
         newEntityState.pos = aPos;
         newEntityState.facing = aFacing;
         newEntityState.defaultColor = aDefaultColor;
@@ -167,8 +168,8 @@ public struct EntityState {
     public void Init(int aId) {
         Debug.Assert(!this.isInitialized);
         this.isInitialized = true;
-        this.data.id = aId;
-        this.data.name = GenerateName(this.data.name, this.data.isBoundary);
+        this.id = aId;
+        this.name = GenerateName(this.name, this.isBoundary);
         
         string GenerateName(string aEntitySchemaName, bool aIsBoundary) {
             string nameString = aEntitySchemaName + " ";
@@ -179,38 +180,9 @@ public struct EntityState {
             return nameString;
         }
 
-        if (this.data.entityType == EntityTypeEnum.BLOCK) {
+        if (this.entityType == EntityTypeEnum.BLOCK) {
             this.nodeSet = GenerateDefaultNodeSet(this);
         }
-        // var newNodeSet = new HashSet<Node>();
-        // if (this.hasNodes) {
-        //     HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
-        //     HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
-        //     bool hasUpNodes = true;
-        //     bool hasDownNodes = true;
-        //     if (this.data.isBoundary) {
-        //         if (this.pos.y + this.data.size.y == GM.boardManager.currentState.size.y) {
-        //             hasUpNodes = false;
-        //         }
-        //         if (this.pos.y == 0) {
-        //             hasDownNodes = false;
-        //         }
-        //     }
-        //     for (int x = 0; x < this.data.size.x; x++) {
-        //         if (hasUpNodes) {
-        //             Vector2Int topPos = new Vector2Int(x, this.data.size.y - 1);
-        //             newUpNodes.Add(topPos);
-        //             newNodeSet.Add(new Node(true, this.data.id, topPos));
-        //         }
-        //
-        //         if (hasDownNodes) {
-        //             Vector2Int botPos = new Vector2Int(x, 0);
-        //             newDownNodes.Add(botPos);
-        //             newNodeSet.Add(new Node(false, this.data.id, botPos));
-        //         }
-        //     }
-        //     this.nodeSet = newNodeSet;
-        // }
     }
 
     static HashSet<Node> GenerateDefaultNodeSet(EntityState aEntityState) {
@@ -219,25 +191,25 @@ public struct EntityState {
         HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
         bool hasUpNodes = true;
         bool hasDownNodes = true;
-        if (aEntityState.data.isBoundary) {
-            if (aEntityState.pos.y + aEntityState.data.size.y == GM.boardManager.currentState.size.y) {
+        if (aEntityState.isBoundary) {
+            if (aEntityState.pos.y + aEntityState.size.y == GM.boardManager.currentState.size.y) {
                 hasUpNodes = false;
             }
             if (aEntityState.pos.y == 0) {
                 hasDownNodes = false;
             }
         }
-        for (int x = 0; x < aEntityState.data.size.x; x++) {
+        for (int x = 0; x < aEntityState.size.x; x++) {
             if (hasUpNodes) {
-                Vector2Int topPos = new Vector2Int(x, aEntityState.data.size.y - 1);
+                Vector2Int topPos = new Vector2Int(x, aEntityState.size.y - 1);
                 newUpNodes.Add(topPos);
-                newNodeSet.Add(new Node(true, aEntityState.data.id, topPos));
+                newNodeSet.Add(new Node(true, aEntityState.id, topPos));
             }
 
             if (hasDownNodes) {
                 Vector2Int botPos = new Vector2Int(x, 0);
                 newDownNodes.Add(botPos);
-                newNodeSet.Add(new Node(false, aEntityState.data.id, botPos));
+                newNodeSet.Add(new Node(false, aEntityState.id, botPos));
             }
         }
         return newNodeSet;

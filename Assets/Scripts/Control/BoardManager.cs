@@ -95,20 +95,22 @@ public class BoardManager : SerializedMonoBehaviour {
         if (aEntitiesToUpdate != null) {
             BoardState oldBoardState = this.boardState;
             foreach (int id in aEntitiesToUpdate) {
-                EntityState oldEntityState = EntityState.GetClone(oldBoardState.entityDict[id]);
-                HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.data.size).ToHashSet();
+                EntityState oldEntityState = oldBoardState.entityDict[id];
+                HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.size).ToHashSet();
                 foreach (Vector2Int pos in oldPosSet) {
-                    if (oldEntityState.data.isFront) {
+                    if (oldEntityState.isFront) {
                         this.boardCellDict[pos].frontEntityState = null;
                     }
                     else {
                         this.boardCellDict[pos].backEntityState = null;
                     }
                 }
+            }
+            foreach (int id in aEntitiesToUpdate) {
                 EntityState newEntityState = aBoardState.entityDict[id];
-                HashSet<Vector2Int> newPosSet = Util.V2IInRect(newEntityState.pos, newEntityState.data.size).ToHashSet();
+                HashSet<Vector2Int> newPosSet = Util.V2IInRect(newEntityState.pos, newEntityState.size).ToHashSet();
                 foreach (Vector2Int pos in newPosSet) {
-                    if (newEntityState.data.isFront) {
+                    if (newEntityState.isFront) {
                         this.boardCellDict[pos].frontEntityState = newEntityState;
                     }
                     else {
@@ -134,15 +136,16 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     void SetBoardCellDict(BoardState aBoardState) {
+        print("resetting boardCellDict");
         foreach (var currentCell in this.boardCellDict.Values) {
             currentCell.frontEntityState = null;
             currentCell.backEntityState = null;
         }
 
         foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
-            foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.data.size)) {
+            foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.size)) {
                 BoardCell currentCell = this.boardCellDict[currentPos];
-                if (currentEntity.data.isFront) {
+                if (currentEntity.isFront) {
                     currentCell.frontEntityState = currentEntity;
                 }
                 else {
@@ -196,18 +199,18 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     void CreateEntityBase(EntityState aEntityState) {
-        if (this.entityBaseDict.ContainsKey(aEntityState.data.id)) {
+        if (this.entityBaseDict.ContainsKey(aEntityState.id)) {
             throw new Exception("TRIED TO OVERWRITE EXISTING ENTITYSTATE");
         }
         // set the new EntityPosition
-        Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
+        Vector3 newEntityPosition = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size, aEntityState.isFront);
         // instantiate a new gameObject entityPrefab from the schemas prefabPath
-        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.data.prefabPath), newEntityPosition, Quaternion.identity,  this.transform); 
+        GameObject entityPrefab = Instantiate(GM.LoadEntityPrefabByFilename(aEntityState.prefabPath), newEntityPosition, Quaternion.identity,  this.transform);
         // get the entityBase
         EntityBase entityBase = entityPrefab.GetComponent<EntityBase>();
         // add it to the entityBaseDict
 
-        this.entityBaseDict[aEntityState.data.id] = entityBase;
+        this.entityBaseDict[aEntityState.id] = entityBase;
         // initialize entityBase with the newest state
         entityBase.Init(aEntityState);
     }
@@ -235,7 +238,7 @@ public class BoardManager : SerializedMonoBehaviour {
         EntityState entityState = GetEntityById(aId);
         print("original pos:" + entityState.pos);
         HashSet<EntityState> ignoreSet = new HashSet<EntityState> {entityState};
-        if (IsRectEmpty(aPos, entityState.data.size, ignoreSet, entityState.data.isFront)) {
+        if (IsRectEmpty(aPos, entityState.size, ignoreSet, entityState.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos), new HashSet<int>{aId});
             if (aMoveEntityBase) {
                 entityState.entityBase.ResetView();

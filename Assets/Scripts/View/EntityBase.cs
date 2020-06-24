@@ -68,9 +68,9 @@ public class EntityBase : MonoBehaviour {
         }
     }
     public void Init(EntityState aEntityState) {
-        this.id = aEntityState.data.id;
-        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.data.size, aEntityState.data.isFront);
-        this.name = aEntityState.data.name;
+        this.id = aEntityState.id;
+        this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size, aEntityState.isFront);
+        this.name = aEntityState.name;
         if (aEntityState.hasNodes) {
             foreach (Node upNode in aEntityState.GetNodes(true)) {
                 Vector3 currentPosition = Util.V2IOffsetV3(upNode.absolutePos, new Vector2Int(1, 1));
@@ -163,7 +163,7 @@ public class EntityBase : MonoBehaviour {
         // apply win result
 
         if (this.isPlayer) {
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.entityState.pos, this.entityState.data.size).Values) {
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.entityState.pos, this.entityState.size).Values) {
                 if (!boardCell.IsBackEntityStateExit()) {
                     return null;
                 }
@@ -194,7 +194,7 @@ public class EntityBase : MonoBehaviour {
 
     EntityBaseStateResults ChooseNextState() {
         // TODO: sometimes this makes a exception when the entity is dead but chooseNextState still happened
-        switch (this.entityState.data.entityType) {
+        switch (this.entityState.entityType) {
             case EntityTypeEnum.MOB:
                 return MobChooseNextState();
             case EntityTypeEnum.SPECIALBLOCK:
@@ -337,7 +337,7 @@ public class EntityBase : MonoBehaviour {
     }
 
     public void SetTempViewPosition(Vector2Int aPos) {
-        this.transform.position = Util.V2IOffsetV3(aPos, this.entityState.data.size, this.entityState.data.isFront);
+        this.transform.position = Util.V2IOffsetV3(aPos, this.entityState.size, this.entityState.isFront);
         if (!this.isTempPos) {
             SetDithering(true);
         }
@@ -346,7 +346,7 @@ public class EntityBase : MonoBehaviour {
 
     public void ResetView() {
         EntityState currentState = GM.boardManager.GetEntityById(this.id);
-        this.transform.position = Util.V2IOffsetV3(currentState.pos, this.entityState.data.size, this.entityState.data.isFront);
+        this.transform.position = Util.V2IOffsetV3(currentState.pos, this.entityState.size, this.entityState.isFront);
         if (this.isTempPos) {
             SetDithering(false);
         }
@@ -365,9 +365,9 @@ public class EntityBase : MonoBehaviour {
         if (this.entityState.mobData?.canBePushed == true) {
             Vector2Int newPos = this.entityState.pos + aDirection;
             // for each cell in the new pos
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(newPos, this.entityState.data.size).Values) {
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(newPos, this.entityState.size).Values) {
                 // if entity exists and isn't me
-                if (boardCell.frontEntityState.HasValue && this.id != boardCell.frontEntityState.Value.data.id) {
+                if (boardCell.frontEntityState.HasValue && this.id != boardCell.frontEntityState.Value.id) {
                     return false;
                 }
             }
@@ -382,7 +382,7 @@ public class EntityBase : MonoBehaviour {
 
     #endregion
 
-    float markerT = 0f;
+    float markerT;
     float markerDuration = 1f;
     Color markerColor = Color.white;
 
@@ -406,10 +406,10 @@ public class EntityBase : MonoBehaviour {
                 this.markerT = 0;
             }
             Gizmos.color = this.isMarked ? this.markerColor : Color.white;
-            Vector2Int size = this.entityState.data.size;
-            Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size, currentEntityState.data.isFront);
+            Vector2Int size = this.entityState.size;
+            Vector3 position = Util.V2IOffsetV3(this.entityState.pos, size, currentEntityState.isFront);
             Vector3 sizeV3 = new Vector3(size.x, size.y * Constants.BLOCKHEIGHT, 2f);
-            if (currentEntityState.data.isFront) {
+            if (currentEntityState.isFront) {
                 Gizmos.DrawWireCube(position, sizeV3);
             }
 
@@ -478,9 +478,9 @@ public class EntityBase : MonoBehaviour {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Vector3 zOffset = new Vector3(0, 0, 3.1f);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.startPos;
-            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size) + zOffset;
+            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size) + zOffset;
             this.t = 0f;
         }
 
@@ -519,9 +519,9 @@ public class EntityBase : MonoBehaviour {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Vector3 zOffset = new Vector3(0, 0, 1f);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size) + zOffset;
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size) + zOffset;
             this.endPos = this.startPos;
-            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.t = 0f;
         }
 
@@ -556,9 +556,9 @@ public class EntityBase : MonoBehaviour {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.entityBase.entityState.pos + this.direction;
-            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = this.entityBase.entityState.mobData.Value.moveSpeed;
             this.t = 0f;
         }
@@ -593,13 +593,13 @@ public class EntityBase : MonoBehaviour {
                 return new EntityBaseStateResults(this, false);
             }
             
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
                 if (!boardCell.frontEntityState.HasValue) {
                     continue;
                 }
-                int blockingEntityId = boardCell.frontEntityState.Value.data.id;
+                int blockingEntityId = boardCell.frontEntityState.Value.id;
                 // if the cell is occupied by me
-                if (currentState.data.id == blockingEntityId) {
+                if (currentState.id == blockingEntityId) {
                     continue;
                 }
                 switch (PlayManager.DoesAttackerWinTouchFight(this.entityBase.id, blockingEntityId)) {
@@ -629,9 +629,9 @@ public class EntityBase : MonoBehaviour {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.entityBase.entityState.pos + this.direction;
-            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = this.entityBase.entityState.mobData.Value.moveSpeed;
             this.t = 0f;
         }
@@ -665,13 +665,13 @@ public class EntityBase : MonoBehaviour {
                 return new EntityBaseStateResults(this, false);
             }
             
-            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
                 if (!boardCell.frontEntityState.HasValue) {
                     continue;
                 }
-                int blockingEntityId = boardCell.frontEntityState.Value.data.id;
+                int blockingEntityId = boardCell.frontEntityState.Value.id;
                 // if the cell is occupied by me
-                if (currentState.data.id == blockingEntityId) {
+                if (currentState.id == blockingEntityId) {
                     continue;
                 }
                 switch (PlayManager.DoesAttackerWinTouchFight(this.entityBase.id, blockingEntityId)) {
@@ -747,9 +747,9 @@ public class EntityBase : MonoBehaviour {
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.entityBase.entityState.pos + this.direction;
-            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = Constants.GRAVITY;
             this.t = 0f;
         }
@@ -783,9 +783,9 @@ public class EntityBase : MonoBehaviour {
             this.direction = aDirection;
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.entityBase.entityState.pos + this.direction;
-            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = Constants.PUSHSPEED;
             this.t = 0f;
         }
@@ -851,9 +851,9 @@ public class EntityBase : MonoBehaviour {
             this.direction = Vector2Int.down;
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
             this.startPos = this.entityBase.entityState.pos;
-            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.data.size);
+            this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
             this.endPos = this.entityBase.entityState.pos + this.direction;
-            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.data.size);
+            this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = Constants.GRAVITY;
             this.t = 0f;
         }
@@ -881,18 +881,18 @@ public class EntityBase : MonoBehaviour {
             EntityState currentState = this.entityBase.entityState;
             HashSet<int> entityKillSet = new HashSet<int>();
             // if no floor under me
-            if (!PlayManager.DoesFloorExist(currentState.pos, currentState.data.id)) {
+            if (!PlayManager.DoesFloorExist(currentState.pos, currentState.id)) {
                 // foreach boardCell in newpos
-                foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.data.size).Values) {
+                foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
                     if (boardCell.frontEntityState.HasValue) {
                         EntityState blockingEntity = boardCell.frontEntityState.Value;
                         // if blockingEntity is me, skip
-                        if (blockingEntity.data.id == currentState.data.id) {
+                        if (blockingEntity.id == currentState.id) {
                             continue;
                         }
-                        switch (PlayManager.EntityFallOnEntityResult(currentState.data.id, blockingEntity.data.id)) {
+                        switch (PlayManager.EntityFallOnEntityResult(currentState.id, blockingEntity.id)) {
                             case FightResultEnum.DEFENDERDIES:
-                                entityKillSet.Add(blockingEntity.data.id);
+                                entityKillSet.Add(blockingEntity.id);
                                 break;
                             case FightResultEnum.ATTACKERDIES:
                                 shouldIDie = true;

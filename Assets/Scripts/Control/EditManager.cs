@@ -93,8 +93,8 @@ public class EditManager : SerializedMonoBehaviour {
     }
     
     protected bool CanMoveTo(Vector2Int aPos, EntityState aEntityState) {
-        if (!aEntityState.data.isBoundary) {
-            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.data.size, new HashSet<EntityState> {aEntityState}, aEntityState.data.isFront)) {
+        if (!aEntityState.isBoundary) {
+            if (GM.boardManager.IsRectEmpty(aPos, aEntityState.size, new HashSet<EntityState> {aEntityState}, aEntityState.isFront)) {
                 return true;
             }
         }
@@ -238,10 +238,10 @@ public class EditManager : SerializedMonoBehaviour {
                     case MouseStateEnum.CLICKED:
                         EntityState? clickedEntity = GM.boardManager.GetEntityAtMousePos(GM.editManager.currentState.isFront);
                         // if clickedEntityExists and is not a boundary
-                        if (clickedEntity?.data.isBoundary == false) {
+                        if (clickedEntity?.isBoundary == false) {
                             // select this entity in state and store the entityBase locally
                             EntityState selectedEntity = clickedEntity.Value;
-                            GM.editManager.SetSelectedEntity(selectedEntity.data.id);
+                            GM.editManager.SetSelectedEntity(selectedEntity.id);
                             this.selectedEntityBase = selectedEntity.entityBase;
                         }
                         else {
@@ -263,7 +263,7 @@ public class EditManager : SerializedMonoBehaviour {
                             // if entity can move
                             if (GM.editManager.CanMoveTo(newPos, selectedEntity)) {
                                 // move this entity
-                                GM.boardManager.MoveEntity(selectedEntity.data.id, newPos, true);
+                                GM.boardManager.MoveEntity(selectedEntity.id, newPos, true);
                             }
                             else {
                                 selectedEntity.entityBase.ResetView();
@@ -295,7 +295,7 @@ public class EditManager : SerializedMonoBehaviour {
             if (GM.inputManager.mouseState == MouseStateEnum.CLICKED) {
                 EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos(GM.editManager.currentState.isFront);
                 if (maybeAEntity.HasValue) {
-                    int id = maybeAEntity.Value.data.id;
+                    int id = maybeAEntity.Value.id;
                     GM.editManager.SetSelectedEntity(id);
                 }
                 else {

@@ -237,7 +237,7 @@ public class PlayManager : SerializedMonoBehaviour {
     public static bool DoesFloorExist(Vector2Int aPos, int aId) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
         Vector2Int floorOrigin = aPos + Vector2Int.down;
-        Vector2Int floorSize = new Vector2Int(entityState.data.size.x, 1);
+        Vector2Int floorSize = new Vector2Int(entityState.size.x, 1);
         if (!GM.boardManager.IsRectInBoard(floorOrigin, floorSize)) {
             return false;
         }
@@ -246,10 +246,10 @@ public class PlayManager : SerializedMonoBehaviour {
             if (floorCell.frontEntityState.HasValue) {
                 EntityState floorEntity = floorCell.frontEntityState.Value;
                 // if floorEntity is me, skip
-                if (floorEntity.data.id == entityState.data.id) {
+                if (floorEntity.id == entityState.id) {
                     continue;
                 }
-                if (EntityFallOnEntityResult(entityState.data.id, floorEntity.data.id) == FightResultEnum.TIE) {
+                if (EntityFallOnEntityResult(entityState.id, floorEntity.id) == FightResultEnum.TIE) {
                     return true;
                 }
             }
@@ -321,24 +321,22 @@ public class PlayManager : SerializedMonoBehaviour {
         HashSet<EntityState> connectedTree = GetConnectedTree(root, aIsUp, new HashSet<EntityState>());
         bool isEntityConnectedToFixed = false;
         foreach (EntityState connectedEntity in connectedTree) {
-            if (!IsEntityMovable(connectedEntity.data.id)) {
-                print(connectedEntity.data.name + " is connected to fixed");
+            if (!IsEntityMovable(connectedEntity.id)) {
                 isEntityConnectedToFixed = true;
             }
         }
-        print("is entity selectable: " + !isEntityConnectedToFixed);
         return !isEntityConnectedToFixed;
     }
 
     public bool IsEntityMovable(int aId) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
-        if (entityState.data.isBoundary) {
+        if (entityState.isBoundary) {
             return false;
         }
         if (entityState.isFixed) {
             return false;
         }
-        if (entityState.data.entityType == EntityTypeEnum.MOB) {
+        if (entityState.entityType == EntityTypeEnum.MOB) {
             return false;
         }
         if (!entityState.hasNodes) {
@@ -349,8 +347,8 @@ public class PlayManager : SerializedMonoBehaviour {
 
     public bool DoesEntitySupportAMob(int aId) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
-        for (int x = entityState.pos.x; x < entityState.pos.x + entityState.data.size.x; x++) {
-            Vector2Int currentPos = new Vector2Int(x, entityState.pos.y + entityState.data.size.y + 1);
+        for (int x = entityState.pos.x; x < entityState.pos.x + entityState.size.x; x++) {
+            Vector2Int currentPos = new Vector2Int(x, entityState.pos.y + entityState.size.y + 1);
             EntityState? maybeAEntity = GM.boardManager.GetEntityAtPos(currentPos);
             if (maybeAEntity.HasValue && maybeAEntity.Value.mobData?.canFall == true) {
                 return true;
@@ -375,7 +373,7 @@ public class PlayManager : SerializedMonoBehaviour {
                 HashSet<EntityState> hangerConnectedSet = GetAllConnected(hanger, mainTree);
                 foreach (EntityState hangerConnected in GetAllConnected(hanger, mainTree)) {
                     if (addHangerToConnectedTree) {
-                        if (!IsEntityMovable(hangerConnected.data.id)) {
+                        if (!IsEntityMovable(hangerConnected.id)) {
                             addHangerToConnectedTree = false;
                         }
                     }
@@ -383,7 +381,7 @@ public class PlayManager : SerializedMonoBehaviour {
                 if (addHangerToConnectedTree) {
                     foreach (EntityState hangerConnected in hangerConnectedSet) {
                         if (!hangerConnected.entityBase.isMarked) {
-                            MarkEntity(hangerConnected, IsEntityMovable(hangerConnected.data.id) ? Color.cyan : Color.red);
+                            MarkEntity(hangerConnected, IsEntityMovable(hangerConnected.id) ? Color.cyan : Color.red);
                         }
                     }
                     selectSet.UnionWith(hangerConnectedSet);
@@ -403,7 +401,7 @@ public class PlayManager : SerializedMonoBehaviour {
             aConnectedTreeSet.Add(aRoot);
         }
         
-        if (IsEntityMovable(aRoot.data.id)) {
+        if (IsEntityMovable(aRoot.id)) {
             foreach (EntityState connectedEntity in GetConnected(aRoot, aIsUp)) {
                 if (!aConnectedTreeSet.Contains(connectedEntity)) {
                     GetConnectedTree(connectedEntity, aIsUp, aConnectedTreeSet);
@@ -460,7 +458,7 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     void MarkEntity(EntityState aEntityState, Color aColor) {
-        // foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.data.size)) {
+        // foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.size)) {
         //     GM.debugDrawer.SetMarker(pos, aColor, 2f);
         // }
         aEntityState.entityBase.SetMarker(aColor, 2f);
@@ -471,7 +469,7 @@ public class PlayManager : SerializedMonoBehaviour {
         EntityState root = GM.boardManager.GetEntityById(aId);
         HashSet<EntityState> connectedTree = GetConnectedTree(root, aIsUp, new HashSet<EntityState>());
         foreach (EntityState connectedEntity in connectedTree) {
-            if (!IsEntityMovable(connectedEntity.data.id)) {
+            if (!IsEntityMovable(connectedEntity.id)) {
                 isEntityConnectedToFixed = true;
             }
         }
@@ -485,13 +483,13 @@ public class PlayManager : SerializedMonoBehaviour {
         bool touchingDown = false;
         foreach (EntityState selectedEntity in selectedEntitySet) {
             Debug.Assert(selectedEntity.hasNodes);
-            if (!CanPlaceEntity(selectedEntity.data.id, aOffset, selectedEntitySet)) {
+            if (!CanPlaceEntity(selectedEntity.id, aOffset, selectedEntitySet)) {
                 // print("CanPlaceSelection - false because entity is blocked");
                 return false;
             }
             foreach (Node node in selectedEntity.nodeSet) {
                 EntityState? maybeAEntity = node.GetOppositeNode(aOffset, selectedEntitySet)?.entityState;
-                if (maybeAEntity.HasValue && 
+                if (maybeAEntity.HasValue &&
                     !selectedEntitySet.Contains(maybeAEntity.Value) &&
                     maybeAEntity.Value.hasNodes) {
                     if (node.isUp) {
@@ -521,7 +519,7 @@ public class PlayManager : SerializedMonoBehaviour {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
         Debug.Assert(entityState.hasNodes);
         HashSet<EntityState> entityIdIgnoreSet = aEntityIdIgnoreSet ?? new HashSet<EntityState> {entityState};
-        if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, entityIdIgnoreSet)) {
+        if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.size, entityIdIgnoreSet)) {
             return true;
         }
         else {
@@ -535,6 +533,9 @@ public class PlayManager : SerializedMonoBehaviour {
 
     class PlayingState : StateMachineState {
         int? clickedEntityId;
+        bool failedUpSelect;
+        bool failedDownSelect;
+
         public void Enter() {
             this.clickedEntityId = null;
         }
@@ -546,22 +547,35 @@ public class PlayManager : SerializedMonoBehaviour {
                 case MouseStateEnum.CLICKED:
                     EntityState? maybeAEntity = GM.boardManager.GetEntityAtMousePos();
                     if (maybeAEntity.HasValue) {
-                        this.clickedEntityId = maybeAEntity.Value.data.id;
+                        this.clickedEntityId = maybeAEntity.Value.id;
                     }
                     break;
                 case MouseStateEnum.HELD:
                     if (this.clickedEntityId.HasValue) {
                         if (GM.inputManager.dragOffset.y > Constants.DRAGTHRESHOLD) {
-                            if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, true)) {
-                                GM.playManager.SelectEntity(this.clickedEntityId.Value, true);
-                                this.clickedEntityId = null;
-                                GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                            if (!this.failedUpSelect) {
+                                print("attempting up select");
+                                if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, true)) {
+                                    GM.playManager.SelectEntity(this.clickedEntityId.Value, true);
+                                    this.clickedEntityId = null;
+                                    GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                                }
+                                else {
+                                    this.failedUpSelect = true;
+                                }
                             }
+
                         } else if (GM.inputManager.dragOffset.y < Constants.DRAGTHRESHOLD * -1) {
-                            if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, false)) {
-                                GM.playManager.SelectEntity(this.clickedEntityId.Value, false);
-                                this.clickedEntityId = null;
-                                GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                            if (!this.failedDownSelect) {
+                                print("attempting down select");
+                                if (GM.playManager.IsEntitySelectable(this.clickedEntityId.Value, false)) {
+                                    GM.playManager.SelectEntity(this.clickedEntityId.Value, false);
+                                    this.clickedEntityId = null;
+                                    GM.playManager.SetTimeMode(TimeModeEnum.PAUSED);
+                                }
+                                else {
+                                    this.failedDownSelect = true;
+                                }
                             }
                         }
                     }
@@ -589,6 +603,8 @@ public class PlayManager : SerializedMonoBehaviour {
                     }
                     GM.playManager.SetSelectedEntityIdSet(null, null);
                     GM.playManager.SetTimeMode(TimeModeEnum.NORMAL);
+                    this.failedUpSelect = false;
+                    this.failedDownSelect = false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

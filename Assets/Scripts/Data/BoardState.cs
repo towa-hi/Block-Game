@@ -84,8 +84,8 @@ public struct BoardState {
     }
     
     public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
-        aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.data.id, aEntityState);
-        // aBoardState.entityDict[aEntityState.data.id] = aEntityState;
+        aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.id, aEntityState);
+        // aBoardState.entityDict[aEntityState.id] = aEntityState;
         return aBoardState;
     }
     // public static BoardState SetPar(BoardState aBoardState, int aPar) {

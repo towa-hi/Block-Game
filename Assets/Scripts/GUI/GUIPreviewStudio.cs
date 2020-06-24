@@ -13,7 +13,7 @@ public class GUIPreviewStudio : SerializedMonoBehaviour {
         if (this.oldEntityBase != null) {
             Util.SetLayerRecursively(this.oldEntityBase.gameObject, this.originalLayer);
         }
-        this.id = aEntityState.data.id;
+        this.id = aEntityState.id;
         EntityBase entityBase = aEntityState.entityBase;
         this.originalLayer = entityBase.gameObject.layer;
         this.transform.position = entityBase.transform.position;

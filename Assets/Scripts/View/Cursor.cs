@@ -117,7 +117,7 @@ public class Cursor : SerializedMonoBehaviour {
     public CursorModeEnum PlayModeChooseMode(PlayState aPlayState) {
         if (aPlayState.heldEntityId.HasValue && aPlayState.heldEntityId != -42069) {
             EntityState heldEntity = GM.boardManager.GetEntityById(aPlayState.heldEntityId.Value);
-            this.heldSize = heldEntity.data.size;
+            this.heldSize = heldEntity.size;
             this.heldPos = heldEntity.pos;
             return CursorModeEnum.HOLDING;
         }
@@ -133,7 +133,7 @@ public class Cursor : SerializedMonoBehaviour {
                 else if (GM.editManager.currentState.hasSelectedEntity) {
                     EntityState selectedEntity = GM.editManager.GetSelectedEntity();
                     this.heldPos = selectedEntity.pos;
-                    this.heldSize = selectedEntity.data.size;
+                    this.heldSize = selectedEntity.size;
                     return CursorModeEnum.HOLDING;
                 }
                 else {
@@ -167,7 +167,7 @@ public class Cursor : SerializedMonoBehaviour {
 
          if (maybeAEntity.HasValue) {
              SetPos(maybeAEntity.Value.pos);
-             SetSize(maybeAEntity.Value.data.size);
+             SetSize(maybeAEntity.Value.size);
          }
          else {
              SetPos(GM.inputManager.mousePosV2);

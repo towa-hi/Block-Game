@@ -12,8 +12,8 @@ public class Util {
 
     // convert a Vector2Int position to corresponding Vector3 position with offset for block size
     public static Vector3 V2IOffsetV3(Vector2Int aPos, Vector2Int aSize, bool aIsFront = true) {
-        float newX = (float)aPos.x + (float)aSize.x/2;
-        float newY = ((float)aPos.y + (float)aSize.y/2) * (float)Constants.BLOCKHEIGHT;
+        float newX = aPos.x + (float)aSize.x/2;
+        float newY = (aPos.y + (float)aSize.y/2) * Constants.BLOCKHEIGHT;
         float newZ = aIsFront ? 0 : Constants.BGZOFFSET;
         return new Vector3(newX, newY, newZ);
     }
@@ -110,7 +110,7 @@ public class Util {
     public static HashSet<int> ConvertEntityStateSetToIdSet(HashSet<EntityState> aEntitySet) {
         HashSet<int> entityIdSet = new HashSet<int>();
         foreach (EntityState entityState in aEntitySet) {
-            entityIdSet.Add(entityState.data.id);
+            entityIdSet.Add(entityState.id);
         }
         return entityIdSet;
     }

@@ -20,7 +20,7 @@ public class BoardCell {
 
     public bool IsBackEntityStateExit() {
         if (this.backEntityState.HasValue) {
-            if (this.backEntityState.Value.data.isExit) {
+            if (this.backEntityState.Value.isExit) {
                 return true;
             }
         }

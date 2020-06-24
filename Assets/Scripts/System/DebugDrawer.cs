@@ -11,7 +11,7 @@ public class DebugDrawer : SerializedMonoBehaviour {
         if (this.drawGizmos) {
             foreach (BoardCell boardCell in GM.boardManager.boardCellDict.Values) {
                 if (boardCell.frontEntityState.HasValue) {
-                    if (boardCell.frontEntityState.Value.data.entityType == EntityTypeEnum.MOB) {
+                    if (boardCell.frontEntityState.Value.entityType == EntityTypeEnum.MOB) {
                         Gizmos.color = Color.red;
                     }
                     else {
