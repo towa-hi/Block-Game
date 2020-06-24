@@ -465,7 +465,6 @@ public class EntityBase : MonoBehaviour {
         }
 
         public override void Exit() {
-            throw new NotImplementedException();
         }
 
         public override EntityBaseStateResults GetStateResults() {

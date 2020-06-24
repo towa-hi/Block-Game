@@ -37,7 +37,7 @@ public struct BoardState {
         BoardState newBoard = new BoardState {
             isInitialized = true,
             entityDict = ImmutableDictionary.Create<int, EntityState>(),
-            title = "Uninitialized Board",
+            title = "UninitializedBoard",
             creator = Config.USERNAME,
             par = 5,
             size = new Vector2Int(40, 24),

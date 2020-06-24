@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Schema;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -158,10 +159,11 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void SetTitle(string aTitle) {
         if (0 < aTitle.Length && aTitle.Length <= Constants.MAXTITLELENGTH) {
-            // TODO: validate titles so they can be valid filenames here
-            // char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
-            BoardState newBoardState = BoardState.SetTitle(this.currentState, aTitle);
-            UpdateBoardState(newBoardState);
+            // TODO: validate titles so they can be valid filenames here and make input less hardass
+            if (aTitle.IndexOfAny(Path.GetInvalidFileNameChars()) != -1) {
+                BoardState newBoardState = BoardState.SetTitle(this.currentState, aTitle);
+                UpdateBoardState(newBoardState);
+            }
         }
         else {
             throw new Exception("SetTitle - invalid title");
