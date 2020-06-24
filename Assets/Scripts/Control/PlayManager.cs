@@ -149,7 +149,6 @@ public class PlayManager : SerializedMonoBehaviour {
 
     void InitializePlayState() {
         PlayState initialPlayState = PlayState.CreatePlayState();
-        // TODO: this sets timeMode and playMode to start the game
         initialPlayState = PlayState.SetTimeMode(initialPlayState, TimeModeEnum.NORMAL);
         initialPlayState = PlayState.SetPlayMode(initialPlayState, PlayModeEnum.PLAYING);
         UpdatePlayState(initialPlayState);
@@ -315,14 +314,19 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     public bool IsEntitySelectable(int aId, bool aIsUp) {
-        bool isEntityConnectedToFixed = false;
+        if (!IsEntityMovable(aId)) {
+            return false;
+        }
         EntityState root = GM.boardManager.GetEntityById(aId);
         HashSet<EntityState> connectedTree = GetConnectedTree(root, aIsUp, new HashSet<EntityState>());
+        bool isEntityConnectedToFixed = false;
         foreach (EntityState connectedEntity in connectedTree) {
             if (!IsEntityMovable(connectedEntity.data.id)) {
+                print(connectedEntity.data.name + " is connected to fixed");
                 isEntityConnectedToFixed = true;
             }
         }
+        print("is entity selectable: " + !isEntityConnectedToFixed);
         return !isEntityConnectedToFixed;
     }
 
@@ -340,8 +344,6 @@ public class PlayManager : SerializedMonoBehaviour {
         if (!entityState.hasNodes) {
             return false;
         }
-        
-        // TODO: write this
         return true;
     }
 
@@ -516,8 +518,8 @@ public class PlayManager : SerializedMonoBehaviour {
     }
 
     public bool CanPlaceEntity(int aId, Vector2Int aOffset, HashSet<EntityState> aEntityIdIgnoreSet = null) {
-        // TODO: make this think about studs
         EntityState entityState = GM.boardManager.GetEntityById(aId);
+        Debug.Assert(entityState.hasNodes);
         HashSet<EntityState> entityIdIgnoreSet = aEntityIdIgnoreSet ?? new HashSet<EntityState> {entityState};
         if (GM.boardManager.IsRectEmpty(entityState.pos + aOffset, entityState.data.size, entityIdIgnoreSet)) {
             return true;

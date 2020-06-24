@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+
 public class BoardCell {
     public Vector2Int pos;
     public EntityState? frontEntityState;
@@ -17,7 +18,7 @@ public class BoardCell {
         this.frontEntityState = null;
     }
 
-    public bool IsExit() {
+    public bool IsBackEntityStateExit() {
         if (this.backEntityState.HasValue) {
             if (this.backEntityState.Value.data.isExit) {
                 return true;

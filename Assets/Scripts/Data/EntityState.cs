@@ -97,9 +97,12 @@ public struct EntityState {
     public Color defaultColor;
     public bool isFixed;
     public TeamEnum team;
-    public bool hasNodes;
-    
-    // TODO: convert all this shit to use node structs
+    public bool hasNodes {
+        get {
+            return this.nodeSet?.Count > 0;
+        }
+    }
+
     public HashSet<Node> nodeSet;
     
     public int touchDefense;
@@ -152,7 +155,6 @@ public struct EntityState {
         newEntityState.defaultColor = aDefaultColor;
         newEntityState.isFixed = aIsFixed;
         newEntityState.team = aEntitySchema.defaultTeam;
-        newEntityState.hasNodes = aEntitySchema.hasNodes;
         
         newEntityState.nodeSet = new HashSet<Node>();
         newEntityState.touchDefense = aEntitySchema.touchDefense;
@@ -176,38 +178,71 @@ public struct EntityState {
             nameString += "id: " + aId;
             return nameString;
         }
-        
-        var newNodeSet = new HashSet<Node>();
-        if (this.hasNodes) {
-            HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
-            HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
-            bool hasUpNodes = true;
-            bool hasDownNodes = true;
-            if (this.data.isBoundary) {
-                if (this.pos.y + this.data.size.y == GM.boardManager.currentState.size.y) {
-                    hasUpNodes = false;
-                }
-                if (this.pos.y == 0) {
-                    hasDownNodes = false;
-                }
-            }
-            for (int x = 0; x < this.data.size.x; x++) {
-                if (hasUpNodes) {
-                    Vector2Int topPos = new Vector2Int(x, this.data.size.y - 1);
-                    newUpNodes.Add(topPos);
-                    newNodeSet.Add(new Node(true, this.data.id, topPos));
-                }
 
-                if (hasDownNodes) {
-                    Vector2Int botPos = new Vector2Int(x, 0);
-                    newDownNodes.Add(botPos);
-                    newNodeSet.Add(new Node(false, this.data.id, botPos));
-                }
-            }
-            this.nodeSet = newNodeSet;
+        if (this.data.entityType == EntityTypeEnum.BLOCK) {
+            this.nodeSet = GenerateDefaultNodeSet(this);
         }
+        // var newNodeSet = new HashSet<Node>();
+        // if (this.hasNodes) {
+        //     HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
+        //     HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
+        //     bool hasUpNodes = true;
+        //     bool hasDownNodes = true;
+        //     if (this.data.isBoundary) {
+        //         if (this.pos.y + this.data.size.y == GM.boardManager.currentState.size.y) {
+        //             hasUpNodes = false;
+        //         }
+        //         if (this.pos.y == 0) {
+        //             hasDownNodes = false;
+        //         }
+        //     }
+        //     for (int x = 0; x < this.data.size.x; x++) {
+        //         if (hasUpNodes) {
+        //             Vector2Int topPos = new Vector2Int(x, this.data.size.y - 1);
+        //             newUpNodes.Add(topPos);
+        //             newNodeSet.Add(new Node(true, this.data.id, topPos));
+        //         }
+        //
+        //         if (hasDownNodes) {
+        //             Vector2Int botPos = new Vector2Int(x, 0);
+        //             newDownNodes.Add(botPos);
+        //             newNodeSet.Add(new Node(false, this.data.id, botPos));
+        //         }
+        //     }
+        //     this.nodeSet = newNodeSet;
+        // }
     }
-    
+
+    static HashSet<Node> GenerateDefaultNodeSet(EntityState aEntityState) {
+        var newNodeSet = new HashSet<Node>();
+        HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
+        bool hasUpNodes = true;
+        bool hasDownNodes = true;
+        if (aEntityState.data.isBoundary) {
+            if (aEntityState.pos.y + aEntityState.data.size.y == GM.boardManager.currentState.size.y) {
+                hasUpNodes = false;
+            }
+            if (aEntityState.pos.y == 0) {
+                hasDownNodes = false;
+            }
+        }
+        for (int x = 0; x < aEntityState.data.size.x; x++) {
+            if (hasUpNodes) {
+                Vector2Int topPos = new Vector2Int(x, aEntityState.data.size.y - 1);
+                newUpNodes.Add(topPos);
+                newNodeSet.Add(new Node(true, aEntityState.data.id, topPos));
+            }
+
+            if (hasDownNodes) {
+                Vector2Int botPos = new Vector2Int(x, 0);
+                newDownNodes.Add(botPos);
+                newNodeSet.Add(new Node(false, aEntityState.data.id, botPos));
+            }
+        }
+        return newNodeSet;
+    }
+
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
         aEntityState.pos = aPos;
         return aEntityState;

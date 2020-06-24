@@ -82,18 +82,23 @@ public class GM : SerializedMonoBehaviour {
         return Resources.Load("EntityPrefabs/" + aFilename) as GameObject;
     }
 
-    public static void SaveBoardState(BoardState aBoardState, bool aIsPlaytestTemp = false) {
-        string saveFilename = aIsPlaytestTemp ? "PlayTestTemp.board" : aBoardState.title + ".board";
-        Debug.Log("SaveBoard - attempting to save " + saveFilename);
-        byte[] bytes = SerializationUtility.SerializeValue(aBoardState, DataFormat.Binary);
+    public static void SaveBoardStateJson(BoardState aBoardState, bool aIsPlaytestTemp = false) {
+        string saveFilename = aIsPlaytestTemp ? "PlayTestTemp.json" : aBoardState.title + ".json";
+        // we have to call PackBoardState because the ImmutableDictionary entityDict wont serialize
+        BoardState packedBoardState = BoardState.PackBoardState(aBoardState);
+        var bytes = SerializationUtility.SerializeValue(packedBoardState, DataFormat.JSON);
         File.WriteAllBytes(Config.PATHTOBOARDS + saveFilename, bytes);
+        print("BoardState successfully saved as " + saveFilename);
     }
 
-    public static BoardState LoadBoardState(string aFilename) {
+    public static BoardState LoadBoardStateJson(string aFilename) {
         if (File.Exists(Config.PATHTOBOARDS + aFilename)) {
             byte[] bytes = File.ReadAllBytes(Config.PATHTOBOARDS + aFilename);
-            BoardState loadedBoardState = SerializationUtility.DeserializeValue<BoardState>(bytes, DataFormat.Binary);
-            return loadedBoardState;
+            BoardState loadedBoardState = SerializationUtility.DeserializeValue<BoardState>(bytes, DataFormat.JSON);
+            // we have to call UnpackBoardState because the ImmutableDictionary entityDict wont serialize
+            BoardState unpackedBoardState = BoardState.UnpackBoardState(loadedBoardState);
+            print("BoardState successfully loaded from" + aFilename);
+            return unpackedBoardState;
         }
         else {
             throw new Exception("SaveLoad - .board file with name " + aFilename + " not found!");

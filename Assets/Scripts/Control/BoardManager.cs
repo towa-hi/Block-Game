@@ -26,9 +26,10 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     // called by editManager or when coming back from playtest 
-    public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.board") {
+    public void LoadBoardStateFromFile(string aFilename = "PlayTestTemp.json") {
         print("attempting to load" + aFilename);
-        BoardState loadedBoardState = GM.LoadBoardState(aFilename);
+        BoardState loadedBoardState = GM.LoadBoardStateJson(aFilename);
+        print(aFilename + "contains entity count of " + loadedBoardState.entityDict.Count);
         InitBoard(loadedBoardState);
         Debug.Log("loaded " + aFilename + " successfully");
     }
@@ -151,7 +152,8 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     public void SaveBoardState(bool aIsPlaytestTemp) {
-        GM.SaveBoardState(this.currentState, aIsPlaytestTemp);
+        print("SaveBoardState");
+        GM.SaveBoardStateJson(this.currentState, aIsPlaytestTemp);
     }
 
     public void SetTitle(string aTitle) {

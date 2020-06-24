@@ -22,7 +22,7 @@ namespace FilePicker {
         void OnEnable() {
             this.currentDirectory = new DirectoryInfo(Config.PATHTOBOARDS);
             this.titleText.text = this.currentDirectory.FullName;
-            FileInfo[] info = this.currentDirectory.GetFiles("*.board");
+            FileInfo[] info = this.currentDirectory.GetFiles("*.json");
             foreach (Transform child in this.content.transform) {
                 Destroy(child.gameObject);
             }

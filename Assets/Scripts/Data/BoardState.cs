@@ -1,7 +1,11 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections.Immutable;
+using System.Linq;
+using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 public struct BoardState {
     public bool isInitialized;
@@ -12,6 +16,22 @@ public struct BoardState {
     public Vector2Int size;
     public int attempts;
     [SerializeField] int currentId;
+    [SerializeField] Dictionary<int, EntityState> serializedEntityDict;
+
+    // only call this right before serialization
+    public static BoardState PackBoardState(BoardState aBoardState) {
+        Debug.Log("Packing BoardState");
+        aBoardState.serializedEntityDict = aBoardState.entityDict.ToDictionary(p  => p.Key, p => p.Value);
+        return aBoardState;
+    }
+
+    // only call this right after serialization
+    public static BoardState UnpackBoardState(BoardState aBoardState) {
+        Debug.Log("Unpacking BoardState");
+        aBoardState.entityDict = aBoardState.serializedEntityDict.ToImmutableDictionary();
+        aBoardState.serializedEntityDict.Clear();
+        return aBoardState;
+    }
 
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {

@@ -164,7 +164,7 @@ public class EntityBase : MonoBehaviour {
 
         if (this.isPlayer) {
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.entityState.pos, this.entityState.data.size).Values) {
-                if (!boardCell.IsExit()) {
+                if (!boardCell.IsBackEntityStateExit()) {
                     return null;
                 }
             }
