@@ -93,9 +93,6 @@ public struct BoardState {
         aBoardState.entityDict = aBoardState.entityDict.SetItems(aEntityStateDict);
         return aBoardState;
     }
-    // public static BoardState SetPar(BoardState aBoardState, int aPar) {
-
-    // }
 }
 
 

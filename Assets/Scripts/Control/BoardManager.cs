@@ -15,7 +15,6 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
-    // public event OnUpdateBoardStateHandler OnUpdateBoardStateBG;
     public Dictionary<int, EntityBase> entityBaseDict;
 
     #region Initialization
@@ -92,18 +91,21 @@ public class BoardManager : SerializedMonoBehaviour {
         if (Config.PRINTLISTENERUPDATES) {
             print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
-        if (aEntitiesToUpdate != null) {
+        if (aEntitiesToUpdate == null) {
+            this.boardState = aBoardState;
+            SetBoardCellDict(aBoardState);
+            OnUpdateBoardState?.Invoke(this.currentState);
+        }
+        else {
             BoardState oldBoardState = this.boardState;
             foreach (int id in aEntitiesToUpdate) {
                 EntityState oldEntityState = oldBoardState.entityDict[id];
                 HashSet<Vector2Int> oldPosSet = Util.V2IInRect(oldEntityState.pos, oldEntityState.size).ToHashSet();
                 foreach (Vector2Int pos in oldPosSet) {
                     if (oldEntityState.isFront) {
-                        // this.boardCellDict[pos].frontEntityState = null;
                         this.boardCellDict[pos].frontEntityId = null;
                     }
                     else {
-                        // this.boardCellDict[pos].backEntityState = null;
                         this.boardCellDict[pos].backEntityId = null;
                     }
                 }
@@ -125,11 +127,6 @@ public class BoardManager : SerializedMonoBehaviour {
                 GetEntityBaseById(id).OnUpdateBoardState(this.currentState);
             }
         }
-        else {
-            this.boardState = aBoardState;
-            SetBoardCellDict(aBoardState);
-            OnUpdateBoardState?.Invoke(this.currentState);
-        }
     }
     
     void UpdateEntityAndBoardState(EntityState aEntityState, HashSet<int> aEntitiesToUpdate = null) {
@@ -138,12 +135,10 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     void SetBoardCellDict(BoardState aBoardState) {
-        print("resetting boardCellDict");
         foreach (var currentCell in this.boardCellDict.Values) {
             currentCell.frontEntityId = null;
             currentCell.backEntityId = null;
         }
-
         foreach (EntityState currentEntity in aBoardState.entityDict.Values) {
             foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.size)) {
                 BoardCell currentCell = this.boardCellDict[currentPos];
@@ -156,7 +151,10 @@ public class BoardManager : SerializedMonoBehaviour {
             }
         }
     }
-    
+
+    void SetBoardCellDict(BoardState aOldBoardState, BoardState aNewBoardState) {
+
+    }
     public void SaveBoardState(bool aIsPlaytestTemp) {
         print("SaveBoardState");
         GM.SaveBoardStateJson(this.currentState, aIsPlaytestTemp);
@@ -166,13 +164,11 @@ public class BoardManager : SerializedMonoBehaviour {
         if (0 < aTitle.Length && aTitle.Length <= Constants.MAXTITLELENGTH) {
             // TODO: validate titles so they can be valid filenames here and make input less hardass
             if (aTitle.IndexOfAny(Path.GetInvalidFileNameChars()) == -1) {
-                print("updating title");
                 BoardState newBoardState = BoardState.SetTitle(this.currentState, aTitle);
                 UpdateBoardState(newBoardState);
                 return true;
             }
             else {
-                print("ignoring update");
                 return false;
             }
         }
@@ -242,9 +238,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
     
     public void MoveEntity(int aId, Vector2Int aPos, bool aMoveEntityBase = false) {
-        print("moving entity:" + aId);
         EntityState entityState = GetEntityById(aId);
-        print("original pos:" + entityState.pos);
         HashSet<int> ignoreSet = new HashSet<int> {aId};
         if (IsRectEmpty(aPos, entityState.size, ignoreSet, entityState.isFront)) {
             UpdateEntityAndBoardState(EntityState.SetPos(entityState, aPos), new HashSet<int>{aId});
