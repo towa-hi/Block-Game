@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class BoardCell {
+public struct BoardCell {
     public Vector2Int pos;
     // public EntityState? frontEntityState;
     // public EntityState? backEntityState;

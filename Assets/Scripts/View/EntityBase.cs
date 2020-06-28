@@ -22,6 +22,8 @@ public class EntityBase : MonoBehaviour {
     [SerializeField] bool needsNewState;
     static readonly int AlbedoColor = Shader.PropertyToID("_AlbedoColor");
 
+    [SerializeField] public EntityBrain entityBrain;
+
     [ShowInInspector] EntityState entityState {
         get {
             // TODO: make this not throw errors on inspection with Application.isPlaying
@@ -67,6 +69,7 @@ public class EntityBase : MonoBehaviour {
             }
         }
     }
+
     public void Init(EntityState aEntityState) {
         this.id = aEntityState.id;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size, aEntityState.isFront);
@@ -89,22 +92,25 @@ public class EntityBase : MonoBehaviour {
             this.isPlayer = true;
         }
         this.recievesUpdates = true;
+
+        this.entityBrain = new EntityBrain(this);
     }
     
     public void DoFrame() {
-        if (this.needsNewState) {
-            this.needsNewState = false;
-            EntityBaseStateMachineState effectState = ApplyEffects();
-            if (effectState != null) {
-                this.stateMachine.ChangeState(effectState);
-            }
-            else {
-                EntityBaseStateResults newStateResults = ChooseNextState();
-                EntityBaseStateMachineState finalState = ProcessStateResults(newStateResults);
-                this.stateMachine.ChangeState(finalState);
-            }
-        }
-        this.stateMachine.Update();
+        // if (this.needsNewState) {
+        //     this.needsNewState = false;
+        //     EntityBaseStateMachineState effectState = ApplyEffects();
+        //     if (effectState != null) {
+        //         this.stateMachine.ChangeState(effectState);
+        //     }
+        //     else {
+        //         EntityBaseStateResults newStateResults = ChooseNextState();
+        //         EntityBaseStateMachineState finalState = ProcessStateResults(newStateResults);
+        //         this.stateMachine.ChangeState(finalState);
+        //     }
+        // }
+        // this.stateMachine.Update();
+        this.entityBrain.DoFrame();
     }
 
     #endregion
@@ -303,28 +309,12 @@ public class EntityBase : MonoBehaviour {
             foreach (Renderer childRenderer in this.childRenderers) {
                 childRenderer.material = this.ditheringMaterial;
                 childRenderer.material.SetColor(AlbedoColor, this.entityState.defaultColor);
-
             }
 
-
-
-            // Shader ditheringShader = GM.instance.ditheringShader;
-            // foreach (Renderer childRenderer in this.childRenderers) {
-            //     var material = childRenderer.material;
-            //     material.shader = ditheringShader;
-            //     material.SetFloat("_Opacity", 0.5f);
-            //     material.SetFloat("_DitherSize", 2f);
-            //     material.SetColor("_AlbedoColor", this.entityState.defaultColor);
-            //     material.color = this.entityState.defaultColor;
-            // }
         }
         else {
             foreach (Renderer childRenderer in this.childRenderers) {
                 childRenderer.material = this.originalMaterial;
-                // var material = childRenderer.material;
-                // material.shader = this.originalShader;
-                // material.color = this.entityState.defaultColor;
-
             }
         }
     }
@@ -426,6 +416,7 @@ public class EntityBase : MonoBehaviour {
     }
 
     #region StateMachineStates
+
 
     abstract class EntityBaseStateMachineState : StateMachineState {
         public Vector2Int direction;
@@ -557,16 +548,16 @@ public class EntityBase : MonoBehaviour {
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             this.startPos = this.entityBase.entityState.pos;
             this.startPosition = Util.V2IOffsetV3(this.startPos, this.entityBase.entityState.size);
-            this.endPos = this.entityBase.entityState.pos + this.direction;
+            this.endPos = this.startPos + this.direction;
             this.endPosition = Util.V2IOffsetV3(this.endPos, this.entityBase.entityState.size);
             this.moveSpeed = this.entityBase.entityState.mobData.Value.moveSpeed;
             this.t = 0f;
         }
-        
+
         public override void Enter() {
             GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.moveSpeed;
@@ -576,7 +567,7 @@ public class EntityBase : MonoBehaviour {
                 this.entityBase.SetNeedsNewState();
             }
         }
-    
+
         public override void Exit() {
             // maybe have ResetTempView here
             this.entityBase.ResetView();
@@ -585,14 +576,16 @@ public class EntityBase : MonoBehaviour {
         public override EntityBaseStateResults GetStateResults() {
             bool shouldIDie = false;
             HashSet<int> entityKillSet = new HashSet<int>();
-            
+            HashSet<int> entityPushSet = new HashSet<int>();
+
             EntityState currentState = this.entityBase.entityState;
+
             // if floor doesnt exist on new pos, return false and null
-            if (!PlayManager.DoesFloorExist(this.endPos, this.entityBase.id)) {
+            if (!PlayManager.DoesFloorExist(this.endPos, currentState.id)) {
                 // return illegal state because no floor
                 return new EntityBaseStateResults(this, false);
             }
-            
+
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
                 if (!boardCell.frontEntityId.HasValue) {
                     continue;
@@ -610,7 +603,23 @@ public class EntityBase : MonoBehaviour {
                         shouldIDie = true;
                         break;
                     case FightResultEnum.TIE:
-                        // return illegal state because something is blocking me
+                        EntityState blockingEntity = GM.boardManager.GetEntityById(blockingEntityId);
+                        if (blockingEntity.mobData?.canPush == true) {
+                            PushedState tempPushedState = new PushedState(this.direction, blockingEntityId);
+                            EntityBaseStateResults pushedResults = tempPushedState.GetStateResults();
+                            if (pushedResults.isStateValid == true) {
+                                print("entity added a pushable to entityPushSet");
+                                entityPushSet.Add(blockingEntityId);
+                            }
+                            else {
+                                // return illegal state because something is blocking me that i cant kill or push
+                                return new EntityBaseStateResults(this, false);
+                            }
+                        }
+                        else {
+                            // return illegal state because something is blocking me that i cant kill or push
+                            return new EntityBaseStateResults(this, false);
+                        }
                         return new EntityBaseStateResults(this, false);
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -620,9 +629,9 @@ public class EntityBase : MonoBehaviour {
             return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
         }
     }
-    
+
     class HoppingState : EntityBaseStateMachineState {
-        
+
         public HoppingState(Vector2Int aDirection, int aId) {
             Debug.Assert(Util.IsDirection(aDirection));
             this.direction = aDirection;
@@ -635,11 +644,11 @@ public class EntityBase : MonoBehaviour {
             this.moveSpeed = this.entityBase.entityState.mobData.Value.moveSpeed;
             this.t = 0f;
         }
-        
+
         public override void Enter() {
             GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.moveSpeed;
@@ -649,7 +658,7 @@ public class EntityBase : MonoBehaviour {
                 this.entityBase.SetNeedsNewState();
             }
         }
-    
+
         public override void Exit() {
             this.entityBase.ResetView();
         }
@@ -657,14 +666,14 @@ public class EntityBase : MonoBehaviour {
         public override EntityBaseStateResults GetStateResults() {
             bool shouldIDie = false;
             HashSet<int> entityKillSet = new HashSet<int>();
-            
+
             EntityState currentState = this.entityBase.entityState;
             // if floor doesnt exist on new pos, return false and null
             if (!PlayManager.DoesFloorExist(this.endPos, this.entityBase.id)) {
                 // return illegal state because no floor
                 return new EntityBaseStateResults(this, false);
             }
-            
+
             foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
                 if (!boardCell.frontEntityId.HasValue) {
                     continue;
@@ -692,7 +701,7 @@ public class EntityBase : MonoBehaviour {
             return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
         }
     }
-    
+
     class TurningState : EntityBaseStateMachineState {
         Quaternion startRotation;
         Quaternion endRotation;
@@ -702,7 +711,7 @@ public class EntityBase : MonoBehaviour {
             Debug.Assert(this.entityBase.entityState.mobData.HasValue);
             Debug.Assert(Util.IsDirection(this.entityBase.entityState.facing));
         }
-        
+
         public override void Enter() {
             this.startRotation = this.entityBase.transform.rotation;
             this.endRotation = Quaternion.AngleAxis(180, Vector3.up) * this.startRotation;
@@ -719,7 +728,7 @@ public class EntityBase : MonoBehaviour {
             this.moveSpeed = this.entityBase.entityState.mobData.Value.moveSpeed;
             this.t = 0f;
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.moveSpeed;
@@ -729,7 +738,7 @@ public class EntityBase : MonoBehaviour {
                 this.entityBase.SetNeedsNewState();
             }
         }
-    
+
         public override void Exit() {
             this.entityBase.ResetView();
         }
@@ -739,9 +748,9 @@ public class EntityBase : MonoBehaviour {
             return new EntityBaseStateResults(this, true);
         }
     }
-    
+
     class PushingState : EntityBaseStateMachineState {
-    
+
         public PushingState(int aId, Vector2Int aDirection) {
             this.direction = aDirection;
             this.entityBase = GM.boardManager.GetEntityBaseById(aId);
@@ -753,11 +762,11 @@ public class EntityBase : MonoBehaviour {
             this.moveSpeed = Constants.GRAVITY;
             this.t = 0f;
         }
-        
+
         public override void Enter() {
             GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.moveSpeed;
@@ -767,7 +776,7 @@ public class EntityBase : MonoBehaviour {
                 this.entityBase.SetNeedsNewState();
             }
         }
-    
+
         public override void Exit() {
             this.entityBase.ResetView();
         }
@@ -778,6 +787,7 @@ public class EntityBase : MonoBehaviour {
     }
 
     class PushedState : EntityBaseStateMachineState {
+
         public PushedState(Vector2Int aDirection, int aId) {
             Debug.Assert(Util.IsDirection(aDirection));
             this.direction = aDirection;
@@ -789,6 +799,7 @@ public class EntityBase : MonoBehaviour {
             this.moveSpeed = Constants.PUSHSPEED;
             this.t = 0f;
         }
+
         public override void Enter() {
             GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
         }
@@ -808,17 +819,51 @@ public class EntityBase : MonoBehaviour {
         }
 
         public override EntityBaseStateResults GetStateResults() {
-            throw new NotImplementedException();
+            bool shouldIDie = false;
+            HashSet<int> entityKillSet = new HashSet<int>();
+            HashSet<int> entityPushSet = new HashSet<int>();
+
+            EntityState currentState = this.entityBase.entityState;
+
+            if (!PlayManager.DoesFloorExist(this.endPos, currentState.id)) {
+                return new EntityBaseStateResults(this, false);
+            }
+
+            foreach (BoardCell boardCell in GM.boardManager.GetBoardGridSlice(this.endPos, currentState.size).Values) {
+                if (!boardCell.frontEntityId.HasValue) {
+                    continue;
+                }
+                int blockingEntityId = boardCell.frontEntityId.Value;
+                // if the cell is occupied by me
+                if (currentState.id == blockingEntityId) {
+                    continue;
+                }
+                switch (PlayManager.DoesAttackerWinTouchFight(this.entityBase.id, blockingEntityId)) {
+                    case FightResultEnum.DEFENDERDIES:
+                        entityKillSet.Add(blockingEntityId);
+                        break;
+                    case FightResultEnum.ATTACKERDIES:
+                        shouldIDie = true;
+                        break;
+                    case FightResultEnum.TIE:
+                        // we dont check for another push here
+                        return new EntityBaseStateResults(this, false);
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            return new EntityBaseStateResults(this, true, shouldIDie, entityKillSet);
+
         }
     }
-    
+
     class FlyingState : EntityBaseStateMachineState {
         public override void Enter() {
         }
-    
+
         public override void Update() {
         }
-    
+
         public override void Exit() {
         }
 
@@ -826,25 +871,25 @@ public class EntityBase : MonoBehaviour {
             throw new NotImplementedException();
         }
     }
-    
+
     class WaitingState : EntityBaseStateMachineState {
         public override void Enter() {
-            
+
         }
-    
+
         public override void Update() {
-            
+
         }
-    
+
         public override void Exit() {
-            
+
         }
 
         public override EntityBaseStateResults GetStateResults() {
             return new EntityBaseStateResults(this, true);
         }
     }
-    
+
     class FallingState : EntityBaseStateMachineState {
 
         public FallingState(int aId) {
@@ -857,11 +902,11 @@ public class EntityBase : MonoBehaviour {
             this.moveSpeed = Constants.GRAVITY;
             this.t = 0f;
         }
-        
+
         public override void Enter() {
             GM.boardManager.MoveEntity(this.entityBase.id, this.endPos);
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.moveSpeed;
@@ -871,7 +916,7 @@ public class EntityBase : MonoBehaviour {
                 this.entityBase.SetNeedsNewState();
             }
         }
-    
+
         public override void Exit() {
             this.entityBase.ResetView();
         }
@@ -912,7 +957,7 @@ public class EntityBase : MonoBehaviour {
             }
         }
     }
-    
+
     class DyingState : EntityBaseStateMachineState {
         readonly float timeToDie;
         bool isPlayer;
@@ -930,7 +975,7 @@ public class EntityBase : MonoBehaviour {
             print("entered death state");
             GM.playManager.StartEntityDeath(this.entityBase.id);
         }
-    
+
         public override void Update() {
             if (this.t < 1) {
                 this.t += Time.deltaTime / this.timeToDie;
@@ -941,16 +986,16 @@ public class EntityBase : MonoBehaviour {
                 GM.playManager.FinishEntityDeath(this.entityBase.id, this.isPlayer);
             }
         }
-    
+
         public override void Exit() {
         }
 
         public override EntityBaseStateResults GetStateResults() {
-            // always return valid 
+            // always return valid
             return new EntityBaseStateResults(this, true);
         }
     }
-    
+
     class EntityBaseStateResults {
         public readonly EntityBaseStateMachineState stateMachineState;
         public readonly bool isStateValid;

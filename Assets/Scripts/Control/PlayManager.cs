@@ -234,6 +234,19 @@ public class PlayManager : SerializedMonoBehaviour {
     
     #region Utility
 
+    public static bool CanEntityBePushed(int aId, Vector2Int aDirection) {
+        EntityState entityToPush = GM.boardManager.GetEntityById(aId);
+        if (entityToPush.mobData?.canPush != true) {
+            return false;
+        }
+        if (GM.boardManager.IsRectEmpty(entityToPush.pos + aDirection, entityToPush.size, new HashSet<int> {entityToPush.id})) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public static bool DoesFloorExist(Vector2Int aPos, int aId) {
         EntityState entityState = GM.boardManager.GetEntityById(aId);
         Vector2Int floorOrigin = aPos + Vector2Int.down;
