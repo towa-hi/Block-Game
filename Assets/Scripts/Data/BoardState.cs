@@ -18,7 +18,6 @@ public struct BoardState {
     public int attempts;
     [SerializeField] int currentId;
     [SerializeField] Dictionary<int, EntityState> serializedEntityDict;
-
     public BoardCell[,] boardCellArray;
 
     // only call this right before serialization
@@ -48,6 +47,10 @@ public struct BoardState {
         };
         newBoard.boardCellArray = InitBoardCellArray(newBoard.size);
         return newBoard;
+    }
+
+    public EntityState GetEntityById(int id) {
+        return this.entityDict[id];
     }
 
     public BoardCell GetBoardCellAtPos(Vector2Int aPos) {
@@ -82,6 +85,27 @@ public struct BoardState {
         return 0 <= aPos.x && aPos.x < this.size.x && 0 <= aPos.y && aPos.y < this.size.y;
     }
 
+    public bool DoesFloorExist(Vector2Int aPos, int aId) {
+        EntityState entityState = GetEntityById(aId);
+        Vector2Int floorOrigin = aPos + Vector2Int.down;
+        Vector2Int floorSize = new Vector2Int(entityState.size.x, 1);
+        if (!IsRectInBoard(floorOrigin, floorSize)) {
+            return false;
+        }
+        HashSet<BoardCell> floorSlice = GetBoardCellSlice(floorOrigin, floorSize).Values.ToHashSet();
+        Debug.Log(floorSlice.Count);
+        foreach (BoardCell floorCell in floorSlice) {
+            Debug.Log("examining" + floorCell.pos);
+            if (floorCell.frontEntityId.HasValue) {
+
+            }
+            if (floorCell.frontEntityId.HasValue && floorCell.frontEntityId.Value != entityState.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void SetBoardCell(Vector2Int aPos, int? aId, bool aIsFront = true) {
         BoardCell boardCell = this.boardCellArray[aPos.x, aPos.y];
         if (aIsFront) {
@@ -106,6 +130,7 @@ public struct BoardState {
                 ClearBoardCell(new Vector2Int(x, y));
             }
         }
+
         // for every entity set occupied cells to that entities id
         foreach (EntityState currentEntity in this.entityDict.Values) {
             foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.size)) {
@@ -116,15 +141,15 @@ public struct BoardState {
 
     void UpdateBoardCellArray(BoardState aOldBoardState, HashSet<int> aEntitiesToUpdate) {
         // clear every entity in partial updates occupied cells
-        foreach (int currentId in aEntitiesToUpdate) {
-            EntityState oldEntityState = aOldBoardState.entityDict[currentId];
+        foreach (int id in aEntitiesToUpdate) {
+            EntityState oldEntityState = aOldBoardState.entityDict[id];
             foreach (Vector2Int oldPos in Util.V2IInRect(oldEntityState.pos, oldEntityState.size)) {
                 SetBoardCell(oldPos, null, oldEntityState.isFront);
             }
         }
         // reset every entity in partial update to new locations provided by aNewBoardState
-        foreach (int currentId in aEntitiesToUpdate) {
-            EntityState newEntityState = this.entityDict[currentId];
+        foreach (int id in aEntitiesToUpdate) {
+            EntityState newEntityState = this.entityDict[id];
             foreach (Vector2Int newPos in Util.V2IInRect(newEntityState.pos, newEntityState.size)) {
                 SetBoardCell(newPos, newEntityState.id, newEntityState.isFront);
             }
@@ -157,6 +182,7 @@ public struct BoardState {
         }
         return true;
     }
+
     static BoardCell[,] InitBoardCellArray(Vector2Int aSize) {
         BoardCell[,] newBoardCellArray = new BoardCell[aSize.x, aSize.y];
         for (int x = 0; x < aSize.x; x++) {
@@ -176,7 +202,6 @@ public struct BoardState {
         aBoardState.entityDict = aBoardState.entityDict.SetItem(id, aEntityState);
         // aBoardState.entityDict[id] = aEntityState;
         aBoardState.UpdateBoardCellArray();
-
         return new Tuple<BoardState, EntityState>(aBoardState, aEntityState);
     }
     
@@ -206,17 +231,8 @@ public struct BoardState {
 
     public static BoardState UpdateEntityBatch(BoardState aBoardState, Dictionary<int, EntityState> aEntityStateDict) {
         BoardState oldBoardState = aBoardState;
-        // foreach (int id in aEntityStateDict.Keys) {
-        //     Debug.Log("id:" + id + "old pos:" + oldBoardState.entityDict[id].pos);
-        // }
-        // foreach (int id in aEntityStateDict.Keys) {
-        //     Debug.Log("id:" + id + "destination pos:" + aEntityStateDict[id].pos);
-        // }
         aBoardState.entityDict = aBoardState.entityDict.SetItems(aEntityStateDict);
         aBoardState.UpdateBoardCellArray(oldBoardState, aEntityStateDict.Keys.ToHashSet());
-        // foreach (int id in aEntityStateDict.Keys) {
-        //     Debug.Log("id:" + id + "new pos:" + aBoardState.entityDict[id].pos);
-        // }
         return aBoardState;
     }
 }

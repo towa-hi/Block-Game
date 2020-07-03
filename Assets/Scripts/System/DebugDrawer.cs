@@ -8,7 +8,7 @@ public class DebugDrawer : SerializedMonoBehaviour {
     public bool drawGizmos;
 
     void OnDrawGizmos() {
-        if (this.drawGizmos) {
+        if (true) {
             BoardCell[,] boardCellArray = GM.boardManager.currentState.boardCellArray;
             for (int x = 0; x < boardCellArray.GetLength(0); x++) {
                 for (int y = 0; y < boardCellArray.GetLength(1); y++) {
