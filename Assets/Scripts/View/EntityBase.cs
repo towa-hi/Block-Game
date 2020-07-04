@@ -16,10 +16,10 @@ public class EntityBase : MonoBehaviour {
     HashSet<Renderer> childRenderers;
     EntityState oldEntityState;
     bool needsFirstUpdate;
-    bool isDying;
+    public bool isDying;
     bool isPlayer;
     [SerializeField] StateMachine stateMachine;
-    [SerializeField] bool needsNewState;
+    // [SerializeField] bool needsNewState;
     static readonly int AlbedoColor = Shader.PropertyToID("_AlbedoColor");
 
     [SerializeField] public EntityBrain entityBrain;
@@ -42,7 +42,7 @@ public class EntityBase : MonoBehaviour {
         this.childRenderers = this.model.GetComponentsInChildren<Renderer>().ToHashSet();
         this.stateMachine = new StateMachine();
         this.needsFirstUpdate = true;
-        this.needsNewState = true;
+        // this.needsNewState = true;
         this.isDying = false;
         this.isMarked = false;
         this.originalMaterial = this.modelRenderer.material;
@@ -134,7 +134,7 @@ public class EntityBase : MonoBehaviour {
         // if first update
         if (this.needsFirstUpdate) {
             // this.oldEntityState = newEntityState;
-            this.needsFirstUpdate = false;
+            // this.needsFirstUpdate = false;
         }
         EntityState newEntityState = aBoardState.entityDict[this.id];
         if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
@@ -148,7 +148,7 @@ public class EntityBase : MonoBehaviour {
 
     public void Die(DeathTypeEnum aDeathType) {
         this.stateMachine.ChangeState(new DyingState(this.id));
-        this.needsNewState = false;
+        // this.needsNewState = false;
         print( this.id + " Die - set state to dying");
     }
     
@@ -162,7 +162,7 @@ public class EntityBase : MonoBehaviour {
     #region StateMachine
 
     protected void SetNeedsNewState() {
-        this.needsNewState = true;
+        // this.needsNewState = true;
         // print("choosing state next frame");
     }
 

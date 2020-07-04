@@ -300,23 +300,6 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<int> aIgnoreSet = null, bool aIsFront = true) {
         return this.currentState.IsRectEmpty(aOrigin, aSize, aIgnoreSet, aIsFront);
-        try {
-            foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
-                int? id = aIsFront ? boardCell.frontEntityId : boardCell.backEntityId;
-                if (id.HasValue) {
-                    if (aIgnoreSet == null) {
-                        return false;
-                    }
-                    if (!aIgnoreSet.Contains(id.Value)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-        catch (ArgumentOutOfRangeException) {
-            return false;
-        }
     }
 
     #endregion
