@@ -126,8 +126,9 @@ public class BoardManager : SerializedMonoBehaviour {
 
     public void AddEntityFromSchema(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         // if the area isn't clear, throw an exception
-        if (!IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
-            throw new Exception("AddEntity - Position is invalid");
+        Debug.Log("AddEntityFromSchema aPos: " + aPos);
+        if (!this.currentState.IsRectEmpty(aPos, aEntitySchema.size, null, aEntitySchema.isFront)) {
+            throw new Exception("AddEntity - Position is invalid pos:" + aPos + " schema:" + aEntitySchema.name + " schema size:" + aEntitySchema.size);
         }
         // generate a fresh entityState without an ID
         EntityState newEntityStateWithoutId = EntityState.CreateEntityState(aEntitySchema, aPos, aFacing, aDefaultColor, aIsFixed, aIsBoundary);
@@ -298,6 +299,7 @@ public class BoardManager : SerializedMonoBehaviour {
     }
 
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<int> aIgnoreSet = null, bool aIsFront = true) {
+        return this.currentState.IsRectEmpty(aOrigin, aSize, aIgnoreSet, aIsFront);
         try {
             foreach (BoardCell boardCell in GetBoardGridSlice(aOrigin, aSize).Values) {
                 int? id = aIsFront ? boardCell.frontEntityId : boardCell.backEntityId;

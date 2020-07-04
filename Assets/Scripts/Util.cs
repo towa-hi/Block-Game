@@ -78,7 +78,19 @@ public class Util {
             }
         }
     }
-    
+
+    public static Vector2Int[] V2IArrayInRect(Vector2Int aOrigin, Vector2Int aSize) {
+        Vector2Int[] posArray = new Vector2Int[aSize.x * aSize.y];
+        int index = 0;
+        for (int y = aOrigin.y; y < aOrigin.y + aSize.y; y++) {
+            for (int x = aOrigin.x; x < aOrigin.x + aSize.x; x++) {
+                posArray[index] = new Vector2Int(x, y);
+                index++;
+            }
+        }
+        return posArray;
+    }
+
     public static IEnumerable<Vector2Int> V2IInRect(Vector2Int aOrigin, Vector2Int aSize) {
         List<Vector2Int> V2IList = new List<Vector2Int>();
         for (int x = aOrigin.x; x < aOrigin.x + aSize.x; x++) {
@@ -86,6 +98,9 @@ public class Util {
                 V2IList.Add(new Vector2Int(x, y));
             }
         }
+        // foreach (Vector2Int v2i in V2IList) {
+        //     Debug.Log(v2i);
+        // }
         return V2IList;
     }
 
@@ -125,4 +140,12 @@ public class Util {
     //         return new Quaternion(0, -1, 0,);
     //     }
     // }
+
+    public static int GetFlatIndexFromPos(int aX, int aY, Vector2Int aSize) {
+        return aY * aSize.x + aX;
+    }
+
+    public static int GetFlatIndexFromPos(Vector2Int aPos, Vector2Int aSize) {
+        return aPos.y * aSize.x + aPos.x;
+    }
 }

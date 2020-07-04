@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Schema;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -180,12 +181,12 @@ public struct EntityState {
     public TeamEnum team;
     public bool hasNodes {
         get {
-            return this.nodeSet?.Count > 0;
+            return this.nodeSet.Length > 0;
         }
     }
 
-    public HashSet<Node> nodeSet;
-    
+    // public HashSet<Node> nodeSet;
+    public ImmutableArray<Node> nodeSet;
     public int touchDefense;
     public int fallDefense;
 
@@ -237,7 +238,7 @@ public struct EntityState {
         newEntityState.isFixed = aIsFixed;
         newEntityState.team = aEntitySchema.defaultTeam;
         
-        newEntityState.nodeSet = new HashSet<Node>();
+        // newEntityState.nodeSet = new HashSet<Node>();
         newEntityState.touchDefense = aEntitySchema.touchDefense;
         newEntityState.fallDefense = aEntitySchema.fallDefense;
 
@@ -260,29 +261,32 @@ public struct EntityState {
             return nameString;
         }
 
-        if (this.entityType == EntityTypeEnum.BLOCK) {
-            this.nodeSet = GenerateDefaultNodeSet(this);
-        }
+        this.nodeSet = GenerateDefaultNodeSet();
+        // if (this.entityType == EntityTypeEnum.BLOCK) {
+        //     this.nodeSet = GenerateDefaultNodeSet();
+        // }
     }
 
-    static HashSet<Node> GenerateDefaultNodeSet(EntityState aEntityState) {
-        var newNodeSet = new HashSet<Node>();
+    ImmutableArray<Node> GenerateDefaultNodeSet() {
+        // var newNodeSet = new HashSet<Node>();
+        Node[] nodeArray = new Node[this.size.x * this.size.y];
         HashSet<Vector2Int> newUpNodes = new HashSet<Vector2Int>();
         HashSet<Vector2Int> newDownNodes = new HashSet<Vector2Int>();
         bool hasUpNodes = true;
         bool hasDownNodes = true;
-        if (aEntityState.isBoundary) {
-            if (aEntityState.pos.y + aEntityState.size.y == GM.boardManager.currentState.size.y) {
+        if (this.isBoundary) {
+            if (this.pos.y + this.size.y == GM.boardManager.currentState.size.y) {
                 hasUpNodes = false;
             }
-            if (aEntityState.pos.y == 0) {
+            if (this.pos.y == 0) {
                 hasDownNodes = false;
             }
         }
-        for (int x = 0; x < aEntityState.size.x; x++) {
+        for (int x = 0; x < this.size.x; x++) {
             if (hasUpNodes) {
-                Vector2Int topPos = new Vector2Int(x, aEntityState.size.y - 1);
+                Vector2Int topPos = new Vector2Int(x, this.size.y - 1);
                 newUpNodes.Add(topPos);
+                nodeArray[Util.GetFlatIndexFromPos(x, this.size.y - 1)] = new Node()
                 newNodeSet.Add(new Node(true, aEntityState.id, topPos));
             }
 

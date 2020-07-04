@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Sirenix.Utilities;
 
+
 public struct BoardState {
     public bool isInitialized;
     public ImmutableDictionary<int, EntityState> entityDict;
@@ -18,22 +19,9 @@ public struct BoardState {
     public int attempts;
     [SerializeField] int currentId;
     [SerializeField] Dictionary<int, EntityState> serializedEntityDict;
-    public BoardCell[,] boardCellArray;
+    ImmutableArray<BoardCell> boardCellIArray;
 
-    // only call this right before serialization
-    public static BoardState PackBoardState(BoardState aBoardState) {
-        Debug.Log("Packing BoardState");
-        aBoardState.serializedEntityDict = aBoardState.entityDict.ToDictionary(p  => p.Key, p => p.Value);
-        return aBoardState;
-    }
-
-    // only call this right after serialization
-    public static BoardState UnpackBoardState(BoardState aBoardState) {
-        Debug.Log("Unpacking BoardState");
-        aBoardState.entityDict = aBoardState.serializedEntityDict.ToImmutableDictionary();
-        aBoardState.serializedEntityDict.Clear();
-        return aBoardState;
-    }
+    #region Init
 
     public static BoardState GenerateBlankBoard() {
         BoardState newBoard = new BoardState {
@@ -45,19 +33,40 @@ public struct BoardState {
             size = Constants.MAXBOARDSIZE,
             attempts = 0,
         };
-        newBoard.boardCellArray = InitBoardCellArray(newBoard.size);
+        newBoard = InitBoardCellIArray(newBoard);
         return newBoard;
     }
+    // only call this right before serialization
+    public static BoardState PackBoardState(BoardState aBoardState) {
+        Debug.Log("Packing BoardState");
+        aBoardState.serializedEntityDict = aBoardState.entityDict.ToDictionary(p  => p.Key, p => p.Value);
+        return aBoardState;
+    }
+    // only call this right after serialization
+    public static BoardState UnpackBoardState(BoardState aBoardState) {
+        Debug.Log("Unpacking BoardState");
+        aBoardState.entityDict = aBoardState.serializedEntityDict.ToImmutableDictionary();
+        aBoardState.serializedEntityDict.Clear();
+        aBoardState = InitBoardCellIArray(aBoardState);
+        return aBoardState;
+    }
+
+    #endregion
+
+    #region Local Utility
 
     public EntityState GetEntityById(int id) {
         return this.entityDict[id];
     }
 
+    public ImmutableArray<BoardCell> GetBoardCellIArray() {
+        return this.boardCellIArray;
+    }
     public BoardCell GetBoardCellAtPos(Vector2Int aPos) {
         if (!IsPosOnBoard(aPos)) {
             throw new ArgumentOutOfRangeException(nameof(aPos),"tried to get boardCell out of bounds");
         }
-        return this.boardCellArray[aPos.x, aPos.y];
+        return GetFromImmutableArray(aPos);
     }
 
     public int? GetEntityIdAtPos(Vector2Int aPos, bool aIsFront = true) {
@@ -65,10 +74,10 @@ public struct BoardState {
             throw new ArgumentOutOfRangeException(nameof(aPos),"tried to get boardCell out of bounds");
         }
         if (aIsFront) {
-            return this.boardCellArray[aPos.x, aPos.y].frontEntityId;
+            return GetFromImmutableArray(aPos).frontEntityId;
         }
         else {
-            return this.boardCellArray[aPos.x, aPos.y].backEntityId;
+            return GetFromImmutableArray(aPos).backEntityId;
         }
     }
 
@@ -93,9 +102,7 @@ public struct BoardState {
             return false;
         }
         HashSet<BoardCell> floorSlice = GetBoardCellSlice(floorOrigin, floorSize).Values.ToHashSet();
-        Debug.Log(floorSlice.Count);
         foreach (BoardCell floorCell in floorSlice) {
-            Debug.Log("examining" + floorCell.pos);
             if (floorCell.frontEntityId.HasValue) {
 
             }
@@ -106,73 +113,17 @@ public struct BoardState {
         return false;
     }
 
-    void SetBoardCell(Vector2Int aPos, int? aId, bool aIsFront = true) {
-        BoardCell boardCell = this.boardCellArray[aPos.x, aPos.y];
-        if (aIsFront) {
-            boardCell.frontEntityId = aId;
-        }
-        else {
-            boardCell.backEntityId = aId;
-        }
-        this.boardCellArray[aPos.x, aPos.y] = boardCell;
-    }
-
-    void ClearBoardCell(Vector2Int aPos) {
-        BoardCell boardCell = this.boardCellArray[aPos.x, aPos.y];
-        boardCell.frontEntityId = null;
-        boardCell.backEntityId = null;
-        this.boardCellArray[aPos.x, aPos.y] = boardCell;
-    }
-
-    void UpdateBoardCellArray() {
-        for (int x = 0; x < this.size.x; x++) {
-            for (int y = 0; y < this.size.y; y++) {
-                ClearBoardCell(new Vector2Int(x, y));
-            }
-        }
-
-        // for every entity set occupied cells to that entities id
-        foreach (EntityState currentEntity in this.entityDict.Values) {
-            foreach (Vector2Int currentPos in Util.V2IInRect(currentEntity.pos, currentEntity.size)) {
-                SetBoardCell(currentPos, currentEntity.id, currentEntity.isFront);
-            }
-        }
-    }
-
-    void UpdateBoardCellArray(BoardState aOldBoardState, HashSet<int> aEntitiesToUpdate) {
-        // clear every entity in partial updates occupied cells
-        foreach (int id in aEntitiesToUpdate) {
-            EntityState oldEntityState = aOldBoardState.entityDict[id];
-            foreach (Vector2Int oldPos in Util.V2IInRect(oldEntityState.pos, oldEntityState.size)) {
-                SetBoardCell(oldPos, null, oldEntityState.isFront);
-            }
-        }
-        // reset every entity in partial update to new locations provided by aNewBoardState
-        foreach (int id in aEntitiesToUpdate) {
-            EntityState newEntityState = this.entityDict[id];
-            foreach (Vector2Int newPos in Util.V2IInRect(newEntityState.pos, newEntityState.size)) {
-                SetBoardCell(newPos, newEntityState.id, newEntityState.isFront);
-            }
-        }
-
-    }
-
-    public Dictionary<Vector2Int, BoardCell> GetBoardCellSlice(Vector2Int aOrigin, Vector2Int aSize) {
-        if (!IsRectInBoard(aOrigin, aSize)) {
-            throw new ArgumentOutOfRangeException("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
-        }
-        Dictionary<Vector2Int, BoardCell> sliceDict = new Dictionary<Vector2Int, BoardCell>();
-        foreach (Vector2Int currentPos in Util.V2IInRect(aOrigin, aSize)) {
-            sliceDict[currentPos] = this.boardCellArray[currentPos.x, currentPos.y];
-        }
-        return sliceDict;
-    }
-
     public bool IsRectEmpty(Vector2Int aOrigin, Vector2Int aSize, HashSet<int> aIgnoreSet = null, bool aIsFront = true) {
-        foreach (BoardCell boardCell in GetBoardCellSlice(aOrigin, aSize).Values) {
+        // Debug.Log("IsRectEmpty aOrigin:" + aOrigin);
+        foreach (var kvp in GetBoardCellSlice(aOrigin, aSize)) {
+            Vector2Int key = kvp.Key;
+            BoardCell boardCell = kvp.Value;
+            Debug.Assert(key == boardCell.pos);
+            // Debug.Log("IsRectEmpty examining boardCell at " + boardCell.pos + " with key: " + key);
             int? id = aIsFront ? boardCell.frontEntityId : boardCell.backEntityId;
             if (id.HasValue) {
                 if (aIgnoreSet == null) {
+                    // Debug.Log("IsRectEmpty returned false on pos: " + boardCell.pos + "because occupied by " + id.Value);
                     return false;
                 }
                 else if (!aIgnoreSet.Contains(id.Value)) {
@@ -183,15 +134,147 @@ public struct BoardState {
         return true;
     }
 
-    static BoardCell[,] InitBoardCellArray(Vector2Int aSize) {
-        BoardCell[,] newBoardCellArray = new BoardCell[aSize.x, aSize.y];
-        for (int x = 0; x < aSize.x; x++) {
-            for (int y = 0; y < aSize.y; y++) {
-                newBoardCellArray[x, y] = new BoardCell(new Vector2Int(x, y));
+    public Dictionary<Vector2Int, BoardCell> GetBoardCellSlice(Vector2Int aOrigin, Vector2Int aSize) {
+        // Debug.Log("GetBoardCellSlice aOrigin: " + aOrigin + " aSize: " + aSize);
+        if (!IsRectInBoard(aOrigin, aSize)) {
+            throw new ArgumentOutOfRangeException("GetBoardGridSlice - rect not in board" + aOrigin + aSize);
+        }
+        Dictionary<Vector2Int, BoardCell> sliceDict = new Dictionary<Vector2Int, BoardCell>();
+        foreach (Vector2Int currentPos in Util.V2IArrayInRect(aOrigin, aSize)) {
+            // sliceDict[currentPos] = this.boardCellArray[currentPos.x, currentPos.y];
+            BoardCell boardCell = GetFromImmutableArray(currentPos);
+            Debug.Assert(currentPos == boardCell.pos);
+            // Debug.Log("GetBoardCellSlice currentPos: " + currentPos + " pos: " + boardCell.pos + " front: " + boardCell.frontEntityId + " back : " + boardCell.backEntityId);
+            sliceDict[currentPos] = boardCell;
+        }
+        // Debug.Log("GetBoardCellSlice returned slice " + sliceDict.Count);
+        return sliceDict;
+    }
+
+    #endregion
+
+    #region BoardCell
+
+    public static int GetIndexFromPos(int aX, int aY, Vector2Int aSize) {
+        return aY * aSize.x + aX;
+    }
+
+    public static int GetIndexFromPos(Vector2Int aPos, Vector2Int aSize) {
+        return aPos.y * aSize.x + aPos.x;
+    }
+
+    static BoardState InitBoardCellIArray(BoardState aBoardState) {
+        BoardCell[] array = new BoardCell[aBoardState.size.x * aBoardState.size.y];
+        for (int y = 0; y < aBoardState.size.y; y++) {
+            for (int x = 0; x < aBoardState.size.x; x++) {
+                int index = GetIndexFromPos(x, y, aBoardState.size);
+                // Debug.Log("InitBoardCellArray inserting new Vector2Int" + new Vector2Int(x, y) + " into " + GetIndexFromPos(x, y, aSize));
+                array[index] = new BoardCell(new Vector2Int(x, y));
             }
         }
-        return newBoardCellArray;
+        foreach (EntityState entityState in aBoardState.entityDict.Values) {
+            foreach (Vector2Int posInEntity in Util.V2IArrayInRect(entityState.pos, entityState.size)) {
+                int index = GetIndexFromPos(posInEntity, aBoardState.size);
+                BoardCell boardCellWithEntity = array[index];
+                if (entityState.isFront) {
+                    boardCellWithEntity.frontEntityId = entityState.id;
+                }
+                else {
+                    boardCellWithEntity.backEntityId = entityState.id;
+                }
+                array[index] = boardCellWithEntity;
+            }
+        }
+        aBoardState.boardCellIArray = ImmutableArray.Create(array);
+        return aBoardState;
     }
+
+    void UpdateBoardCellArray() {
+        ImmutableArray<BoardCell>.Builder builder = this.boardCellIArray.ToBuilder();
+        // Debug.Log("UpdateBoardCellArray builder (before): " + builder.Count);
+        for (int x = 0; x < this.size.x; x++) {
+            for (int y = 0; y < this.size.y; y++) {
+                BoardCell boardCellBeingCleared = this.boardCellIArray[GetIndexFromPos(x, y, this.size)];
+                boardCellBeingCleared.frontEntityId = null;
+                boardCellBeingCleared.backEntityId = null;
+                int index = GetIndexFromPos(x, y, this.size);
+                // Debug.Log("UpdateBoardCellArray inserting at index " + index + " boardCell " + boardCellBeingCleared.pos);
+                builder.RemoveAt(index);
+                builder.Insert(index, boardCellBeingCleared);
+                // Debug.Log("builder count: " + builder.Count);
+            }
+        }
+        // for every entity set occupied cells to that entities id
+        foreach (EntityState currentEntity in this.entityDict.Values) {
+            foreach (Vector2Int currentPos in Util.V2IArrayInRect(currentEntity.pos, currentEntity.size)) {
+                // SetBoardCell(currentPos, currentEntity.id, currentEntity.isFront);
+                int index = GetIndexFromPos(currentPos, this.size);
+                BoardCell boardCellWithEntity = new BoardCell(currentPos);
+                if (currentEntity.isFront) {
+                    boardCellWithEntity.frontEntityId = currentEntity.id;
+                }
+                else {
+                    boardCellWithEntity.backEntityId = currentEntity.id;
+                }
+                // Debug.Log("UpdateBoardCellArray inserted currentEntity: " + currentEntity.id + " into pos: " + currentPos + " with boardCell pos: " + boardCellWithEntity.pos);
+                // Debug.Log("UpdateBoardCellArray insert index:" + GetIndexFromPos(currentPos, this.size));
+                builder.RemoveAt(index);
+                builder.Insert(index, boardCellWithEntity);
+            }
+        }
+        // Debug.Log("UpdateBoardCellArray builder (after): " + builder.Count);
+        this.boardCellIArray = builder.MoveToImmutable();
+    }
+
+    void UpdateBoardCellArray(BoardState aOldBoardState, HashSet<int> aEntitiesToUpdate) {
+        // clear every entity in partial updates occupied cells
+        ImmutableArray<BoardCell>.Builder builder = this.boardCellIArray.ToBuilder();
+        foreach (int id in aEntitiesToUpdate) {
+            EntityState oldEntityState = aOldBoardState.entityDict[id];
+            foreach (Vector2Int oldPos in Util.V2IArrayInRect(oldEntityState.pos, oldEntityState.size)) {
+                int index = GetIndexFromPos(oldPos, aOldBoardState.size);
+                BoardCell boardCellBeingCleared = aOldBoardState.boardCellIArray[index];
+                if (oldEntityState.isFront) {
+                    boardCellBeingCleared.frontEntityId = null;
+                }
+                else {
+                    boardCellBeingCleared.backEntityId = null;
+                }
+                builder.RemoveAt(index);
+                builder.Insert(index, boardCellBeingCleared);
+                // SetBoardCell(oldPos, null, oldEntityState.isFront);
+            }
+        }
+        // reset every entity in partial update to new locations provided by aNewBoardState
+        foreach (int id in aEntitiesToUpdate) {
+            EntityState newEntityState = this.entityDict[id];
+            foreach (Vector2Int newPos in Util.V2IArrayInRect(newEntityState.pos, newEntityState.size)) {
+                int index = GetIndexFromPos(newPos, this.size);
+                BoardCell boardCellWithEntity = this.boardCellIArray[index];
+                if (newEntityState.isFront) {
+                    boardCellWithEntity.frontEntityId = newEntityState.id;
+                }
+                else {
+                    boardCellWithEntity.backEntityId = newEntityState.id;
+                }
+                builder.RemoveAt(index);
+                builder.Insert(index, boardCellWithEntity);
+                // SetBoardCell(newPos, newEntityState.id, newEntityState.isFront);
+            }
+        }
+        this.boardCellIArray = builder.MoveToImmutable();
+    }
+
+    BoardCell GetFromImmutableArray(Vector2Int aPos) {
+        int index = GetIndexFromPos(aPos, this.size);
+        return this.boardCellIArray[index];
+    }
+
+
+
+    #endregion
+
+    #region Setters
 
     public static Tuple<BoardState, EntityState> AddEntity(BoardState aBoardState, EntityState aEntityState) {
         int id = aBoardState.currentId;
@@ -235,6 +318,8 @@ public struct BoardState {
         aBoardState.UpdateBoardCellArray(oldBoardState, aEntityStateDict.Keys.ToHashSet());
         return aBoardState;
     }
+
+    #endregion
 }
 
 
