@@ -39,13 +39,27 @@ public struct BoardState {
     // only call this right before serialization
     public static BoardState PackBoardState(BoardState aBoardState) {
         Debug.Log("Packing BoardState");
-        aBoardState.serializedEntityDict = aBoardState.entityDict.ToDictionary(p  => p.Key, p => p.Value);
+        // aBoardState.serializedEntityDict = aBoardState.entityDict.ToDictionary(p  => p.Key, p => p.Value);
+        Dictionary<int, EntityState> serializedEntityDict = new Dictionary<int, EntityState>();
+        foreach (EntityState entityState in aBoardState.entityDict.Values) {
+            EntityState packedEntityState = entityState;
+            packedEntityState.serializedNodeArray = packedEntityState.nodeIArray.ToArray();
+            serializedEntityDict[packedEntityState.id] = packedEntityState;
+        }
+        aBoardState.serializedEntityDict = serializedEntityDict;
         return aBoardState;
     }
     // only call this right after serialization
     public static BoardState UnpackBoardState(BoardState aBoardState) {
         Debug.Log("Unpacking BoardState");
-        aBoardState.entityDict = aBoardState.serializedEntityDict.ToImmutableDictionary();
+        // aBoardState.entityDict = aBoardState.serializedEntityDict.ToImmutableDictionary();
+        Dictionary<int, EntityState> serializedEntityDictCopy = new Dictionary<int, EntityState>();
+        foreach (EntityState entityState in aBoardState.serializedEntityDict.Values) {
+            EntityState packedEntityState = entityState;
+            packedEntityState.nodeIArray = ImmutableArray.Create(packedEntityState.serializedNodeArray);
+            serializedEntityDictCopy[packedEntityState.id] = packedEntityState;
+        }
+        aBoardState.entityDict = serializedEntityDictCopy.ToImmutableDictionary();
         aBoardState.serializedEntityDict.Clear();
         aBoardState = InitBoardCellIArray(aBoardState);
         return aBoardState;

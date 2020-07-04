@@ -64,15 +64,19 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": "8|System.Collections.Immutable.ImmutableArray`1[[Node, Assembly-CSharp]], System.Collections.Immutable"
+                    },
+                    "serializedNodeArray": {
                         "$id": 3,
-                        "$type": "8|System.Collections.Generic.HashSet`1[[Node, Assembly-CSharp]], System.Core",
+                        "$type": "9|Node[], Assembly-CSharp",
                         "$rlength": 20,
                         "$rcontent": [
                             {
-                                "$type": "9|Node, Assembly-CSharp",
-                                "isUp": true,
+                                "$type": "10|Node, Assembly-CSharp",
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -80,9 +84,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     1,
@@ -90,9 +95,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     2,
@@ -100,9 +106,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     3,
@@ -110,9 +117,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     4,
@@ -120,9 +128,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     5,
@@ -130,9 +139,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     6,
@@ -140,9 +150,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     7,
@@ -150,9 +161,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     8,
@@ -160,9 +172,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     9,
@@ -170,9 +183,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     10,
@@ -180,9 +194,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     11,
@@ -190,9 +205,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     12,
@@ -200,9 +216,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     13,
@@ -210,9 +227,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     14,
@@ -220,9 +238,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     15,
@@ -230,9 +249,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     16,
@@ -240,9 +260,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     17,
@@ -250,9 +271,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     18,
@@ -260,9 +282,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     19,
@@ -315,15 +338,19 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 4,
-                        "$type": 8,
+                        "$type": 9,
                         "$rlength": 20,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -331,9 +358,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     1,
@@ -341,9 +369,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     2,
@@ -351,9 +380,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     3,
@@ -361,9 +391,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     4,
@@ -371,9 +402,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     5,
@@ -381,9 +413,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     6,
@@ -391,9 +424,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     7,
@@ -401,9 +435,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     8,
@@ -411,9 +446,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     9,
@@ -421,9 +457,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     10,
@@ -431,9 +468,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     11,
@@ -441,9 +479,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     12,
@@ -451,9 +490,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     13,
@@ -461,9 +501,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     14,
@@ -471,9 +512,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     15,
@@ -481,9 +523,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     16,
@@ -491,9 +534,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     17,
@@ -501,9 +545,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     18,
@@ -511,9 +556,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     19,
@@ -566,15 +612,19 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 5,
-                        "$type": 8,
+                        "$type": 9,
                         "$rlength": 20,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -582,9 +632,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     1,
@@ -592,9 +643,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     2,
@@ -602,9 +654,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     3,
@@ -612,9 +665,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     4,
@@ -622,9 +676,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     5,
@@ -632,9 +687,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     6,
@@ -642,9 +698,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     7,
@@ -652,9 +709,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     8,
@@ -662,9 +720,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     9,
@@ -672,9 +731,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     10,
@@ -682,9 +742,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     11,
@@ -692,9 +753,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     12,
@@ -702,9 +764,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     13,
@@ -712,9 +775,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     14,
@@ -722,9 +786,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     15,
@@ -732,9 +797,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     16,
@@ -742,9 +808,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     17,
@@ -752,9 +819,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     18,
@@ -762,9 +830,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     19,
@@ -817,15 +886,19 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 6,
-                        "$type": 8,
+                        "$type": 9,
                         "$rlength": 20,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -833,9 +906,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     1,
@@ -843,9 +917,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     2,
@@ -853,9 +928,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     3,
@@ -863,9 +939,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     4,
@@ -873,9 +950,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     5,
@@ -883,9 +961,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     6,
@@ -893,9 +972,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     7,
@@ -903,9 +983,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     8,
@@ -913,9 +994,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     9,
@@ -923,9 +1005,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     10,
@@ -933,9 +1016,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     11,
@@ -943,9 +1027,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     12,
@@ -953,9 +1038,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     13,
@@ -963,9 +1049,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     14,
@@ -973,9 +1060,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     15,
@@ -983,9 +1071,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     16,
@@ -993,9 +1082,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     17,
@@ -1003,9 +1093,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     18,
@@ -1013,9 +1104,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     19,
@@ -1068,29 +1160,133 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 7,
-                        "$type": 8,
-                        "$rlength": 2,
+                        "$type": 9,
+                        "$rlength": 11,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 4,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    10
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 4,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
                                     0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 4,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
                                 }
                             }
                         ]
@@ -1139,29 +1335,133 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 8,
-                        "$type": 8,
-                        "$rlength": 2,
+                        "$type": 9,
+                        "$rlength": 11,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 5,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    10
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 5,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
                                     0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 5,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
                                 }
                             }
                         ]
@@ -1210,29 +1510,133 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 9,
-                        "$type": 8,
-                        "$rlength": 2,
+                        "$type": 9,
+                        "$rlength": 11,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 6,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    10
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 6,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
                                     0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 6,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
                                 }
                             }
                         ]
@@ -1281,29 +1685,133 @@
                     },
                     "isFixed": true,
                     "team": 1,
-                    "nodeSet": {
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
                         "$id": 10,
-                        "$type": 8,
-                        "$rlength": 2,
+                        "$type": 9,
+                        "$rlength": 11,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
                                 "id": 7,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    10
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 7,
+                                "hasUp": false,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
                                     0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 7,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
                                 }
                             }
                         ]
@@ -1318,195 +1826,37 @@
                     "$type": 5,
                     "id": 8,
                     "isFront": true,
-                    "name": "6x1 block id: 8",
+                    "name": "2x3 player id: 8",
                     "size": {
                         "$type": 2,
-                        6,
-                        1
+                        2,
+                        3
                     },
-                    "entityType": 1,
+                    "entityType": 3,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/6x1 block",
+                    "prefabPath": "Mobs/2x3 player",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
                         "$type": 6,
-                        null
+                        {
+                            "$type": "11|MobData, Assembly-CSharp",
+                            "movementType": 1,
+                            "canHop": true,
+                            "moveSpeed": 0.5,
+                            "canKillOnTouch": false,
+                            "touchPower": 1,
+                            "canFall": true,
+                            "canKillOnFall": false,
+                            "fallPower": 0,
+                            "canPush": true,
+                            "canBePushed": false,
+                            "canBeLifted": true
+                        }
                     },
                     "pos": {
                         "$type": 2,
-                        24,
-                        1
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 11,
-                        "$type": 8,
-                        "$rlength": 12,
-                        "$rcontent": [
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    4,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    4,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    5,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 8,
-                                "relativePos": {
-                                    "$type": 2,
-                                    5,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 9,
-                "$v": {
-                    "$type": 5,
-                    "id": 9,
-                    "isFront": true,
-                    "name": "6x1 block id: 9",
-                    "size": {
-                        "$type": 2,
-                        6,
-                        1
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/6x1 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        23,
+                        16,
                         2
                     },
                     "facing": {
@@ -1522,16 +1872,20 @@
                         1
                     },
                     "isFixed": false,
-                    "team": 1,
-                    "nodeSet": {
-                        "$id": 12,
-                        "$type": 8,
-                        "$rlength": 12,
+                    "team": 0,
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
+                        "$id": 11,
+                        "$type": 9,
+                        "$rlength": 6,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1539,9 +1893,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1549,136 +1904,93 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    1,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    1,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    2,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    4,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    4,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    5,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 9,
-                                "relativePos": {
-                                    "$type": 2,
-                                    5,
+                                    0,
                                     0
                                 }
                             }
                         ]
                     },
-                    "touchDefense": 99,
-                    "fallDefense": 99
+                    "touchDefense": 5,
+                    "fallDefense": 5
                 }
             },
             {
-                "$k": 10,
+                "$k": 9,
                 "$v": {
                     "$type": 5,
-                    "id": 10,
+                    "id": 9,
                     "isFront": true,
-                    "name": "6x1 block id: 10",
+                    "name": "4x3 cart id: 9",
                     "size": {
                         "$type": 2,
-                        6,
-                        1
+                        4,
+                        3
                     },
-                    "entityType": 1,
+                    "entityType": 3,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/6x1 block",
+                    "prefabPath": "Mobs/4x3 cart",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
                         "$type": 6,
-                        null
+                        {
+                            "$type": 11,
+                            "movementType": 0,
+                            "canHop": false,
+                            "moveSpeed": 0,
+                            "canKillOnTouch": false,
+                            "touchPower": 0,
+                            "canFall": true,
+                            "canKillOnFall": true,
+                            "fallPower": 49,
+                            "canPush": false,
+                            "canBePushed": true,
+                            "canBeLifted": false
+                        }
                     },
                     "pos": {
                         "$type": 2,
-                        20,
-                        3
+                        23,
+                        1
                     },
                     "facing": {
                         "$type": 2,
@@ -1694,15 +2006,19 @@
                     },
                     "isFixed": false,
                     "team": 1,
-                    "nodeSet": {
-                        "$id": 13,
-                        "$type": 8,
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
+                        "$id": 12,
+                        "$type": 9,
                         "$rlength": 12,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1710,9 +2026,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1720,135 +2037,158 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    1,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    1,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    2,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    2,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    3,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    3,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    4,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    4,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    5,
+                                    0,
                                     0
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 10,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
-                                    5,
+                                    0,
                                     0
                                 }
                             }
                         ]
                     },
-                    "touchDefense": 99,
-                    "fallDefense": 99
+                    "touchDefense": 50,
+                    "fallDefense": 50
                 }
             },
             {
-                "$k": 11,
+                "$k": 10,
                 "$v": {
                     "$type": 5,
-                    "id": 11,
+                    "id": 10,
                     "isFront": true,
-                    "name": "6x1 block id: 11",
+                    "name": "4x3 cart id: 10",
                     "size": {
                         "$type": 2,
-                        6,
-                        1
+                        4,
+                        3
                     },
-                    "entityType": 1,
+                    "entityType": 3,
                     "isBoundary": false,
-                    "prefabPath": "Blocks/6x1 block",
+                    "prefabPath": "Mobs/4x3 cart",
                     "isExit": false,
                     "isInitialized": true,
                     "mobData": {
                         "$type": 6,
-                        null
+                        {
+                            "$type": 11,
+                            "movementType": 0,
+                            "canHop": false,
+                            "moveSpeed": 0,
+                            "canKillOnTouch": false,
+                            "touchPower": 0,
+                            "canFall": true,
+                            "canKillOnFall": true,
+                            "fallPower": 49,
+                            "canPush": false,
+                            "canBePushed": true,
+                            "canBeLifted": false
+                        }
                     },
                     "pos": {
                         "$type": 2,
-                        25,
+                        22,
                         4
                     },
                     "facing": {
@@ -1865,15 +2205,19 @@
                     },
                     "isFixed": false,
                     "team": 1,
-                    "nodeSet": {
-                        "$id": 14,
-                        "$type": 8,
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
+                        "$id": 13,
+                        "$type": 9,
                         "$rlength": 12,
                         "$rcontent": [
                             {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 11,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1881,9 +2225,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
-                                "id": 11,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
                                 "relativePos": {
                                     "$type": 2,
                                     0,
@@ -1891,9 +2236,185 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": true,
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 50,
+                    "fallDefense": 50
+                }
+            },
+            {
+                "$k": 11,
+                "$v": {
+                    "$type": 5,
+                    "id": 11,
+                    "isFront": true,
+                    "name": "7x1 block id: 11",
+                    "size": {
+                        "$type": 2,
+                        7,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": false,
+                    "prefabPath": "Blocks/7x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        16,
+                        1
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": false,
+                    "team": 1,
+                    "nodeIArray": {
+                        "$type": 8
+                    },
+                    "serializedNodeArray": {
+                        "$id": 14,
+                        "$type": 9,
+                        "$rlength": 7,
+                        "$rcontent": [
+                            {
+                                "$type": 10,
                                 "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 10,
+                                "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     1,
@@ -1901,19 +2422,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 11,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     2,
@@ -1921,19 +2433,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 11,
-                                "relativePos": {
-                                    "$type": 2,
-                                    2,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     3,
@@ -1941,19 +2444,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 11,
-                                "relativePos": {
-                                    "$type": 2,
-                                    3,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     4,
@@ -1961,19 +2455,10 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 11,
-                                "relativePos": {
-                                    "$type": 2,
-                                    4,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 9,
-                                "isUp": true,
-                                "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
                                     5,
@@ -1981,12 +2466,13 @@
                                 }
                             },
                             {
-                                "$type": 9,
-                                "isUp": false,
+                                "$type": 10,
                                 "id": 11,
+                                "hasUp": true,
+                                "hasDown": true,
                                 "relativePos": {
                                     "$type": 2,
-                                    5,
+                                    6,
                                     0
                                 }
                             }

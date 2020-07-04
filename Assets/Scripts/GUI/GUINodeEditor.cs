@@ -22,7 +22,7 @@ public class GUINodeEditor : SerializedMonoBehaviour {
 
     // TODO: finish this
     public void SetEntity(EntityState aEntityState) {
-        Debug.Assert(aEntityState.hasNodes);
+        // Debug.Assert(aEntityState.hasNodes);
         
     }
 }

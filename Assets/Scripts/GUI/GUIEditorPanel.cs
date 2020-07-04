@@ -170,10 +170,10 @@ public class GUIEditorPanel : EditorStateListener {
             this.editModeIsFixedToggle.SetIsOnWithoutNotify(selectedEntity.isFixed);
             this.editModeIsFixedToggle.interactable = !selectedEntity.isBoundary;
             this.editModeColorPicker.SetStartingColor(selectedEntity.defaultColor);
-            this.editModeNodeEditor.gameObject.SetActive(selectedEntity.hasNodes);
-            if (selectedEntity.hasNodes) {
-                this.editModeNodeEditor.SetEntity(selectedEntity);
-            }
+            // this.editModeNodeEditor.gameObject.SetActive(selectedEntity.hasNodes);
+            // if (selectedEntity.hasNodes) {
+            //     this.editModeNodeEditor.SetEntity(selectedEntity);
+            // }
             this.editModeDeleteButton.interactable = !selectedEntity.isBoundary;
             this.editModeFlipButton.interactable = !selectedEntity.isBoundary;
             

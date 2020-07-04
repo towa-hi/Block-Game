@@ -74,17 +74,18 @@ public class EntityBase : MonoBehaviour {
         this.id = aEntityState.id;
         this.transform.position = Util.V2IOffsetV3(aEntityState.pos, aEntityState.size, aEntityState.isFront);
         this.name = aEntityState.name;
-        if (aEntityState.hasNodes) {
-            foreach (Node upNode in aEntityState.GetNodes(true)) {
-                Vector3 currentPosition = Util.V2IOffsetV3(upNode.absolutePos, new Vector2Int(1, 1));
-                float studX = currentPosition.x;
-                float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
-                GameObject stud = Instantiate(GM.instance.studPrefab, new Vector3(studX, studY, 0), Quaternion.identity);
-                stud.transform.SetParent(this.model.transform, true);
-                Renderer studRenderer = stud.GetComponent<Renderer>();
-                studRenderer.material.color = aEntityState.defaultColor;
-                this.childRenderers.Add(studRenderer);
+        foreach (Node node in aEntityState.GetNodes()) {
+            if (!node.hasUp) {
+                continue;
             }
+            Vector3 currentPosition = Util.V2IOffsetV3(node.absolutePos, new Vector2Int(1, 1));
+            float studX = currentPosition.x;
+            float studY = currentPosition.y + (Constants.BLOCKHEIGHT / 2);
+            GameObject stud = Instantiate(GM.instance.studPrefab, new Vector3(studX, studY, 0), Quaternion.identity);
+            stud.transform.SetParent(this.model.transform, true);
+            Renderer studRenderer = stud.GetComponent<Renderer>();
+            studRenderer.material.color = aEntityState.defaultColor;
+            this.childRenderers.Add(studRenderer);
         }
         SetColor(aEntityState.defaultColor);
         this.oldEntityState = aEntityState;
@@ -402,13 +403,17 @@ public class EntityBase : MonoBehaviour {
             if (currentEntityState.isFront) {
                 Gizmos.DrawWireCube(position, sizeV3);
             }
-
-            if (currentEntityState.hasNodes) {
-                Vector3 zOffset = new Vector3(0, 0, -1.01f);
-                foreach (Node node in currentEntityState.GetNodes()) {
-                    Vector3 arrowOrigin = Util.V2IOffsetV3(node.absolutePos, new Vector2Int(1, 1)) + zOffset;
-                    Gizmos.color = node.isUp ? Color.red : Color.blue;
-                    Vector3 direction = node.isUp ? new Vector3(0, 0.5f, 0) : new Vector3(0, -0.5f, 0);
+            Vector3 zOffset = new Vector3(0, 0, -1.01f);
+            foreach (Node node in currentEntityState.GetNodes()) {
+                Vector3 arrowOrigin = Util.V2IOffsetV3(node.absolutePos, new Vector2Int(1, 1)) + zOffset;
+                if (node.hasUp) {
+                    Gizmos.color = Color.red;
+                    Vector3 direction = new Vector3(0f, 0.5f, 0f);
+                    DrawArrow.I.ForGizmo(arrowOrigin, direction);
+                }
+                if (node.hasDown) {
+                    Gizmos.color = Color.blue;
+                    Vector3 direction = new Vector3(0f, -0.5f, 0f);
                     DrawArrow.I.ForGizmo(arrowOrigin, direction);
                 }
             }
