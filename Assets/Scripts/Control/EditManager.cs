@@ -69,7 +69,7 @@ public class EditManager : SerializedMonoBehaviour {
     #region Protected
 
     protected void AddSchema(Vector2Int aPos, Schema.EntitySchema aEntitySchema) {
-        if (GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
+        if (GM.boardManager.IsPosInBoard(aPos) && GM.boardManager.CanEditorPlaceSchema(aPos, aEntitySchema)) {
             GM.boardManager.AddEntityFromSchema(aEntitySchema, aPos, Constants.DEFAULTFACING, Constants.DEFAULTCOLOR);
         }
     }
