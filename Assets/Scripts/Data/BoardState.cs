@@ -244,10 +244,11 @@ public struct BoardState {
         // clear every entity in partial updates occupied cells
         ImmutableArray<BoardCell>.Builder builder = this.boardCellIArray.ToBuilder();
         foreach (int id in aEntitiesToUpdate) {
+            // Debug.Log("BoardState.UpdateBoardCellArray entity pos: " + aOldBoardState.entityDict[id].pos);
             EntityState oldEntityState = aOldBoardState.entityDict[id];
             foreach (Vector2Int oldPos in Util.V2IArrayInRect(oldEntityState.pos, oldEntityState.size)) {
-                int index = GetIndexFromPos(oldPos, aOldBoardState.size);
-                BoardCell boardCellBeingCleared = aOldBoardState.boardCellIArray[index];
+                int index = GetIndexFromPos(oldPos, this.size);
+                BoardCell boardCellBeingCleared = builder[index];
                 if (oldEntityState.isFront) {
                     boardCellBeingCleared.frontEntityId = null;
                 }
@@ -256,24 +257,28 @@ public struct BoardState {
                 }
                 builder.RemoveAt(index);
                 builder.Insert(index, boardCellBeingCleared);
-                // SetBoardCell(oldPos, null, oldEntityState.isFront);
+                // Debug.Log("BoardState.UpdateBoardCellArray cleared at " + oldPos);
             }
         }
+
         // reset every entity in partial update to new locations provided by aNewBoardState
         foreach (int id in aEntitiesToUpdate) {
+            // Debug.Log("BoardState.UpdateBoardCellArray replacing entity " + id);
             EntityState newEntityState = this.entityDict[id];
             foreach (Vector2Int newPos in Util.V2IArrayInRect(newEntityState.pos, newEntityState.size)) {
                 int index = GetIndexFromPos(newPos, this.size);
-                BoardCell boardCellWithEntity = this.boardCellIArray[index];
+                BoardCell boardCellWithEntity = builder[index];
                 if (newEntityState.isFront) {
+                    Debug.Assert(!boardCellWithEntity.frontEntityId.HasValue);
                     boardCellWithEntity.frontEntityId = newEntityState.id;
                 }
                 else {
+                    Debug.Assert(!boardCellWithEntity.backEntityId.HasValue);
                     boardCellWithEntity.backEntityId = newEntityState.id;
                 }
                 builder.RemoveAt(index);
                 builder.Insert(index, boardCellWithEntity);
-                // SetBoardCell(newPos, newEntityState.id, newEntityState.isFront);
+                // Debug.Log("BoardState.UpdateCellArray inserted at " + newPos);
             }
         }
         this.boardCellIArray = builder.MoveToImmutable();
@@ -323,6 +328,7 @@ public struct BoardState {
         BoardState oldBoardState = aBoardState;
         aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.id, aEntityState);
         aBoardState.UpdateBoardCellArray(oldBoardState, new HashSet<int>{aEntityState.id});
+        // TODO: add assert here to check if its ok to move here if moved
         return aBoardState;
     }
 

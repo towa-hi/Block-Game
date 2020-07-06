@@ -21,7 +21,7 @@ public struct BoardCell {
         return false;
     }
 
-    public int? GetCellId(bool aIsFront) {
+    public int? GetEntityId(bool aIsFront) {
         return aIsFront ? this.frontEntityId : this.backEntityId;
     }
 }
