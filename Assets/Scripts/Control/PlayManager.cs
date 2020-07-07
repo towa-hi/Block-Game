@@ -15,7 +15,6 @@ public class PlayManager : SerializedMonoBehaviour {
     public GUIPopup popup;
 
     UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
-    [SerializeField] HashSet<int> entityIdsToKillThisFrame;
     [SerializeField] PlayState playState;
     public PlayState currentState {
         get {
@@ -76,16 +75,12 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     void DoAllEntityFrames() {
-        this.entityIdsToKillThisFrame = new HashSet<int>();
-        foreach (EntityBase currentEntity in GM.boardManager.entityBaseDict.Values) {
-            currentEntity.DoFrame();
+        foreach (int entityToKillId in this.entitiesToKillNextFrame) {
+            FinishEntityDeath(entityToKillId);
         }
-        
-        foreach (int id in this.entityIdsToKillThisFrame) {
-            Debug.Assert(!GM.boardManager.currentState.entityDict.ContainsKey(id));
-            Debug.Assert(GM.boardManager.entityBaseDict.ContainsKey(id));
-            GM.boardManager.RemoveEntityBase(id);
-            print(id + " DoAllEntityFrames - entityBase removed from game");
+        this.entitiesToKillNextFrame.Clear();
+        foreach (EntityState currentEntityState in GM.boardManager.currentState.entityDict.Values) {
+            GM.boardManager.GetEntityBaseById(currentEntityState.id).DoFrame();
         }
     }
 
@@ -194,17 +189,22 @@ public class PlayManager : SerializedMonoBehaviour {
     
     #region Entity
 
-    // called when DyingState starts
-    public void StartEntityDeath(int aId) {
-        GM.boardManager.RemoveEntity(aId);
-        print(aId + " StartEntityForDeath - removed from board");
+    HashSet<int> entitiesToKillNextFrame = new HashSet<int>();
+
+    public void FlagEntityForDeath(int aId) {
+        this.entitiesToKillNextFrame.Add(aId);
+        GM.boardManager.GetEntityBaseById(aId).recievesUpdates = false;
     }
-    
-    // called when DyingState finishes
-    public void FinishEntityDeath(int aId, bool aIsPlayer = false) {
-        this.entityIdsToKillThisFrame.Add(aId);
-        print(aId + " FinishEntityDeath - entity marked for removal next frame");
-        if (aIsPlayer) {
+
+    void FinishEntityDeath(int aId) {
+        bool shouldLoseBoard = false;
+        print(aId + " FinishEntityDeath removing from board");
+        EntityState entityToDie = GM.boardManager.currentState.GetSuspendedEntityById(aId);
+        if (entityToDie.team == TeamEnum.PLAYER) {
+            shouldLoseBoard = true;
+        }
+        GM.boardManager.RemoveEntity(aId, true);
+        if (shouldLoseBoard) {
             LoseBoard();
         }
     }

@@ -69,8 +69,15 @@ public struct BoardState {
 
     #region Local Utility
 
-    public EntityState GetEntityById(int id) {
-        return this.entityDict[id];
+    public EntityState GetEntityById(int aId) {
+
+        return this.entityDict[aId];
+    }
+
+    public EntityState GetSuspendedEntityById(int aId) {
+        EntityState entityState = GetEntityById(aId);
+        Debug.Assert(entityState.isSuspended);
+        return entityState;
     }
 
     public ImmutableArray<BoardCell> GetBoardCellIArray() {
@@ -221,7 +228,6 @@ public struct BoardState {
         // for every entity set occupied cells to that entities id
         foreach (EntityState currentEntity in this.entityDict.Values) {
             foreach (Vector2Int currentPos in Util.V2IArrayInRect(currentEntity.pos, currentEntity.size)) {
-                // SetBoardCell(currentPos, currentEntity.id, currentEntity.isFront);
                 int index = GetIndexFromPos(currentPos, this.size);
                 BoardCell boardCellWithEntity = new BoardCell(currentPos);
                 if (currentEntity.isFront) {
@@ -265,6 +271,9 @@ public struct BoardState {
         foreach (int id in aEntitiesToUpdate) {
             // Debug.Log("BoardState.UpdateBoardCellArray replacing entity " + id);
             EntityState newEntityState = this.entityDict[id];
+            if (newEntityState.isSuspended) {
+                break;
+            }
             foreach (Vector2Int newPos in Util.V2IArrayInRect(newEntityState.pos, newEntityState.size)) {
                 int index = GetIndexFromPos(newPos, this.size);
                 BoardCell boardCellWithEntity = builder[index];
@@ -313,7 +322,14 @@ public struct BoardState {
         aBoardState.UpdateBoardCellArray();
         return aBoardState;
     }
-    
+
+    public static BoardState SuspendEntity(BoardState aBoardState, int aId) {
+        EntityState suspendedEntity = aBoardState.GetEntityById(aId);
+        suspendedEntity.isSuspended = true;
+        aBoardState = UpdateEntity(aBoardState, suspendedEntity);
+        return aBoardState;
+    }
+
     public static BoardState SetTitle(BoardState aBoardState, string aTitle) {
         aBoardState.title = aTitle;
         return aBoardState;

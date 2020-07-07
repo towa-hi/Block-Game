@@ -28,41 +28,53 @@ public class EntityBrain {
     public void DoFrame() {
         if (this.needsNewAction) {
             // Debug.Log(this.id + ": brain choosing next state...");
+            if (this.entityState.isSuspended) {
+                Debug.Log(this.id + " tried to DoFrame but is suspended");
+                return;
+            }
             this.needsNewAction = false;
             ActionResult newActionResult = ChooseNextAction();
-            ChangeActionExternally(newActionResult);
+            ChangeAction(newActionResult);
         }
         this.stateMachine.Update();
     }
     // TODO: hook this up
-    public void ChangeActionExternally(ActionResult aActionResult) {
-        ChangeAction(aActionResult.entityAction);
-        ExecuteActionResult(aActionResult);
-    }
 
-    public void ChangeAction(EntityAction aEntityAction) {
-        Debug.Log(aEntityAction.id);
-        Debug.Log(this.id);
-        Debug.Assert(aEntityAction.id == this.id);
-        // Debug.Log(this.id + " ChangeAction occured");
-        this.needsNewAction = false;
-        this.stateMachine.ChangeState(aEntityAction);
-
-    }
-
-    void ExecuteActionResult(ActionResult aActionResult) {
-        Debug.Assert(aActionResult.boardState.HasValue);
-        Debug.Log(this.id + " ExecuteActionResult queue size: " + aActionResult.requiredActionResultQueue.Count);
-        foreach (ActionResult requiredActionResult in aActionResult.requiredActionResultQueue) {
-            Debug.Log(this.id + " ExecuteActionResult executing " + requiredActionResult.entityAction.GetType() + " for " + requiredActionResult.entityAction.id);
-            EntityBrain otherEntityBrain = GM.boardManager.GetEntityBaseById(aActionResult.entityAction.id).entityBrain;
-            otherEntityBrain.ChangeAction(requiredActionResult.entityAction);
+    public void ChangeAction(ActionResult aActionResult) {
+        Debug.Assert(aActionResult.entityAction.id == this.id);
+        // Debug.Log(this.id + " ChangeActionExternally requiredActionResult queue size: " + aActionResult.requiredActionResultTree.Count);
+        foreach (ActionResult requiredActionResult in aActionResult.requiredActionResultTree) {
+            EntityBrain otherEntityBrain = requiredActionResult.entityAction.entityBrain;
+            otherEntityBrain.ChangeAction(requiredActionResult);
         }
-
-        Debug.Log(this.id + " ExecuteActionResult executing final action of " + aActionResult.entityAction.GetType());
-        Debug.Log(this.id + " ExecuteActionResult currentPos = " + GM.boardManager.GetEntityById(this.id).pos);
-        ChangeAction(aActionResult.entityAction);
+        this.needsNewAction = false;
+        Debug.Log(this.id + " ChangeAction performing " + aActionResult.entityAction.GetType());
+        this.stateMachine.ChangeState(aActionResult.entityAction);
     }
+
+    // public void ChangeAction(EntityAction aEntityAction) {
+    //     Debug.Log(aEntityAction.id);
+    //     Debug.Log(this.id);
+    //     Debug.Assert(aEntityAction.id == this.id);
+    //     // Debug.Log(this.id + " ChangeAction occured");
+    //     this.needsNewAction = false;
+    //     this.stateMachine.ChangeState(aEntityAction);
+    //
+    // }
+
+    // void ExecuteActionResult(ActionResult aActionResult) {
+    //     Debug.Assert(aActionResult.boardState.HasValue);
+    //     Debug.Log(this.id + " ExecuteActionResult queue size: " + aActionResult.requiredActionResultQueue.Count);
+    //     foreach (ActionResult requiredActionResult in aActionResult.requiredActionResultQueue) {
+    //         Debug.Log(this.id + " ExecuteActionResult executing " + requiredActionResult.entityAction.GetType() + " for " + requiredActionResult.entityAction.id);
+    //         EntityBrain otherEntityBrain = GM.boardManager.GetEntityBaseById(aActionResult.entityAction.id).entityBrain;
+    //         otherEntityBrain.ChangeActionExternally(requiredActionResult);
+    //     }
+    //
+    //     Debug.Log(this.id + " ExecuteActionResult executing final action of " + aActionResult.entityAction.GetType());
+    //     Debug.Log(this.id + " ExecuteActionResult currentPos = " + GM.boardManager.GetEntityById(this.id).pos);
+    //     ChangeAction(aActionResult.entityAction);
+    // }
 
     ActionResult ChooseNextAction() {
         EntityState currentState = GM.boardManager.GetEntityById(this.id);
@@ -168,6 +180,9 @@ public class WaitAction : EntityAction {
 
 public class DieAction : EntityAction {
     public int attackerId;
+    float timeToDie;
+    Vector3 startScale;
+    Vector3 endScale;
 
     public DieAction(int aId, int aAttackerId) {
         this.priorityList = new List<EntityActionEnum>();
@@ -182,15 +197,20 @@ public class DieAction : EntityAction {
         Debug.Log(this.id + " DieAction entered");
         BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
         GM.boardManager.UpdateBoardState(nextBoardState);
+        // TODO: remove this hard coded float
+        this.timeToDie = 1f;
+        this.startScale = this.entityBase.transform.localScale;
+        this.endScale = Vector3.zero;
     }
 
     public override void Update() {
         if (this.t < 1) {
-            this.t += Time.deltaTime / 1f;
+            this.t += Time.deltaTime / this.timeToDie;
+            this.entityBase.transform.localScale = Vector3.Lerp(this.startScale, this.endScale, this.t);
         }
         else {
             Debug.Log(this.id + " DieAction done");
-            GM.playManager.FinishEntityDeath(this.id, GM.boardManager.GetEntityById(this.id).team == TeamEnum.PLAYER);
+            GM.playManager.FlagEntityForDeath(this.id);
         }
     }
 
@@ -199,49 +219,57 @@ public class DieAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
-        // Debug.Log(this.id + " DieAction.GetActionResult");
+        Debug.Log(this.id + " DieAction.GetActionResult");
         BoardState simBoardState = aBoardState;
         EntityState simEntityState = simBoardState.GetEntityById(this.id);
         EntityState simAttackerEntityState = simBoardState.GetEntityById(this.attackerId);
         if (simAttackerEntityState.team != TeamEnum.NEUTRAL && simAttackerEntityState.team == simEntityState.team) {
-            // Debug.Log(this.id + " DieAction.GetActionResult is friendly fire and not NEUTRAL");
+            Debug.Log(this.id + " DieAction.GetActionResult is friendly fire and not NEUTRAL");
             return new ActionResult(this, null);
         }
         if (simAttackerEntityState.mobData == null) {
-            // Debug.Log(this.id + " DieAction.GetActionResult attacker " + this.attackerId + " is not a mob");
+            Debug.Log(this.id + " DieAction.GetActionResult attacker " + this.attackerId + " is not a mob");
             return new ActionResult(this, null);
         }
         if (simAttackerEntityState.mobData?.canKillOnTouch == true) {
             if (simAttackerEntityState.mobData.Value.touchPower > simEntityState.touchDefense) {
-                // Debug.Log(this.id + " DieAction.GetActionResult was killed by " + simAttackerEntityState);
+                Debug.Log(this.id + " DieAction.GetActionResult was killed by " + simAttackerEntityState);
                 return new ActionResult(this, ApplyAction(simBoardState));
             }
         }
         if (simEntityState.mobData?.canKillOnTouch == true) {
             if (simEntityState.mobData.Value.touchPower > simAttackerEntityState.touchDefense) {
-                // Debug.Log(this.id + " DieAction.GetActionResult killed " + simAttackerEntityState + " in retaliation");
+                Debug.Log(this.id + " DieAction.GetActionResult killed " + simAttackerEntityState + " in retaliation");
                 return new ActionResult(this, ApplyAction(simBoardState));
             }
         }
-        // Debug.Log(simEntityState.id + " DieAction.GetActionResult tied with " + this.attackerId);
+        Debug.Log(simEntityState.id + " DieAction.GetActionResult tied with " + this.attackerId);
         return new ActionResult(this, null);
+    }
+
+    static bool CanEntityAttackOtherEntity(EntityState aAttackingEntity, EntityState aDefendingEntity) {
+        if (aAttackingEntity.team == TeamEnum.NEUTRAL) {
+            return true;
+        }
+        return aAttackingEntity.team != aDefendingEntity.team;
     }
 
     public override BoardState ApplyAction(BoardState aBoardState) {
         EntityState simEntityState = aBoardState.GetEntityById(this.id);
         EntityState simAttackerEntityState = aBoardState.GetEntityById(this.attackerId);
-        Debug.Assert(simAttackerEntityState.team != TeamEnum.NEUTRAL && simAttackerEntityState.team == simEntityState.team);
+        // if the attacker isnt neutral
+        Debug.Assert(CanEntityAttackOtherEntity(simAttackerEntityState, simEntityState));
         if (simAttackerEntityState.mobData == null) {
-            return BoardState.RemoveEntity(aBoardState, simAttackerEntityState.id);
+            return BoardState.SuspendEntity(aBoardState, simAttackerEntityState.id);
         }
-        if (simAttackerEntityState.mobData?.canKillOnTouch == true) {
+        if (simAttackerEntityState.mobData.Value.canKillOnTouch == true) {
             if (simAttackerEntityState.mobData.Value.touchPower > simEntityState.touchDefense) {
-                return BoardState.RemoveEntity(aBoardState, simEntityState.id);
+                return BoardState.SuspendEntity(aBoardState, simEntityState.id);
             }
         }
         if (simEntityState.mobData?.canKillOnTouch == true) {
             if (simEntityState.mobData.Value.touchPower > simAttackerEntityState.touchDefense) {
-                return BoardState.RemoveEntity(aBoardState, simAttackerEntityState.id);
+                return BoardState.SuspendEntity(aBoardState, simAttackerEntityState.id);
             }
         }
         throw new Exception(this.id + " DieAction.ApplyAction failed to apply action");
@@ -291,11 +319,11 @@ public class PushAction : EntityAction {
 
     public override void Enter() {
         Debug.Log(this.id + " PushAction entered");
-        EntityState entityState = GM.boardManager.GetEntityById(this.entityBase.id);
+        EntityState entityState = GM.boardManager.GetEntityById(this.id);
         this.startPosition = this.entityBase.transform.position;
         this.endPosition = Util.V2IOffsetV3(entityState.pos + this.direction, entityState.size);
         BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        GM.boardManager.UpdateBoardState(nextBoardState);
+        GM.boardManager.UpdateBoardState(nextBoardState, new HashSet<int>{this.id});
     }
 
     public override void Update() {
@@ -314,7 +342,7 @@ public class PushAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
-        Debug.Log(this.id + " PushAction.GetActionResult");
+        // Debug.Log(this.id + " PushAction.GetActionResult");
         BoardState simBoardState = aBoardState;
         EntityState simEntityState = simBoardState.GetEntityById(this.id);
         Vector2Int startPos = simEntityState.pos;
@@ -323,7 +351,7 @@ public class PushAction : EntityAction {
             Debug.Log(this.id + " PushAction.ApplyAction done on a non-mob entity RETURNING");
             return new ActionResult(this, null);
         }
-        if (simEntityState.mobData?.canBePushed == false) {
+        if (simEntityState.mobData.Value.canBePushed == false) {
             Debug.Log(this.id + " PushAction.ApplyAction cant be pushed RETURNING");
             return new ActionResult(this, null);
         }
@@ -332,10 +360,12 @@ public class PushAction : EntityAction {
         foreach (BoardCell affectedBoardCell in affectedBoardSlice.Values) {
             int? affectedEntityId = affectedBoardCell.GetEntityId(simEntityState.isFront);
             if (affectedEntityId.HasValue && affectedEntityId.Value != simEntityState.id) {
-                affectedEntityIdSet.Add(affectedBoardCell.frontEntityId.Value);
+                // Debug.Log(this.id + " PushAction.ApplyAction encountered entity id " + affectedEntityId.Value + " at pos " + affectedBoardCell.pos);
+                affectedEntityIdSet.Add(affectedEntityId.Value);
             }
         }
-        Queue<ActionResult> requiredActionResultQueue = new Queue<ActionResult>();
+        Debug.Log(this.id + " PushAction.ApplyAction affectedEntityIdSet count " + affectedEntityIdSet.Count);
+        List<ActionResult> requiredActionResultList = new List<ActionResult>();
         foreach (int affectedEntityId in affectedEntityIdSet) {
             bool foundValidActionForAffectedEntity = false;
             foreach (EntityActionEnum requiredActionEnum in this.priorityList) {
@@ -354,15 +384,15 @@ public class PushAction : EntityAction {
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                Debug.Log("--- UP STACK ---");
+                Debug.Log("--- UP STACK to " + affectedEntityId + "---");
                 ActionResult requiredActionResult = requiredAction.GetActionResult(simBoardState);
-                Debug.Log("--- DOWN STACK ---");
+                Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
 
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
                     foundValidActionForAffectedEntity = true;
-                    requiredActionResultQueue = requiredActionResult.requiredActionResultQueue;
-                    requiredActionResultQueue.Enqueue(requiredActionResult);
+                    requiredActionResultList.Add(requiredActionResult);
+                    break;
                 }
                 else {
                     Debug.Log(this.id + " PushAction.GetActionResult failed to do " + requiredAction + " on " + affectedEntityId);
@@ -376,7 +406,7 @@ public class PushAction : EntityAction {
 
         simBoardState = ApplyAction(simBoardState);
         Debug.Log(this.id + " PushAction.GetActionResult returned a valid result RETURNING");
-        return new ActionResult(this, simBoardState, requiredActionResultQueue);
+        return new ActionResult(this, simBoardState, requiredActionResultList);
     }
 
     public override BoardState ApplyAction(BoardState aBoardState) {
@@ -447,7 +477,7 @@ public class MoveAction : EntityAction {
                 affectedEntityIdSet.Add(affectedBoardCell.frontEntityId.Value);
             }
         }
-        Queue<ActionResult> requiredActionResultQueue = new Queue<ActionResult>();
+        List<ActionResult> requiredActionResultList = new List<ActionResult>();
         // for each entity thats gonna get affected by this action
         foreach (int affectedEntityId in affectedEntityIdSet) {
             // flag thats true if i can get it out of the way for my action.
@@ -470,15 +500,14 @@ public class MoveAction : EntityAction {
                         throw new ArgumentOutOfRangeException();
                 }
                 // simulate that action and get result
-                Debug.Log("--- UP STACK ---");
+                Debug.Log("--- UP STACK to " + affectedEntityId + "---");
                 ActionResult requiredActionResult = requiredAction.GetActionResult(simBoardState);
-                Debug.Log("--- DOWN STACK ---");
+                Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
                 // if nextAction was valid
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
                     foundValidActionForAffectedEntity = true;
-                    requiredActionResultQueue = requiredActionResult.requiredActionResultQueue;
-                    requiredActionResultQueue.Enqueue(requiredActionResult);
+                    requiredActionResultList.Add(requiredActionResult);
                 }
                 else {
                     Debug.Log(this.id + " MoveAction.GetActionResult failed to do " + requiredAction.GetType() + " on " + affectedEntityId);
@@ -496,7 +525,7 @@ public class MoveAction : EntityAction {
         }
         simBoardState = ApplyAction(simBoardState);
         Debug.Log(this.id + " MoveAction.GetActionResult returned a valid result RETURNING");
-        return new ActionResult(this, simBoardState, requiredActionResultQueue);
+        return new ActionResult(this, simBoardState, requiredActionResultList);
     }
 
     public override BoardState ApplyAction(BoardState aBoardState) {
@@ -509,8 +538,9 @@ public class MoveAction : EntityAction {
 }
 
 public class TurnAction : EntityAction {
-    // Quaternion startRotation;
-    // Quaternion endRotation;
+    Quaternion startRotation;
+    Quaternion endRotation;
+    float turnSpeed;
 
     public TurnAction(int aId) {
         this.priorityList = new List<EntityActionEnum>();
@@ -522,13 +552,18 @@ public class TurnAction : EntityAction {
 
     public override void Enter() {
         // Debug.Log(this.id + " TurnAction entered");
+        this.startRotation = this.entityBase.transform.rotation;
+        this.endRotation = Quaternion.AngleAxis(180, Vector3.up) * this.startRotation;
         BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
+        // TODO: remove hardcoded turnSpeed
+        this.turnSpeed = 1f;
         GM.boardManager.UpdateBoardState(nextBoardState);
     }
 
     public override void Update() {
         if (this.t < 1) {
-            this.t += Time.deltaTime / 1f;
+            this.t += Time.deltaTime / this.turnSpeed;
+            this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
         }
         else {
             // Debug.Log(this.id + " TurnAction done");
@@ -537,6 +572,7 @@ public class TurnAction : EntityAction {
     }
 
     public override void Exit() {
+        this.entityBase.transform.rotation = this.endRotation;
         // Debug.Log(this.id + " TurnAction exiting");
     }
 
@@ -572,16 +608,15 @@ public abstract class EntityAction : StateMachineState {
 
 }
 
-public struct ActionResult {
+public readonly struct ActionResult {
     // a copy of boardstate
-    public EntityAction entityAction;
-    public BoardState? boardState;
-    public Queue<ActionResult> requiredActionResultQueue;
+    public readonly EntityAction entityAction;
+    public readonly BoardState? boardState;
+    public readonly List<ActionResult> requiredActionResultTree;
 
-    public ActionResult(EntityAction aEntityAction, BoardState? aBoardState, Queue<ActionResult> aActionQueue = null) {
+    public ActionResult(EntityAction aEntityAction, BoardState? aBoardState, List<ActionResult> aRequiredActionResultTree = null) {
         this.entityAction = aEntityAction;
         this.boardState = aBoardState;
-        this.requiredActionResultQueue = aActionQueue ?? new Queue<ActionResult>();
+        this.requiredActionResultTree = aRequiredActionResultTree ?? new List<ActionResult>();
     }
-
 }

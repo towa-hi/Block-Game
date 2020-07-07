@@ -78,17 +78,25 @@ public class BoardManager : SerializedMonoBehaviour {
     
     #region BoardState
 
-    public void UpdateBoardState(BoardState aBoardState) {
+    public void UpdateBoardState(BoardState aBoardState, HashSet<int> aEntitiesToUpdate = null) {
         if (Config.PRINTLISTENERUPDATES) {
             print("BoardManager - Updating BoardState for " + OnUpdateBoardState?.GetInvocationList().Length + " delegates");
         }
+        // this is the only place where boardState gets set
         this.boardState = aBoardState;
-        OnUpdateBoardState?.Invoke(this.currentState);
+        if (aEntitiesToUpdate != null) {
+            foreach (int id in aEntitiesToUpdate) {
+                GetEntityBaseById(id).OnUpdateBoardState(this.currentState);
+            }
+        }
+        else {
+            OnUpdateBoardState?.Invoke(this.currentState);
+        }
     }
 
     void UpdateEntityAndBoardState(EntityState aEntityState, HashSet<int> aEntitiesToUpdate = null) {
         BoardState newBoardState = BoardState.UpdateEntity(this.currentState, aEntityState);
-        UpdateBoardState(newBoardState);
+        UpdateBoardState(newBoardState, aEntitiesToUpdate);
     }
 
     public void SaveBoardState(bool aIsPlaytestTemp) {

@@ -21,7 +21,6 @@ public struct MobData {
 }
 
 public readonly struct Node {
-    // public readonly bool isUp;
     public readonly int id;
     public readonly bool hasUp;
     public readonly bool hasDown;
@@ -102,82 +101,8 @@ public readonly struct Node {
         // Debug.Log("did not find node");
         return null;
     }
-
-    // public Node? GetOppositeNode(Vector2Int aOffset, HashSet<int> aIgnoreList = null) {
-    //     // Debug.Log("node for id: " + this.id + " with relative pos:" + this.relativePos + "GetOppositeNode at:" + (this.oppositeNodePos + aOffset));
-    //     // EntityState? oppositeEntity = GM.boardManager.GetEntityAtPos(this.oppositeNodePos + aOffset);
-    //     int? oppositeId = GM.boardManager.boardCellDict[this.oppositeNodePos + aOffset].frontEntityId;
-    //     if (oppositeId.HasValue) {
-    //         EntityState oppositeEntity = GM.boardManager.GetEntityById(oppositeId.Value);
-    //         if (oppositeEntity.hasNodes) {
-    //             // Debug.Log("found node");
-    //             if (aIgnoreList != null) {
-    //                 if (!aIgnoreList.Contains(oppositeId.Value)) {
-    //                     // Debug.Log("returning node with id: " + oppositeId.Value);
-    //                     return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-    //                 }
-    //                 else {
-    //                     // Debug.Log("node is part of ignore list with id: " + oppositeId.Value);
-    //                 }
-    //             }
-    //             else {
-    //                 return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-    //             }
-    //         }
-    //
-    //     }
-    //     // Debug.Log("did not find node");
-    //     return null;
-    // }
-
-    // public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList) {
-    //     int? oppositeId = GM.boardManager.currentState.GetBoardCellAtPos(this.oppositeNodePos + aOffset).frontEntityId;
-    //     if (oppositeId.HasValue) {
-    //         EntityState oppositeEntity = GM.boardManager.GetEntityById(oppositeId.Value);
-    //         if (oppositeEntity.hasNodes) {
-    //             // Debug.Log("found node");
-    //             if (aIgnoreList != null) {
-    //                 if (!aIgnoreList.Contains(oppositeEntity)) {
-    //                     // Debug.Log("returning node with id: " + oppositeEntity.Value.id);
-    //                     return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-    //                 }
-    //                 else {
-    //                     // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.id);
-    //                 }
-    //             }
-    //             else {
-    //                 return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-    //             }
-    //         }
-    //     }
-    //     // Debug.Log("did not find node");
-    //     return null;
-    // }
 }
-//     public Node? GetOppositeNode(Vector2Int aOffset, HashSet<EntityState> aIgnoreList) {
-//         int? oppositeId = GM.boardManager.boardCellDict[this.oppositeNodePos + aOffset].frontEntityId;
-//         if (oppositeId.HasValue) {
-//             EntityState oppositeEntity = GM.boardManager.GetEntityById(oppositeId.Value);
-//             if (oppositeEntity.hasNodes) {
-//                 // Debug.Log("found node");
-//                 if (aIgnoreList != null) {
-//                     if (!aIgnoreList.Contains(oppositeEntity)) {
-//                         // Debug.Log("returning node with id: " + oppositeEntity.Value.id);
-//                         return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-//                     }
-//                     else {
-//                         // Debug.Log("node is part of ignore list with id: " + oppositeEntity.Value.id);
-//                     }
-//                 }
-//                 else {
-//                     return oppositeEntity.GetNodeByAbsPos(!this.isUp, this.oppositeNodePos + aOffset);
-//                 }
-//             }
-//         }
-//         // Debug.Log("did not find node");
-//         return null;
-//     }
-// }
+
 
 public struct EntityState {
     public int id;
@@ -198,13 +123,8 @@ public struct EntityState {
     public Color defaultColor;
     public bool isFixed;
     public TeamEnum team;
-    // public bool hasNodes {
-    //     get {
-    //         return this.nodeSet.Length > 0;
-    //     }
-    // }
+    public bool isSuspended;
 
-    // public HashSet<Node> nodeSet;
     public ImmutableArray<Node> nodeIArray;
     public Node[] serializedNodeArray;
     public int touchDefense;
@@ -224,11 +144,6 @@ public struct EntityState {
         this.nodeIArray = ImmutableArray.Create(this.serializedNodeArray);
         this.serializedNodeArray = null;
     }
-
-    // public static EntityState GetClone(EntityState aEntityState) {
-    //     EntityState newEntityState = aEntityState;
-    //     return newEntityState;
-    // }
 
     public static EntityState CreateEntityState(EntitySchema aEntitySchema, Vector2Int aPos, Vector2Int aFacing, Color aDefaultColor, bool aIsFixed = false, bool aIsBoundary = false) {
         EntityState newEntityState = new EntityState();
@@ -266,8 +181,7 @@ public struct EntityState {
         newEntityState.defaultColor = aDefaultColor;
         newEntityState.isFixed = aIsFixed;
         newEntityState.team = aEntitySchema.defaultTeam;
-        
-        // newEntityState.nodeSet = new HashSet<Node>();
+        newEntityState.isSuspended = false;
         newEntityState.touchDefense = aEntitySchema.touchDefense;
         newEntityState.fallDefense = aEntitySchema.fallDefense;
 
@@ -331,6 +245,7 @@ public struct EntityState {
     }
 
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
+        Debug.Assert(!aEntityState.isSuspended);
         aEntityState.pos = aPos;
         return aEntityState;
     }
@@ -374,15 +289,12 @@ public struct EntityState {
             throw new System.Exception("tried to set invalid fallDefense");
         }
     }
-    
+
     public Node? GetNodeByAbsPos(Vector2Int aAbsPos) {
         foreach (Node node in this.nodeIArray) {
             if (node.absolutePos == aAbsPos) {
                 return node;
             }
-            // if (node.isUp == aIsUp && node.relativePos + this.pos == aAbsPos) {
-            //     return node;
-            // }
         }
         return null;
     }
