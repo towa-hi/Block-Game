@@ -14,7 +14,7 @@
         24
     },
     "attempts": 0,
-    "currentId": 13,
+    "currentId": 12,
     "serializedEntityDict": {
         "$id": 1,
         "$type": "3|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], mscorlib",
@@ -22,7 +22,7 @@
             "$id": 2,
             "$type": "4|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
         },
-        "$rlength": 13,
+        "$rlength": 12,
         "$rcontent": [
             {
                 "$k": 0,
@@ -1864,8 +1864,8 @@
                     },
                     "pos": {
                         "$type": 2,
-                        22,
-                        1
+                        18,
+                        3
                     },
                     "facing": {
                         "$type": 2,
@@ -2064,7 +2064,7 @@
                     },
                     "pos": {
                         "$type": 2,
-                        18,
+                        14,
                         1
                     },
                     "facing": {
@@ -2234,207 +2234,7 @@
                     "$type": 5,
                     "id": 10,
                     "isFront": true,
-                    "name": "4x3 cart id: 10",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        3
-                    },
-                    "entityType": 3,
-                    "isBoundary": false,
-                    "prefabPath": "Mobs/4x3 cart",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        {
-                            "$type": 11,
-                            "movementType": 0,
-                            "canHop": false,
-                            "moveSpeed": 0,
-                            "canKillOnTouch": true,
-                            "touchPower": 3,
-                            "canFall": true,
-                            "canKillOnFall": true,
-                            "fallPower": 49,
-                            "canPush": false,
-                            "canBePushed": true,
-                            "canBeLifted": false
-                        }
-                    },
-                    "pos": {
-                        "$type": 2,
-                        13,
-                        1
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "isSuspended": false,
-                    "nodeIArray": {
-                        "$type": 8
-                    },
-                    "serializedNodeArray": {
-                        "$id": 13,
-                        "$type": 9,
-                        "$rlength": 12,
-                        "$rcontent": [
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 10,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 50,
-                    "fallDefense": 50
-                }
-            },
-            {
-                "$k": 11,
-                "$v": {
-                    "$type": 5,
-                    "id": 11,
-                    "isFront": true,
-                    "name": "2x2 shufflebot neutral id: 11",
+                    "name": "2x2 shufflebot neutral id: 10",
                     "size": {
                         "$type": 2,
                         2,
@@ -2464,7 +2264,7 @@
                     },
                     "pos": {
                         "$type": 2,
-                        26,
+                        20,
                         1
                     },
                     "facing": {
@@ -2486,7 +2286,7 @@
                         "$type": 8
                     },
                     "serializedNodeArray": {
-                        "$id": 14,
+                        "$id": 13,
                         "$type": 9,
                         "$rlength": 4,
                         "$rcontent": [
@@ -2541,12 +2341,12 @@
                 }
             },
             {
-                "$k": 12,
+                "$k": 11,
                 "$v": {
                     "$type": 5,
-                    "id": 12,
+                    "id": 11,
                     "isFront": true,
-                    "name": "2x3 player id: 12",
+                    "name": "2x3 player id: 11",
                     "size": {
                         "$type": 2,
                         2,
@@ -2576,7 +2376,7 @@
                     },
                     "pos": {
                         "$type": 2,
-                        8,
+                        11,
                         1
                     },
                     "facing": {
@@ -2598,7 +2398,7 @@
                         "$type": 8
                     },
                     "serializedNodeArray": {
-                        "$id": 15,
+                        "$id": 14,
                         "$type": 9,
                         "$rlength": 6,
                         "$rcontent": [

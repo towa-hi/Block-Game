@@ -21,23 +21,23 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  prefabPath: 
-  isFront: 0
-  size: {x: 0, y: 0}
-  entityType: 0
-  defaultTeam: 0
-  touchDefense: 0
-  fallDefense: 0
+  prefabPath: Mobs/Shufflebot/2x2 shufflebot
+  isFront: 1
+  size: {x: 2, y: 2}
+  entityType: 3
+  defaultTeam: 1
+  touchDefense: 1
+  fallDefense: 1
   hasNodes: 0
   movementType: 0
   canHop: 0
-  moveSpeed: 0
-  canKillOnTouch: 0
-  touchPower: 0
-  canFall: 0
+  moveSpeed: 0.4
+  canKillOnTouch: 1
+  touchPower: 10
+  canFall: 1
   canKillOnFall: 0
-  fallPower: 0
+  fallPower: 5
   canPush: 0
   canBePushed: 0
-  canBeLifted: 0
+  canBeLifted: 1
   isExit: 0

@@ -32,11 +32,12 @@ MonoBehaviour:
   movementType: 0
   canHop: 0
   moveSpeed: 0
-  canKillOnTouch: 0
-  touchPower: 0
+  canKillOnTouch: 1
+  touchPower: 3
   canFall: 1
   canKillOnFall: 1
   fallPower: 49
   canPush: 0
   canBePushed: 1
   canBeLifted: 0
+  isExit: 0
