@@ -33,7 +33,7 @@ MonoBehaviour:
   canHop: 0
   moveSpeed: 0.4
   canKillOnTouch: 1
-  touchPower: 10
+  touchPower: 1
   canFall: 1
   canKillOnFall: 0
   fallPower: 5

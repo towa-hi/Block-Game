@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using UnityEngine;
 using Sirenix.OdinInspector;
 // ReSharper disable InconsistentNaming
 
 public class EntityBrain {
-    public StateMachine stateMachine;
-    public EntityBase entityBase;
+    public readonly StateMachine stateMachine;
+    public readonly EntityBase entityBase;
     readonly int id;
     public bool needsNewAction;
-    EntityState entityState {
-        get {
-            return GM.boardManager.GetEntityById(this.entityBase.id);
-        }
-    }
 
     public EntityBrain(EntityBase aEntityBase) {
         this.entityBase = aEntityBase;
@@ -26,36 +19,35 @@ public class EntityBrain {
     }
 
     public void DoFrame() {
-
-        if (this.needsNewAction) {
-            // Debug.Log(this.id + ": brain choosing next state...");
-            EntityState currentEntityState = GM.boardManager.GetEntityById(this.id);
-            if (currentEntityState.isSuspended) {
-                Debug.Log(this.id + " tried to DoFrame but is suspended");
-                return;
-            }
-            Debug.Log(this.id + " DoFrame checking if fallable");
-            if (currentEntityState.mobData?.canFall == true) {
-                FallAction fallAction = new FallAction(this.id);
-                ActionResult fallActionResult = fallAction.GetActionResult(GM.boardManager.currentState);
-                if (fallActionResult.boardState != null) {
-                    Debug.Log(this.id + " DoFrame going to fall");
-                    ChangeAction(fallActionResult);
-                }
-                else {
-                    // TODO: make this not retarded
-                    ActionResult newActionResult = ChooseNextAction();
-                    ChangeAction(newActionResult);
-                }
+        EntityState frameEntityState = GM.boardManager.GetEntityById(this.id);
+        if (!frameEntityState.isSuspended) {
+            ActionResult? preActionResult = CheckFrameAction(frameEntityState);
+            if (preActionResult != null) {
+                Debug.Log(this.id + "doing preAction" + preActionResult.Value.entityAction.GetType());
+                ChangeAction(preActionResult.Value);
             }
             else {
-                ActionResult newActionResult = ChooseNextAction();
-                ChangeAction(newActionResult);
+                if (this.needsNewAction) {
+                    // Debug.Log(this.id + ": brain choosing next state...");
+                    ActionResult newActionResult = ChooseNextAction(frameEntityState);
+                    ChangeAction(newActionResult);
+                }
             }
         }
         this.stateMachine.Update();
     }
-    // TODO: hook this up
+
+    public ActionResult? CheckFrameAction(EntityState aEntityState) {
+        if (!this.needsNewAction && aEntityState.currentAction == EntityActionEnum.FallAction) {
+            return null;
+        }
+        if (aEntityState.mobData?.canFall != true) {
+            return null;
+        }
+        FallAction fallAction = new FallAction(this.id);
+        ActionResult fallActionResult = fallAction.GetActionResult(GM.boardManager.currentState);
+        return fallActionResult.boardState != null ? (ActionResult?) fallActionResult : null;
+    }
 
     public void ChangeAction(ActionResult aActionResult) {
         Debug.Assert(aActionResult.entityAction.id == this.id);
@@ -69,44 +61,43 @@ public class EntityBrain {
         this.stateMachine.ChangeState(aActionResult.entityAction);
     }
 
-    ActionResult ChooseNextAction() {
-        EntityState currentState = GM.boardManager.GetEntityById(this.id);
-        WaitAction waitAction = new WaitAction(this.id);
-        switch (currentState.entityType) {
+    ActionResult ChooseNextAction(EntityState aEntityState) {
+        switch (aEntityState.entityType) {
             case EntityTypeEnum.BG:
-                return waitAction.GetActionResult(GM.boardManager.currentState);
+                return new WaitAction(this.id).GetActionResult(GM.boardManager.currentState);
             case EntityTypeEnum.BLOCK:
-                return waitAction.GetActionResult(GM.boardManager.currentState);
+                return new WaitAction(this.id).GetActionResult(GM.boardManager.currentState);
             case EntityTypeEnum.PUSHABLE:
-                return waitAction.GetActionResult(GM.boardManager.currentState);
+                return new WaitAction(this.id).GetActionResult(GM.boardManager.currentState);
             case EntityTypeEnum.MOB:
-                return MobChooseNextAction();
+                return MobChooseNextAction(aEntityState);
             case EntityTypeEnum.SPECIALBLOCK:
-                return waitAction.GetActionResult(GM.boardManager.currentState);
+                return new WaitAction(this.id).GetActionResult(GM.boardManager.currentState);
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    ActionResult MobChooseNextAction() {
-        switch (this.entityState.mobData?.movementType) {
+    ActionResult MobChooseNextAction(EntityState aEntityState) {
+        Debug.Assert(aEntityState.mobData.HasValue);
+        switch (aEntityState.mobData.Value.movementType) {
             case MoveTypeEnum.INANIMATE:
                 WaitAction waitAction = new WaitAction(this.id);
                 return waitAction.GetActionResult(GM.boardManager.currentState);
             case MoveTypeEnum.PATROL:
-                MoveAction moveForwardAction = new MoveAction(this.id, this.entityState.facing);
+                MoveAction moveForwardAction = new MoveAction(this.id, aEntityState.facing);
                 // Debug.Log(this.id + " MobChooseNextAction on pos " + this.entityState.pos);
                 ActionResult moveForwardResult = moveForwardAction.GetActionResult(GM.boardManager.currentState);
                 if (moveForwardResult.boardState.HasValue) {
                     return moveForwardResult;
                 }
-                if (this.entityState.mobData?.canHop == true) {
-                    MoveAction moveForwardUpAction = new MoveAction(this.id, this.entityState.facing + Vector2Int.up);
+                if (aEntityState.mobData.Value.canHop) {
+                    MoveAction moveForwardUpAction = new MoveAction(this.id, aEntityState.facing + Vector2Int.up);
                     ActionResult moveForwardUpResult = moveForwardUpAction.GetActionResult(GM.boardManager.currentState);
                     if (moveForwardUpResult.boardState.HasValue) {
                         return moveForwardUpResult;
                     }
-                    MoveAction moveForwardDownAction = new MoveAction(this.id, this.entityState.facing + Vector2Int.down);
+                    MoveAction moveForwardDownAction = new MoveAction(this.id, aEntityState.facing + Vector2Int.down);
                     ActionResult moveForwardDownResult = moveForwardDownAction.GetActionResult(GM.boardManager.currentState);
                     if (moveForwardDownResult.boardState.HasValue) {
                         return moveForwardDownResult;
@@ -122,16 +113,10 @@ public class EntityBrain {
                 throw new NotImplementedException();
             case MoveTypeEnum.PATHFLY:
                 throw new NotImplementedException();
-            case null:
-                throw new NotImplementedException();
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
-
-    // static void ExecuteAction(EntityAction aEntityAction) {
-    //     GM.boardManager.UpdateBoardState(aEntityAction);
-    // }
 }
 
 // this enum is specifically to hard code priority lists
@@ -140,20 +125,18 @@ public enum EntityActionEnum {
     FallAction,
     DieAction,
     PushAction,
+    TurnAction,
+    WaitAction,
 }
 
 public class WaitAction : EntityAction {
 
-    public WaitAction(int aId) {
-        this.priorityList = new List<EntityActionEnum>();
-        this.id = aId;
-        this.direction = Vector2Int.zero;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
+    public WaitAction(int aId) : base(aId, EntityActionEnum.WaitAction) {
+
     }
 
     public override void Enter() {
-
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
@@ -163,37 +146,34 @@ public class WaitAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
+        Debug.Log(this.id + " WaitAction.GetActionResult");
         return new ActionResult(this, ApplyAction(aBoardState));
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        return aBoardState;
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
+        return BoardState.UpdateEntity(aBoardState, simEntityState, false);
     }
 }
 
 public class DieAction : EntityAction {
-    public int attackerId;
-    float timeToDie;
+    public readonly int attackerId;
+    readonly float timeToDie;
     Vector3 startScale;
     Vector3 endScale;
 
-    public DieAction(int aId, int aAttackerId) {
-        this.priorityList = new List<EntityActionEnum>();
-        this.id = aId;
-        this.direction = Vector2Int.zero;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
+    public DieAction(int aId, int aAttackerId) : base(aId, EntityActionEnum.DieAction) {
         this.attackerId = aAttackerId;
+        // TODO: make this not hard coded
+        this.timeToDie = 1f;
     }
 
     public override void Enter() {
         Debug.Log(this.id + " DieAction entered");
-        BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        GM.boardManager.UpdateBoardState(nextBoardState);
         // TODO: remove this hard coded float
-        this.timeToDie = 1f;
         this.startScale = this.entityBase.transform.localScale;
         this.endScale = Vector3.zero;
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
@@ -212,60 +192,52 @@ public class DieAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
-        Debug.Log(this.id + " DieAction.GetActionResult");
+        // Debug.Log(this.id + " DieAction.GetActionResult");
         BoardState simBoardState = aBoardState;
-        EntityState simEntityState = simBoardState.GetEntityById(this.id);
-        EntityState simAttackerEntityState = simBoardState.GetEntityById(this.attackerId);
-        if (simAttackerEntityState.team != TeamEnum.NEUTRAL && simAttackerEntityState.team == simEntityState.team) {
-            Debug.Log(this.id + " DieAction.GetActionResult is friendly fire and not NEUTRAL");
-            return new ActionResult(this, null);
-        }
-        if (simAttackerEntityState.mobData == null) {
-            Debug.Log(this.id + " DieAction.GetActionResult attacker " + this.attackerId + " is not a mob");
-            return new ActionResult(this, null);
-        }
-        if (simAttackerEntityState.mobData?.canKillOnTouch == true) {
-            if (simAttackerEntityState.mobData.Value.touchPower > simEntityState.touchDefense) {
-                Debug.Log(this.id + " DieAction.GetActionResult was killed by " + simAttackerEntityState);
+        switch (GetTouchFightResult(aBoardState, this.id, this.attackerId)) {
+            case FightResultEnum.DEFENDER_DIES:
                 return new ActionResult(this, ApplyAction(simBoardState));
-            }
+            case FightResultEnum.ATTACKER_DIES:
+                DieAction attackerDieAction = new DieAction(this.attackerId, this.id);
+                return new ActionResult(attackerDieAction, attackerDieAction.ApplyAction(simBoardState));
+            case FightResultEnum.TIE:
+                return new ActionResult(this, null);
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-        if (simEntityState.mobData?.canKillOnTouch == true) {
-            if (simEntityState.mobData.Value.touchPower > simAttackerEntityState.touchDefense) {
-                Debug.Log(this.id + " DieAction.GetActionResult killed " + simAttackerEntityState + " in retaliation");
-                return new ActionResult(this, ApplyAction(simBoardState));
-            }
-        }
-        Debug.Log(simEntityState.id + " DieAction.GetActionResult tied with " + this.attackerId);
-        return new ActionResult(this, null);
     }
 
-    static bool CanEntityAttackOtherEntity(EntityState aAttackingEntity, EntityState aDefendingEntity) {
-        if (aAttackingEntity.team == TeamEnum.NEUTRAL) {
-            return true;
+    public static FightResultEnum GetTouchFightResult(BoardState aBoardState, int aDefenderId, int aAttackerId) {
+        EntityState defender = aBoardState.GetEntityById(aDefenderId);
+        EntityState attacker = aBoardState.GetEntityById(aAttackerId);
+        // if attacker and defender are on different teams, or attacker and defender are on the same neutral team
+        if (attacker.team != defender.team || attacker.team == TeamEnum.NEUTRAL) {
+            if (attacker.mobData?.canKillOnTouch == true && attacker.mobData.Value.touchPower > defender.touchDefense) {
+                return FightResultEnum.DEFENDER_DIES;
+
+            }
+            if (defender.mobData?.canKillOnTouch == true && defender.mobData.Value.touchPower > attacker.touchDefense) {
+                return FightResultEnum.ATTACKER_DIES;
+            }
         }
-        return aAttackingEntity.team != aDefendingEntity.team;
+        return FightResultEnum.TIE;
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        EntityState simEntityState = aBoardState.GetEntityById(this.id);
-        EntityState simAttackerEntityState = aBoardState.GetEntityById(this.attackerId);
-        // if the attacker isnt neutral
-        Debug.Assert(CanEntityAttackOtherEntity(simAttackerEntityState, simEntityState));
-        if (simAttackerEntityState.mobData == null) {
-            return BoardState.SuspendEntity(aBoardState, simAttackerEntityState.id);
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState attacker = aBoardState.GetEntityById(this.attackerId);
+        EntityState defender = aBoardState.GetEntityById(this.id);
+        switch (GetTouchFightResult(aBoardState, defender.id, attacker.id)) {
+            case FightResultEnum.DEFENDER_DIES:
+                defender = EntityState.SetAction(defender, this.entityActionEnum);
+                defender = EntityState.SetIsSuspended(defender, true);
+                return BoardState.UpdateEntity(aBoardState, defender);
+            case FightResultEnum.ATTACKER_DIES:
+                throw new Exception("Attacker shouldn't die when ApplyAction gets called");
+            case FightResultEnum.TIE:
+                return aBoardState;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-        if (simAttackerEntityState.mobData.Value.canKillOnTouch == true) {
-            if (simAttackerEntityState.mobData.Value.touchPower > simEntityState.touchDefense) {
-                return BoardState.SuspendEntity(aBoardState, simEntityState.id);
-            }
-        }
-        if (simEntityState.mobData?.canKillOnTouch == true) {
-            if (simEntityState.mobData.Value.touchPower > simAttackerEntityState.touchDefense) {
-                return BoardState.SuspendEntity(aBoardState, simAttackerEntityState.id);
-            }
-        }
-        throw new Exception(this.id + " DieAction.ApplyAction failed to apply action");
     }
 }
 
@@ -273,13 +245,8 @@ public class FallAction : EntityAction {
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public FallAction(int aId) {
-        // this.priorityList = new List<EntityActionEnum> {EntityActionEnum.DieAction};
-        this.priorityList = new List<EntityActionEnum>();
-        this.id = aId;
-        this.direction = Vector2Int.down;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
+    public FallAction(int aId) : base(aId, EntityActionEnum.FallAction, Vector2Int.down, new List<EntityActionEnum> {EntityActionEnum.DieAction}) {
+
     }
 
     public override void Enter() {
@@ -287,8 +254,7 @@ public class FallAction : EntityAction {
         EntityState entityState = GM.boardManager.GetEntityById(this.id);
         this.startPosition = this.entityBase.transform.position;
         this.endPosition = Util.V2IOffsetV3(entityState.pos + this.direction, entityState.size);
-        BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        GM.boardManager.UpdateBoardState(nextBoardState, new HashSet<int>{this.id});
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
@@ -308,19 +274,21 @@ public class FallAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
+        // Debug.Log(this.id + " FallAction.GetActionResult");
         BoardState simBoardState = aBoardState;
         EntityState simEntityState = simBoardState.GetEntityById(this.id);
         Vector2Int startPos = simEntityState.pos;
         Vector2Int endPos = startPos + this.direction;
         if (!simEntityState.mobData.HasValue) {
-            Debug.Log(this.id + " FallAction.ApplyAction done on non-mob entity");
+            // Debug.Log(this.id + " FallAction.ApplyAction done on non-mob entity RETURNING");
             return new ActionResult(this, null);
         }
         if (!simEntityState.mobData.Value.canFall) {
-            Debug.Log(this.id + "FallAction.ApplyAction done on non fallable entity");
+            // Debug.Log(this.id + "FallAction.ApplyAction done on non fallable entity RETURNING");
             return new ActionResult(this, null);
         }
         Dictionary<Vector2Int, BoardCell> affectedBoardSlice = simBoardState.GetBoardCellSlice(endPos, simEntityState.size);
+        // Getting a list of entities inside the new position
         HashSet<int> affectedEntityIdSet = new HashSet<int>();
         foreach (BoardCell affectedBoardCell in affectedBoardSlice.Values) {
             int? affectedEntityId = affectedBoardCell.GetEntityId(simEntityState.isFront);
@@ -328,12 +296,15 @@ public class FallAction : EntityAction {
                 affectedEntityIdSet.Add(affectedEntityId.Value);
             }
         }
-        Debug.Log(this.id + " FallAction.ApplyAction affectedEntityIdSet count " + affectedEntityIdSet.Count);
+        ActionResult? deathActionResult = null;
         List<ActionResult> requiredActionResultList = new List<ActionResult>();
+        // for each entity thats gonna get affected by this action
         foreach (int affectedEntityId in affectedEntityIdSet) {
+            // flag thats true if all entities i encounter can be moved out of the way somehow
             bool foundValidActionForAffectedEntity = false;
             foreach (EntityActionEnum requiredActionEnum in this.priorityList) {
                 EntityAction requiredAction;
+                // for each possible action that nextEntity can perform
                 switch (requiredActionEnum) {
                     case EntityActionEnum.MoveAction:
                         throw new NotImplementedException();
@@ -344,36 +315,50 @@ public class FallAction : EntityAction {
                         break;
                     case EntityActionEnum.PushAction:
                         throw new NotImplementedException();
+                    case EntityActionEnum.TurnAction:
+                        throw new NotImplementedException();
+                    case EntityActionEnum.WaitAction:
+                        throw new NotImplementedException();
                     default:
-                        throw new NotImplementedException();;
+                        throw new NotImplementedException();
                 }
-                Debug.Log("--- UP STACK to " + affectedEntityId + "---");
+                // Debug.Log("--- UP STACK to " + affectedEntityId + "---");
                 ActionResult requiredActionResult = requiredAction.GetActionResult(simBoardState);
-                Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
-
+                // Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
+                    if (requiredActionResult.entityAction.id == this.id) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                            deathActionResult = requiredActionResult;
+                        }
+                    }
+                    else {
+                        Debug.Assert(requiredActionResult.entityAction.id == affectedEntityId);
+                        requiredActionResultList.Add(requiredActionResult);
+
+                    }
                     foundValidActionForAffectedEntity = true;
-                    requiredActionResultList.Add(requiredActionResult);
-                    break;
                 }
                 else {
-                    Debug.Log(this.id + " FallAction.GetActionResult failed to do " + requiredAction + " on " + affectedEntityId);
+                    // Debug.Log(this.id + " FallAction.GetActionResult failed to do " + requiredAction + " on " + affectedEntityId);
                 }
             }
             if (!foundValidActionForAffectedEntity) {
-                Debug.Log(this.id + " FallAction.GetActionResult exhausted possible actions on " + affectedEntityId + " RETURNING");
+                // Debug.Log(this.id + " FallAction.GetActionResult exhausted possible actions on " + affectedEntityId + " RETURNING");
                 return new ActionResult(this, null);
             }
+            if (deathActionResult.HasValue) {
+                Debug.Log(this.id + " FallAction.GetActionResult had only one viable move causing self-death");
+                return deathActionResult.Value;
+            }
         }
-
         simBoardState = ApplyAction(simBoardState);
-        Debug.Log(this.id + " FallAction.GetActionResult returned a valid result RETURNING");
+        // Debug.Log(this.id + " FallAction.GetActionResult returned a valid result RETURNING");
         return new ActionResult(this, simBoardState, requiredActionResultList);
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
         Vector2Int newPos = simEntityState.pos + this.direction;
         simEntityState = EntityState.SetPos(simEntityState, newPos);
         return BoardState.UpdateEntity(aBoardState, simEntityState);
@@ -381,17 +366,11 @@ public class FallAction : EntityAction {
 }
 
 public class PushAction : EntityAction {
-    int pusherId;
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public PushAction(int aId, int aPusherId, Vector2Int aDirection) {
-        this.priorityList = new List<EntityActionEnum> {EntityActionEnum.DieAction, EntityActionEnum.PushAction};
-        this.id = aId;
-        this.direction = aDirection;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
-        this.pusherId = aPusherId;
+    public PushAction(int aId, int aPusherId, Vector2Int aDirection) : base(aId, EntityActionEnum.PushAction, aDirection, new List<EntityActionEnum> {EntityActionEnum.DieAction, EntityActionEnum.PushAction}) {
+        Debug.Assert(aPusherId != this.id);
     }
 
     public override void Enter() {
@@ -399,8 +378,7 @@ public class PushAction : EntityAction {
         EntityState entityState = GM.boardManager.GetEntityById(this.id);
         this.startPosition = this.entityBase.transform.position;
         this.endPosition = Util.V2IOffsetV3(entityState.pos + this.direction, entityState.size);
-        BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        GM.boardManager.UpdateBoardState(nextBoardState, new HashSet<int>{this.id});
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
@@ -424,6 +402,10 @@ public class PushAction : EntityAction {
         EntityState simEntityState = simBoardState.GetEntityById(this.id);
         Vector2Int startPos = simEntityState.pos;
         Vector2Int endPos = startPos + this.direction;
+        if (simEntityState.currentAction == EntityActionEnum.FallAction) {
+            Debug.Log(this.id + " PushAction.ApplyAction done on falling entity RETURNING");
+            return new ActionResult(this, null);
+        }
         if (!simEntityState.mobData.HasValue) {
             Debug.Log(this.id + " PushAction.ApplyAction done on a non-mob entity RETURNING");
             return new ActionResult(this, null);
@@ -433,20 +415,23 @@ public class PushAction : EntityAction {
             return new ActionResult(this, null);
         }
         Dictionary<Vector2Int, BoardCell> affectedBoardSlice = simBoardState.GetBoardCellSlice(endPos, simEntityState.size);
+        // getting a list of entities inside the new position
         HashSet<int> affectedEntityIdSet = new HashSet<int>();
         foreach (BoardCell affectedBoardCell in affectedBoardSlice.Values) {
             int? affectedEntityId = affectedBoardCell.GetEntityId(simEntityState.isFront);
             if (affectedEntityId.HasValue && affectedEntityId.Value != simEntityState.id) {
-                // Debug.Log(this.id + " PushAction.ApplyAction encountered entity id " + affectedEntityId.Value + " at pos " + affectedBoardCell.pos);
                 affectedEntityIdSet.Add(affectedEntityId.Value);
             }
         }
-        Debug.Log(this.id + " PushAction.ApplyAction affectedEntityIdSet count " + affectedEntityIdSet.Count);
+        ActionResult? deathActionResult = null;
         List<ActionResult> requiredActionResultList = new List<ActionResult>();
+        // for each entity thats gonna get affected by this action
         foreach (int affectedEntityId in affectedEntityIdSet) {
+            // flag thats true if all entities i encounter can be moved out of the way somehow
             bool foundValidActionForAffectedEntity = false;
             foreach (EntityActionEnum requiredActionEnum in this.priorityList) {
                 EntityAction requiredAction;
+                // for each possible action that nextEntity can perform
                 switch (requiredActionEnum) {
                     case EntityActionEnum.MoveAction:
                         throw new NotImplementedException();
@@ -456,38 +441,56 @@ public class PushAction : EntityAction {
                         requiredAction = new DieAction(affectedEntityId, simEntityState.id);
                         break;
                     case EntityActionEnum.PushAction:
-                        requiredAction = new PushAction(affectedEntityId, simEntityState.id, this.direction);
+                        Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
+                        requiredAction = new PushAction(affectedEntityId, simEntityState.id, pushDirection);
                         break;
+                    case EntityActionEnum.TurnAction:
+                        throw new NotImplementedException();
+                    case EntityActionEnum.WaitAction:
+                        throw new NotImplementedException();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                Debug.Log("--- UP STACK to " + affectedEntityId + "---");
+                // simulate that action and get result
+                Debug.Log(this.id + " --- UP STACK to " + affectedEntityId + "---");
                 ActionResult requiredActionResult = requiredAction.GetActionResult(simBoardState);
-                Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
-
+                Debug.Log(this.id + " --- DOWN STACK from " + affectedEntityId + " ---");
+                // if nextAction was valid
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
+                    // if the action is one perscribed for me by the thing i encountered
+                    if (requiredActionResult.entityAction.id == this.id) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                            deathActionResult = requiredActionResult;
+                        }
+                    }
+                    else {
+                        Debug.Assert(requiredActionResult.entityAction.id == affectedEntityId);
+                        requiredActionResultList.Add(requiredActionResult);
+                    }
                     foundValidActionForAffectedEntity = true;
-                    requiredActionResultList.Add(requiredActionResult);
-                    break;
                 }
                 else {
                     Debug.Log(this.id + " PushAction.GetActionResult failed to do " + requiredAction + " on " + affectedEntityId);
                 }
             }
             if (!foundValidActionForAffectedEntity) {
-                Debug.Log(this.id + " MoveAction.GetActionResult exhausted possible actions on " + affectedEntityId + " RETURNING");
+                Debug.Log(this.id + " PushAction.GetActionResult exhausted possible actions on " + affectedEntityId + " RETURNING");
                 return new ActionResult(this, null);
             }
+            if (deathActionResult.HasValue) {
+                // requiredActionResultList.Clear();
+                Debug.Log(this.id + " PushAction.GetActionResult had only one viable move causing self-death");
+                return deathActionResult.Value;
+            }
         }
-
         simBoardState = ApplyAction(simBoardState);
         Debug.Log(this.id + " PushAction.GetActionResult returned a valid result RETURNING");
         return new ActionResult(this, simBoardState, requiredActionResultList);
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
         Vector2Int newPos = simEntityState.pos + this.direction;
         simEntityState = EntityState.SetPos(simEntityState, newPos);
         return BoardState.UpdateEntity(aBoardState, simEntityState);
@@ -498,12 +501,8 @@ public class MoveAction : EntityAction {
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public MoveAction(int aId, Vector2Int aDirection) {
-        this.priorityList = new List<EntityActionEnum>{EntityActionEnum.DieAction, EntityActionEnum.PushAction};
-        this.id = aId;
-        this.direction = aDirection;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
+    public MoveAction(int aId, Vector2Int aDirection) : base(aId, EntityActionEnum.MoveAction, aDirection, new List<EntityActionEnum>{EntityActionEnum.DieAction, EntityActionEnum.PushAction}) {
+
     }
 
 
@@ -512,8 +511,7 @@ public class MoveAction : EntityAction {
         EntityState entityState = GM.boardManager.GetEntityById(this.entityBase.id);
         this.startPosition = this.entityBase.transform.position;
         this.endPosition = Util.V2IOffsetV3(entityState.pos + this.direction, entityState.size, entityState.isFront);
-        BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        GM.boardManager.UpdateBoardState(nextBoardState);
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
@@ -551,13 +549,14 @@ public class MoveAction : EntityAction {
         foreach (BoardCell affectedBoardCell in affectedBoardSlice.Values) {
             int? affectedEntityId = affectedBoardCell.GetEntityId(simEntityState.isFront);
             if (affectedEntityId.HasValue && affectedEntityId.Value != simEntityState.id) {
-                affectedEntityIdSet.Add(affectedBoardCell.frontEntityId.Value);
+                affectedEntityIdSet.Add(affectedEntityId.Value);
             }
         }
+        ActionResult? deathActionResult = null;
         List<ActionResult> requiredActionResultList = new List<ActionResult>();
         // for each entity thats gonna get affected by this action
         foreach (int affectedEntityId in affectedEntityIdSet) {
-            // flag thats true if i can get it out of the way for my action.
+            // flag thats true if all entities i encounter can be moved out of the way somehow
             bool foundValidActionForAffectedEntity = false;
             foreach (EntityActionEnum requiredActionEnum in this.priorityList) {
                 EntityAction requiredAction;
@@ -571,20 +570,34 @@ public class MoveAction : EntityAction {
                         requiredAction = new DieAction(affectedEntityId, simEntityState.id);
                         break;
                     case EntityActionEnum.PushAction:
-                        requiredAction = new PushAction(affectedEntityId, simEntityState.id, this.direction);
+                        Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
+                        requiredAction = new PushAction(affectedEntityId, simEntityState.id, pushDirection);
                         break;
+                    case EntityActionEnum.TurnAction:
+                        throw new NotImplementedException();
+                    case EntityActionEnum.WaitAction:
+                        throw new NotImplementedException();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
                 // simulate that action and get result
-                Debug.Log("--- UP STACK to " + affectedEntityId + "---");
+                Debug.Log(this.id + " --- UP STACK to " + affectedEntityId + "---");
                 ActionResult requiredActionResult = requiredAction.GetActionResult(simBoardState);
-                Debug.Log("--- DOWN STACK from " + affectedEntityId + " ---");
+                Debug.Log(this.id + " --- DOWN STACK from " + affectedEntityId + " ---");
                 // if nextAction was valid
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
+                    // if the action is one perscribed for me by the thing i encountered
+                    if (requiredActionResult.entityAction.id == this.id) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                            deathActionResult = requiredActionResult;
+                        }
+                    }
+                    else {
+                        Debug.Assert(requiredActionResult.entityAction.id == affectedEntityId);
+                        requiredActionResultList.Add(requiredActionResult);
+                    }
                     foundValidActionForAffectedEntity = true;
-                    requiredActionResultList.Add(requiredActionResult);
                 }
                 else {
                     Debug.Log(this.id + " MoveAction.GetActionResult failed to do " + requiredAction.GetType() + " on " + affectedEntityId);
@@ -593,6 +606,11 @@ public class MoveAction : EntityAction {
             if (!foundValidActionForAffectedEntity) {
                 Debug.Log(this.id + " MoveAction.GetActionResult exhausted possible actions on " + affectedEntityId + " RETURNING");
                 return new ActionResult(this, null);
+            }
+            if (deathActionResult.HasValue) {
+                requiredActionResultList.Clear();
+                Debug.Log(this.id + " MoveAction.GetActionResult had only one viable move causing self-death");
+                return deathActionResult.Value;
             }
         }
         // another floor check
@@ -605,8 +623,8 @@ public class MoveAction : EntityAction {
         return new ActionResult(this, simBoardState, requiredActionResultList);
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
         Vector2Int newPos = simEntityState.pos + this.direction;
         // Debug.Log("MoveAction.ApplyAction set pos to " + newPos);
         simEntityState = EntityState.SetPos(simEntityState, newPos);
@@ -617,40 +635,34 @@ public class MoveAction : EntityAction {
 public class TurnAction : EntityAction {
     Quaternion startRotation;
     Quaternion endRotation;
-    float turnSpeed;
+    // TODO: remove hardcoded turnSpeed
+    const float turnSpeed = 1f;
 
-    public TurnAction(int aId) {
-        this.priorityList = new List<EntityActionEnum>();
-        this.id = aId;
-        this.direction = Vector2Int.zero;
-        this.entityBase = GM.boardManager.GetEntityBaseById(aId);
-        this.entityBrain = this.entityBase.entityBrain;
+    public TurnAction(int aId) : base(aId, EntityActionEnum.TurnAction, Vector2Int.zero) {
+
     }
 
     public override void Enter() {
-        // Debug.Log(this.id + " TurnAction entered");
+        Debug.Log(this.id + " TurnAction entered");
         this.startRotation = this.entityBase.transform.rotation;
         this.endRotation = Quaternion.AngleAxis(180, Vector3.up) * this.startRotation;
-        BoardState nextBoardState = ApplyAction(GM.boardManager.currentState);
-        // TODO: remove hardcoded turnSpeed
-        this.turnSpeed = 1f;
-        GM.boardManager.UpdateBoardState(nextBoardState);
+        UpdateBoardFromAction();
     }
 
     public override void Update() {
         if (this.t < 1) {
-            this.t += Time.deltaTime / this.turnSpeed;
+            this.t += Time.deltaTime / turnSpeed;
             this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
         }
         else {
-            // Debug.Log(this.id + " TurnAction done");
+            Debug.Log(this.id + " TurnAction done");
             this.entityBrain.needsNewAction = true;
         }
     }
 
     public override void Exit() {
         this.entityBase.transform.rotation = this.endRotation;
-        // Debug.Log(this.id + " TurnAction exiting");
+        Debug.Log(this.id + " TurnAction exiting");
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
@@ -659,34 +671,73 @@ public class TurnAction : EntityAction {
         return new ActionResult(this, simBoardState);
     }
 
-    public override BoardState ApplyAction(BoardState aBoardState) {
-        BoardState simBoardState = aBoardState;
-        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
         Vector2Int newFacing = simEntityState.facing == Vector2Int.left ? Vector2Int.right : Vector2Int.left;
         simEntityState = EntityState.SetFacing(simEntityState, newFacing);
-        return BoardState.UpdateEntity(simBoardState, simEntityState);
+        return BoardState.UpdateEntity(aBoardState, simEntityState, false);
     }
 }
 
 public abstract class EntityAction : StateMachineState {
-    public List<EntityActionEnum> priorityList = new List<EntityActionEnum>();
-    public int id;
-    public Vector2Int direction;
-    public EntityBrain entityBrain;
-    public EntityBase entityBase;
-    public float t;
+    public readonly EntityActionEnum entityActionEnum;
+    public readonly List<EntityActionEnum> priorityList;
+    public readonly int id;
+    public readonly Vector2Int direction;
+    public readonly EntityBrain entityBrain;
+    public readonly EntityBase entityBase;
+    protected float t;
+    // EntityAction should require a constructor with at least the id of the entity
+    // this constructor should set
+    // this.entityActionEnum
+    // this.priorityList
+    // this.id
+    // this.direction
+    // this.entityBrain
+    // this.entityBase
 
+    protected EntityAction(int aId, EntityActionEnum aEntityActionEnum, Vector2Int? aDirection = null, List<EntityActionEnum> aPriorityList = null) {
+        this.entityActionEnum = aEntityActionEnum;
+        this.priorityList = aPriorityList ?? new List<EntityActionEnum>();
+        this.id = aId;
+        this.direction = aDirection ?? Vector2Int.zero;
+        this.entityBase = GM.boardManager.GetEntityBaseById(this.id);
+        this.entityBrain = this.entityBase.entityBrain;
+    }
+
+
+    // Enter() must instantiate all local variables
     public abstract void Enter();
+    // always called from Enter()
+    protected void UpdateBoardFromAction(HashSet<int> aEntitiesToUpdate = null) {
+        GM.boardManager.UpdateBoardState(ApplyAction(GM.boardManager.currentState), aEntitiesToUpdate ?? new HashSet<int>{this.id});
+    }
+
+    // Update() needs to follow this template
+    // if (this.t < 1) {
+    //     this.t += Time.deltaTime / 1f;
+    //     // some kind of lerp;
+    // }
+    // else {
+    //     this.entityBrain.needsNewAction = true;
+    // }
     public abstract void Update();
+
     public abstract void Exit();
     // public abstract ActionResult GetResults(BoardState aBoardState);
-    public abstract ActionResult GetActionResult(BoardState aBoardState);
-    public abstract BoardState ApplyAction(BoardState aBoardState);
 
+    // GetActionResult and ApplyAction must not use local variables that get set by Enter()
+    public abstract ActionResult GetActionResult(BoardState aBoardState);
+    protected abstract BoardState ApplyAction(BoardState aBoardState);
+    // ApplyActionInit() always called from ApplyAction
+    protected EntityState ApplyActionGetEntityStateWithActionSet(BoardState aBoardState) {
+        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+        simEntityState = EntityState.SetAction(simEntityState, this.entityActionEnum);
+        return simEntityState;
+    }
 }
 
 public readonly struct ActionResult {
-    // a copy of boardstate
     public readonly EntityAction entityAction;
     public readonly BoardState? boardState;
     public readonly List<ActionResult> requiredActionResultTree;

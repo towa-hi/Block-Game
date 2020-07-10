@@ -6,6 +6,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine.Rendering;
+// ReSharper disable ReturnTypeCanBeEnumerable.Local
 
 public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
 
@@ -13,16 +14,17 @@ public delegate void OnUpdatePlayStateHandler(PlayState aPlayState);
 public class PlayManager : SerializedMonoBehaviour {
     public Volume v;
     public GUIPopup popup;
-
+    HashSet<int> entitiesToKillNextFrame = new HashSet<int>();
+    public event OnUpdatePlayStateHandler OnUpdatePlayState;
+    [SerializeField] StateMachine inputStateMachine = new StateMachine();
     UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
+
     [SerializeField] PlayState playState;
     public PlayState currentState {
         get {
             return this.playState;
         }
     }
-    public event OnUpdatePlayStateHandler OnUpdatePlayState;
-    [SerializeField] StateMachine inputStateMachine = new StateMachine();
     #region Lifecycle
 
     void Update() {
@@ -189,8 +191,6 @@ public class PlayManager : SerializedMonoBehaviour {
     
     #region Entity
 
-    HashSet<int> entitiesToKillNextFrame = new HashSet<int>();
-
     public void FlagEntityForDeath(int aId) {
         this.entitiesToKillNextFrame.Add(aId);
         GM.boardManager.GetEntityBaseById(aId).recievesUpdates = false;
@@ -234,97 +234,6 @@ public class PlayManager : SerializedMonoBehaviour {
     
     #region Utility
 
-    public static bool CanEntityBePushed(int aId, Vector2Int aDirection) {
-        EntityState entityToPush = GM.boardManager.GetEntityById(aId);
-        if (entityToPush.mobData?.canPush != true) {
-            return false;
-        }
-        if (GM.boardManager.IsRectEmpty(entityToPush.pos + aDirection, entityToPush.size, new HashSet<int> {entityToPush.id})) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public static bool DoesFloorExist(Vector2Int aPos, int aId) {
-        EntityState entityState = GM.boardManager.GetEntityById(aId);
-        Vector2Int floorOrigin = aPos + Vector2Int.down;
-        Vector2Int floorSize = new Vector2Int(entityState.size.x, 1);
-        if (!GM.boardManager.IsRectInBoard(floorOrigin, floorSize)) {
-            return false;
-        }
-        HashSet<BoardCell> floorSlice = GM.boardManager.GetBoardGridSlice(floorOrigin, floorSize).Values.ToHashSet();
-        foreach (BoardCell floorCell in floorSlice) {
-            if (floorCell.frontEntityId.HasValue) {
-                // EntityState floorEntity = floorCell.frontEntityId.Value;
-                // if floorEntity is me, skip
-                if (floorCell.frontEntityId.Value == entityState.id) {
-                    continue;
-                }
-                if (EntityFallOnEntityResult(entityState.id, floorCell.frontEntityId.Value) == FightResultEnum.TIE) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    public static FightResultEnum DoesAttackerWinTouchFight(int aAttackerId, int aDefenderId) {
-        EntityState attacker = GM.boardManager.GetEntityById(aAttackerId);
-        EntityState defender = GM.boardManager.GetEntityById(aDefenderId);
-        // if attacker and defender are on the same team
-        if (attacker.team == defender.team) {
-            return FightResultEnum.TIE;
-        }
-        // if attacker is a mob, can kill on touch, and has a higher power than the defenders defense
-        if (attacker.mobData.HasValue && attacker.mobData.Value.canKillOnTouch && attacker.mobData.Value.touchPower >= defender.touchDefense) {
-            return FightResultEnum.DEFENDERDIES;
-        }
-        // if defender is a mob, can kill on touch, and has a higher power than the attackers defense
-        if (defender.mobData.HasValue && defender.mobData.Value.canKillOnTouch && defender.mobData.Value.touchPower >= attacker.touchDefense) {
-            return FightResultEnum.ATTACKERDIES;
-        }
-        return FightResultEnum.TIE;
-    }
-
-    public static FightResultEnum DoesFallerWinFallFight(int aFallerId, int aDefenderId) {
-        EntityState faller = GM.boardManager.GetEntityById(aFallerId);
-        EntityState defender = GM.boardManager.GetEntityById(aDefenderId);
-        // if faller is a mob and can fall
-        if (faller.mobData?.canKillOnFall == true) {
-            if (faller.mobData.Value.fallPower >= defender.fallDefense) {
-                return FightResultEnum.DEFENDERDIES;
-            }
-        }
-        return FightResultEnum.TIE;
-    }
-    
-    public static FightResultEnum EntityFallOnEntityResult(int aId, int aOtherId) {
-        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-        switch (DoesFallerWinFallFight(aId, aOtherId)) {
-            case FightResultEnum.DEFENDERDIES:
-                // other entity squished
-                return FightResultEnum.DEFENDERDIES;
-            case FightResultEnum.TIE:
-                // cant kill with fall damage, checking if can kill by bump
-                switch(DoesAttackerWinTouchFight(aId, aOtherId)) {
-                    case FightResultEnum.DEFENDERDIES:
-                        // other entity would be killed by touch
-                        return FightResultEnum.DEFENDERDIES;
-                    case FightResultEnum.ATTACKERDIES:
-                        // this entity would be killed by other entity
-                        return FightResultEnum.ATTACKERDIES;
-                    case FightResultEnum.TIE:
-                        // this entity and other entity cant fight
-                        return FightResultEnum.TIE;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
     // TODO: optimize block selection to not do GetConnectedTree twice just to check
     // public bool TrySelectEntity(int aId, bool aIsUp) {
     //     HashSet<int> newSelectedEntityIdSet = GetSelectedEntityIdSet(aId, aIsUp);
@@ -356,9 +265,6 @@ public class PlayManager : SerializedMonoBehaviour {
         if (entityState.entityType == EntityTypeEnum.MOB) {
             return false;
         }
-        // if (!entityState.hasNodes) {
-        //     return false;
-        // }
         return true;
     }
 
@@ -395,11 +301,6 @@ public class PlayManager : SerializedMonoBehaviour {
                     }
                 }
                 if (addHangerToConnectedTree) {
-                    // foreach (int hangerConnectedId in hangerConnectedSet) {
-                    //     if (!hangerConnected.entityBase.isMarked) {
-                    //         MarkEntity(hangerConnected, IsEntityMovable(hangerConnected.id) ? Color.cyan : Color.red);
-                    //     }
-                    // }
                     selectSet.UnionWith(hangerConnectedSet);
                 }
             }
@@ -409,7 +310,6 @@ public class PlayManager : SerializedMonoBehaviour {
 
     // ReSharper disable once ReturnTypeCanBeEnumerable.Local
     HashSet<int> GetConnectedTree(int aRootId, bool aIsUp, HashSet<int> aConnectedTreeSet = null) {
-        // Debug.Assert(aRoot.hasNodes);
         if (aConnectedTreeSet == null) {
             aConnectedTreeSet = new HashSet<int> {aRootId};
         }
@@ -474,13 +374,6 @@ public class PlayManager : SerializedMonoBehaviour {
                 }
             }
         }
-    }
-
-    void MarkEntity(EntityState aEntityState, Color aColor) {
-        // foreach (Vector2Int pos in Util.V2IInRect(aEntityState.pos, aEntityState.size)) {
-        //     GM.debugDrawer.SetMarker(pos, aColor, 2f);
-        // }
-        aEntityState.entityBase.SetMarker(aColor, 2f);
     }
 
     public bool IsEntityConnectedToFixed(int aId, bool aIsUp, HashSet<EntityState> aIgnoreSet = null) {

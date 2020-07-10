@@ -17,8 +17,8 @@ public struct BoardState {
     public int par;
     public Vector2Int size;
     public int attempts;
-    [SerializeField] int currentId;
-    [SerializeField] Dictionary<int, EntityState> serializedEntityDict;
+    public int currentId;
+    public Dictionary<int, EntityState> serializedEntityDict;
     ImmutableArray<BoardCell> boardCellIArray;
 
     #region Init
@@ -124,11 +124,11 @@ public struct BoardState {
         }
         HashSet<BoardCell> floorSlice = GetBoardCellSlice(floorOrigin, floorSize).Values.ToHashSet();
         foreach (BoardCell floorCell in floorSlice) {
-            if (floorCell.frontEntityId.HasValue) {
-
-            }
             if (floorCell.frontEntityId.HasValue && floorCell.frontEntityId.Value != entityState.id) {
-                return true;
+                EntityState floorEntityState = GetEntityById(floorCell.frontEntityId.Value);
+                if (floorEntityState.currentAction != EntityActionEnum.FallAction) {
+                    return true;
+                }
             }
         }
         return false;
@@ -323,12 +323,12 @@ public struct BoardState {
         return aBoardState;
     }
 
-    public static BoardState SuspendEntity(BoardState aBoardState, int aId) {
-        EntityState suspendedEntity = aBoardState.GetEntityById(aId);
-        suspendedEntity.isSuspended = true;
-        aBoardState = UpdateEntity(aBoardState, suspendedEntity);
-        return aBoardState;
-    }
+    // public static BoardState SuspendEntity(BoardState aBoardState, int aId) {
+    //     EntityState suspendedEntity = aBoardState.GetEntityById(aId);
+    //     suspendedEntity.isSuspended = true;
+    //     aBoardState = UpdateEntity(aBoardState, suspendedEntity);
+    //     return aBoardState;
+    // }
 
     public static BoardState SetTitle(BoardState aBoardState, string aTitle) {
         aBoardState.title = aTitle;
@@ -339,19 +339,23 @@ public struct BoardState {
         aBoardState.par = aPar;
         return aBoardState;
     }
-    
-    public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState) {
+
+    public static BoardState UpdateEntity(BoardState aBoardState, EntityState aEntityState, bool aUpdateBoardCellArray = true) {
         BoardState oldBoardState = aBoardState;
         aBoardState.entityDict = aBoardState.entityDict.SetItem(aEntityState.id, aEntityState);
-        aBoardState.UpdateBoardCellArray(oldBoardState, new HashSet<int>{aEntityState.id});
+        if (aUpdateBoardCellArray) {
+            aBoardState.UpdateBoardCellArray(oldBoardState, new HashSet<int>{aEntityState.id});
+        }
         // TODO: add assert here to check if its ok to move here if moved
         return aBoardState;
     }
 
-    public static BoardState UpdateEntityBatch(BoardState aBoardState, Dictionary<int, EntityState> aEntityStateDict) {
+    public static BoardState UpdateEntityBatch(BoardState aBoardState, Dictionary<int, EntityState> aEntityStateDict, bool aUpdateBoardCellArray = true) {
         BoardState oldBoardState = aBoardState;
         aBoardState.entityDict = aBoardState.entityDict.SetItems(aEntityStateDict);
-        aBoardState.UpdateBoardCellArray(oldBoardState, aEntityStateDict.Keys.ToHashSet());
+        if (aUpdateBoardCellArray) {
+            aBoardState.UpdateBoardCellArray(oldBoardState, aEntityStateDict.Keys.ToHashSet());
+        }
         return aBoardState;
     }
 

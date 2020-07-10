@@ -47,10 +47,9 @@ public enum EntityTypeEnum {
     MOB,
     SPECIALBLOCK,
 }
-
 public enum FightResultEnum {
-    DEFENDERDIES,
-    ATTACKERDIES,
+    DEFENDER_DIES,
+    ATTACKER_DIES,
     TIE,
 }
 

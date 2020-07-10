@@ -124,6 +124,7 @@ public struct EntityState {
     public bool isFixed;
     public TeamEnum team;
     public bool isSuspended;
+    public EntityActionEnum? currentAction;
 
     public ImmutableArray<Node> nodeIArray;
     public Node[] serializedNodeArray;
@@ -242,6 +243,16 @@ public struct EntityState {
         }
 
         return ImmutableArray.Create(nodeArray);
+    }
+
+    public static EntityState SetAction(EntityState aEntityState, EntityActionEnum aActionEnum) {
+        aEntityState.currentAction = aActionEnum;
+        return aEntityState;
+    }
+
+    public static EntityState SetIsSuspended(EntityState aEntityState, bool aIsSuspended) {
+        aEntityState.isSuspended = aIsSuspended;
+        return aEntityState;
     }
 
     public static EntityState SetPos(EntityState aEntityState, Vector2Int aPos) {
