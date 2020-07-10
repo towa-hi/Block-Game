@@ -16,7 +16,6 @@ public class EntityBase : MonoBehaviour {
     HashSet<Renderer> childRenderers;
     EntityState oldEntityState;
     bool needsFirstUpdate;
-    bool isPlayer;
     static readonly int AlbedoColor = Shader.PropertyToID("_AlbedoColor");
 
     [SerializeField] public EntityBrain entityBrain;
@@ -85,9 +84,6 @@ public class EntityBase : MonoBehaviour {
         }
         SetColor(aEntityState.defaultColor);
         this.oldEntityState = aEntityState;
-        if (aEntityState.team == TeamEnum.PLAYER) {
-            this.isPlayer = true;
-        }
         this.recievesUpdates = true;
 
         this.entityBrain = new EntityBrain(this);

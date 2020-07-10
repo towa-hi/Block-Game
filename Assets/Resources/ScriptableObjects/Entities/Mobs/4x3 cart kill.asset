@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebdba317aa75b114ba62ca0b14c07ea4, type: 3}
-  m_Name: 4x3 cart
+  m_Name: 4x3 cart kill
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -32,11 +32,11 @@ MonoBehaviour:
   movementType: 0
   canHop: 0
   moveSpeed: 0
-  canKillOnTouch: 0
-  touchPower: 0
+  canKillOnTouch: 1
+  touchPower: 3
   canFall: 1
   canKillOnFall: 1
-  fallPower: 49
+  fallPower: 0
   canPush: 0
   canBePushed: 1
   canBeLifted: 0

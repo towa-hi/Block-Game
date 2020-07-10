@@ -18,29 +18,31 @@ public class EntityBrain {
         this.needsNewAction = true;
     }
 
-    public void DoFrame() {
-        EntityState frameEntityState = GM.boardManager.GetEntityById(this.id);
-        if (!frameEntityState.isSuspended) {
-            ActionResult? preActionResult = CheckFrameAction(frameEntityState);
-            if (preActionResult != null) {
-                Debug.Log(this.id + "doing preAction" + preActionResult.Value.entityAction.GetType());
-                ChangeAction(preActionResult.Value);
-            }
-            else {
-                if (this.needsNewAction) {
-                    // Debug.Log(this.id + ": brain choosing next state...");
-                    ActionResult newActionResult = ChooseNextAction(frameEntityState);
-                    ChangeAction(newActionResult);
+    public void BeforeDoFrame() {
+        if (this.needsNewAction) {
+            EntityState frameEntityState = GM.boardManager.GetEntityById(this.id);
+            if (!frameEntityState.isSuspended) {
+                ActionResult? preActionResult = CheckFrameAction(frameEntityState);
+                if (preActionResult != null) {
+                    Debug.Log(this.id + "doing preAction" + preActionResult.Value.entityAction.GetType());
+                    ChangeAction(preActionResult.Value);
                 }
+            }
+        }
+    }
+
+    public void DoFrame() {
+        if (this.needsNewAction) {
+            EntityState frameEntityState = GM.boardManager.GetEntityById(this.id);
+            if (!frameEntityState.isSuspended) {
+                ActionResult newActionResult = ChooseNextAction(frameEntityState);
+                ChangeAction(newActionResult);
             }
         }
         this.stateMachine.Update();
     }
 
-    public ActionResult? CheckFrameAction(EntityState aEntityState) {
-        if (!this.needsNewAction && aEntityState.currentAction == EntityActionEnum.FallAction) {
-            return null;
-        }
+    ActionResult? CheckFrameAction(EntityState aEntityState) {
         if (aEntityState.mobData?.canFall != true) {
             return null;
         }
@@ -49,7 +51,7 @@ public class EntityBrain {
         return fallActionResult.boardState != null ? (ActionResult?) fallActionResult : null;
     }
 
-    public void ChangeAction(ActionResult aActionResult) {
+    void ChangeAction(ActionResult aActionResult) {
         Debug.Assert(aActionResult.entityAction.id == this.id);
         // Debug.Log(this.id + " ChangeActionExternally requiredActionResult queue size: " + aActionResult.requiredActionResultTree.Count);
         foreach (ActionResult requiredActionResult in aActionResult.requiredActionResultTree) {
@@ -119,40 +121,43 @@ public class EntityBrain {
     }
 }
 
-// this enum is specifically to hard code priority lists
-public enum EntityActionEnum {
-    MoveAction,
-    FallAction,
-    DieAction,
-    PushAction,
-    TurnAction,
-    WaitAction,
-}
-
 public class WaitAction : EntityAction {
-
-    public WaitAction(int aId) : base(aId, EntityActionEnum.WaitAction) {
-
+    bool hasFramePassed;
+    public WaitAction(int aId) : base(aId, EntityActionEnum.WAIT) {
+        this.hasFramePassed = false;
     }
 
     public override void Enter() {
-        UpdateBoardFromAction();
+        EntityState entityState = GM.boardManager.GetEntityById(this.id);
+        if (entityState.currentAction != this.entityActionEnum) {
+            UpdateBoardFromAction();
+        }
     }
 
     public override void Update() {
+        if (!this.hasFramePassed) {
+            this.hasFramePassed = true;
+        }
+        else {
+            this.entityBrain.needsNewAction = true;
+        }
     }
 
     public override void Exit() {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
-        Debug.Log(this.id + " WaitAction.GetActionResult");
+        // Debug.Log(this.id + " WaitAction.GetActionResult");
         return new ActionResult(this, ApplyAction(aBoardState));
     }
 
     protected override BoardState ApplyAction(BoardState aBoardState) {
-        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
-        return BoardState.UpdateEntity(aBoardState, simEntityState, false);
+        EntityState simEntityState = aBoardState.GetEntityById(this.id);
+        if (simEntityState.currentAction != this.entityActionEnum) {
+            simEntityState = EntityState.SetAction(simEntityState, this.entityActionEnum);
+            return BoardState.UpdateEntity(aBoardState, simEntityState, false);
+        }
+        return aBoardState;
     }
 }
 
@@ -162,7 +167,7 @@ public class DieAction : EntityAction {
     Vector3 startScale;
     Vector3 endScale;
 
-    public DieAction(int aId, int aAttackerId) : base(aId, EntityActionEnum.DieAction) {
+    public DieAction(int aId, int aAttackerId) : base(aId, EntityActionEnum.DIE) {
         this.attackerId = aAttackerId;
         // TODO: make this not hard coded
         this.timeToDie = 1f;
@@ -192,15 +197,18 @@ public class DieAction : EntityAction {
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
-        // Debug.Log(this.id + " DieAction.GetActionResult");
+        Debug.Log(this.id + " DieAction.GetActionResult");
         BoardState simBoardState = aBoardState;
         switch (GetTouchFightResult(aBoardState, this.id, this.attackerId)) {
             case FightResultEnum.DEFENDER_DIES:
+                Debug.Log(this.id + " DieAction.GetActionResult defender dies");
                 return new ActionResult(this, ApplyAction(simBoardState));
             case FightResultEnum.ATTACKER_DIES:
+                Debug.Log(this.id + " DieAction.GetActionResult attacker dies");
                 DieAction attackerDieAction = new DieAction(this.attackerId, this.id);
                 return new ActionResult(attackerDieAction, attackerDieAction.ApplyAction(simBoardState));
             case FightResultEnum.TIE:
+                Debug.Log(this.id + " DieAction.GetActionResult tie");
                 return new ActionResult(this, null);
             default:
                 throw new ArgumentOutOfRangeException();
@@ -245,7 +253,7 @@ public class FallAction : EntityAction {
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public FallAction(int aId) : base(aId, EntityActionEnum.FallAction, Vector2Int.down, new List<EntityActionEnum> {EntityActionEnum.DieAction}) {
+    public FallAction(int aId) : base(aId, EntityActionEnum.FALL, Vector2Int.down, new List<EntityActionEnum> {EntityActionEnum.DIE}) {
 
     }
 
@@ -263,14 +271,13 @@ public class FallAction : EntityAction {
             this.entityBase.transform.position = Vector3.Lerp(this.startPosition, this.endPosition, this.t);
         }
         else {
-            // TODO: figure out why FallAction done happens
-            Debug.Log(this.id + " FallAction done t: " + this.t);
+            // Debug.Log(this.id + " FallAction done t: " + this.t);
             this.entityBrain.needsNewAction = true;
         }
     }
 
     public override void Exit() {
-        Debug.Log(this.id + "FallAction exited");
+        Debug.Log(this.id + " FallAction exited");
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
@@ -306,18 +313,18 @@ public class FallAction : EntityAction {
                 EntityAction requiredAction;
                 // for each possible action that nextEntity can perform
                 switch (requiredActionEnum) {
-                    case EntityActionEnum.MoveAction:
+                    case EntityActionEnum.MOVE:
                         throw new NotImplementedException();
-                    case EntityActionEnum.FallAction:
+                    case EntityActionEnum.FALL:
                         throw new NotImplementedException();
-                    case EntityActionEnum.DieAction:
+                    case EntityActionEnum.DIE:
                         requiredAction = new DieAction(affectedEntityId, simEntityState.id);
                         break;
-                    case EntityActionEnum.PushAction:
+                    case EntityActionEnum.PUSH:
                         throw new NotImplementedException();
-                    case EntityActionEnum.TurnAction:
+                    case EntityActionEnum.TURN:
                         throw new NotImplementedException();
-                    case EntityActionEnum.WaitAction:
+                    case EntityActionEnum.WAIT:
                         throw new NotImplementedException();
                     default:
                         throw new NotImplementedException();
@@ -328,7 +335,7 @@ public class FallAction : EntityAction {
                 if (requiredActionResult.boardState.HasValue) {
                     simBoardState = requiredActionResult.boardState.Value;
                     if (requiredActionResult.entityAction.id == this.id) {
-                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DIE) {
                             deathActionResult = requiredActionResult;
                         }
                     }
@@ -369,7 +376,7 @@ public class PushAction : EntityAction {
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public PushAction(int aId, int aPusherId, Vector2Int aDirection) : base(aId, EntityActionEnum.PushAction, aDirection, new List<EntityActionEnum> {EntityActionEnum.DieAction, EntityActionEnum.PushAction}) {
+    public PushAction(int aId, int aPusherId, Vector2Int aDirection) : base(aId, EntityActionEnum.PUSH, aDirection, new List<EntityActionEnum> {EntityActionEnum.DIE, EntityActionEnum.PUSH}) {
         Debug.Assert(aPusherId != this.id);
     }
 
@@ -393,7 +400,7 @@ public class PushAction : EntityAction {
     }
 
     public override void Exit() {
-        Debug.Log(this.id + "PushAction exited");
+        Debug.Log(this.id + " PushAction exited");
     }
 
     public override ActionResult GetActionResult(BoardState aBoardState) {
@@ -402,7 +409,7 @@ public class PushAction : EntityAction {
         EntityState simEntityState = simBoardState.GetEntityById(this.id);
         Vector2Int startPos = simEntityState.pos;
         Vector2Int endPos = startPos + this.direction;
-        if (simEntityState.currentAction == EntityActionEnum.FallAction) {
+        if (simEntityState.currentAction == EntityActionEnum.FALL) {
             Debug.Log(this.id + " PushAction.ApplyAction done on falling entity RETURNING");
             return new ActionResult(this, null);
         }
@@ -414,6 +421,10 @@ public class PushAction : EntityAction {
             Debug.Log(this.id + " PushAction.ApplyAction cant be pushed RETURNING");
             return new ActionResult(this, null);
         }
+        // if (!aBoardState.DoesFloorExist(simEntityState.pos, simEntityState.id)) {
+        //     Debug.Log(this.id + " PushAction.ApplyAction cant be pushed because no floor RETURNING");
+        //     return new ActionResult(this, null);
+        // }
         Dictionary<Vector2Int, BoardCell> affectedBoardSlice = simBoardState.GetBoardCellSlice(endPos, simEntityState.size);
         // getting a list of entities inside the new position
         HashSet<int> affectedEntityIdSet = new HashSet<int>();
@@ -433,20 +444,20 @@ public class PushAction : EntityAction {
                 EntityAction requiredAction;
                 // for each possible action that nextEntity can perform
                 switch (requiredActionEnum) {
-                    case EntityActionEnum.MoveAction:
+                    case EntityActionEnum.MOVE:
                         throw new NotImplementedException();
-                    case EntityActionEnum.FallAction:
+                    case EntityActionEnum.FALL:
                         throw new NotImplementedException();
-                    case EntityActionEnum.DieAction:
+                    case EntityActionEnum.DIE:
                         requiredAction = new DieAction(affectedEntityId, simEntityState.id);
                         break;
-                    case EntityActionEnum.PushAction:
+                    case EntityActionEnum.PUSH:
                         Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
                         requiredAction = new PushAction(affectedEntityId, simEntityState.id, pushDirection);
                         break;
-                    case EntityActionEnum.TurnAction:
+                    case EntityActionEnum.TURN:
                         throw new NotImplementedException();
-                    case EntityActionEnum.WaitAction:
+                    case EntityActionEnum.WAIT:
                         throw new NotImplementedException();
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -460,7 +471,7 @@ public class PushAction : EntityAction {
                     simBoardState = requiredActionResult.boardState.Value;
                     // if the action is one perscribed for me by the thing i encountered
                     if (requiredActionResult.entityAction.id == this.id) {
-                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DIE) {
                             deathActionResult = requiredActionResult;
                         }
                     }
@@ -501,7 +512,7 @@ public class MoveAction : EntityAction {
     Vector3 startPosition;
     Vector3 endPosition;
 
-    public MoveAction(int aId, Vector2Int aDirection) : base(aId, EntityActionEnum.MoveAction, aDirection, new List<EntityActionEnum>{EntityActionEnum.DieAction, EntityActionEnum.PushAction}) {
+    public MoveAction(int aId, Vector2Int aDirection) : base(aId, EntityActionEnum.MOVE, aDirection, new List<EntityActionEnum>{EntityActionEnum.DIE, EntityActionEnum.PUSH}) {
 
     }
 
@@ -562,20 +573,20 @@ public class MoveAction : EntityAction {
                 EntityAction requiredAction;
                 // for each possible action that nextEntity can perform
                 switch (requiredActionEnum) {
-                    case EntityActionEnum.MoveAction:
+                    case EntityActionEnum.MOVE:
                         throw new NotImplementedException();
-                    case EntityActionEnum.FallAction:
+                    case EntityActionEnum.FALL:
                         throw new NotImplementedException();
-                    case EntityActionEnum.DieAction:
+                    case EntityActionEnum.DIE:
                         requiredAction = new DieAction(affectedEntityId, simEntityState.id);
                         break;
-                    case EntityActionEnum.PushAction:
+                    case EntityActionEnum.PUSH:
                         Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
                         requiredAction = new PushAction(affectedEntityId, simEntityState.id, pushDirection);
                         break;
-                    case EntityActionEnum.TurnAction:
+                    case EntityActionEnum.TURN:
                         throw new NotImplementedException();
-                    case EntityActionEnum.WaitAction:
+                    case EntityActionEnum.WAIT:
                         throw new NotImplementedException();
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -589,7 +600,7 @@ public class MoveAction : EntityAction {
                     simBoardState = requiredActionResult.boardState.Value;
                     // if the action is one perscribed for me by the thing i encountered
                     if (requiredActionResult.entityAction.id == this.id) {
-                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DieAction) {
+                        if (requiredActionResult.entityAction.entityActionEnum == EntityActionEnum.DIE) {
                             deathActionResult = requiredActionResult;
                         }
                     }
@@ -638,7 +649,7 @@ public class TurnAction : EntityAction {
     // TODO: remove hardcoded turnSpeed
     const float turnSpeed = 1f;
 
-    public TurnAction(int aId) : base(aId, EntityActionEnum.TurnAction, Vector2Int.zero) {
+    public TurnAction(int aId) : base(aId, EntityActionEnum.TURN, Vector2Int.zero) {
 
     }
 
@@ -686,6 +697,7 @@ public abstract class EntityAction : StateMachineState {
     public readonly Vector2Int direction;
     public readonly EntityBrain entityBrain;
     public readonly EntityBase entityBase;
+    public readonly bool canBeInterrupted;
     protected float t;
     // EntityAction should require a constructor with at least the id of the entity
     // this constructor should set
@@ -703,6 +715,28 @@ public abstract class EntityAction : StateMachineState {
         this.direction = aDirection ?? Vector2Int.zero;
         this.entityBase = GM.boardManager.GetEntityBaseById(this.id);
         this.entityBrain = this.entityBase.entityBrain;
+        switch (this.entityActionEnum) {
+            case EntityActionEnum.MOVE:
+                this.canBeInterrupted = true;
+                break;
+            case EntityActionEnum.FALL:
+                this.canBeInterrupted = true;
+                break;
+            case EntityActionEnum.DIE:
+                this.canBeInterrupted = false;
+                break;
+            case EntityActionEnum.PUSH:
+                this.canBeInterrupted = true;
+                break;
+            case EntityActionEnum.TURN:
+                this.canBeInterrupted = true;
+                break;
+            case EntityActionEnum.WAIT:
+                this.canBeInterrupted = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
 

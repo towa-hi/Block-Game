@@ -40,6 +40,17 @@ public enum EffectTypeEnum {
     SPAWN,
 }
 
+// this enum is specifically to hard code priority lists
+// WARNING: don't fuck with the placement of these or save files will break!!!
+public enum EntityActionEnum {
+    MOVE,
+    FALL,
+    DIE,
+    PUSH,
+    TURN,
+    WAIT,
+}
+
 public enum EntityTypeEnum {
     BG,
     BLOCK,

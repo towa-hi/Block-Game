@@ -34,6 +34,7 @@ public class GM : SerializedMonoBehaviour {
     public GameObject pausePanel;
 
     void Awake() {
+        Debug.unityLogger.logEnabled = Config.LOGGING;
         GM.instance = this;
         this.OnUpdateGameState = null;
         this.filePicker = this.canvasGameObject.transform.Find("FilePicker").GetComponent<GUIFilePicker>();
@@ -55,7 +56,7 @@ public class GM : SerializedMonoBehaviour {
 
     void Start() {
         SetGameMode(GameModeEnum.EDITING);
-        GM.boardManager.InitializeStartingBoard();
+        boardManager.InitializeStartingBoard();
     }
     public void SetGameMode(GameModeEnum aGameMode) {
         GameState newGameState = GameState.SetGameMode(this.gameState, aGameMode);

@@ -126,7 +126,7 @@ public struct BoardState {
         foreach (BoardCell floorCell in floorSlice) {
             if (floorCell.frontEntityId.HasValue && floorCell.frontEntityId.Value != entityState.id) {
                 EntityState floorEntityState = GetEntityById(floorCell.frontEntityId.Value);
-                if (floorEntityState.currentAction != EntityActionEnum.FallAction) {
+                if (floorEntityState.currentAction != EntityActionEnum.FALL) {
                     return true;
                 }
             }
@@ -318,17 +318,10 @@ public struct BoardState {
     
     public static BoardState RemoveEntity(BoardState aBoardState, int aId) {
         aBoardState.entityDict = aBoardState.entityDict.Remove(aId);
-        Debug.Log("removed Entity");
+        Debug.Log("BoardState.RemoveEntity removed Entity");
         aBoardState.UpdateBoardCellArray();
         return aBoardState;
     }
-
-    // public static BoardState SuspendEntity(BoardState aBoardState, int aId) {
-    //     EntityState suspendedEntity = aBoardState.GetEntityById(aId);
-    //     suspendedEntity.isSuspended = true;
-    //     aBoardState = UpdateEntity(aBoardState, suspendedEntity);
-    //     return aBoardState;
-    // }
 
     public static BoardState SetTitle(BoardState aBoardState, string aTitle) {
         aBoardState.title = aTitle;
@@ -346,7 +339,6 @@ public struct BoardState {
         if (aUpdateBoardCellArray) {
             aBoardState.UpdateBoardCellArray(oldBoardState, new HashSet<int>{aEntityState.id});
         }
-        // TODO: add assert here to check if its ok to move here if moved
         return aBoardState;
     }
 

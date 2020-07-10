@@ -30,6 +30,20 @@ public class PlayManager : SerializedMonoBehaviour {
     void Update() {
         switch (GM.instance.currentState.gameMode) {
             case GameModeEnum.PLAYING:
+                this.inputStateMachine.Update();
+                break;
+            case GameModeEnum.EDITING:
+                break;
+            case GameModeEnum.PLAYTESTING:
+                this.inputStateMachine.Update();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    void FixedUpdate() {
+        switch (GM.instance.currentState.gameMode) {
+            case GameModeEnum.PLAYING:
                 PlayingUpdate();
                 break;
             case GameModeEnum.EDITING:
@@ -45,7 +59,6 @@ public class PlayManager : SerializedMonoBehaviour {
     }
     
     void PlayingUpdate() {
-        this.inputStateMachine.Update();
         switch (this.currentState.playMode) {
             case PlayModeEnum.INITIALIZATION:
                 break;
@@ -81,8 +94,12 @@ public class PlayManager : SerializedMonoBehaviour {
             FinishEntityDeath(entityToKillId);
         }
         this.entitiesToKillNextFrame.Clear();
-        foreach (EntityState currentEntityState in GM.boardManager.currentState.entityDict.Values) {
-            GM.boardManager.GetEntityBaseById(currentEntityState.id).DoFrame();
+        IEnumerable entitiesOnBoard = GM.boardManager.currentState.entityDict.Values;
+        foreach (EntityState currentEntityState in entitiesOnBoard) {
+            GM.boardManager.GetEntityBaseById(currentEntityState.id).entityBrain.BeforeDoFrame();
+        }
+        foreach (EntityState currentEntityState in entitiesOnBoard) {
+            GM.boardManager.GetEntityBaseById(currentEntityState.id).entityBrain.DoFrame();
         }
     }
 
