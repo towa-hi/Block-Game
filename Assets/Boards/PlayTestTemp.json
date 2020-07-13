@@ -14,7 +14,7 @@
         24
     },
     "attempts": 0,
-    "currentId": 9,
+    "currentId": 8,
     "serializedEntityDict": {
         "$id": 1,
         "$type": "3|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], mscorlib",
@@ -22,7 +22,7 @@
             "$id": 2,
             "$type": "4|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
         },
-        "$rlength": 9,
+        "$rlength": 8,
         "$rcontent": [
             {
                 "$k": 0,
@@ -1858,144 +1858,6 @@
                     },
                     "touchDefense": 99,
                     "fallDefense": 99
-                }
-            },
-            {
-                "$k": 8,
-                "$v": {
-                    "$type": 5,
-                    "id": 8,
-                    "isFront": true,
-                    "name": "2x3 player id: 8",
-                    "size": {
-                        "$type": 2,
-                        2,
-                        3
-                    },
-                    "entityType": 3,
-                    "isBoundary": false,
-                    "prefabPath": "Mobs/2x3 player",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        {
-                            "$type": "12|MobData, Assembly-CSharp",
-                            "movementType": 1,
-                            "canHop": true,
-                            "moveSpeed": 0.5,
-                            "canKillOnTouch": false,
-                            "touchPower": 1,
-                            "canFall": true,
-                            "canKillOnFall": false,
-                            "fallPower": 0,
-                            "canPush": true,
-                            "canBePushed": false,
-                            "canBeLifted": true
-                        }
-                    },
-                    "pos": {
-                        "$type": 2,
-                        17,
-                        1
-                    },
-                    "facing": {
-                        "$type": 2,
-                        -1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 0,
-                    "isSuspended": false,
-                    "currentAction": {
-                        "$type": 8,
-                        5
-                    },
-                    "nodeIArray": {
-                        "$type": 9
-                    },
-                    "serializedNodeArray": {
-                        "$id": 11,
-                        "$type": 10,
-                        "$rlength": 6,
-                        "$rcontent": [
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 5,
-                    "fallDefense": 5
                 }
             }
         ]

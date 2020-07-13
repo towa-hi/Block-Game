@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 
@@ -210,12 +209,12 @@ public class EntityBase : MonoBehaviour {
                 if (node.hasUp) {
                     Gizmos.color = Color.red;
                     Vector3 direction = new Vector3(0f, 0.5f, 0f);
-                    DrawArrow.I.ForGizmo(arrowOrigin, direction);
+                    // DrawArrow.I.ForGizmo(arrowOrigin, direction);
                 }
                 if (node.hasDown) {
                     Gizmos.color = Color.blue;
                     Vector3 direction = new Vector3(0f, -0.5f, 0f);
-                    DrawArrow.I.ForGizmo(arrowOrigin, direction);
+                    // DrawArrow.I.ForGizmo(arrowOrigin, direction);
                 }
             }
         }
