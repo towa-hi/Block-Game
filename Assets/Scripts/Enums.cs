@@ -49,6 +49,7 @@ public enum EntityActionEnum {
     PUSH,
     TURN,
     WAIT,
+    EXIT,
 }
 
 public enum EntityTypeEnum {

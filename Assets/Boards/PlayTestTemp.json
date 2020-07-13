@@ -14,7 +14,7 @@
         24
     },
     "attempts": 0,
-    "currentId": 12,
+    "currentId": 9,
     "serializedEntityDict": {
         "$id": 1,
         "$type": "3|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], mscorlib",
@@ -22,7 +22,7 @@
             "$id": 2,
             "$type": "4|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
         },
-        "$rlength": 12,
+        "$rlength": 9,
         "$rcontent": [
             {
                 "$k": 0,
@@ -1866,211 +1866,7 @@
                     "$type": 5,
                     "id": 8,
                     "isFront": true,
-                    "name": "4x3 cart id: 8",
-                    "size": {
-                        "$type": 2,
-                        4,
-                        3
-                    },
-                    "entityType": 3,
-                    "isBoundary": false,
-                    "prefabPath": "Mobs/4x3 cart",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        {
-                            "$type": "12|MobData, Assembly-CSharp",
-                            "movementType": 0,
-                            "canHop": false,
-                            "moveSpeed": 0,
-                            "canKillOnTouch": false,
-                            "touchPower": 0,
-                            "canFall": true,
-                            "canKillOnFall": true,
-                            "fallPower": 49,
-                            "canPush": false,
-                            "canBePushed": true,
-                            "canBeLifted": false
-                        }
-                    },
-                    "pos": {
-                        "$type": 2,
-                        23,
-                        6
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "isSuspended": false,
-                    "currentAction": {
-                        "$type": 8,
-                        5
-                    },
-                    "nodeIArray": {
-                        "$type": 9
-                    },
-                    "serializedNodeArray": {
-                        "$id": 11,
-                        "$type": 10,
-                        "$rlength": 12,
-                        "$rcontent": [
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 50,
-                    "fallDefense": 50
-                }
-            },
-            {
-                "$k": 9,
-                "$v": {
-                    "$type": 5,
-                    "id": 9,
-                    "isFront": true,
-                    "name": "2x3 player id: 9",
+                    "name": "2x3 player id: 8",
                     "size": {
                         "$type": 2,
                         2,
@@ -2084,7 +1880,7 @@
                     "mobData": {
                         "$type": 6,
                         {
-                            "$type": 12,
+                            "$type": "12|MobData, Assembly-CSharp",
                             "movementType": 1,
                             "canHop": true,
                             "moveSpeed": 0.5,
@@ -2100,12 +1896,12 @@
                     },
                     "pos": {
                         "$type": 2,
-                        16,
+                        17,
                         1
                     },
                     "facing": {
                         "$type": 2,
-                        1,
+                        -1,
                         0
                     },
                     "defaultColor": {
@@ -2126,7 +1922,7 @@
                         "$type": 9
                     },
                     "serializedNodeArray": {
-                        "$id": 12,
+                        "$id": 11,
                         "$type": 10,
                         "$rlength": 6,
                         "$rcontent": [
@@ -2200,256 +1996,6 @@
                     },
                     "touchDefense": 5,
                     "fallDefense": 5
-                }
-            },
-            {
-                "$k": 10,
-                "$v": {
-                    "$type": 5,
-                    "id": 10,
-                    "isFront": true,
-                    "name": "2x3 block id: 10",
-                    "size": {
-                        "$type": 2,
-                        2,
-                        3
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/2x3 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        27,
-                        1
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "isSuspended": false,
-                    "currentAction": {
-                        "$type": 8,
-                        5
-                    },
-                    "nodeIArray": {
-                        "$type": 9
-                    },
-                    "serializedNodeArray": {
-                        "$id": 13,
-                        "$type": 10,
-                        "$rlength": 6,
-                        "$rcontent": [
-                            {
-                                "$type": 11,
-                                "id": 10,
-                                "hasUp": false,
-                                "hasDown": true,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 10,
-                                "hasUp": false,
-                                "hasDown": true,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 10,
-                                "hasUp": true,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 10,
-                                "hasUp": true,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    2
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
-                }
-            },
-            {
-                "$k": 11,
-                "$v": {
-                    "$type": 5,
-                    "id": 11,
-                    "isFront": true,
-                    "name": "2x3 block id: 11",
-                    "size": {
-                        "$type": 2,
-                        2,
-                        3
-                    },
-                    "entityType": 1,
-                    "isBoundary": false,
-                    "prefabPath": "Blocks/2x3 block",
-                    "isExit": false,
-                    "isInitialized": true,
-                    "mobData": {
-                        "$type": 6,
-                        null
-                    },
-                    "pos": {
-                        "$type": 2,
-                        27,
-                        4
-                    },
-                    "facing": {
-                        "$type": 2,
-                        1,
-                        0
-                    },
-                    "defaultColor": {
-                        "$type": 7,
-                        1,
-                        1,
-                        1,
-                        1
-                    },
-                    "isFixed": false,
-                    "team": 1,
-                    "isSuspended": false,
-                    "currentAction": {
-                        "$type": 8,
-                        5
-                    },
-                    "nodeIArray": {
-                        "$type": 9
-                    },
-                    "serializedNodeArray": {
-                        "$id": 14,
-                        "$type": 10,
-                        "$rlength": 6,
-                        "$rcontent": [
-                            {
-                                "$type": 11,
-                                "id": 11,
-                                "hasUp": false,
-                                "hasDown": true,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 11,
-                                "hasUp": false,
-                                "hasDown": true,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 0,
-                                "hasUp": false,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    0
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 11,
-                                "hasUp": true,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    0,
-                                    2
-                                }
-                            },
-                            {
-                                "$type": 11,
-                                "id": 11,
-                                "hasUp": true,
-                                "hasDown": false,
-                                "relativePos": {
-                                    "$type": 2,
-                                    1,
-                                    2
-                                }
-                            }
-                        ]
-                    },
-                    "touchDefense": 99,
-                    "fallDefense": 99
                 }
             }
         ]

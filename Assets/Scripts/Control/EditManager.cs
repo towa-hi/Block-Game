@@ -181,10 +181,10 @@ public class EditManager : SerializedMonoBehaviour {
             EntityState selectedEntity = GetSelectedEntity();
             if (Util.IsDirection(selectedEntity.facing)) {
                 if (selectedEntity.facing == Vector2Int.left) {
-                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.right);
+                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.right, true);
                 }
                 else if (selectedEntity.facing == Vector2Int.right) {
-                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.left);
+                    GM.boardManager.SetEntityFacing(this.currentState.selectedEntityId, Vector2Int.left, true);
                 }
                 else {
                     throw new Exception("OnFlipButtonClicked - selectedEntityFacing isn't left or right");

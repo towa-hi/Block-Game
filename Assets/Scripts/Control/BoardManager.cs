@@ -209,10 +209,13 @@ public class BoardManager : SerializedMonoBehaviour {
         }
     }
 
-    public void SetEntityFacing(int aId, Vector2Int aFacing) {
+    public void SetEntityFacing(int aId, Vector2Int aFacing, bool aSetEntityBase = false) {
         EntityState entityState = GetEntityById(aId);
         if (Util.IsDirection(aFacing)) {
             UpdateEntityAndBoardState(EntityState.SetFacing(entityState, aFacing), new HashSet<int>{aId});
+            if (aSetEntityBase) {
+                entityState.entityBase.ResetView();
+            }
         } else {
             throw new Exception("SetEntityFacing - invalid facing direction");
         }

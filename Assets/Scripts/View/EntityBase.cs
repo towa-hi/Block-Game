@@ -109,7 +109,7 @@ public class EntityBase : MonoBehaviour {
         // if first update
         if (this.needsFirstUpdate) {
             // this.oldEntityState = newEntityState;
-            // this.needsFirstUpdate = false;
+            this.needsFirstUpdate = false;
         }
         EntityState newEntityState = aBoardState.entityDict[this.id];
         if (!this.oldEntityState.defaultColor.Equals(newEntityState.defaultColor)) {
@@ -154,6 +154,14 @@ public class EntityBase : MonoBehaviour {
     public void ResetView() {
         EntityState currentState = GM.boardManager.GetEntityById(this.id);
         this.transform.position = Util.V2IOffsetV3(currentState.pos, this.entityState.size, this.entityState.isFront);
+        if (this.entityState.facing == Vector2Int.left) {
+            print("facing left");
+            this.transform.rotation = Quaternion.AngleAxis(180, Vector3.up);
+        }
+        else if (this.entityState.facing == Vector2Int.right) {
+            print("facing right");
+            this.transform.rotation = Quaternion.AngleAxis(0, Vector3.up);
+        }
         if (this.isTempPos) {
             SetDithering(false);
         }

@@ -46,9 +46,22 @@ public class EntityBrain {
         if (aEntityState.mobData?.canFall != true) {
             return null;
         }
+        EntityAction currentEntityAction = this.stateMachine.GetState() as EntityAction;
+        Debug.Assert(currentEntityAction != null);
+        if (!currentEntityAction.canBeInterrupted) {
+            return null;
+        }
         FallAction fallAction = new FallAction(this.id);
         ActionResult fallActionResult = fallAction.GetActionResult(GM.boardManager.currentState);
-        return fallActionResult.boardState != null ? (ActionResult?) fallActionResult : null;
+        if (fallActionResult.boardState != null) {
+            return fallActionResult;
+        }
+        ExitAction exitAction = new ExitAction(this.id);
+        ActionResult exitActionResult = exitAction.GetActionResult(GM.boardManager.currentState);
+        if (exitActionResult.boardState != null) {
+            return exitActionResult;
+        }
+        return null;
     }
 
     void ChangeAction(ActionResult aActionResult) {
@@ -59,7 +72,10 @@ public class EntityBrain {
             otherEntityBrain.ChangeAction(requiredActionResult);
         }
         this.needsNewAction = false;
-        Debug.Log(this.id + " ChangeAction performing " + aActionResult.entityAction.GetType());
+        if (!(aActionResult.entityAction is WaitAction)) {
+            Debug.Log(this.id + " ChangeAction performing " + aActionResult.entityAction.GetType());
+
+        }
         this.stateMachine.ChangeState(aActionResult.entityAction);
     }
 
@@ -691,10 +707,10 @@ public class TurnAction : EntityAction {
     Quaternion startRotation;
     Quaternion endRotation;
     // TODO: remove hardcoded turnSpeed
-    const float turnSpeed = 1f;
+    readonly float turnSpeed;
 
     public TurnAction(int aId) : base(aId, EntityActionEnum.TURN, Vector2Int.zero) {
-
+        this.turnSpeed = 1f;
     }
 
     public override void Enter() {
@@ -706,7 +722,7 @@ public class TurnAction : EntityAction {
 
     public override void Update() {
         if (this.t < 1) {
-            this.t += Time.deltaTime / turnSpeed;
+            this.t += Time.deltaTime / this.turnSpeed;
             this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
         }
         else {
@@ -731,6 +747,63 @@ public class TurnAction : EntityAction {
         Vector2Int newFacing = simEntityState.facing == Vector2Int.left ? Vector2Int.right : Vector2Int.left;
         simEntityState = EntityState.SetFacing(simEntityState, newFacing);
         return BoardState.UpdateEntity(aBoardState, simEntityState, false);
+    }
+}
+
+public class ExitAction : EntityAction {
+    Quaternion startRotation;
+    Quaternion endRotation;
+    readonly float turnSpeed;
+
+    public ExitAction(int aId) : base(aId, EntityActionEnum.EXIT, Vector2Int.zero, new List<EntityActionEnum>()) {
+        this.turnSpeed = 0.5f;
+    }
+
+    public override void Enter() {
+        Debug.Log(this.id + "ExitAction entered");
+        this.startRotation = this.entityBase.transform.rotation;
+
+        this.endRotation = Quaternion.AngleAxis(-90, Vector3.up);
+    }
+
+    public override void Update() {
+        if (this.t < 1) {
+            this.t += Time.deltaTime / this.turnSpeed;
+            this.entityBase.transform.rotation = Quaternion.Lerp(this.startRotation, this.endRotation, this.t);
+        }
+        else {
+            Debug.Log(this.id + " ExitAction done");
+            GM.playManager.WinBoard();
+        }
+    }
+
+    public override void Exit() {
+        GM.playManager.WinBoard();
+    }
+
+    public override ActionResult GetActionResult(BoardState aBoardState) {
+        BoardState simBoardState = aBoardState;
+        EntityState simEntityState = simBoardState.GetEntityById(this.id);
+        if (simEntityState.team != TeamEnum.PLAYER) {
+            // Debug.Log(this.id + " ExitAction.GetActionResult tried on non-player entity RETURNING");
+            return new ActionResult(this, null);
+        }
+        // check each occupied pos for a back entity. return null if that back entity isnt an exit
+        foreach (Vector2Int currentPos in Util.V2IInRect(simEntityState.pos, simEntityState.size)) {
+            EntityState? backEntity = simBoardState.GetEntityAtPos(currentPos, false);
+            if (backEntity == null || backEntity.Value.isExit == false) {
+                // Debug.Log(this.id + " ExitAction.GetActionResult done on non exit position RETURNING");
+                return new ActionResult(this, null);
+            }
+        }
+        simBoardState = ApplyAction(simBoardState);
+        return new ActionResult(this, simBoardState);
+    }
+
+    protected override BoardState ApplyAction(BoardState aBoardState) {
+        EntityState simEntityState = ApplyActionGetEntityStateWithActionSet(aBoardState);
+        simEntityState = EntityState.SetIsSuspended(simEntityState, true);
+        return BoardState.UpdateEntity(aBoardState, simEntityState, true);
     }
 }
 
@@ -777,6 +850,9 @@ public abstract class EntityAction : StateMachineState {
                 break;
             case EntityActionEnum.WAIT:
                 this.canBeInterrupted = true;
+                break;
+            case EntityActionEnum.EXIT:
+                this.canBeInterrupted = false;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
