@@ -163,12 +163,14 @@ public class WaitAction : EntityAction {
 
 public class DieAction : EntityAction {
     public readonly int attackerId;
+    public readonly DeathTypeEnum deathType;
     readonly float timeToDie;
     Vector3 startScale;
     Vector3 endScale;
 
-    public DieAction(int aId, int aAttackerId) : base(aId, EntityActionEnum.DIE) {
+    public DieAction(int aId, int aAttackerId, DeathTypeEnum aDeathType) : base(aId, EntityActionEnum.DIE) {
         this.attackerId = aAttackerId;
+        this.deathType = aDeathType;
         // TODO: make this not hard coded
         this.timeToDie = 1f;
     }
@@ -196,16 +198,31 @@ public class DieAction : EntityAction {
         Debug.Log(this.id + " DieAction exited");
     }
 
+    public DeathTypeEnum GetReciprocalDeathType() {
+        switch (this.deathType) {
+            case DeathTypeEnum.BUMP:
+                return DeathTypeEnum.BUMP;
+            case DeathTypeEnum.BISECTED:
+                throw new ArgumentOutOfRangeException();
+            case DeathTypeEnum.FIRE:
+                throw new ArgumentOutOfRangeException();
+            case DeathTypeEnum.SQUISHED:
+                return DeathTypeEnum.BUMP;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     public override ActionResult GetActionResult(BoardState aBoardState) {
         Debug.Log(this.id + " DieAction.GetActionResult");
         BoardState simBoardState = aBoardState;
-        switch (GetTouchFightResult(aBoardState, this.id, this.attackerId)) {
+        switch (GetFightResult(aBoardState, this.id, this.attackerId, this.deathType)) {
             case FightResultEnum.DEFENDER_DIES:
                 Debug.Log(this.id + " DieAction.GetActionResult defender dies");
                 return new ActionResult(this, ApplyAction(simBoardState));
             case FightResultEnum.ATTACKER_DIES:
                 Debug.Log(this.id + " DieAction.GetActionResult attacker dies");
-                DieAction attackerDieAction = new DieAction(this.attackerId, this.id);
+                DieAction attackerDieAction = new DieAction(this.attackerId, this.id, GetReciprocalDeathType());
                 return new ActionResult(attackerDieAction, attackerDieAction.ApplyAction(simBoardState));
             case FightResultEnum.TIE:
                 Debug.Log(this.id + " DieAction.GetActionResult tie");
@@ -215,18 +232,45 @@ public class DieAction : EntityAction {
         }
     }
 
-    public static FightResultEnum GetTouchFightResult(BoardState aBoardState, int aDefenderId, int aAttackerId) {
+    public static FightResultEnum GetFightResult(BoardState aBoardState, int aDefenderId, int aAttackerId, DeathTypeEnum aDeathType) {
         EntityState defender = aBoardState.GetEntityById(aDefenderId);
         EntityState attacker = aBoardState.GetEntityById(aAttackerId);
         // if attacker and defender are on different teams, or attacker and defender are on the same neutral team
         if (attacker.team != defender.team || attacker.team == TeamEnum.NEUTRAL) {
-            if (attacker.mobData?.canKillOnTouch == true && attacker.mobData.Value.touchPower > defender.touchDefense) {
-                return FightResultEnum.DEFENDER_DIES;
+            switch (aDeathType) {
+                case DeathTypeEnum.BUMP:
+                    if (attacker.mobData?.canKillOnTouch == true && attacker.mobData.Value.touchPower > defender.touchDefense) {
+                        return FightResultEnum.DEFENDER_DIES;
 
+                    }
+                    if (defender.mobData?.canKillOnTouch == true && defender.mobData.Value.touchPower > attacker.touchDefense) {
+                        return FightResultEnum.ATTACKER_DIES;
+                    }
+                    break;
+                case DeathTypeEnum.BISECTED:
+                    if (attacker.mobData?.canKillOnTouch == true && attacker.mobData.Value.touchPower > defender.touchDefense) {
+                        return FightResultEnum.DEFENDER_DIES;
+
+                    }
+                    break;
+                case DeathTypeEnum.FIRE:
+                    if (attacker.mobData?.canKillOnTouch == true && attacker.mobData.Value.touchPower > defender.touchDefense) {
+                        return FightResultEnum.DEFENDER_DIES;
+                    }
+                    break;
+                case DeathTypeEnum.SQUISHED:
+                    if (attacker.mobData?.canKillOnFall == true && attacker.mobData.Value.fallPower > defender.fallDefense) {
+                        return FightResultEnum.DEFENDER_DIES;
+
+                    }
+                    if (defender.mobData?.canKillOnFall == true && defender.mobData.Value.fallPower > attacker.fallDefense) {
+                        return FightResultEnum.ATTACKER_DIES;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(aDeathType), aDeathType, null);
             }
-            if (defender.mobData?.canKillOnTouch == true && defender.mobData.Value.touchPower > attacker.touchDefense) {
-                return FightResultEnum.ATTACKER_DIES;
-            }
+
         }
         return FightResultEnum.TIE;
     }
@@ -234,7 +278,7 @@ public class DieAction : EntityAction {
     protected override BoardState ApplyAction(BoardState aBoardState) {
         EntityState attacker = aBoardState.GetEntityById(this.attackerId);
         EntityState defender = aBoardState.GetEntityById(this.id);
-        switch (GetTouchFightResult(aBoardState, defender.id, attacker.id)) {
+        switch (GetFightResult(aBoardState, defender.id, attacker.id, this.deathType)) {
             case FightResultEnum.DEFENDER_DIES:
                 defender = EntityState.SetAction(defender, this.entityActionEnum);
                 defender = EntityState.SetIsSuspended(defender, true);
@@ -318,7 +362,7 @@ public class FallAction : EntityAction {
                     case EntityActionEnum.FALL:
                         throw new NotImplementedException();
                     case EntityActionEnum.DIE:
-                        requiredAction = new DieAction(affectedEntityId, simEntityState.id);
+                        requiredAction = new DieAction(affectedEntityId, simEntityState.id, DeathTypeEnum.SQUISHED);
                         break;
                     case EntityActionEnum.PUSH:
                         throw new NotImplementedException();
@@ -355,7 +399,7 @@ public class FallAction : EntityAction {
                 return new ActionResult(this, null);
             }
             if (deathActionResult.HasValue) {
-                Debug.Log(this.id + " FallAction.GetActionResult had only one viable move causing self-death");
+                // Debug.Log(this.id + " FallAction.GetActionResult had only one viable move causing self-death RETURNING");
                 return deathActionResult.Value;
             }
         }
@@ -449,7 +493,7 @@ public class PushAction : EntityAction {
                     case EntityActionEnum.FALL:
                         throw new NotImplementedException();
                     case EntityActionEnum.DIE:
-                        requiredAction = new DieAction(affectedEntityId, simEntityState.id);
+                        requiredAction = new DieAction(affectedEntityId, simEntityState.id, DeathTypeEnum.BUMP);
                         break;
                     case EntityActionEnum.PUSH:
                         Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
@@ -578,7 +622,7 @@ public class MoveAction : EntityAction {
                     case EntityActionEnum.FALL:
                         throw new NotImplementedException();
                     case EntityActionEnum.DIE:
-                        requiredAction = new DieAction(affectedEntityId, simEntityState.id);
+                        requiredAction = new DieAction(affectedEntityId, simEntityState.id, DeathTypeEnum.BUMP);
                         break;
                     case EntityActionEnum.PUSH:
                         Vector2Int pushDirection = new Vector2Int(this.direction.x, 0);
