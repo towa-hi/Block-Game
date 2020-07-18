@@ -32,6 +32,7 @@ public class GM : SerializedMonoBehaviour {
     public GameObject playPanel;
     public GameObject editorPanel;
     public GameObject pausePanel;
+    public EscPanel escPanel;
 
     void Awake() {
         Debug.unityLogger.logEnabled = Config.LOGGING;
@@ -105,4 +106,6 @@ public class GM : SerializedMonoBehaviour {
             throw new Exception("SaveLoad - .board file with name " + aFilename + " not found!");
         }
     }
+
+
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public static class Config {
-    public static bool LOGGING = false;
+    public static bool LOGGING = true;
     public static string USERNAME = "Player";
-    public static string PATHTOBOARDS = Application.dataPath + "/Boards/";
+    public static string PATHTOBOARDS = Application.streamingAssetsPath + "/Boards/";
     public static bool PRINTLISTENERUPDATES = false;
 
 }

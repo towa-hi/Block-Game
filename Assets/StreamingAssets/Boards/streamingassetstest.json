@@ -1,0 +1,2378 @@
+{
+    "$type": "0|BoardState, Assembly-CSharp",
+    "isInitialized": true,
+    "entityDict": {
+        "$id": 0,
+        "$type": "1|System.Collections.Immutable.ImmutableDictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], System.Collections.Immutable"
+    },
+    "title": "streamingassetstest",
+    "creator": "Player",
+    "par": 5,
+    "size": {
+        "$type": "2|UnityEngine.Vector2Int, UnityEngine.CoreModule",
+        40,
+        24
+    },
+    "attempts": 0,
+    "currentId": 12,
+    "serializedEntityDict": {
+        "$id": 1,
+        "$type": "3|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[EntityState, Assembly-CSharp]], mscorlib",
+        "comparer": {
+            "$id": 2,
+            "$type": "4|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
+        },
+        "$rlength": 12,
+        "$rcontent": [
+            {
+                "$k": 0,
+                "$v": {
+                    "$type": "5|EntityState, Assembly-CSharp",
+                    "id": 0,
+                    "isFront": true,
+                    "name": "20x1 block (boundary) id: 0",
+                    "size": {
+                        "$type": 2,
+                        20,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/20x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": "6|System.Nullable`1[[MobData, Assembly-CSharp]], mscorlib",
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        0,
+                        0
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": "7|UnityEngine.Color, UnityEngine.CoreModule",
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": "8|System.Nullable`1[[EntityActionEnum, Assembly-CSharp]], mscorlib",
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": "9|System.Collections.Immutable.ImmutableArray`1[[Node, Assembly-CSharp]], System.Collections.Immutable"
+                    },
+                    "serializedNodeArray": {
+                        "$id": 3,
+                        "$type": "10|Node[], Assembly-CSharp",
+                        "$rlength": 20,
+                        "$rcontent": [
+                            {
+                                "$type": "11|Node, Assembly-CSharp",
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    6,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    7,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    8,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    9,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    10,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    11,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    12,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    13,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    14,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    15,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    16,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    17,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    18,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    19,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 1,
+                "$v": {
+                    "$type": 5,
+                    "id": 1,
+                    "isFront": true,
+                    "name": "20x1 block (boundary) id: 1",
+                    "size": {
+                        "$type": 2,
+                        20,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/20x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        20,
+                        0
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 4,
+                        "$type": 10,
+                        "$rlength": 20,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    6,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    7,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    8,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    9,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    10,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    11,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    12,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    13,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    14,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    15,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    16,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    17,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    18,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 1,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    19,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 2,
+                "$v": {
+                    "$type": 5,
+                    "id": 2,
+                    "isFront": true,
+                    "name": "20x1 block (boundary) id: 2",
+                    "size": {
+                        "$type": 2,
+                        20,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/20x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        0,
+                        23
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 5,
+                        "$type": 10,
+                        "$rlength": 20,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    6,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    7,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    8,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    9,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    10,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    11,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    12,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    13,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    14,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    15,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    16,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    17,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    18,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 2,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    19,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 3,
+                "$v": {
+                    "$type": 5,
+                    "id": 3,
+                    "isFront": true,
+                    "name": "20x1 block (boundary) id: 3",
+                    "size": {
+                        "$type": 2,
+                        20,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/20x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        20,
+                        23
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 6,
+                        "$type": 10,
+                        "$rlength": 20,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    6,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    7,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    8,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    9,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    10,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    11,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    12,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    13,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    14,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    15,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    16,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    17,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    18,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 3,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    19,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 4,
+                "$v": {
+                    "$type": 5,
+                    "id": 4,
+                    "isFront": true,
+                    "name": "1x11 block (boundary) id: 4",
+                    "size": {
+                        "$type": 2,
+                        1,
+                        11
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/1x11 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        0,
+                        1
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 7,
+                        "$type": 10,
+                        "$rlength": 11,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 4,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 4,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 5,
+                "$v": {
+                    "$type": 5,
+                    "id": 5,
+                    "isFront": true,
+                    "name": "1x11 block (boundary) id: 5",
+                    "size": {
+                        "$type": 2,
+                        1,
+                        11
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/1x11 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        0,
+                        12
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 8,
+                        "$type": 10,
+                        "$rlength": 11,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 5,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 5,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 6,
+                "$v": {
+                    "$type": 5,
+                    "id": 6,
+                    "isFront": true,
+                    "name": "1x11 block (boundary) id: 6",
+                    "size": {
+                        "$type": 2,
+                        1,
+                        11
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/1x11 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        39,
+                        1
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 9,
+                        "$type": 10,
+                        "$rlength": 11,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 6,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 6,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 7,
+                "$v": {
+                    "$type": 5,
+                    "id": 7,
+                    "isFront": true,
+                    "name": "1x11 block (boundary) id: 7",
+                    "size": {
+                        "$type": 2,
+                        1,
+                        11
+                    },
+                    "entityType": 1,
+                    "isBoundary": true,
+                    "prefabPath": "Blocks/1x11 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        39,
+                        12
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": true,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 10,
+                        "$type": 10,
+                        "$rlength": 11,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 7,
+                                "hasUp": false,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 7,
+                                "hasUp": true,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    10
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 8,
+                "$v": {
+                    "$type": 5,
+                    "id": 8,
+                    "isFront": true,
+                    "name": "6x1 block id: 8",
+                    "size": {
+                        "$type": 2,
+                        6,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": false,
+                    "prefabPath": "Blocks/6x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        26,
+                        1
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": false,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 11,
+                        "$type": 10,
+                        "$rlength": 6,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 8,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 9,
+                "$v": {
+                    "$type": 5,
+                    "id": 9,
+                    "isFront": true,
+                    "name": "6x1 block id: 9",
+                    "size": {
+                        "$type": 2,
+                        6,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": false,
+                    "prefabPath": "Blocks/6x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        28,
+                        2
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": false,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 12,
+                        "$type": 10,
+                        "$rlength": 6,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 9,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 10,
+                "$v": {
+                    "$type": 5,
+                    "id": 10,
+                    "isFront": true,
+                    "name": "6x1 block id: 10",
+                    "size": {
+                        "$type": 2,
+                        6,
+                        1
+                    },
+                    "entityType": 1,
+                    "isBoundary": false,
+                    "prefabPath": "Blocks/6x1 block",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        null
+                    },
+                    "pos": {
+                        "$type": 2,
+                        27,
+                        3
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": false,
+                    "team": 1,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 13,
+                        "$type": 10,
+                        "$rlength": 6,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    1,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    2,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    3,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    4,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 10,
+                                "hasUp": true,
+                                "hasDown": true,
+                                "relativePos": {
+                                    "$type": 2,
+                                    5,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 99,
+                    "fallDefense": 99
+                }
+            },
+            {
+                "$k": 11,
+                "$v": {
+                    "$type": 5,
+                    "id": 11,
+                    "isFront": true,
+                    "name": "2x3 player id: 11",
+                    "size": {
+                        "$type": 2,
+                        2,
+                        3
+                    },
+                    "entityType": 3,
+                    "isBoundary": false,
+                    "prefabPath": "Mobs/2x3 player",
+                    "isExit": false,
+                    "isInitialized": true,
+                    "mobData": {
+                        "$type": 6,
+                        {
+                            "$type": "12|MobData, Assembly-CSharp",
+                            "movementType": 1,
+                            "canHop": true,
+                            "moveSpeed": 0.5,
+                            "canKillOnTouch": false,
+                            "touchPower": 1,
+                            "canFall": true,
+                            "canKillOnFall": false,
+                            "fallPower": 0,
+                            "canPush": true,
+                            "canBePushed": false,
+                            "canBeLifted": true
+                        }
+                    },
+                    "pos": {
+                        "$type": 2,
+                        15,
+                        1
+                    },
+                    "facing": {
+                        "$type": 2,
+                        1,
+                        0
+                    },
+                    "defaultColor": {
+                        "$type": 7,
+                        1,
+                        1,
+                        1,
+                        1
+                    },
+                    "isFixed": false,
+                    "team": 0,
+                    "isSuspended": false,
+                    "currentAction": {
+                        "$type": 8,
+                        5
+                    },
+                    "nodeIArray": {
+                        "$type": 9
+                    },
+                    "serializedNodeArray": {
+                        "$id": 14,
+                        "$type": 10,
+                        "$rlength": 6,
+                        "$rcontent": [
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            },
+                            {
+                                "$type": 11,
+                                "id": 0,
+                                "hasUp": false,
+                                "hasDown": false,
+                                "relativePos": {
+                                    "$type": 2,
+                                    0,
+                                    0
+                                }
+                            }
+                        ]
+                    },
+                    "touchDefense": 5,
+                    "fallDefense": 5
+                }
+            }
+        ]
+    }
+}

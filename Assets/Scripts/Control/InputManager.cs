@@ -93,8 +93,8 @@ public class InputManager : SerializedMonoBehaviour {
         // placeholder
     }
     
-    public void OnClickDown(InputAction.CallbackContext context) {
-        switch (context.phase) {
+    public void OnClickDown(InputAction.CallbackContext aContext) {
+        switch (aContext.phase) {
             case InputActionPhase.Performed:
                 if (!this.isCursorOverUI) {
                     this.mouseState = MouseStateEnum.CLICKED;
@@ -114,8 +114,8 @@ public class InputManager : SerializedMonoBehaviour {
         }
     }
 
-    public void OnRightClickDown(InputAction.CallbackContext context) {
-        switch (context.phase) {
+    public void OnRightClickDown(InputAction.CallbackContext aContext) {
+        switch (aContext.phase) {
             case InputActionPhase.Performed:
                 this.rightMouseState = MouseStateEnum.CLICKED;
                 break;
@@ -132,7 +132,29 @@ public class InputManager : SerializedMonoBehaviour {
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
+
+    public void OnEsc(InputAction.CallbackContext aContext) {
+        switch (aContext.phase) {
+            case InputActionPhase.Disabled:
+                break;
+            case InputActionPhase.Waiting:
+                break;
+            case InputActionPhase.Started:
+                break;
+            case InputActionPhase.Performed:
+                // TODO: move this out of here
+                GameObject escPanel = GM.instance.escPanel.gameObject;
+                GameObject pausePanel = GM.instance.pausePanel;
+                pausePanel.SetActive(!escPanel.activeSelf);
+                escPanel.SetActive(!escPanel.activeSelf);
+                break;
+            case InputActionPhase.Canceled:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+    }
     #endregion
     
 }
