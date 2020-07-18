@@ -134,7 +134,7 @@ public class PlayManager : SerializedMonoBehaviour {
     #endregion
 
     #region PlayState
-    
+
     void UpdatePlayState(PlayState aPlayState) {
         this.playState = aPlayState;
         switch (GM.instance.currentState.gameMode) {
@@ -427,19 +427,6 @@ public class PlayManager : SerializedMonoBehaviour {
                 if (touchingUp && touchingDown) {
                     return false;
                 }
-                // EntityState? maybeAEntity = node.GetOppositeNode(aOffset, ignoreSet)?.entityState;
-                // Node? oppositeNode = node.GetAllOppositeNodes(aOffset, ignoreSet);
-                // if (oppositeNode.HasValue && !ignoreSet.Contains(oppositeNode.Value.id)) {
-                //     if (node.isUp) {
-                //         touchingUp = true;
-                //     }
-                //     else {
-                //         touchingDown = true;
-                //     }
-                //     if (touchingUp && touchingDown) {
-                //         return false;
-                //     }
-                // }
             }
         }
         if (touchingUp ^ touchingDown) {
@@ -464,34 +451,6 @@ public class PlayManager : SerializedMonoBehaviour {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     #endregion
 
     #region StateMachineStates

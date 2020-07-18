@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Schema;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -14,7 +13,6 @@ public class BoardManager : SerializedMonoBehaviour {
     public BoardState currentState {
         get { return this.boardState; }
     }
-    // public Dictionary<Vector2Int, BoardCell> boardCellDict;
     public event OnUpdateBoardStateHandler OnUpdateBoardState;
     public Dictionary<int, EntityBase> entityBaseDict;
 
